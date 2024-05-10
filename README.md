@@ -1,2 +1,0 @@
-# -
-May's Edu Centre
