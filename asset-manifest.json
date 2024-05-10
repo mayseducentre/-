@@ -1,9 +1,10 @@
 {
   "files": {
     "main.css": "/-/static/css/main.366d8cf0.css",
-    "main.js": "/-/static/js/main.803b685a.js",
+    "main.js": "/-/static/js/main.8725e3f3.js",
     "static/js/453.e4afc6a4.chunk.js": "/-/static/js/453.e4afc6a4.chunk.js",
     "static/media/hero-bg.jpg": "/-/static/media/hero-bg.8947f2200e2804d08f4d.jpg",
+    "static/media/may.jpg": "/-/static/media/may.43cdbbeb10581ad83e27.jpg",
     "static/media/course-details.jpg": "/-/static/media/course-details.8d60cd4bd8e7e34883c7.jpg",
     "static/media/course-3.jpg": "/-/static/media/course-3.1d8f1686dd3fece82531.jpg",
     "static/media/events-2.jpg": "/-/static/media/events-2.349a60769975821146de.jpg",
@@ -27,11 +28,11 @@
     "static/media/course-details-tab-5.png": "/-/static/media/course-details-tab-5.c19d01d6f2358ca5cc6e.png",
     "index.html": "/-/index.html",
     "main.366d8cf0.css.map": "/-/static/css/main.366d8cf0.css.map",
-    "main.803b685a.js.map": "/-/static/js/main.803b685a.js.map",
+    "main.8725e3f3.js.map": "/-/static/js/main.8725e3f3.js.map",
     "453.e4afc6a4.chunk.js.map": "/-/static/js/453.e4afc6a4.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.366d8cf0.css",
-    "static/js/main.803b685a.js"
+    "static/js/main.8725e3f3.js"
   ]
 }
