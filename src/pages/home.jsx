@@ -1,13 +1,18 @@
 import Header from "../component/header";
 import "../style.css";
-import "../bootstrap.css"
+import "../animate.css";
+import "../bootstrap.css";
 import Banner from "../component/banner";
 import About from "../component/about";
 import Footer from "../component/footer";
+import ScrollToTop from "react-scroll-to-top";
+import Category from "../component/category";
+import Blog from "../component/blog";
+import Headline from "../component/headlines";
 
 function loadP(){
     setTimeout(()=>{
-        const imgarray=["hero-bg.jpg","course-details.jpg","course-3.jpg","events-2.jpg"];
+        const imgarray=["h.jpg","i.jpg","course-3.jpg","events-2.jpg"];
 
         var random=Math.floor(Math.random()* imgarray.length);
 
@@ -22,10 +27,16 @@ export default function Home(){
     return(
         <main onLoad={loadP()}>
         <Header />
+        <Headline />
+        <br/>
+        <br/>
         <Banner />
         <br/>
         <br/>
         <About />
+        <Category />
+        <Blog />
+        <ScrollToTop smooth className="scrolly"/>
         <Footer />
            </main>
     )

@@ -6,21 +6,20 @@ export default function About(){
 
         <div className="row">
           <div className="col-lg-6 order-1 order-lg-2">
-            <img src={require("../img/about.jpg")} className="img-fluid" alt=""/>
+            <img src={require("../img/nj.jpg")} className="img-fluid" alt=""/>
           </div>
           <div className="col-lg-6 pt-4 pt-lg-0 order-2 order-lg-1 content">
-            <h3>Voluptatem dignissimos provident quasi corporis voluptates sit assumenda.</h3>
+            <h3>About MEC</h3>
             <p className="fst-italic">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-              magna aliqua.
+              At MEC, our mission is to cultivate a dynamic and inclusive learning environment where every student is empowered to reach their full potential.
             </p>
             <ul>
-              <li><i className="bi bi-check-circle"></i> Ullamco laboris nisi ut aliquip ex ea commodo consequat.</li>
-              <li><i className="bi bi-check-circle"></i> Duis aute irure dolor in reprehenderit in voluptate velit.</li>
-              <li><i className="bi bi-check-circle"></i> Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate trideta storacalaperda mastiro dolore eu fugiat nulla pariatur.</li>
+              <li><i className="bi bi-check-circle"></i> We maintain high standards in academic and extracurricular activities, encouraging students to strive for their best.</li>
+              <li><i className="bi bi-check-circle"></i> We foster a sense of belonging and partnership among students,parents and staff.</li>
+              <li><i className="bi bi-check-circle"></i> We embrace new ideas and technologies to enhance learning and teaching.</li>
             </ul>
             <p>
-              Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+              From early childhood education to advanced placement courses, our curriculum is designed to challenge and inspire.
             </p>
 
           </div>
@@ -71,9 +70,9 @@ export default function About(){
             <div className="content">
               <h3>Why Choose MEC for your child?</h3>
               <p>
-              May's Educational Centre is a high class school with the vision to train and nurture the Ghanaian child through quality education with love and affection enabling them to excel in life. With a top notch security, we reassure you that your kids will be safe.</p>
+              We understand that making decisions for your child’s education can be challenging. May's Educational Centre is proud to offer an unparalleled educational experience that will inspire your child to reach their full life potential. With the vision to train and nurture the Ghanaian child through quality education with love and affection enabling them to excel in life.</p>
               <div className="text-center">
-                <a href="about.html" className="more-btn">Learn More <i className="bx bx-chevron-right"></i></a>
+                <a href="#" className="more-btn">Learn More <i className="bx bx-chevron-right"></i></a>
               </div>
             </div>
           </div>
@@ -83,22 +82,22 @@ export default function About(){
                 <div className="col-xl-4 d-flex align-items-stretch">
                   <div className="icon-box mt-4 mt-xl-0">
                     <i className="bx bx-receipt"></i>
-                    <h4>Corporis voluptates sit</h4>
-                    <p>Consequuntur sunt aut quasi enim aliquam quae harum pariatur laboris nisi ut aliquip</p>
+                    <h4>Global Awareness</h4>
+                    <p>Students experience a purposeful exchange of world views and interaction with other cultures.</p>
                   </div>
                 </div>
                 <div className="col-xl-4 d-flex align-items-stretch">
                   <div className="icon-box mt-4 mt-xl-0">
                     <i className="bx bx-cube-alt"></i>
-                    <h4>Ullamco laboris ladore pan</h4>
-                    <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt</p>
+                    <h4>Standard-Based Learning</h4>
+                    <p>Our curriculum is positioned so students are successful wherever the future of their education may take them.</p>
                   </div>
                 </div>
                 <div className="col-xl-4 d-flex align-items-stretch">
                   <div className="icon-box mt-4 mt-xl-0">
                     <i className="bx bx-images"></i>
-                    <h4>Labore consequatur</h4>
-                    <p>Aut suscipit aut cum nemo deleniti aut omnis. Doloribus ut maiores omnis facere</p>
+                    <h4>Balanced and Robust Education</h4>
+                    <p>We culivate well rounded, confident students across our curriculum and co-curricular activities</p>
                   </div>
                 </div>
               </div>
@@ -108,6 +107,12 @@ export default function About(){
 
       </div>
     </section>
+
+    <br/>
+    <br/>
+<center>
+    <iframe style={{width:"100%", height:"300px"}}  src="https://www.youtube.com/embed/dxECczwpirE?si=Q5HT5DoTbrJFWK9Q" title="May's Educational Centre" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </center> 
     </>
     )
 }
