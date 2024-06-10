@@ -9,11 +9,7 @@ var readonly={
     border:"none"
 }
 
-var stupath="http://localhost:3001/account";
-
-var teachpath="http://localhost:3001/laccount";
-
-var parntpath="http://localhost:3001/raccount";
+var path="https://safe-green-objective.glitch.me"
 
 
 function logPortal(){
@@ -36,19 +32,19 @@ localStorage.setItem("portalcheck", portcheck.checked)
         localStorage.removeItem("portalcheck");
     }
 
- fetch(stupath)
+ fetch(`${path}/stuaccount`)
  .then(res=>res.json())
  .then(data => logintoPortal(data))
  .catch(err => console.log(err))
 
  
- fetch(teachpath)
+ fetch(`${path}/staffaccount`)
  .then(res=>res.json())
  .then(data => logintoPortal(data))
  .catch(err => console.log(err))
 
  
- fetch(parntpath)
+ fetch(`${path}/parentaccount`)
  .then(res=>res.json())
  .then(data => logintoPortal(data))
  .catch(err => console.log(err))
@@ -90,7 +86,7 @@ function logintoPortal(data){
             document.getElementById("loginread").value=null;
         },3000)
 
-            document.getElementById("loginread").value="invalid email or password"
+            document.getElementById("loginread").value="invalid userid or password"
             document.getElementById("loginread").style.color="red"
         
         }
