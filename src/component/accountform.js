@@ -28,7 +28,7 @@ function Postaccount(){
     const confirmationbox= window.confirm(`You are creating an account as a ${role}. Do you want to proceed`);
    var apifetch=`${path}/${role}account`;
     if(passcode.length >=8 && passconfirm == passcode && confirmationbox===true){
-     fetch(apifetch,  {
+     fetch(`${path}/${role}account`,  {
         method:"POST",
         body:JSON.stringify({
            "id": id,
@@ -45,6 +45,7 @@ function Postaccount(){
      })
      .then(res => res.json())
      .then(data => {console.log(data)
+        alert("Signed up successfully")
     window.location.reload()})
      .catch(err => console.log(err))
     }
