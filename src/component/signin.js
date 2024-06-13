@@ -55,7 +55,7 @@ function logintoPortal(data){
         var log_userid=document.getElementById("portal_id").value;
         var log_pass=document.getElementById("portal_key").value;
 
-        if(log_userid === data[i].id && log_pass === data[i].passcode && data[i].role === "student" && data[i].status !== "deny"){
+        if(log_userid === data[i].id && log_pass === data[i].passcode && data[i].role === "student" && data[i].status === "accept"){
             document.getElementById("portalogin").style.display="none";
            
             document.getElementById("stuportal").style.display="block";
@@ -64,7 +64,7 @@ function logintoPortal(data){
         }
 
         
-        if(log_userid === data[i].id && log_pass === data[i].passcode && data[i].role === "teacher" && data[i].status !== "deny"){
+        if(log_userid === data[i].id && log_pass === data[i].passcode && data[i].role === "teacher" && data[i].status === "accept"){
             document.getElementById("portalogin").style.display="none";
            
             document.getElementById("teachportal").style.display="block";
@@ -72,7 +72,7 @@ function logintoPortal(data){
             
         }
 
-        if(log_userid === data[i].id && log_pass === data[i].passcode && data[i].role === "parent" && data[i].status !== "deny"){
+        if(log_userid === data[i].id && log_pass === data[i].passcode && data[i].role === "parent" && data[i].status === "accept"){
             document.getElementById("portalogin").style.display="none";
            
             document.getElementById("parentportal").style.display="block";
