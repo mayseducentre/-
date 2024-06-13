@@ -1,6 +1,6 @@
 
 import bcrypt from "bcryptjs"
-import { useRef } from "react";
+
 
 const select ={
     padding:"10px 12px",
@@ -18,7 +18,7 @@ function Postaccount(){
     var role=document.getElementById("role_account").value;
 
     const salt=bcrypt.genSaltSync(10);
-    const hashedpassword=bcrypt.hash(passcode, salt);
+    const hashedpassword=bcrypt.hashSync(passcode, salt);
     const constantPrefix="011";
     const timestamp= new Date().getTime().toString();
     const randomdigit=Math.floor(Math.random()* 10).toString();
@@ -27,7 +27,7 @@ function Postaccount(){
    
     const confirmationbox= window.confirm(`You are creating an account as a ${role}. Do you want to proceed`);
    var apifetch=`${path}/${role}account`;
-    if(passcode.length >=8 && passconfirm == passcode && confirmationbox==true){
+    if(passcode.length >=8 && passconfirm == passcode && confirmationbox===true){
      fetch(apifetch,  {
         method:"POST",
         body:JSON.stringify({
