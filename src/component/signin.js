@@ -9,7 +9,7 @@ var readonly={
     border:"none"
 }
 
-var path="https://safe-green-objective.glitch.me"
+var path=process.env.REACT_APP_API_URL;
 
 
 function logPortal(){
@@ -32,7 +32,7 @@ localStorage.setItem("portalcheck", portcheck.checked)
         localStorage.removeItem("portalcheck");
     }
 
- fetch(`${path}/stuaccount`)
+ fetch(`${path}/studentaccount`)
  .then(res=>res.json())
  .then(data => logintoPortal(data))
  .catch(err => console.log(err))
@@ -55,7 +55,7 @@ function logintoPortal(data){
         var log_userid=document.getElementById("portal_id").value;
         var log_pass=document.getElementById("portal_key").value;
 
-        if(log_userid === data[i].id && log_pass === data[i].passcode && data[i].status === "student"){
+        if(log_userid === data[i].id && log_pass === data[i].passcode && data[i].role === "student" && data[i].status !== "deny"){
             document.getElementById("portalogin").style.display="none";
            
             document.getElementById("stuportal").style.display="block";
@@ -64,7 +64,7 @@ function logintoPortal(data){
         }
 
         
-        if(log_userid === data[i].id && log_pass === data[i].passcode && data[i].status === "teacher"){
+        if(log_userid === data[i].id && log_pass === data[i].passcode && data[i].role === "teacher" && data[i].status !== "deny"){
             document.getElementById("portalogin").style.display="none";
            
             document.getElementById("teachportal").style.display="block";
@@ -72,7 +72,7 @@ function logintoPortal(data){
             
         }
 
-        if(log_userid === data[i].id && log_pass === data[i].passcode && data[i].status === "parent"){
+        if(log_userid === data[i].id && log_pass === data[i].passcode && data[i].role === "parent" && data[i].status !== "deny"){
             document.getElementById("portalogin").style.display="none";
            
             document.getElementById("parentportal").style.display="block";
@@ -121,11 +121,11 @@ export default function SignLog(){
                     <input style={readonly} id="loginread" readOnly/>
                      
                         <div className="field input-field">
-                            <input type="text" placeholder="User_Id"  id="portal_id" className="input" required/>
+                            <input type="text" placeholder="User_Id" name="id"  id="portal_id" className="input" required/>
                         </div>
 
                         <div className="field input-field">
-                            <input type="password" placeholder="Password" id="portal_key" className="password" required/>
+                            <input type="password" name="password" placeholder="Password" id="portal_key" className="password" required/>
                             <i className='bx bx-hide eye-icon'></i>
                         </div>
 

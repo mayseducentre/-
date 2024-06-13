@@ -13,24 +13,24 @@ export default function Form(){
                 <form>
                     <div className="row">
                         <div className="col-lg-8 col-md-6">
-                            <h3 className="checkout__title">Student Registration Form</h3>
+                            <h3 className="checkout__title">Account</h3>
                             <div className="row">
                                 <div className="col-lg-6">
                                     <div className="checkout__input">
-                                        <p>Student First Name<span>*</span></p>
-                                        <input type="text" id="chk_prod" required/>
+                                        <p>First Name<span>*</span></p>
+                                        <input type="text" id="fn_account" required/>
                                     </div>
                                 </div>
                                 <div className="col-lg-6">
                                     <div className="checkout__input">
-                                        <p>Student Last Name<span>*</span></p>
-                                        <input type="text" id="chk_eml" required/>
+                                        <p>Last Name<span>*</span></p>
+                                        <input type="text" id="ln_account" required/>
                                     </div>
                                 </div>
                                 <div className="col-lg-6">
                                     <div className="checkout__input">
-                                        <p>Student Other Name<span>*</span></p>
-                                        <input type="text" required/>
+                                        <p>Other Name<span>*</span></p>
+                                        <input type="text" id="on_account" required/>
                                     </div>
                                 </div>
                                 <div className="col-lg-6">
