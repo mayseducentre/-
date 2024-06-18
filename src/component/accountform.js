@@ -110,6 +110,7 @@ export default function Accountform(){
             "email": email,
             "passcode": hashedpassword,
             "country": "Ghana",
+            "role":"student",
             "gender": gender,
             "class": userclass,
             "notice":"",
@@ -124,6 +125,7 @@ export default function Accountform(){
             "email": email,
             "passcode": hashedpassword,
             "country": "Ghana",
+            "role":"staff",
             "gender": gender,
             "subject": subject,
             "notice":"",
@@ -139,6 +141,7 @@ export default function Accountform(){
             "passcode": hashedpassword,
             "country": "Ghana",
             "gender": gender,
+            "role":"parent",
             "child_class": childclass,
             "child_name": childname,
             "notice":"",
@@ -218,7 +221,10 @@ export default function Accountform(){
  fetch(`${path}/parentaccount`)
  .then(res=>res.json())
  .then(data => checkData(data))
- .catch(err => console.log(err))
+ .catch(err => {console.log(err)
+    alert("You are currently offline. Check your internet connection and try again")
+alert("Failed to verify");
+window.location.reload()})
 
     } 
     function checkData(data){
@@ -296,7 +302,6 @@ export default function Accountform(){
                                     <option value="student">Student</option>
                                     <option value="staff">Teacher</option>
                                     <option value="parent">Parent</option>
-                                    <option value="admin">Admin</option>
                                 </select>
                             </div>
                             
