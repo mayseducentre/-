@@ -58,7 +58,7 @@ function logintoPortal(data){
     for(var i=0; i < data.length; i++){
         var log_userid=document.getElementById("portal_id").value;
         var log_pass=document.getElementById("portal_key").value;
-        var storedhash=data[i].passcode;
+        const storedhash= data[i].passcode;
         var passwordcheck= bcrypt.compareSync(log_pass, storedhash);
 
         if(log_userid === data[i].id && passwordcheck && data[i].role === "student" && data[i].status === "accept"){
@@ -90,9 +90,9 @@ function logintoPortal(data){
                 
         setTimeout(()=>{
             document.getElementById("loginread").value=null;
-        },3000)
+        },5000)
 
-            document.getElementById("loginread").value="invalid userid or password"
+            document.getElementById("loginread").value="Not allowed to login. Invalid userID or password"
             document.getElementById("loginread").style.color="red"
         
         }

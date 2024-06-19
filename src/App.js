@@ -7,7 +7,7 @@ import Contact from "./pages/contact";
 import Portal from "./pages/portal";
 import Account from "./pages/account";
 import Aboutp from "./pages/about";
-import StudentPortal from "./portal/student_portal";
+import InsGuide from "./component/ins_guide";
 
 
 
@@ -24,7 +24,7 @@ function App() {
       <Route path="/portal" element={<Portal />} />
       <Route path="/account" element={<Account />} />
       <Route path="/about" element={<Aboutp />} />
-      <Route path="/port" element={<StudentPortal />} />
+      <Route path="/ins_guide" element={<InsGuide />} />
        </Route>
     </Routes>
     </HashRouter>

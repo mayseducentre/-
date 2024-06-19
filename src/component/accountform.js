@@ -97,7 +97,7 @@ export default function Accountform(){
             user_email: formRef.current.user_email.value,
             reply_to: formRef.current.user_email.value,
             to_name: formRef.current.user_name.value,
-            mays_msg:`Your user id is '${id}'. Please use this user_id to login.` 
+            mays_msg:`Your userID is '${id}'. The admin will allow you to the system if you qualify to login. But please make sure you save and remember your id and password when allowed to login.` 
          };
  
         const confirmationbox= window.confirm(`You are creating an account as a ${role}. And are you sure that ${email} is valid. We will send a code to  your mail.`);
@@ -356,7 +356,7 @@ window.location.reload()})
                     <div className="row" id="parentlogic" style={{display:"none"}}>
                     <div className="checkout__input">
                                 <p>Child Name<span>*</span></p>
-                                <input type="password" id="childname_account" placeholder="Enter student name"/>
+                                <input type="text" id="childname_account" placeholder="Enter student name"/>
                             </div>
                     <div className="checkout__input">
                                 <p>Child Form/Level<span>*</span></p>
