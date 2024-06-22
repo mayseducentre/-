@@ -8,7 +8,6 @@ import Footer from "../component/footer";
 import ScrollToTop from "react-scroll-to-top";
 import Category from "../component/category";
 import Blog from "../component/blog";
-import Headline from "../component/headlines";
 import Noties from "../notification/noties";
 import NotificationPermission from "../notification/noties_permission";
 
@@ -29,7 +28,6 @@ export default function Home(){
     return(
         <main onLoad={loadP()}>
         <Header />
-        <Headline />
         <br/>
         <br/>
         <Banner />

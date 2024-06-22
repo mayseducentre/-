@@ -37,7 +37,7 @@ function Teachersidebar(){
       <li className="nav-item">
         <a className="nav-link collapsed">
           <i className="bi bi-dash-circle"></i>
-          <span>Classes and assignments</span>
+          <span>Assignments</span>
         </a>
       </li>
       </Link>
@@ -46,7 +46,7 @@ function Teachersidebar(){
       <li className="nav-item">
         <a className="nav-link collapsed">
           <i className="bi bi-file-earmark"></i>
-          <span>Grades</span>
+          <span>Gradebook</span>
         </a>
       </li>
       </Link>
@@ -55,7 +55,7 @@ function Teachersidebar(){
       <li className="nav-item">
         <a className="nav-link collapsed">
           <i className="bi bi-dash-circle"></i>
-          <span>Messages and Notifications</span>
+          <span>Messages and Annoucements</span>
         </a>
       </li>
       </Link>
@@ -65,21 +65,12 @@ function Teachersidebar(){
       <li className="nav-item">
         <a className="nav-link collapsed">
           <i className="bi bi-dash-circle"></i>
-          <span>Resources</span>
+          <span>Assessments Result</span>
         </a>
       </li>
       </Link>
 
       
-      <Link to="/">
-      <li className="nav-item">
-        <a className="nav-link collapsed">
-          <i className="bi bi-dash-circle"></i>
-          <span>Calendar</span>
-        </a>
-      </li>
-      </Link>
-
       <Link to="/">
       <li className="nav-item">
         <a className="nav-link collapsed">
@@ -93,7 +84,7 @@ function Teachersidebar(){
       <li className="nav-item">
         <a className="nav-link collapsed">
           <i className="bi bi-dash-circle"></i>
-          <span>Extracurricular activities</span>
+          <span>Student Performance</span>
         </a>
       </li>
       </Link>
@@ -102,7 +93,16 @@ function Teachersidebar(){
       <li className="nav-item">
         <a className="nav-link collapsed">
           <i className="bi bi-dash-circle"></i>
-          <span>Support</span>
+          <span>Calendar and Scheduling</span>
+        </a>
+      </li>
+      </Link>
+
+      <Link to="/">
+      <li className="nav-item">
+        <a className="nav-link collapsed">
+          <i className="bi bi-dash-circle"></i>
+          <span>Help and Support</span>
         </a>
       </li>
       </Link>
@@ -111,7 +111,7 @@ function Teachersidebar(){
       <li className="nav-item">
         <a className="nav-link collapsed">
           <i className="bi bi-dash-circle"></i>
-          <span>Blank</span>
+          <span>Sign out</span>
         </a>
       </li>
       </Link>
@@ -123,11 +123,12 @@ function Teachersidebar(){
   <div className="bottom-nav animate__animated animate__fadeInUp">
   <a className="fa fa-home" href="#/"><br /><small className="smaller">Home</small></a>
   <a className="fa fa-exclamation-circle" href="#/"><br /><small className="smaller">Assignments</small></a>
-  <a className="fa fa-exclamation-circle" href="#/"><br /><small className="smaller">Grades</small></a>
-  <a className="fa fa-phone" href="#/"><br /><small className="smaller">Grades</small></a>
-  <a className="fa fa-credit-card" href="#/"><br /><small className="smaller">Notifications</small></a>
+  <a className="fa fa-exclamation-circle" href="#/"><br /><small className="smaller">Gradebook</small></a>
+  <a className="fa fa-phone" href="#/"><br /><small className="smaller">Annoucement</small></a>
+  <a className="fa fa-credit-card" href="#/"><br /><small className="smaller">Assessments Result</small></a>
   <a className="fa fa-graduation-cap" href="#/"><br /><small className="smaller">Calender</small></a>
-  <a className="fa fa-exclamation-circle" href="#/"><br /><small className="smaller">Resources</small></a>
+  <a className="fa fa-graduation-cap" href="#/"><br /><small className="smaller">Attendance</small></a>
+  <a className="fa fa-exclamation-circle" href="#/"><br /><small className="smaller">Student Performance</small></a>
   <a className="fa fa-user-o" href="#/"><br /><small className="smaller">Support</small></a>
 </div>
 </>

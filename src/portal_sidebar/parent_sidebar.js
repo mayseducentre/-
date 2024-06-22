@@ -45,17 +45,8 @@ function Parentsidebar(){
       <Link to="/">
       <li className="nav-item">
         <a className="nav-link collapsed">
-          <i className="bi bi-file-earmark"></i>
-          <span>School Events</span>
-        </a>
-      </li>
-      </Link>
-
-      <Link to="/">
-      <li className="nav-item">
-        <a className="nav-link collapsed">
           <i className="bi bi-dash-circle"></i>
-          <span>Messages and Notifications</span>
+          <span>Messages and Annoucement</span>
         </a>
       </li>
       </Link>
@@ -65,7 +56,7 @@ function Parentsidebar(){
       <li className="nav-item">
         <a className="nav-link collapsed">
           <i className="bi bi-dash-circle"></i>
-          <span>Resources</span>
+          <span>My Profile</span>
         </a>
       </li>
       </Link>
@@ -102,6 +93,24 @@ function Parentsidebar(){
       <li className="nav-item">
         <a className="nav-link collapsed">
           <i className="bi bi-dash-circle"></i>
+          <span>Calendar</span>
+        </a>
+      </li>
+      </Link>
+
+      <Link to="/">
+      <li className="nav-item">
+        <a className="nav-link collapsed">
+          <i className="bi bi-dash-circle"></i>
+          <span>Student behavior</span>
+        </a>
+      </li>
+      </Link>
+
+      <Link to="/">
+      <li className="nav-item">
+        <a className="nav-link collapsed">
+          <i className="bi bi-dash-circle"></i>
           <span>Help Desk</span>
         </a>
       </li>
@@ -111,7 +120,7 @@ function Parentsidebar(){
       <li className="nav-item">
         <a className="nav-link collapsed">
           <i className="bi bi-dash-circle"></i>
-          <span>Blank</span>
+          <span>Sign out</span>
         </a>
       </li>
       </Link>
@@ -123,12 +132,13 @@ function Parentsidebar(){
   <div className="bottom-nav animate__animated animate__fadeInUp">
   <a className="fa fa-home" href="#/"><br /><small className="smaller">Home</small></a>
   <a className="fa fa-exclamation-circle" href="#/"><br /><small className="smaller">Assignments</small></a>
-  <a className="fa fa-exclamation-circle" href="#/"><br /><small className="smaller">Grades</small></a>
-  <a className="fa fa-phone" href="#/"><br /><small className="smaller">Grades</small></a>
-  <a className="fa fa-credit-card" href="#/"><br /><small className="smaller">Notifications</small></a>
+  <a className="fa fa-exclamation-circle" href="#/"><br /><small className="smaller">Student Grades</small></a>
+  <a className="fa fa-phone" href="#/"><br /><small className="smaller">Behaviour</small></a>
+  <a className="fa fa-credit-card" href="#/"><br /><small className="smaller">Announcements</small></a>
   <a className="fa fa-graduation-cap" href="#/"><br /><small className="smaller">Calender</small></a>
-  <a className="fa fa-exclamation-circle" href="#/"><br /><small className="smaller">Resources</small></a>
-  <a className="fa fa-user-o" href="#/"><br /><small className="smaller">Support</small></a>
+  <a className="fa fa-user-o" href="#/"><br /><small className="smaller">My Profile</small></a>
+  <a className="fa fa-exclamation-circle" href="#/"><br /><small className="smaller">Payments & Fees</small></a>
+  <a className="fa fa-shield" href="#/"><br /><small className="smaller">Support</small></a>
 </div>
 </>
     )

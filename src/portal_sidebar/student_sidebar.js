@@ -105,13 +105,21 @@ function Studentsidebar(){
           <span>Support</span>
         </a>
       </li>
+
+      </Link> <Link to="/">
+      <li className="nav-item">
+        <a className="nav-link collapsed">
+          <i className="bi bi-dash-circle"></i>
+          <span>My Profile</span>
+        </a>
+      </li>
       </Link>
       
       <Link to="/">
       <li className="nav-item">
         <a className="nav-link collapsed">
           <i className="bi bi-dash-circle"></i>
-          <span>Blank</span>
+          <span>Sign out</span>
         </a>
       </li>
       </Link>
@@ -123,11 +131,11 @@ function Studentsidebar(){
   <a className="fa fa-home" href="#/"><br /><small className="smaller">Home</small></a>
   <a className="fa fa-exclamation-circle" href="#/"><br /><small className="smaller">Assignments</small></a>
   <a className="fa fa-exclamation-circle" href="#/"><br /><small className="smaller">Grades</small></a>
-  <a className="fa fa-phone" href="#/"><br /><small className="smaller">Grades</small></a>
-  <a className="fa fa-credit-card" href="#/"><br /><small className="smaller">Notifications</small></a>
+  <a className="fa fa-credit-card" href="#/"><br /><small className="smaller">Announcements</small></a>
   <a className="fa fa-graduation-cap" href="#/"><br /><small className="smaller">Calender</small></a>
   <a className="fa fa-exclamation-circle" href="#/"><br /><small className="smaller">Resources</small></a>
-  <a className="fa fa-user-o" href="#/"><br /><small className="smaller">Support</small></a>
+  <a className="fa fa-user-o" href="#/"><br /><small className="smaller">My Profile</small></a>
+  <a className="fa fa-shield" href="#/"><br /><small className="smaller">Support</small></a>
 </div>
 </>
     )

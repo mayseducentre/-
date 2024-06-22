@@ -1,12 +1,13 @@
-import Breadcrumb from "../component/breadcrumb";
+
 import Footer from "../component/footer";
+import Headline from "../component/headlines";
 import Studentsidebar from "../portal_sidebar/student_sidebar";
 
 function StudentPortal(){
    return(
     <>
     <div id="main">
-    <Breadcrumb title="Student Portal" />
+      <Headline />
     <Studentsidebar />
     <Footer />
     </div>
