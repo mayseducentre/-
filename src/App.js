@@ -8,6 +8,7 @@ import Portal from "./pages/portal";
 import Account from "./pages/account";
 import Aboutp from "./pages/about";
 import InsGuide from "./component/ins_guide";
+import SignSet from "./pages/user_setting";
 
 
 
@@ -25,6 +26,7 @@ function App() {
       <Route path="/account" element={<Account />} />
       <Route path="/about" element={<Aboutp />} />
       <Route path="/ins_guide" element={<InsGuide />} />
+      <Route path="/user_setting" element={<SignSet />} />
        </Route>
     </Routes>
     </HashRouter>

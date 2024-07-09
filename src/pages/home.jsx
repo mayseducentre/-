@@ -2,6 +2,7 @@ import Header from "../component/header";
 import "../style.css";
 import "../animate.css";
 import "../bootstrap.css";
+import "../bootstrap-icon.css";
 import Banner from "../component/banner";
 import About from "../component/about";
 import Footer from "../component/footer";

@@ -1,13 +1,17 @@
 import Breadcrumb from "../component/breadcrumb";
 import Footer from "../component/footer";
+import Headline from "../component/headlines";
 import Parentsidebar from "../portal_sidebar/parent_sidebar";
 
 function ParentPortal(){
    return(
     <>
     <div id="main">
-    <Breadcrumb title="Parent Portal" />
+    <input type="text" id="parentid" style={{display:"none"}} readOnly/>
     <Parentsidebar />
+    <Headline />
+    <br/>
+    <br/>
     <Footer />
     </div>
     </>

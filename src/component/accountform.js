@@ -1,6 +1,6 @@
 
 import bcrypt from "bcryptjs"
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import emailjs from "emailjs-com"
 
 
@@ -26,7 +26,8 @@ function Sortout(){
     if(role == "parent"){
         document.getElementById("parentlogic").style.display="block"
         document.getElementById("stafflogic").style.display="none"
-        document.getElementById("studentlogic").style.display="none"
+        document.getElementById("studentlogic").style.display="none";
+        
     }
     if(role == "none"){
         document.getElementById("parentlogic").style.display="none"
@@ -63,15 +64,34 @@ function checkps(){
 }
 
 
-var path=process.env.REACT_APP_API_URL;
+var path=process.env.REACT_APP_API_LOCAL;
 
 export default function Accountform(){
-  
+    const [level, setLevel]=useState([]);
+    const [subject, setSubject]=useState([]);
+
+    useEffect(()=>{
+        fetch(`${path}/level`)
+        .then(res=>res.json())
+        .then(data => setLevel(data))
+        .catch(err => console.log(err))
+
+        fetch(`${path}/courses`)
+        .then(res=>res.json())
+        .then(data => setSubject(data))
+        .catch(err => console.log(err))
+       
+    },[])
+    
 
 
     const formRef= useRef();
 
     function Postaccount(e){
+
+        Checkemail();
+
+
         e.preventDefault();
 
       
@@ -82,8 +102,9 @@ export default function Accountform(){
         var userclass=document.getElementById("class_account").value;
         var subject=document.getElementById("subject_account").value;
         var gender=document.getElementById("gender_account").value;
-        var childclass=document.getElementById("childcls_account").value;
-        var childname=document.getElementById("childname_account").value;
+        var childid=document.getElementById("childid_account").value;
+        var phone=document.getElementById("phone_account").value;
+        var Pphone=document.getElementById("Pphone_account").value;
     
         const salt=bcrypt.genSaltSync(10);
         const hashedpassword=bcrypt.hashSync(passcode, salt);
@@ -97,11 +118,23 @@ export default function Accountform(){
             user_email: formRef.current.user_email.value,
             reply_to: formRef.current.user_email.value,
             to_name: formRef.current.user_name.value,
-            mays_msg:`Your userID is '${id}'. The admin will allow you to the system if you qualify to login. But please make sure you save and remember your id and password when allowed to login.` 
+            mays_msg:`Your userID is '${id}'. Please use this ${id} to login into the portal. https://mayseducentre.github.io/-#/portal` 
          };
  
-        const confirmationbox= window.confirm(`You are creating an account as a ${role}. And are you sure that ${email} is valid. We will send a code to  your mail.`);
-       var apifetch=`${path}/${role}account`;
+        var apifetch=`${path}/${role}account`;
+
+    
+       var inputimg=document.getElementById("portal_img");
+       var datafile=inputimg.files[0];
+       var filereader= new FileReader();
+        filereader.readAsDataURL(datafile);
+     
+     
+        filereader.addEventListener("load", () => {
+            var base64data=filereader.result;
+   
+            
+          
 
        if(role == "student"){
         var formpage={
@@ -111,10 +144,11 @@ export default function Accountform(){
             "passcode": hashedpassword,
             "country": "Ghana",
             "role":"student",
+            "thumbnailUrl": base64data,
             "gender": gender,
             "class": userclass,
             "notice":"",
-            "status":"deny"
+            "status":"accept"
         }
     } 
 
@@ -128,8 +162,10 @@ export default function Accountform(){
             "role":"staff",
             "gender": gender,
             "subject": subject,
+            "contact": phone,
+            "thumbnailUrl": base64data,
             "notice":"",
-            "status":"deny"
+            "status":"accept"
         }
     } 
 
@@ -142,28 +178,37 @@ export default function Accountform(){
             "country": "Ghana",
             "gender": gender,
             "role":"parent",
-            "child_class": childclass,
-            "child_name": childname,
+            "contact": Pphone,
+            "child_id": childid,
             "notice":"",
-            "status":"deny"
+            "thumbnailUrl": base64data,
+            "status":"accept"
         }
     } if(role == "none"){
         alert("Please role cannot be none!")
     }
+    document.getElementById("waitbtn").style.display="block";
+    document.getElementById("createbtn").style.display="none";
+    
+    setTimeout(()=>{
+        const confirmationbox= window.confirm(`You are creating an account as a ${role}. And are you sure that ${email} is valid. We will send a code to  your mail.`);
+     
+
         if(passcode.length >=8 && passconfirm == passcode && confirmationbox===true && role !== "none"){
 
             if(!navigator.online){
                 alert("You are currently offline. Check your internet connection and try again")
             };
+            
+          
 
-
-            emailjs.send('service_4dt6s3i','template_wwdrjbl', formData, 'VIB8bKSD-ZS3RCCHD')
-            .then((res)=>{
-                console.log(res.text);
-            })
-            .catch((err)=>{
-                console.log(err.text)
-            });
+            // emailjs.send('service_4dt6s3i','template_wwdrjbl', formData, 'VIB8bKSD-ZS3RCCHD')
+            // .then((res)=>{
+            //     console.log(res.text);
+            // })
+            // .catch((err)=>{
+            //     console.log(err.text)
+            // });
            
         
 
@@ -189,7 +234,6 @@ export default function Accountform(){
       
         else if(passcode.length < 8){
             var errormsg=document.getElementById("error_msg")
-            document.getElementById("error_msg").scrollIntoView();
             errormsg.value="Error occurred. Password must have 8 characters";
              errormsg.style.color="red"
     
@@ -197,12 +241,49 @@ export default function Accountform(){
                 errormsg.value=null     
              }, 5000)
         }
+
+        else if(passconfirm !== passcode){
+            var errormsg=document.getElementById("error_msg")
+            errormsg.value="Error occurred. Password do not match";
+             errormsg.style.color="red"
     
-      
+             setTimeout(()=>{
+                errormsg.value=null     
+             }, 5000)
+        }
+
+       
+
+
+        document.getElementById("waitbtn").style.display="none";
+        document.getElementById("createbtn").style.display="block";
+        }, 3000)
+       
+    })   
 
         
     }
     
+function imgfile(){
+    var inputimg=document.getElementById("portal_img");
+    var datafile=inputimg.files[0];
+    var filereader= new FileReader();
+    var topimgport=document.getElementById("displayimage")
+     filereader.readAsDataURL(datafile);
+  
+  if(datafile.size > 5 * 1024 * 1024){
+    alert("Sorry your file must be less than 5mb")
+  }
+
+  else{
+    filereader.addEventListener("load", () => {
+      var url=filereader.result;
+      topimgport.src= url;
+  
+    })
+}
+  }
+  
 
     function Checkemail(){
        
@@ -226,7 +307,8 @@ export default function Accountform(){
 alert("Failed to verify");
 window.location.reload()})
 
-    } 
+    }
+
     function checkData(data){
 
         for(var i=0; i< data.length; i++){
@@ -245,6 +327,25 @@ window.location.reload()})
            
         }
        
+    }
+
+
+    function checkID(){
+        fetch(`${path}/studentaccount`)
+        .then(res => res.json())
+        .then(data => verifyID(data))
+        .catch(err => console.log(err))
+    }
+
+    function verifyID(data){
+        var childid=document.getElementById("childid_account");
+
+        for(var i=0; i < data.length; i++){
+            if(childid.value.length ==10 && childid.value !==data[i].id){
+              alert("Sorry child's ID does not exist.")
+              window.location.reload();
+            }
+        }
     }
     return(
         <>
@@ -270,6 +371,11 @@ window.location.reload()})
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
                                      </select>
+                            </div>
+                            <div className="checkout__input">
+                                <p>Upload Image<span>*</span></p>
+                               <input type="file" onChange={imgfile} accept="image" id="portal_img"/>
+                               <img src={require("../img/avatar.jpg")} id="displayimage" style={{maxWidth:"50%",maxHeight:"50%"}}/>
                             </div>
                         </div>
                        
@@ -312,17 +418,11 @@ window.location.reload()})
                     <div className="checkout__input">
                                 <p>Student's Form/Level<span>*</span></p>
                                 <select style={select} id="class_account">
-                                    <option value="KG1">KG1</option>
-                                    <option value="KG2">KG2</option>
-                                    <option value="Class 1">Class 1</option>
-                                    <option value="Class 2">Class 2</option>
-                                    <option value="Class 3">Class 3</option>
-                                    <option value="Class 4">Class 4</option>
-                                    <option value="Class 5">Class 5</option>
-                                    <option value="Class 6">Class 6</option>
-                                    <option value="JHS 1">JHS 1</option>
-                                    <option value="JHS 2">JHS 2</option>
-                                    <option value="JHS 3">JHS 3</option>
+                                    {level.map((lev)=>(
+                                        <option value={lev.level}>{lev.level}</option>
+                                   
+                                    ))}
+                                    
                                      </select>
                             </div>
 
@@ -332,20 +432,17 @@ window.location.reload()})
 
                     <div className="row" id="stafflogic" style={{display:"none"}}>
                     <div className="checkout__input">
+                                <p>Phone Number<span>*</span></p>
+                                <input type="number" id="phone_account" placeholder="Enter phone number"/>
+                            </div>
+                    <div className="checkout__input">
                                 <p>Subject<span>*</span></p>
                                 <select style={select} id="subject_account">
-                                   <option value="English">English</option>
-                                   <option value="Maths">Maths</option>
-                                   <option value="Science">Science</option>
-                                   <option value="OWOP">OWOP</option>
-                                   <option value="Computing">Computing</option>
-                                   <option value="Creative Art">Creative Art</option>
-                                   <option value="RME">RME</option>
-                                   <option value="French">French</option>
-                                   <option value="Social Studies">Social Studies</option>
-                                   <option value="Career Tech">Career Tech</option>
-                                   <option value="GA">GA</option>
-                                   <option value="Health & Safety">Health & Safety</option>
+                                {subject.map((sub)=>(
+                                        <option value={sub.course}>{sub.course}</option>
+                                   
+                                    ))}
+                                    
                                      </select>
                             </div>
 
@@ -355,27 +452,14 @@ window.location.reload()})
 
                     <div className="row" id="parentlogic" style={{display:"none"}}>
                     <div className="checkout__input">
-                                <p>Child Name<span>*</span></p>
-                                <input type="text" id="childname_account" placeholder="Enter student name"/>
+                                <p>Phone Number<span>*</span></p>
+                                <input type="number" id="Pphone_account" placeholder="Enter phone number"/>
                             </div>
                     <div className="checkout__input">
-                                <p>Child Form/Level<span>*</span></p>
-                                <select style={select} id="childcls_account">
-                                    <option value="KG1">KG1</option>
-                                    <option value="KG2">KG2</option>
-                                    <option value="Class 1">Class 1</option>
-                                    <option value="Class 2">Class 2</option>
-                                    <option value="Class 3">Class 3</option>
-                                    <option value="Class 4">Class 4</option>
-                                    <option value="Class 5">Class 5</option>
-                                    <option value="Class 6">Class 6</option>
-                                    <option value="JHS 1">JHS 1</option>
-                                    <option value="JHS 2">JHS 2</option>
-                                    <option value="JHS 3">JHS 3</option>
-                                     </select>
+                                <p>Child's ID<span>*</span></p>
+                                <input type="text" id="childid_account" onKeyUp={checkID} placeholder="Enter student name" autoComplete="off"/>
                             </div>
-
-                          
+                    
                     </div>
 
                     
@@ -383,7 +467,9 @@ window.location.reload()})
                 <div className="col-lg-4 col-md-6">
                     <div className="checkout__order">
                         
-                        <button type="submit" className="site-btn" onClick={Checkemail}>Create Account</button>
+                        <button type="submit" id="createbtn" className="site-btn" onClick={Checkemail}>Create Account</button>
+                        <button id="waitbtn" style={{display:"none"}} className="site-btn">Please Wait ...</button>
+                   
                     </div>
                 </div>
             </div>

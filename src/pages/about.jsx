@@ -20,9 +20,9 @@ export default function Aboutp(){
               At MEC, our mission is to cultivate a dynamic and inclusive learning environment where every student is empowered to reach their full potential.
             </p>
             <ul>
-              <li><i className="bi bi-check-circle"></i> We maintain high standards in academic and extracurricular activities, encouraging students to strive for their best.</li>
-              <li><i className="bi bi-check-circle"></i> We foster a sense of belonging and partnership among students,parents and staff.</li>
-              <li><i className="bi bi-check-circle"></i> We embrace new ideas and technologies to enhance learning and teaching.</li>
+              <li><i className="fa fa-check-circle"></i> We maintain high standards in academic and extracurricular activities, encouraging students to strive for their best.</li>
+              <li><i className="fa fa-check-circle"></i> We foster a sense of belonging and partnership among students,parents and staff.</li>
+              <li><i className="fa fa-check-circle"></i> We embrace new ideas and technologies to enhance learning and teaching.</li>
             </ul>
             <p>
               From early childhood education to advanced placement courses, our curriculum is designed to challenge and inspire.

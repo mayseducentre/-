@@ -10,10 +10,12 @@ var readonly={
     border:"none"
 }
 
-var path=process.env.REACT_APP_API_URL;
+var path=process.env.REACT_APP_API_LOCAL;
 
 
-function logPortal(){
+function logPortal(e){
+    e.preventDefault();
+
 
     var portcheck=document.getElementById("portalchk");
 
@@ -33,70 +35,115 @@ localStorage.setItem("portalcheck", portcheck.checked)
         localStorage.removeItem("portalcheck");
     }
 
- fetch(`${path}/studentaccount`)
- .then(res=>res.json())
- .then(data => logintoPortal(data))
- .catch(err => {console.log(err)
-    alert("You are currently offline. Check your internet connection and try again")})
 
- 
- fetch(`${path}/staffaccount`)
- .then(res=>res.json())
- .then(data => logintoPortal(data))
- .catch(err => {console.log(err)
-    alert("You are currently offline. Check your internet connection and try again")})
+    
+    document.getElementById("loogin").style.display="block";
+    document.getElementById("loginbtn").style.display="none";
+   
+    
+    setTimeout(()=>{
 
- 
- fetch(`${path}/parentaccount`)
- .then(res=>res.json())
- .then(data => logintoPortal(data))
- .catch(err => {console.log(err)
-alert("You are currently offline. Check your internet connection and try again")})
+        fetch(`${path}/studentaccount`)
+        .then(res=>res.json())
+        .then(data => {
+           
+            logintoPortal(data)})
+        .catch(err => {console.log(err)
+           alert("Error been encountered")})
+       
+        
+        fetch(`${path}/staffaccount`)
+        .then(res=>res.json())
+        .then(data => {
+           
+            logintoPortal(data)})
+        .catch(err => {console.log(err)
+           alert("Error been encountered")})
+       
+        
+        fetch(`${path}/parentaccount`)
+        .then(res=>res.json())
+        .then(data => {
+           
+            logintoPortal(data)})
+        .catch(err => {console.log(err)
+       alert("Error been encountered")})
+       
+       document.getElementById("loogin").style.display="none";
+    document.getElementById("loginbtn").style.display="block";
+    }, 3000)
+    
 }
 
 function logintoPortal(data){
+
+
+
     for(var i=0; i < data.length; i++){
         var log_userid=document.getElementById("portal_id").value;
         var log_pass=document.getElementById("portal_key").value;
         const storedhash= data[i].passcode;
         var passwordcheck= bcrypt.compareSync(log_pass, storedhash);
 
-        if(log_userid === data[i].id && passwordcheck && data[i].role === "student" && data[i].status === "accept"){
+        if(log_userid === data[i].id && passwordcheck && data[i].role === "student" && data[i].status == "accept"){
             document.getElementById("portalogin").style.display="none";
            
             document.getElementById("stuportal").style.display="block";
-            
-            
+            document.getElementById("studentusername").innerHTML=data[i].name;
+            document.getElementById("studentid").value=data[i].id;
+            document.getElementById("stu_class").value=data[i].class;
+            document.getElementById("stuimgport").src=data[i].thumbnailUrl;
+            document.getElementById("stuheadimg").src=data[i].thumbnailUrl;
+             
+      
         }
 
         
-        if(log_userid === data[i].id && passwordcheck && data[i].role === "staff" && data[i].status === "accept"){
+        if(log_userid === data[i].id && passwordcheck && data[i].role === "staff" && data[i].status == "accept"){
             document.getElementById("portalogin").style.display="none";
            
             document.getElementById("teachportal").style.display="block";
+            document.getElementById("teacherusername").innerHTML=data[i].name;
+            document.getElementById("teacherid").value=data[i].id;
+            
+            document.getElementById("fn_assign").value=data[i].name;
+            document.getElementById("email_assign").value=data[i].email;
+            document.getElementById("subj_assign").value=data[i].subject;
+            document.getElementById("subject_owner").value=data[i].subject;
+            document.getElementById("teachimgport").src=data[i].thumbnailUrl;
+            document.getElementById("teachheadimg").src=data[i].thumbnailUrl;
             
             
         }
 
-        if(log_userid === data[i].id && passwordcheck && data[i].role === "parent" && data[i].status === "accept"){
+        if(log_userid === data[i].id && passwordcheck && data[i].role === "parent" && data[i].status == "accept"){
             document.getElementById("portalogin").style.display="none";
            
             document.getElementById("parentportal").style.display="block";
+            document.getElementById("parentusername").innerHTML=data[i].name;
+            document.getElementById("parentid").value=data[i].id;
+             document.getElementById("parentimgport").src=data[i].thumbnailUrl;
+            document.getElementById("parentheadimg").src=data[i].thumbnailUrl;
             
+           
+      
             
         }
 
-        else{
-                
-        setTimeout(()=>{
-            document.getElementById("loginread").value=null;
-        },5000)
-
+        else {
+            setTimeout(()=>{
+                document.getElementById("loginread").value=null;
+            },3000)
+    
             document.getElementById("loginread").value="Not allowed to login. Invalid userID or password"
-            document.getElementById("loginread").style.color="red"
-        
+            document.getElementById("loginread").style.color="red";
+
+          
+            
         }
        }
+
+       
 }
 
 
@@ -144,7 +191,8 @@ export default function SignLog(){
 
                         <div className="field button-field">
                             
-                            <button type="submit">Login</button>
+                            <button id="loginbtn" type="submit">Login</button>
+                            <button id="loogin" style={{display:"none"}}>Please Wait <i className="fa fa-spinner fa-spin"></i>...</button>
                             
                         </div>
                     </form>
