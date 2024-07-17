@@ -10,6 +10,7 @@ export default function Header(){
                     <ul>
                         <li><a href="#/">Home</a></li>
                         <li><a href="#/about">About</a></li>
+                        <li><a href="#/library">Library</a></li>
                         <li><a href="#/contact">Contact</a></li>
                         <li><a href="#/register">Register</a></li>
                        <li><a href="#/portal">Portal</a></li>
@@ -22,6 +23,7 @@ export default function Header(){
         <div className="bottom-nav animate__animated animate__fadeInUp">
             <a className="fa fa-home" href="#/"><br /><small className="smaller">Home</small></a>
             <a className="fa fa-exclamation-circle" href="#/about"><br /><small className="smaller">About</small></a>
+            <a className="fa fa-exclamation-circle" href="#/library"><br /><small className="smaller">Library</small></a>
             <a className="fa fa-phone" href="#/contact"><br /><small className="smaller">Contact</small></a>
             <a className="fa fa-credit-card" href="#/register"><br /><small className="smaller">Register</small></a>
             <a className="fa fa-graduation-cap" href="#/portal"><br /><small className="smaller">Portal</small></a>

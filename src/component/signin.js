@@ -10,7 +10,7 @@ var readonly={
     border:"none"
 }
 
-var path=process.env.REACT_APP_API_LOCAL;
+var path=process.env.REACT_APP_API_URL;
 
 
 function logPortal(e){
@@ -49,7 +49,7 @@ localStorage.setItem("portalcheck", portcheck.checked)
            
             logintoPortal(data)})
         .catch(err => {console.log(err)
-           alert("Error been encountered")})
+           alert("Error been encountered. Check internet connection and try again.")})
        
         
         fetch(`${path}/staffaccount`)
@@ -58,7 +58,7 @@ localStorage.setItem("portalcheck", portcheck.checked)
            
             logintoPortal(data)})
         .catch(err => {console.log(err)
-           alert("Error been encountered")})
+           alert("Error been encountered. Check internet connection and try again.")})
        
         
         fetch(`${path}/parentaccount`)
@@ -67,7 +67,7 @@ localStorage.setItem("portalcheck", portcheck.checked)
            
             logintoPortal(data)})
         .catch(err => {console.log(err)
-       alert("Error been encountered")})
+       alert("Error been encountered. Check internet connection and try again.")})
        
        document.getElementById("loogin").style.display="none";
     document.getElementById("loginbtn").style.display="block";
@@ -85,7 +85,7 @@ function logintoPortal(data){
         const storedhash= data[i].passcode;
         var passwordcheck= bcrypt.compareSync(log_pass, storedhash);
 
-        if(log_userid === data[i].id && passwordcheck && data[i].role === "student" && data[i].status == "accept"){
+        if(log_userid === data[i].id && passwordcheck && data[i].role === "student" && data[i].status === "accept"){
             document.getElementById("portalogin").style.display="none";
            
             document.getElementById("stuportal").style.display="block";
@@ -99,11 +99,12 @@ function logintoPortal(data){
         }
 
         
-        if(log_userid === data[i].id && passwordcheck && data[i].role === "staff" && data[i].status == "accept"){
+        if(log_userid === data[i].id && passwordcheck && data[i].role === "staff" && data[i].status === "accept"){
             document.getElementById("portalogin").style.display="none";
            
             document.getElementById("teachportal").style.display="block";
             document.getElementById("teacherusername").innerHTML=data[i].name;
+            document.getElementById("staffname").value=data[i].name;
             document.getElementById("teacherid").value=data[i].id;
             
             document.getElementById("fn_assign").value=data[i].name;
@@ -116,11 +117,12 @@ function logintoPortal(data){
             
         }
 
-        if(log_userid === data[i].id && passwordcheck && data[i].role === "parent" && data[i].status == "accept"){
+        if(log_userid === data[i].id && passwordcheck && data[i].role === "parent" && data[i].status === "accept"){
             document.getElementById("portalogin").style.display="none";
            
             document.getElementById("parentportal").style.display="block";
             document.getElementById("parentusername").innerHTML=data[i].name;
+            document.getElementById("childId").innerHTML=data[i].child_id;
             document.getElementById("parentid").value=data[i].id;
              document.getElementById("parentimgport").src=data[i].thumbnailUrl;
             document.getElementById("parentheadimg").src=data[i].thumbnailUrl;

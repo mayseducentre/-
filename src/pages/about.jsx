@@ -1,3 +1,4 @@
+import ScrollToTop from "react-scroll-to-top";
 import Breadcrumb from "../component/breadcrumb";
 import Footer from "../component/footer";
 import Header from "../component/header";
@@ -59,6 +60,7 @@ export default function Aboutp(){
 <br/>
 
 </div>
+<ScrollToTop smooth/>
   <Footer />
      </>
     )

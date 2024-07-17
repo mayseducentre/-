@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
+import Breadcrumb from "../breadcrumb";
+
 
 var path=process.env.REACT_APP_API_URL;
-export default function MeetST(){
-
+export default function StudentPerform(){
     const [stu, setStu]=useState([]);
 
     useEffect(()=>{
@@ -14,29 +15,31 @@ export default function MeetST(){
     },[])
     return(
         <>
-         <div className="col-12">
+        <Breadcrumb title="Student Performance" />
+
+        <div className="col-12">
               <div className="card recent-sales overflow-auto">
 
                
-                <div className="card-body"  style={{maxHeight:"400px"}}>
-                  <h5 className="card-title">Meet Students <span>| MEC</span></h5>
+                <div className="card-body"  style={{maxHeight:"500px"}}>
+                  <h5 className="card-title">All Students <span>| MEC</span></h5>
 
                   <table className="table table-borderless scrolltable">
                     <thead>
                       <tr>
-                        <th>Profile Pic</th>
+                        <th>Student ID</th>
                         <th>Student_Name</th>
                         <th>Level/Class</th>
-                        <th>Email</th>
+                        <th>Performance</th>
                         </tr>
                     </thead>
                     <tbody>
                     {stu.map((info)=>(
                         <tr key={info.id}>
-                        <td><img style={{borderRadius:"50%", width:"60px",height:"60px"}} src={info.thumbnailUrl} /></td>
+                        <td>xxxxxxxxxx</td>
                         <td>{info.name}</td>
                         <td>{info.class}</td>
-                        <td><a href="mailto:${info.email}">{info.email}</a></td>
+                        <td>{info.performance}</td>
                         </tr>
                       
                     ))}
@@ -49,6 +52,8 @@ export default function MeetST(){
               </div>
             </div>
 
+
+ 
         </>
     )
 }

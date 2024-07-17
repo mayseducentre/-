@@ -8,7 +8,7 @@ var readonly={
     border:"none"
 }
 
-var path=process.env.REACT_APP_API_LOCAL;
+var path=process.env.REACT_APP_API_URL;
 
 
 function logPortal(e){
@@ -67,6 +67,7 @@ function logintoPortal(data){
             
             
             document.getElementById("emailport").value=data[i].email;
+            document.getElementById("socialport").value=data[i].social_media_link;
             document.getElementById("idport").innerHTML=data[i].id;
             document.getElementById("passcoport").value=data[i].passcode;
             
@@ -91,6 +92,7 @@ document.getElementById("overviewcountryport").innerHTML=data[i].country;
 document.getElementById("overviewphoneport").innerHTML=data[i].contact;
 document.getElementById("overviewclassport").innerHTML=data[i].class;
 document.getElementById("overviewemailport").innerHTML=data[i].email;
+document.getElementById("overviewsocialport").innerHTML=data[i].social_media_link;
         }
 
      

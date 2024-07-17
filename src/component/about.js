@@ -72,7 +72,7 @@ export default function About(){
               <p>
               We understand that making decisions for your child’s education can be challenging. May's Educational Centre is proud to offer an unparalleled educational experience that will inspire your child to reach their full life potential. With the vision to train and nurture the Ghanaian child through quality education with love and affection enabling them to excel in life.</p>
               <div className="text-center">
-                <a href="#" className="more-btn">Learn More <i className="bx bx-chevron-right"></i></a>
+                <a href="#" className="more-btn">Learn More <i className="fa fa-chevron-right"></i></a>
               </div>
             </div>
           </div>
@@ -81,21 +81,21 @@ export default function About(){
               <div className="row">
                 <div className="col-xl-4 d-flex align-items-stretch">
                   <div className="icon-box mt-4 mt-xl-0">
-                    <i className="bx bx-receipt"></i>
+                    <i className="fa fa-receipt"></i>
                     <h4>Global Awareness</h4>
                     <p>Students experience a purposeful exchange of world views and interaction with other cultures.</p>
                   </div>
                 </div>
                 <div className="col-xl-4 d-flex align-items-stretch">
                   <div className="icon-box mt-4 mt-xl-0">
-                    <i className="bx bx-cube-alt"></i>
+                    <i className="fa fa-cube-alt"></i>
                     <h4>Standard-Based Learning</h4>
                     <p>Our curriculum is positioned so students are successful wherever the future of their education may take them.</p>
                   </div>
                 </div>
                 <div className="col-xl-4 d-flex align-items-stretch">
                   <div className="icon-box mt-4 mt-xl-0">
-                    <i className="bx bx-images"></i>
+                    <i className="fa fa-images"></i>
                     <h4>Balanced and Robust Education</h4>
                     <p>We culivate well rounded, confident students across our curriculum and co-curricular activities</p>
                   </div>

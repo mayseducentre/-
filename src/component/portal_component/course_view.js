@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 export default function CourseView(){
     
-var path=process.env.REACT_APP_API_LOCAL;
+var path=process.env.REACT_APP_API_URL;
 const [course, setCourse]=useState([]);
 
 const fetching= ()=>{
@@ -31,7 +31,7 @@ useEffect(()=>{
 
         <div className="row gy-4">
         {course.map((courselist)=>(
-          <div className="col-xl-4 col-md-6">
+          <div className="col-xl-4 col-md-6" key={courselist.id}>
             <article>
 
               <div className="post-img">

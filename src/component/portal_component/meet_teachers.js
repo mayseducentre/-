@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-var path=process.env.REACT_APP_API_LOCAL;
+var path=process.env.REACT_APP_API_URL;
 export default function MeetT(){
 
     const [staff, setStaff]=useState([]);
@@ -14,14 +14,14 @@ export default function MeetT(){
     },[])
     return(
         <>
-         <div class="col-12">
-              <div class="card recent-sales overflow-auto">
+         <div className="col-12">
+              <div className="card recent-sales overflow-auto">
 
                
-                <div class="card-body"  style={{maxHeight:"400px"}}>
-                  <h5 class="card-title">Meet Teachers <span>| MEC</span></h5>
+                <div className="card-body"  style={{maxHeight:"400px"}}>
+                  <h5 className="card-title">Meet Teachers <span>| MEC</span></h5>
 
-                  <table class="table table-borderless datatable">
+                  <table className="table table-borderless datatable">
                     <thead>
                       <tr>
                         <th>Profile Pic</th>
@@ -32,7 +32,7 @@ export default function MeetT(){
                     </thead>
                     <tbody>
                     {staff.map((info)=>(
-                        <tr>
+                        <tr key={info.id}>
                         <td><img style={{borderRadius:"50%", width:"60px",height:"60px"}} src={info.thumbnailUrl} /></td>
                         <td>{info.name}</td>
                         <td>{info.subject}</td>

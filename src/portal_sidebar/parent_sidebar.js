@@ -2,6 +2,17 @@ import { Link } from "react-router-dom";
 import "../style.css";
 
 
+function Payfee(){
+  document.getElementById("parentdash").style.display="none"
+  document.getElementById("payfees").style.display="block"
+}
+
+
+function PDash(){
+  document.getElementById("parentdash").style.display="block"
+  document.getElementById("payfees").style.display="none"
+}
+
 
 function Parentsidebar(){
   
@@ -37,102 +48,93 @@ function Parentsidebar(){
       </li>
      </Link> 
 
-<Link to="/">
-      <li className="nav-item">
+
+      <li className="nav-item" onClick={PDash}>
         <a className="nav-link">
           <i className="fa fa-PARENT"></i>
           <span>Dashboard</span>
         </a>
       </li>
-     </Link> 
 
 
-      <Link to="/">
+      
       <li className="nav-item">
         <a className="nav-link collapsed">
-          <i className="fa fa-dash-circle"></i>
+          <i className="fa fa-diamond"></i>
           <span>Completed assignments</span>
         </a>
       </li>
-      </Link>
       
-      <Link to="/">
+      
       <li className="nav-item">
         <a className="nav-link collapsed">
-          <i className="fa fa-dash-circle"></i>
+          <i className="fa fa-diamond"></i>
           <span>Messages and Annoucement</span>
         </a>
       </li>
-      </Link>
       
 
       <Link to="/user_setting">
       <li className="nav-item">
         <a className="nav-link collapsed">
-          <i className="fa fa-dash-circle"></i>
+          <i className="fa fa-diamond"></i>
           <span>My Profile</span>
         </a>
       </li>
       </Link>
 
       
-      <Link to="/">
-      <li className="nav-item">
+      
+      <li className="nav-item" onClick={Payfee}>
         <a className="nav-link collapsed">
-          <i className="fa fa-dash-circle"></i>
+          <i className="fa fa-diamond"></i>
           <span>Payments and fees</span>
         </a>
       </li>
-      </Link>
 
-      <Link to="/">
+      
       <li className="nav-item">
         <a className="nav-link collapsed">
-          <i className="fa fa-dash-circle"></i>
+          <i className="fa fa-diamond"></i>
           <span>Attendance tracking</span>
         </a>
       </li>
-      </Link>
 
-      <Link to="/">
+      
       <li className="nav-item">
         <a className="nav-link collapsed">
-          <i className="fa fa-dash-circle"></i>
+          <i className="fa fa-diamond"></i>
           <span>Student Grades</span>
         </a>
       </li>
-      </Link>
 
-      <Link to="/">
+      
       <li className="nav-item">
         <a className="nav-link collapsed">
-          <i className="fa fa-dash-circle"></i>
+          <i className="fa fa-diamond"></i>
           <span>Calendar</span>
         </a>
       </li>
-      </Link>
 
-      <Link to="/">
+      
       <li className="nav-item">
         <a className="nav-link collapsed">
-          <i className="fa fa-dash-circle"></i>
+          <i className="fa fa-diamond"></i>
           <span>Student behavior</span>
         </a>
       </li>
-      </Link>
 
-      <Link to="/">
+      
       <li className="nav-item">
         <a className="nav-link collapsed">
-          <i className="fa fa-dash-circle"></i>
+          <i className="fa fa-diamond"></i>
           <span>Help Desk</span>
         </a>
       </li>
-      </Link>
       
       <li className="nav-item" onClick={()=>{window.location.reload()}}>
         <a className="nav-link collapsed">
-          <i className="fa fa-dash-circle"></i>
+          <i className="fa fa-diamond"></i>
           <span>Sign out</span>
         </a>
       </li>
@@ -142,14 +144,14 @@ function Parentsidebar(){
   </aside>
  
   <div className="bottom-nav animate__animated animate__fadeInUp">
-  <a className="fa fa-home" href="#/"><br /><small className="smaller">Dashboard</small></a>
-  <a className="fa fa-exclamation-circle" href="#/"><br /><small className="smaller">Assignments</small></a>
-  <a className="fa fa-exclamation-circle" href="#/"><br /><small className="smaller">Student Grades</small></a>
-  <a className="fa fa-phone" href="#/"><br /><small className="smaller">Behaviour</small></a>
-  <a className="fa fa-credit-card" href="#/"><br /><small className="smaller">Announcements</small></a>
-  <a className="fa fa-graduation-cap" href="#/"><br /><small className="smaller">Calender</small></a>
-  <a className="fa fa-user-o" href="#/user_setting"><br /><small className="smaller">My Profile</small></a>
-  <a className="fa fa-exclamation-circle" href="#/"><br /><small className="smaller">Payments & Fees</small></a>
+  <a className="fa fa-dashboard" onClick={PDash}><br /><small className="smaller">Dashboard</small></a>
+  <a className="fa fa-flag" title="Completed Assignments" href="#/"><br /><small className="smaller">CAS</small></a>
+  <a className="fa fa-book" href="#/"><br /><small className="smaller">Stu_Grades</small></a>
+  <a className="fa fa-child" href="#/" title="Student Behaviour"><br /><small className="smaller">Behaviour</small></a>
+  <a className="fa fa-bullhorn" href="#/"><br /><small className="smaller">Announcements</small></a>
+  <a className="fa fa-calendar-o" href="#/"><br /><small className="smaller">Calender</small></a>
+  <a className="fa fa-user-o" href="#/user_setting"><br /><small className="smaller">Profile</small></a>
+  <a className="fa fa-money" onClick={Payfee}><br /><small className="smaller">Payments_Fees</small></a>
   <a className="fa fa-shield" href="#/"><br /><small className="smaller">Support</small></a>
 </div>
 </>

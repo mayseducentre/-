@@ -12,6 +12,8 @@ import Blog from "../component/blog";
 import Noties from "../notification/noties";
 import NotificationPermission from "../notification/noties_permission";
 
+
+
 function loadP(){
     setTimeout(()=>{
         const imgarray=["h.jpg","i.jpg","course-3.jpg","events-2.jpg"];

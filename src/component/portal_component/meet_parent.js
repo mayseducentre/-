@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react"
 
 var path=process.env.REACT_APP_API_URL;
-export default function MeetST(){
+export default function MeetP(){
 
-    const [stu, setStu]=useState([]);
+    const [parent, setParent]=useState([]);
 
     useEffect(()=>{
-        fetch(`${path}/studentaccount`)
+        fetch(`${path}/parentaccount`)
         .then(res => res.json())
-        .then(data => setStu(data))
+        .then(data => setParent(data))
         .catch(err => console.log(err))
         
     },[])
@@ -19,23 +19,23 @@ export default function MeetST(){
 
                
                 <div className="card-body"  style={{maxHeight:"400px"}}>
-                  <h5 className="card-title">Meet Students <span>| MEC</span></h5>
+                  <h5 className="card-title">Meet Parents <span>| MEC</span></h5>
 
-                  <table className="table table-borderless scrolltable">
+                  <table className="table table-borderless datatable">
                     <thead>
                       <tr>
                         <th>Profile Pic</th>
-                        <th>Student_Name</th>
-                        <th>Level/Class</th>
+                        <th>Parent_Name</th>
+                        <th>Contact</th>
                         <th>Email</th>
                         </tr>
                     </thead>
                     <tbody>
-                    {stu.map((info)=>(
+                    {parent.map((info)=>(
                         <tr key={info.id}>
                         <td><img style={{borderRadius:"50%", width:"60px",height:"60px"}} src={info.thumbnailUrl} /></td>
                         <td>{info.name}</td>
-                        <td>{info.class}</td>
+                        <td>{info.contact}</td>
                         <td><a href="mailto:${info.email}">{info.email}</a></td>
                         </tr>
                       
@@ -48,7 +48,6 @@ export default function MeetST(){
 
               </div>
             </div>
-
-        </>
+                   </>
     )
 }

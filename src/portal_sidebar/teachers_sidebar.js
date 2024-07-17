@@ -7,10 +7,46 @@ import "../style.css";
 function AssignC(){
   document.getElementById("assigncreate").style.display="block"
   document.getElementById("staffdash").style.display="none"
+  document.getElementById("assessment").style.display="none"
+  document.getElementById("studentperformance").style.display="none"
+  document.getElementById("staffchatroom").style.display="none"
+  document.getElementById("footerport").style.display="block"
 }
 function staffDash(){
   document.getElementById("assigncreate").style.display="none"
   document.getElementById("staffdash").style.display="block"
+  document.getElementById("assessment").style.display="none"
+  document.getElementById("studentperformance").style.display="none"
+  document.getElementById("staffchatroom").style.display="none"
+  document.getElementById("footerport").style.display="block"
+}
+
+
+function Assess(){
+  document.getElementById("assigncreate").style.display="none"
+  document.getElementById("staffdash").style.display="none"
+  document.getElementById("assessment").style.display="block"
+  document.getElementById("studentperformance").style.display="none"
+  document.getElementById("staffchatroom").style.display="none"
+  document.getElementById("footerport").style.display="block"
+}
+
+function StudentPerf(){
+  document.getElementById("assigncreate").style.display="none"
+  document.getElementById("staffdash").style.display="none"
+  document.getElementById("assessment").style.display="none"
+  document.getElementById("studentperformance").style.display="block"
+  document.getElementById("staffchatroom").style.display="none"
+  document.getElementById("footerport").style.display="block"
+}
+
+function StaffChatroom(){
+  document.getElementById("assigncreate").style.display="none"
+  document.getElementById("staffdash").style.display="none"
+  document.getElementById("assessment").style.display="none"
+  document.getElementById("studentperformance").style.display="none"
+  document.getElementById("staffchatroom").style.display="block"
+  document.getElementById("footerport").style.display="none"
 }
 
 function Teachersidebar(){
@@ -57,7 +93,7 @@ function Teachersidebar(){
 
       <li className="nav-item" onClick={AssignC}>
         <a className="nav-link collapsed">
-          <i className="fa fa-dash-circle"></i>
+          <i className="fa fa-diamond"></i>
           <span>Assignments</span>
         </a>
       </li>
@@ -74,45 +110,50 @@ function Teachersidebar(){
       <Link to="/">
       <li className="nav-item">
         <a className="nav-link collapsed">
-          <i className="fa fa-dash-circle"></i>
+          <i className="fa fa-diamond"></i>
           <span>Messages and Annoucements</span>
         </a>
       </li>
       </Link>
       
 
-      <Link to="/">
-      <li className="nav-item">
+      
+      <li className="nav-item" onClick={Assess}>
         <a className="nav-link collapsed">
-          <i className="fa fa-dash-circle"></i>
+          <i className="fa fa-diamond"></i>
           <span>Assessments Result</span>
         </a>
       </li>
-      </Link>
+
+      <li className="nav-item" onClick={StaffChatroom}>
+        <a className="nav-link collapsed">
+          <i className="fa fa-diamond"></i>
+          <span>Staff Chat Room</span>
+        </a>
+      </li>
 
       
       <Link to="/">
       <li className="nav-item">
         <a className="nav-link collapsed">
-          <i className="fa fa-dash-circle"></i>
+          <i className="fa fa-diamond"></i>
           <span>Attendance</span>
         </a>
       </li>
       </Link>
 
-      <Link to="/">
-      <li className="nav-item">
+   
+      <li className="nav-item" onClick={StudentPerf}>
         <a className="nav-link collapsed">
-          <i className="fa fa-dash-circle"></i>
+          <i className="fa fa-diamond"></i>
           <span>Student Performance</span>
         </a>
       </li>
-      </Link>
 
       <Link to="/">
       <li className="nav-item">
         <a className="nav-link collapsed">
-          <i className="fa fa-dash-circle"></i>
+          <i className="fa fa-diamond"></i>
           <span>Calendar and Scheduling</span>
         </a>
       </li>
@@ -121,7 +162,7 @@ function Teachersidebar(){
       <Link to="/user_setting">
       <li className="nav-item">
         <a className="nav-link collapsed">
-          <i className="fa fa-dash-circle"></i>
+          <i className="fa fa-diamond"></i>
           <span>My Profile</span>
         </a>
       </li>
@@ -130,7 +171,7 @@ function Teachersidebar(){
       <Link to="/">
       <li className="nav-item">
         <a className="nav-link collapsed">
-          <i className="fa fa-dash-circle"></i>
+          <i className="fa fa-diamond"></i>
           <span>Help and Support</span>
         </a>
       </li>
@@ -138,7 +179,7 @@ function Teachersidebar(){
       
       <li className="nav-item" onClick={()=>{window.location.reload()}}>
         <a className="nav-link collapsed">
-          <i className="fa fa-dash-circle"></i>
+          <i className="fa fa-diamond"></i>
           <span>Sign out</span>
         </a>
       </li>
@@ -148,16 +189,17 @@ function Teachersidebar(){
   </aside>
  
   <div className="bottom-nav animate__animated animate__fadeInUp">
-  <a className="fa fa-home" href="#/"><br /><small className="smaller">Dashboard</small></a>
-  <a className="fa fa-exclamation-circle" onClick={AssignC}><br /><small className="smaller">Assignments</small></a>
-  <a className="fa fa-exclamation-circle" href="#/"><br /><small className="smaller">Gradebook</small></a>
-  <a className="fa fa-phone" href="#/"><br /><small className="smaller">Annoucement</small></a>
-  <a className="fa fa-credit-card" href="#/"><br /><small className="smaller">Result</small></a>
-  <a className="fa fa-graduation-cap" href="#/"><br /><small className="smaller">Calender</small></a>
-  <a className="fa fa-graduation-cap" href="#/"><br /><small className="smaller">Attendance</small></a>
+  <a className="fa fa-dashboard" onClick={staffDash}><br /><small className="smaller">Dashboard</small></a>
+  <a className="fa fa-bar-chart" onClick={AssignC}><br /><small className="smaller">Assignments</small></a>
+  <a className="fa fa-book" href="#/"><br /><small className="smaller">Gradebook</small></a>
+  <a className="fa fa-bullhorn" href="#/"><br /><small className="smaller">Annoucement</small></a>
+  <a className="fa fa-filter" onClick={Assess}><br /><small className="smaller">Result</small></a>
+  <a className="fa fa-comments-o" title="Staff Chat Room" onClick={StaffChatroom}><br /><small className="smaller">ChatRoom</small></a>
+  <a className="fa fa-calendar-o" href="#/"><br /><small className="smaller">Calender</small></a>
+  <a className="fa fa-group" href="#/"><br /><small className="smaller">Attendance</small></a>
   <a className="fa fa-user-o" href="#/user_setting"><br /><small className="smaller">Profile</small></a>
-  <a className="fa fa-exclamation-circle" href="#/"><br /><small className="smaller">Performance</small></a>
-  <a className="fa fa-user-o" href="#/"><br /><small className="smaller">Support</small></a>
+  <a className="fa fa-child" onClick={StudentPerf}><br /><small className="smaller">Performance</small></a>
+  <a className="fa fa-shield" href="#/"><br /><small className="smaller">Support</small></a>
 </div>
 </>
     )

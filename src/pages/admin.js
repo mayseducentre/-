@@ -3,6 +3,7 @@ import StudentPortal from "../portal/student_portal";
 import ParentPortal from "../portal/parent_portal";
 import TeachersPortal from "../portal/teachers_portal";
 import bcrypt from "bcryptjs";
+import AdminPortal from "../portal/admin_portal";
 
 var readonly={
     padding:"2px 3px",
@@ -12,9 +13,9 @@ var readonly={
 
 
 
-function logAdmin(){
+function logAdmin(e){
 
- 
+ e.preventDefault();
 var adminpath=process.env.REACT_APP_ADMIN_LOG;
 
 var admin_key=document.getElementById("admin_key");
@@ -30,7 +31,7 @@ if(admin_key.value == adminpath){
             document.getElementById("loginread").value=null;
         },5000)
 
-            document.getElementById("loginread").value="Not allowed to login. Invalid userID or password"
+            document.getElementById("loginread").value="Not allowed to login. Invalid password"
             document.getElementById("loginread").style.color="red"
         
         }
@@ -39,7 +40,7 @@ if(admin_key.value == adminpath){
 
 
    
-export default function SignLog(){
+export default function AdminPage(){
     
    
 
@@ -59,7 +60,7 @@ export default function SignLog(){
                         
                         <div className="field input-field">
                             <input type="password" name="password" placeholder="Password" id="admin_key" className="password" required/>
-                            <i className='bx bx-hide eye-icon'></i>
+                            <i className='fa fa-hide eye-icon'></i>
                         </div>
 
                        
@@ -79,7 +80,7 @@ export default function SignLog(){
         </section>
 
 <div id="adminpage" style={{display:"none"}}>
-    
+    <AdminPortal />
 </div>
 
         </div>

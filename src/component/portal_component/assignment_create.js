@@ -14,7 +14,7 @@ content.style.height="1px"
 content.style.height=(content.scrollHeight)+"px";
 }
 
-const pathline=process.env.REACT_APP_API_LOCAL;
+const pathline=process.env.REACT_APP_API_URL;
 
 function SendAssign(e){
 document.getElementById("plswait").style.display="block";
@@ -36,22 +36,22 @@ e.preventDefault();
     var email=document.getElementById("email_assign").value;
 
     if(subject == "English"){
-        var path=`${process.env.REACT_APP_API_LOCAL}/engassign`;
+        var path=`${process.env.REACT_APP_API_URL}/engassign`;
     }
     if(subject == "Science"){
-        var path=`${process.env.REACT_APP_API_LOCAL}/sciassign`;
+        var path=`${process.env.REACT_APP_API_URL}/sciassign`;
     }
     if(subject == "Social Studies"){
-        var path=`${process.env.REACT_APP_API_LOCAL}/socassign`;
+        var path=`${process.env.REACT_APP_API_URL}/socassign`;
     }
     if(subject == "Mathematics"){
-        var path=`${process.env.REACT_APP_API_LOCAL}/mathassign`;
+        var path=`${process.env.REACT_APP_API_URL}/mathassign`;
     }
     if(subject == "Computing"){
-        var path=`${process.env.REACT_APP_API_LOCAL}/compassign`;
+        var path=`${process.env.REACT_APP_API_URL}/compassign`;
     }
     if(subject == "Creative Art"){
-        var path=`${process.env.REACT_APP_API_LOCAL}/artassign`;
+        var path=`${process.env.REACT_APP_API_URL}/artassign`;
     }
    
  var d=new Date();
@@ -147,9 +147,9 @@ export default function AssignCreate(){
                                 <div className="col-lg-6">
                                     <div className="checkout__input">
                                         <p>Student Level<span>*</span></p>
-                                        <select style={select} id="level_assign">
+                                        <select style={select} id="level_assign" required>
                                     {level.map((lev)=>(
-                                        <option value={lev.level}>{lev.level}</option>
+                                        <option key={lev.id} value={lev.level}>{lev.level}</option>
                                    
                                     ))}
                                     

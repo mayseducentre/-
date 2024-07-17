@@ -5,6 +5,8 @@ import Footer from "./footer";
 import ScrollToTop from "react-scroll-to-top";
 import Header from "./header";
 
+import emailjs from "emailjs-com";
+
 function Overview(){
     var overview=document.getElementById("profile-overview");
     var edit=document.getElementById("profile-edit")
@@ -75,6 +77,7 @@ if(e.crtlKey && e.key === "s"){
 
 // }
 
+var path=process.env.REACT_APP_API_URL;
 
 function ChangeImage(){
   var inputimg=document.getElementById("image-input");
@@ -95,7 +98,7 @@ function ChangeImage(){
     var role=document.getElementById("overviewroleport").innerHTML;
 
     var id= document.getElementById("idport").innerHTML;
-   var accountP=process.env.REACT_APP_API_LOCAL;
+   var accountP=process.env.REACT_APP_API_URL;
 
                 if(role == "student"){
                   var path=`${accountP}/studentaccount/${id}`
@@ -135,7 +138,7 @@ function Profile(){
   setTimeout(()=>{
 
     var firstchance=localStorage.getItem("fstport");
-    if(firstchance != "1"){
+    if(firstchance !== "1"){
       alert("Make sure you save changes after editing your profile!");
 
       localStorage.setItem("fstport", "1");
@@ -165,6 +168,65 @@ function Profile(){
 }
 
 
+function DelAccount(){
+  
+  var role=document.getElementById("overviewroleport").innerHTML;
+  var id= document.getElementById("idport").innerHTML;
+ 
+  var accountP=process.env.REACT_APP_API_URL;
+  const formData={
+      user_email: document.getElementById("overviewemailport").value,
+      reply_to: document.getElementById("overviewemailport").value,
+      to_name: document.getElementById("overviewnameport").value,
+      mays_msg:`Your account is successfully deleted. You can no longer use it to login.`
+   };
+
+  var verify=window.prompt("Type: 'I am ready to permanently delete my account now.'");
+  if(role == "student"){
+    var path=`${accountP}/studentaccount/${id}`
+ } 
+
+ if(role == "staff"){
+    
+   var path=`${accountP}/staffaccount/${id}`
+ } 
+
+ if(role == "parent"){
+     
+    var path=`${accountP}/parentaccount/${id}`
+     }
+     
+  if(verify == "I am ready to permanently delete my account now."){
+fetch(path, {
+  method:"DELETE",
+  headers:{
+    "Content-type":"application/json"
+  }
+})
+.then(res=> res.json())
+.then(data => {console.log(data)
+alert("Your account is deleted successfully")
+localStorage.removeItem("portal_id")
+localStorage.removeItem("portal_key")
+window.location.reload()})
+.catch(err => console.log(err))
+
+
+            emailjs.send('service_4dt6s3i','template_wwdrjbl', formData, 'VIB8bKSD-ZS3RCCHD')
+            .then((res)=>{
+                console.log(res.text);
+            })
+            .catch((err)=>{
+                console.log(err.text)
+            });
+           
+
+  }
+     
+  else{
+    alert("Account failed to delete. Incorrect entry.")
+  }
+}
 
 function pushChanges(){
     var id= document.getElementById("idport").innerHTML;
@@ -174,11 +236,12 @@ function pushChanges(){
     var role=document.getElementById("overviewroleport").innerHTML;
     var editcountry=document.getElementById("countryport").value;
     var editphone=document.getElementById("phoneport").value;
+    var editsocial=document.getElementById("socialport").value;
     var editemail=document.getElementById("emailport").value;
     var imageurl;
     // var d=new Date();
     // var time=d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-   var accountP=process.env.REACT_APP_API_LOCAL;
+   var accountP=process.env.REACT_APP_API_URL;
 
    if(role == "student"){
     var path=`${accountP}/studentaccount/${id}`
@@ -194,7 +257,14 @@ function pushChanges(){
     var path=`${accountP}/parentaccount/${id}`
      }
      
-            
+  if(document.getElementById("emailport").value == ""){
+    alert("Email field can't be empty");
+    document.getElementById("emailport").style.background="red"
+    setTimeout(()=>{
+      document.getElementById("emailport").style.background="white";
+    },5000)
+  }
+  else{
     fetch(path, {
         method:"PATCH",
         body:JSON.stringify({
@@ -204,7 +274,8 @@ function pushChanges(){
             "notice":"",
             "country":editcountry,
             "gender":editgender,
-            "name":editfullname
+            "name":editfullname,
+            "social_media_link":editsocial,
         }),
         headers:{
             "Content-type":"application/json"
@@ -219,8 +290,51 @@ function pushChanges(){
     window.location.reload();
 })
     .catch(err => console.log(err))
+  }
 
 }
+
+
+function Checkemail(){
+  document.getElementById("overviewemailport").innerHTML=document.getElementById("emailport").value;
+
+  fetch(`${path}/studentaccount`)
+  .then(res=>res.json())
+  .then(data => checkData(data))
+  .catch(err => console.log(err))
+ 
+  
+  fetch(`${path}/staffaccount`)
+  .then(res=>res.json())
+  .then(data => checkData(data))
+  .catch(err => console.log(err))
+ 
+  
+  fetch(`${path}/parentaccount`)
+  .then(res=>res.json())
+  .then(data => checkData(data))
+  .catch(err => {console.log(err)
+     alert("You are currently offline. Check your internet connection and try again")
+ alert("Failed to verify");
+ window.location.reload()})
+ 
+     }
+ 
+     function checkData(data){
+ 
+         for(var i=0; i< data.length; i++){
+             var email=document.getElementById("emailport").value;
+ 
+             if(email === data[i].email){
+                 document.getElementById("emailport").value=null;
+             alert("Email already exist")
+                 
+             }
+            
+         }
+        
+     }
+ 
 
 export default function UserSet() {
     return (
@@ -324,6 +438,11 @@ export default function UserSet() {
               </div>
              
 
+              <div className="row">
+                <div className="col-lg-3 col-md-4 label">Social Media Link</div>
+                <div className="col-lg-9 col-md-8" id="overviewsocialport"></div>
+              </div>
+             
             </div>
 
 
@@ -393,7 +512,14 @@ export default function UserSet() {
                 <div className="row mb-3">
                   <label for="Email" className="col-md-4 col-lg-3 col-form-label">Email</label>
                   <div className="col-md-8 col-lg-9">
-                    <input name="emailport" type="emailport" className="form-control" id="emailport" onKeyUp={()=>{document.getElementById("overviewemailport").innerHTML=document.getElementById("emailport").value}}/>
+                    <input name="emailport" type="email" className="form-control" id="emailport" onKeyUp={Checkemail}/>
+                  </div>
+                </div>
+
+                <div className="row mb-3">
+                  <label for="Email" className="col-md-4 col-lg-3 col-form-label">Social Media Link</label>
+                  <div className="col-md-8 col-lg-9">
+                    <input name="socialport" type="text" className="form-control" id="socialport" onKeyUp={()=>{document.getElementById("overviewsocialport").innerHTML=document.getElementById("socialport").value}}/>
                   </div>
                 </div>
 
@@ -446,12 +572,23 @@ export default function UserSet() {
                     </div>
                   </div>
                 </div>
+                <div className="row mb-3">
+                  <label for="fullName" className="col-md-4 col-lg-3 col-form-label">Account</label>
+                  <div className="col-md-8 col-lg-9">
+                  <button className="btn btn-primary" style={{background:"transparent",color:"black"}}>Change Password</button>
+                  <br/>
+                  <br/>
+                  <button onClick={DelAccount} className="btn btn-primary" style={{background:"red",color:"white"}}>Delete Account</button>
+                  
+                
+                  </div>
+                </div>
 
-                <div className="text-center">
+                {/* <div className="text-center">
                   
                   <button type="submit" className="btn btn-primary">Save Changes</button>
                   
-                </div>
+                </div> */}
               </form>
 
             </div>

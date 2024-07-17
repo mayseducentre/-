@@ -1,39 +1,51 @@
 
+import ScrollToTop from "react-scroll-to-top";
 import Footer from "../component/footer";
 import Headline from "../component/headlines";
+import Assessment from "../component/portal_component/assessment";
 import AssignCreate from "../component/portal_component/assignment_create";
 import MeetST from "../component/portal_component/meet_students";
 import MeetT from "../component/portal_component/meet_teachers";
+import StaffChatRoom from "../component/portal_component/staffchatroom";
+import StudentPerform from "../component/portal_component/student_performance";
 import TeacherDash from "../component/portal_component/teacherdash";
 import Teachersidebar from "../portal_sidebar/teachers_sidebar";
+import MeetP from "../component/portal_component/meet_parent";
 
 function TeachersPortal(){
     
-    fetch(`${process.env.REACT_APP_API_LOCAL}/studentaccount`)
+    fetch(`${process.env.REACT_APP_API_URL}/studentaccount`)
     .then(res => res.json())
     .then(data => studentTotal(data))
     .catch(err => console.log(err))
-  
+
+
+    fetch(`${process.env.REACT_APP_API_URL}/courses`)
+    .then(res => res.json())
+    .then(data => subjectTotal(data))
+    .catch(err => console.log(err))
+
+    
     // function fetchAll(){
     //     var subject=document.getElementById("subject_owner").value;
       
     //       if(subject == "English"){
-    //         var path=`${process.env.REACT_APP_API_LOCAL}/engassign`;
+    //         var path=`${process.env.REACT_APP_API_URL}/engassign`;
     //     }
     //     if(subject == "Science"){
-    //         var path=`${process.env.REACT_APP_API_LOCAL}/sciassign`;
+    //         var path=`${process.env.REACT_APP_API_URL}/sciassign`;
     //     }
     //     if(subject == "Social Studies"){
-    //         var path=`${process.env.REACT_APP_API_LOCAL}/socassign`;
+    //         var path=`${process.env.REACT_APP_API_URL}/socassign`;
     //     }
     //     if(subject == "Mathematics"){
-    //         var path=`${process.env.REACT_APP_API_LOCAL}/mathassign`;
+    //         var path=`${process.env.REACT_APP_API_URL}/mathassign`;
     //     }
     //     if(subject == "Computing"){
-    //         var path=`${process.env.REACT_APP_API_LOCAL}/compassign`;
+    //         var path=`${process.env.REACT_APP_API_URL}/compassign`;
     //     }
     //     if(subject == "Creative Art"){
-    //         var path=`${process.env.REACT_APP_API_LOCAL}/artassign`;
+    //         var path=`${process.env.REACT_APP_API_URL}/artassign`;
     //     }
     //       fetch(path)
     //       .then(res => res.json())
@@ -57,6 +69,16 @@ function TeachersPortal(){
             studenttotal.innerHTML=data.length;
           }
         }
+
+       
+        function subjectTotal(data){
+          var subjtotal=document.getElementById("subj_total");
+          for(var i=0; i<data.length; i++){
+            subjtotal.innerHTML=data.length;
+          }
+        }
+
+
    return(
     <>
     <div id="main">
@@ -72,13 +94,28 @@ function TeachersPortal(){
     <TeacherDash />
     <MeetT />
     <MeetST />
+    <MeetP />
     </div>
 
 <div id="assigncreate" style={{display:"none"}}>
     <AssignCreate />
     </div>
+    <div id="assessment" style={{display:"none"}}>
+    <Assessment />
+    </div>
+    
+    <div id="studentperformance" style={{display:"none"}}>
+    <StudentPerform />
+    </div>
+    <div id="staffchatroom" style={{display:"none"}}>
+    <StaffChatRoom />
+    </div>
+    <div id="footerport">
     <Footer />
     </div>
+    </div>
+    
+<ScrollToTop smooth className="scrolly"/>
     </>
    )
 }

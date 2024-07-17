@@ -64,7 +64,7 @@ function checkps(){
 }
 
 
-var path=process.env.REACT_APP_API_LOCAL;
+var path=process.env.REACT_APP_API_URL;
 
 export default function Accountform(){
     const [level, setLevel]=useState([]);
@@ -147,6 +147,7 @@ export default function Accountform(){
             "thumbnailUrl": base64data,
             "gender": gender,
             "class": userclass,
+            "performance":"active",
             "notice":"",
             "status":"accept"
         }
@@ -162,6 +163,7 @@ export default function Accountform(){
             "role":"staff",
             "gender": gender,
             "subject": subject,
+            "fees": "700",
             "contact": phone,
             "thumbnailUrl": base64data,
             "notice":"",
@@ -202,13 +204,13 @@ export default function Accountform(){
             
           
 
-            // emailjs.send('service_4dt6s3i','template_wwdrjbl', formData, 'VIB8bKSD-ZS3RCCHD')
-            // .then((res)=>{
-            //     console.log(res.text);
-            // })
-            // .catch((err)=>{
-            //     console.log(err.text)
-            // });
+            emailjs.send('service_4dt6s3i','template_wwdrjbl', formData, 'VIB8bKSD-ZS3RCCHD')
+            .then((res)=>{
+                console.log(res.text);
+            })
+            .catch((err)=>{
+                console.log(err.text)
+            });
            
         
 
@@ -373,9 +375,9 @@ window.location.reload()})
                                      </select>
                             </div>
                             <div className="checkout__input">
-                                <p>Upload Image<span>*</span></p>
-                               <input type="file" onChange={imgfile} accept="image" id="portal_img"/>
-                               <img src={require("../img/avatar.jpg")} id="displayimage" style={{maxWidth:"50%",maxHeight:"50%"}}/>
+                                <p>Upload Profile Picture<span>*</span></p>
+                               <input type="file" onChange={imgfile} accept="image" id="portal_img" required/>
+                               <img id="displayimage" style={{maxWidth:"50%",maxHeight:"50%"}}/>
                             </div>
                         </div>
                        
@@ -468,7 +470,7 @@ window.location.reload()})
                     <div className="checkout__order">
                         
                         <button type="submit" id="createbtn" className="site-btn" onClick={Checkemail}>Create Account</button>
-                        <button id="waitbtn" style={{display:"none"}} className="site-btn">Please Wait ...</button>
+                        <button id="waitbtn" style={{display:"none"}} className="site-btn">Please Wait...</button>
                    
                     </div>
                 </div>

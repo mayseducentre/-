@@ -3,7 +3,7 @@ import Breadcrumb from "../breadcrumb";
 
 
 
-var path=process.env.REACT_APP_API_LOCAL;
+var path=process.env.REACT_APP_API_URL;
 
 
 function AdjustC(){
@@ -54,6 +54,7 @@ function displayAssign(data){
     var stuclass=document.getElementById("stu_class");
     var nothing=document.getElementById("nothing");
     var assignhub=document.getElementById("assignhub");
+    var assignpost=document.getElementById("submitassign");
   
    
 
@@ -75,8 +76,12 @@ if(choose.value === data[i].subject && stuclass.value === data[i].level){
    <br>
    <textarea style="height:300px;border:none" readonly>${data[i].content}</textarea>
    `
+   assignpost.innerHTML=`
+   <p>Please send your ${data[i].subject} assignment through this email <a href="mailto:${data[i].email}">${data[i].email}</a>. You can do the work in an exercise book and take a picture of it. Then attach that picture or file and send it to <a href="mailto:${data[i].email}">${data[i].email}</a></p>
+   `
    nothing.style.display="none";
    assignhub.style.display="block"
+   assignpost.style.display="block"
   
    
 }
@@ -107,7 +112,7 @@ useEffect(()=>{
         <select className="choose" id="choose" onChange={Chose}>
             <option value="none">Choose a subject</option>
       {course.map((courses)=>(
- <option value={courses.course}>{courses.course}</option>
+ <option key={courses.id} value={courses.course}>{courses.course}</option>
       ))}
            
         </select>
@@ -117,7 +122,7 @@ useEffect(()=>{
 
         <div id="nothing">
             <center>
-                <h4>Nothing to show</h4>
+                <h4>Nothing posted yet</h4>
             </center>
         </div>
 
@@ -126,17 +131,8 @@ useEffect(()=>{
         <br/>
         <br/>
         
-        <div id="submitassign">
-            <form>
-            <h6>Your worksheet</h6>
-      <small>You can upload an image or type your answer</small>
-        <textarea id="worksheet" onKeyUp={AdjustC}></textarea>
-      <center>
-        <button className="site-btn" type="submit">Submit Answer</button>
-        </center>
-        
-                
-        </form>
+        <div id="submitassign" style={{display:"none"}}>
+           
         </div>
         </>
     )

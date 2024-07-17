@@ -1579,3 +1579,249 @@ button{
   padding: 10px;
 }
 
+
+
+@media only screen and (max-width: 700px){
+  .chatbox{
+    position: fixed;
+    bottom: 65px;
+    width: 80%;
+    padding-right: 30px;
+    background-color: white;
+    border-radius: 20px;
+  }
+  .chatsend{
+    background-color: #15fd5a;
+    position: fixed;
+    bottom: 65px;
+    right: 10px;
+    border-radius: 20px;
+    padding: 10px 12px;
+    color: white;
+    border:none;
+  }
+}
+
+@media only screen and (min-width: 701px){
+  .chatbox{
+    position: fixed;
+    bottom: 10px;
+    width: 80%;
+    padding-right: 30px;
+    background-color: white;
+    border-radius: 20px;
+  }
+  .chatsend{
+    background-color: #15fd5a;
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    border-radius: 20px;
+    padding: 10px 12px;
+    color: white;
+    border:none;
+  }
+}
+
+.chatview{
+  position:relative;
+  width: 60%;
+  padding: 8px 10px;
+  background-color: rgb(244, 250, 168);
+  border-radius: 20px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+
+.list-p{
+  height: 90px;
+  width: 100%;
+  background-color: whitesmoke;
+  border: 1px solid lightgrey;
+}
+
+
+
+@media only screen and (min-width: 700px) {
+  .list-p{
+    width: 95%;
+  }
+}
+
+.list{
+    height: 90px;
+    width: 100%;
+    background-color: white;
+    border: 1px solid lightgrey;
+    cursor: pointer;
+}
+
+.list:hover {
+    background-color:#c45902;
+    color: white;
+}
+.list-p:hover {
+    background-color: lightgrey;
+    color: black;
+}
+
+.list-img{
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    position: absolute;
+    left: 0;
+    width: 90px;
+    height: 90px;
+}
+
+@media only screen and (max-width: 300px) {
+.list{
+    height: 45px;
+    width: 100%;
+    background-color: white;
+    border: 1px solid lightgrey;
+}
+
+
+
+.list-img{
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+    position: absolute;
+    left: 0;
+    width: 45px;
+    height: 45px;
+}
+}
+
+
+.div-row{
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+
+.h{
+  left: 100px;
+  position: absolute;
+}
+
+.h-a{
+  left: 100px;
+  top: 65px;
+  position: absolute;
+  font-size: small;
+  color: black;
+}
+
+
+.h-2{
+right:30px;
+top: 65px;
+position: absolute;
+font-size: small;
+color: black;
+}
+
+
+.c-a{
+left: 100px;
+position: absolute;
+}
+
+
+.uni{
+color: rgb(184, 180, 180);
+}
+
+.scroll-container{
+  display: flex;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  width:100%;
+  padding: 20px;
+  background: transparent;
+  border-radius: 10px;
+  scrollbar-width: thin;
+  margin-bottom: 50px;
+  scrollbar-color: rgb(245, 196, 167) transparent;
+}
+
+@media only screen and (max-width: 700px){
+  .scroll-container{
+    scrollbar-width: none;
+  }
+}
+/* 
+.scroll-item{
+  min-width: 200px;
+  height: 150px;
+  margin-right: 10px;
+  background-color: red;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  font-size: 1.5rem;
+} */
+.scroll-item{
+  min-width: 180px;
+  height: 150px;
+  margin-right: 10px;
+  justify-content: center;
+}
+
+.scroll-item textarea{
+  background: transparent;
+  scrollbar-width: thin;
+  border: none;
+}
+
+.scroll-item textarea:focus{
+  border: none;
+}
+.scroll-item img{
+  width: 180px;
+  max-height: 120px;
+  display: flex;
+  margin-right: 10px;
+}
+
+
+.scroll-item video{
+  width: 180px;
+  max-height: 120px;
+  display: flex;
+  margin-right: 10px;
+}
+
+#myTable {
+   
+  border-collapse: collapse;
+  width: 100%;
+  border: 1px solid #ddd;
+  font-size: 18px;
+ 
+}
+
+#myTable th,
+#myTable td {
+  text-align: left;
+  /* Left-align text */
+  padding: 12px;
+  /* Add padding */
+
+}
+
+#myTable tr {
+  /* Add a bottom border to all table rows */
+  border-bottom: 1px solid #ddd;
+  width: 100%;
+}
+
