@@ -76,7 +76,7 @@ const [loading, setLoading]=useState(false);
 
 {featured.map(web => (
  <div className="scroll-item" onClick={()=>handleIframe(web)}>
- <img src={require("../img/load.gif")} />
+ <img src={require(`${web.poster}`)} />
 <textarea value={web.name} readOnly></textarea>
     </div>
 ))} 

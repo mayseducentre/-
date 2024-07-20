@@ -66,7 +66,7 @@ function LibraryVideos() {
     
 {videos.map(video => (
  <div className="scroll-item">
-    <iframe src={video.url} poster={require("/./Users/USER/posty/src/img/an.gif")} title="May's Educational Centre" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    <iframe src={video.url}  title="May's Educational Centre" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <textarea value={video.name} readOnly></textarea>
     </div>
 ))} 
