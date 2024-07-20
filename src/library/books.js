@@ -115,7 +115,7 @@ const [loading, setLoading]=useState(false);
 
 {featured.map(book => (
  <div className="scroll-item" onClick={()=>handleIframe(book)}>
- <img src={require(`${web.poster}`)} />
+ <img src={require(`${book.poster}`)} />
 <textarea value={book.name} readOnly></textarea>
     </div>
 ))} 
@@ -133,7 +133,7 @@ const [loading, setLoading]=useState(false);
 
 {story.map(book => (
  <div className="scroll-item" onClick={()=>handleIframe(book)}>
- <img src={require("../img/load.gif")} />
+ <img src={require(`${book.poster}`)} />
 <textarea value={book.name} readOnly></textarea>
     </div>
 ))} 
