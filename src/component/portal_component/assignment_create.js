@@ -53,6 +53,18 @@ e.preventDefault();
     if(subject == "Creative Art"){
         var path=`${process.env.REACT_APP_API_URL}/artassign`;
     }
+    if(subject == "GA"){
+        var path=`${process.env.REACT_APP_API_URL}/gaassign`;
+    }
+    if(subject == "French"){
+        var path=`${process.env.REACT_APP_API_URL}/frenchassign`;
+    }
+    if(subject == "RME"){
+        var path=`${process.env.REACT_APP_API_URL}/rmeassign`;
+    }
+    if(subject == "Career Tech"){
+        var path=`${process.env.REACT_APP_API_URL}/careertechassign`;
+    }
    
  var d=new Date();
  let time=d.toLocaleDateString();

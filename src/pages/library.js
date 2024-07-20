@@ -37,11 +37,13 @@ export default function Library(){
 
 
         <div className="col-lg-4">
+       <Link to="/libraryaudios">
             <div className=" list">
                 <img src={require('../img/v.png')} className="list-img align-items-center" alt="image" />
                 <br/>
                 <h5>&emsp;&emsp;&emsp;&emsp;Audios</h5>
             </div>
+            </Link>
         </div>
 
         <div className="col-lg-4">
@@ -57,11 +59,13 @@ export default function Library(){
 
 
     <div className="col-lg-4">
+       <Link to="/librarywebsites">
             <div className=" list">
                 <img src={require('../img/v.png')} className="list-img align-items-center" alt="image" />
                 <br/>
                 <h5>&emsp;&emsp;&emsp;&emsp;WEBSITES</h5>
             </div>
+            </Link>
         </div>
 
 

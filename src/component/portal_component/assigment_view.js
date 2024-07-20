@@ -47,6 +47,26 @@ function Chose(){
    .then(res => res.json())
    .then(data => displayAssign(data))
    .catch(err => console.log(err))
+
+   fetch(`${path}/gaassign`)
+   .then(res => res.json())
+   .then(data => displayAssign(data))
+   .catch(err => console.log(err))
+
+   fetch(`${path}/frenchassign`)
+   .then(res => res.json())
+   .then(data => displayAssign(data))
+   .catch(err => console.log(err))
+
+   fetch(`${path}/careertechassign`)
+   .then(res => res.json())
+   .then(data => displayAssign(data))
+   .catch(err => console.log(err))
+
+   fetch(`${path}/rmeassign`)
+   .then(res => res.json())
+   .then(data => displayAssign(data))
+   .catch(err => console.log(err))
 }
 
 function displayAssign(data){

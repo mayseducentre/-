@@ -67,7 +67,7 @@ const [loading, setLoading]=useState(false);
       .then(res => res.json())
       .then(data => {
         if(data.length > 0){
-          setStory(data[0].storybook)
+          setStory(data[0].storybooks)
           setLoading(true)
         }
       })
@@ -102,6 +102,7 @@ const [loading, setLoading]=useState(false);
         <h5 style={{color:"black",textTransform:"none",marginLeft:"20px"}}>Featured Books</h5>
         
 
+        <center>{loading ? <a></a> : <a>Loading<i className="fa fa-spinner fa-spin"></i></a>}</center>
 <div className="scroll-container" id="scroll1" onWheel={ScrollContainer}>
 
 <Link to="/computing_abbrev">
@@ -112,14 +113,12 @@ const [loading, setLoading]=useState(false);
 </Link>
 
 
-{/* <center>{loading ? <a></a> : <a>Loading<i className="fa fa-spinner fa-spin"></i></a>}</center>
-
 {featured.map(book => (
  <div className="scroll-item" onClick={()=>handleIframe(book)}>
  <img src={require("../img/load.gif")} />
 <textarea value={book.name} readOnly></textarea>
     </div>
-))} */}
+))} 
 
     
 </div>
@@ -129,23 +128,24 @@ const [loading, setLoading]=useState(false);
 
 <div>
 <h5 style={{color:"black",textTransform:"none",marginLeft:"20px"}}>Story Books</h5>
+<center>{loading ? <a></a> : <a><i className="fa fa-spinner fa-spin"></i> Loading</a>}</center>
 <div className="scroll-container" id="scroll2" onWheel={ScrollContainer}>
-{/* <center>{loading ? <a></a> : <a>Loading<i className="fa fa-spinner fa-spin"></i></a>}</center>
 
 {story.map(book => (
  <div className="scroll-item" onClick={()=>handleIframe(book)}>
  <img src={require("../img/load.gif")} />
 <textarea value={book.name} readOnly></textarea>
     </div>
-))} */}
+))} 
 
 </div>
 </div>
 
 <div>
         <h5 style={{color:"black",textTransform:"none",marginLeft:"20px"}}>Dictionary</h5>
+        
+<center>{loading ? <a></a> : <a><i className="fa fa-spinner fa-spin"></i> Loading</a>}</center>
 <div className="scroll-container" id="scroll3" onWheel={ScrollContainer}>
-<center>{loading ? <a></a> : <a>Loading<i className="fa fa-spinner fa-spin"></i></a>}</center>
 {dict.map(book => (
  <div className="scroll-item" onClick={()=>handleIframe(book)}>
  <img src={require("../img/dict.jpg")} />

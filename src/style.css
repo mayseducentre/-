@@ -36,6 +36,9 @@
     #navbar {
         display: none;
     }
+    #frame{
+      padding-top: 60px;
+    }
 
 .scrolly{
   bottom: 90px !important;
@@ -1795,6 +1798,12 @@ color: rgb(184, 180, 180);
 
 
 .scroll-item video{
+  width: 180px;
+  max-height: 120px;
+  display: flex;
+  margin-right: 10px;
+}
+.scroll-item iframe{
   width: 180px;
   max-height: 120px;
   display: flex;

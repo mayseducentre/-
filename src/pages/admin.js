@@ -1,8 +1,4 @@
 import React from "react";
-import StudentPortal from "../portal/student_portal";
-import ParentPortal from "../portal/parent_portal";
-import TeachersPortal from "../portal/teachers_portal";
-import bcrypt from "bcryptjs";
 import AdminPortal from "../portal/admin_portal";
 
 var readonly={

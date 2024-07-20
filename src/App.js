@@ -14,6 +14,9 @@ import LibraryBooks from "./library/books";
 import LibraryVideos from "./library/videos";
 import AdminPage from "./pages/admin";
 import ComputingAbbrev from "./component/comp_abbreviations";
+import LibraryLog from "./pages/library_create";
+import LibraryWebsites from "./library/website";
+import LibraryAudio from "./library/audio";
 
 window.addEventListener("keyup", (e)=>{
   if(e.ctrlKey && e.altKey && e.key === "a"){
@@ -21,21 +24,26 @@ window.addEventListener("keyup", (e)=>{
       
   }
   
-  if(e.shiftKey && e.key === "P"){
+  if(e.altKey && e.key === "P"){
       window.location.href="#/portal";
       
   }
-  if(e.shiftKey && e.key === "C"){
+  if(e.altKey && e.key === "C"){
     window.location.href="#/user_setting";
     
 }
 
-if(e.shiftKey && e.key === "L"){
+if(e.altKey && e.key === "t"){
+  window.location.href="#/user_setting";
+  
+}
+
+if(e.altKey && e.key === "L"){
   window.location.href="#/library";
   
 }
 
-if(e.shiftKey && e.key === "H"){
+if(e.altKey && e.key === "H"){
   window.location.href="/-/";
   
 }
@@ -58,8 +66,11 @@ function App() {
       <Route path="/library" element={<Library />} />
       <Route path="/librarybooks" element={<LibraryBooks />} />
       <Route path="/libraryvideos" element={<LibraryVideos />} />
+      <Route path="/libraryaudios" element={<LibraryAudio />} />
+      <Route path="/librarywebsites" element={<LibraryWebsites />} />
       <Route path="/computing_abbrev" element={<ComputingAbbrev />} />
       <Route path="/ins_guide" element={<InsGuide />} />
+      <Route path="/create_items" element={<LibraryLog />} />
       <Route path="/user_setting" element={<SignSet />} />
        </Route>
     </Routes>
