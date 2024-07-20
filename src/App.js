@@ -24,26 +24,26 @@ window.addEventListener("keyup", (e)=>{
       
   }
   
-  if(e.altKey && e.key === "P"){
+  if(e.altKey && e.key === "p"){
       window.location.href="#/portal";
       
   }
-  if(e.altKey && e.key === "C"){
+  if(e.altKey && e.key === "c"){
     window.location.href="#/user_setting";
     
 }
 
 if(e.altKey && e.key === "t"){
-  window.location.href="#/user_setting";
+  window.location.href="#/create_items";
   
 }
 
-if(e.altKey && e.key === "L"){
+if(e.altKey && e.key === "l"){
   window.location.href="#/library";
   
 }
 
-if(e.altKey && e.key === "H"){
+if(e.altKey && e.key === "h"){
   window.location.href="/-/";
   
 }
