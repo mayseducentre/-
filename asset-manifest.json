@@ -1,13 +1,15 @@
 {
   "files": {
-    "main.css": "/-/static/css/main.f116e49e.css",
-    "main.js": "/-/static/js/main.9aab33dd.js",
+    "main.css": "/-/static/css/main.0a2f0c77.css",
+    "main.js": "/-/static/js/main.e739391c.js",
     "static/js/206.582fe86a.chunk.js": "/-/static/js/206.582fe86a.chunk.js",
     "static/media/maysedu.mp4": "/-/static/media/maysedu.1e5924eb84727a275fa1.mp4",
     "static/media/an.gif": "/-/static/media/an.97d16bdec35dab6b1543.gif",
     "static/media/load.gif": "/-/static/media/load.7f686c03a467bef7dac6.gif",
     "static/media/bootstrap-icons.woff?": "/-/static/media/bootstrap-icons.08a6f3f2730cc6132adb.woff",
     "static/media/bootstrap-icons.woff2?": "/-/static/media/bootstrap-icons.8a4497f49de333c5762d.woff2",
+    "static/media/post-item8.jpg": "/-/static/media/post-item8.9c69b12bbe467c41c215.jpg",
+    "static/media/insta-item4.jpg": "/-/static/media/insta-item4.eb70d20e5ebf2955887e.jpg",
     "static/media/l.gif": "/-/static/media/l.88135ce9c0a28b8b06f2.gif",
     "static/media/hero-bg.jpg": "/-/static/media/hero-bg.8947f2200e2804d08f4d.jpg",
     "static/media/may.jpg": "/-/static/media/may.43cdbbeb10581ad83e27.jpg",
@@ -22,11 +24,13 @@
     "static/media/ui.jpg": "/-/static/media/ui.822ce626189516076d19.jpg",
     "static/media/h.jpg": "/-/static/media/h.d85a89dc12fcddcb572d.jpg",
     "static/media/u.jpg": "/-/static/media/u.a375368f26d3db66e0ac.jpg",
+    "static/media/portfolio-7.jpg": "/-/static/media/portfolio-7.a73da5d72b214ffa0637.jpg",
     "static/media/events-2.jpg": "/-/static/media/events-2.349a60769975821146de.jpg",
     "static/media/about.jpg": "/-/static/media/about.3aa43b213aab086003cb.jpg",
     "static/media/n.jpg": "/-/static/media/n.1b207182a6a81e9d2c7f.jpg",
     "static/media/course-2.jpg": "/-/static/media/course-2.6a254689be4c997af3ac.jpg",
     "static/media/google.png": "/-/static/media/google.3598943754d65e4590f6.png",
+    "static/media/headset.jpg": "/-/static/media/headset.88163b1644bf74516785.jpg",
     "static/media/kl.jpg": "/-/static/media/kl.bb829fbc50c1591ab00f.jpg",
     "static/media/ml.jpg": "/-/static/media/ml.2d45ff42a91a8aa6d8eb.jpg",
     "static/media/v.png": "/-/static/media/v.bfc275374d538fe856c8.png",
@@ -50,7 +54,7 @@
     "index.html": "/-/index.html"
   },
   "entrypoints": [
-    "static/css/main.f116e49e.css",
-    "static/js/main.9aab33dd.js"
+    "static/css/main.0a2f0c77.css",
+    "static/js/main.e739391c.js"
   ]
 }
