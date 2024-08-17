@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/-/static/css/main.0a2f0c77.css",
-    "main.js": "/-/static/js/main.0e085e8e.js",
+    "main.js": "/-/static/js/main.94a89567.js",
     "static/js/206.582fe86a.chunk.js": "/-/static/js/206.582fe86a.chunk.js",
     "static/media/maysedu.mp4": "/-/static/media/maysedu.1e5924eb84727a275fa1.mp4",
     "static/media/an.gif": "/-/static/media/an.97d16bdec35dab6b1543.gif",
@@ -12,8 +12,13 @@
     "static/media/insta-item4.jpg": "/-/static/media/insta-item4.eb70d20e5ebf2955887e.jpg",
     "static/media/l.gif": "/-/static/media/l.88135ce9c0a28b8b06f2.gif",
     "static/media/hero-bg.jpg": "/-/static/media/hero-bg.8947f2200e2804d08f4d.jpg",
+    "static/media/IMG-20240817-WA0007.jpg": "/-/static/media/IMG-20240817-WA0007.5df3ccaadb941a1e141d.jpg",
     "static/media/may.jpg": "/-/static/media/may.43cdbbeb10581ad83e27.jpg",
+    "static/media/IMG-20240817-WA0014.jpg": "/-/static/media/IMG-20240817-WA0014.0bc45fad8777f6519047.jpg",
+    "static/media/cert.jpg": "/-/static/media/cert.7bbb3f27eea2271eb31a.jpg",
+    "static/media/IMG-20240817-WA0006.jpg": "/-/static/media/IMG-20240817-WA0006.94b57bf1034504fefa9f.jpg",
     "static/media/course-details.jpg": "/-/static/media/course-details.8d60cd4bd8e7e34883c7.jpg",
+    "static/media/IMG-20240817-WA0011.jpg": "/-/static/media/IMG-20240817-WA0011.96d6a49368280e25c727.jpg",
     "static/media/i.jpg": "/-/static/media/i.53748dc3b63d3a9c50bc.jpg",
     "static/media/nj.jpg": "/-/static/media/nj.783bcea81c2d9049584a.jpg",
     "static/media/cc.jpg": "/-/static/media/cc.97fc3019de368071d8b5.jpg",
@@ -21,6 +26,7 @@
     "static/media/li.jpg": "/-/static/media/li.961278ab017869b341d7.jpg",
     "static/media/course-3.jpg": "/-/static/media/course-3.1d8f1686dd3fece82531.jpg",
     "static/media/l;.png": "/-/static/media/l;.e8f9216cd42efa79692a.png",
+    "static/media/IMG-20240817-WA0012.jpg": "/-/static/media/IMG-20240817-WA0012.10f84b1f5da3af0035dd.jpg",
     "static/media/ui.jpg": "/-/static/media/ui.822ce626189516076d19.jpg",
     "static/media/h.jpg": "/-/static/media/h.d85a89dc12fcddcb572d.jpg",
     "static/media/u.jpg": "/-/static/media/u.a375368f26d3db66e0ac.jpg",
@@ -55,6 +61,6 @@
   },
   "entrypoints": [
     "static/css/main.0a2f0c77.css",
-    "static/js/main.0e085e8e.js"
+    "static/js/main.94a89567.js"
   ]
 }
