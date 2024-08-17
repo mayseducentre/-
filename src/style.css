@@ -1653,9 +1653,10 @@ button{
 }
 
 .list{
-    height: 90px;
+    height: 70px;
     width: 100%;
     background-color: white;
+    padding: 0;
     border: 1px solid lightgrey;
     cursor: pointer;
 }
@@ -1670,18 +1671,15 @@ button{
 }
 
 .list-img{
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 10px;
     position: absolute;
     left: 0;
-    width: 90px;
-    height: 90px;
+    width: 70px;
+    height: 70px;
 }
 
-@media only screen and (max-width: 300px) {
+@media only screen and (max-width: 700px) {
 .list{
-    height: 45px;
+    height: 50px;
     width: 100%;
     background-color: white;
     border: 1px solid lightgrey;
@@ -1695,8 +1693,8 @@ button{
     padding-left: 5px;
     position: absolute;
     left: 0;
-    width: 45px;
-    height: 45px;
+    width: 50px;
+    height: 50px;
 }
 }
 
@@ -1705,7 +1703,6 @@ button{
   margin-left: auto;
   margin-right: auto;
 }
-
 
 
 .h{

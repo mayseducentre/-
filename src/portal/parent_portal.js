@@ -3,17 +3,17 @@ import Breadcrumb from "../component/breadcrumb";
 import Footer from "../component/footer";
 import Headline from "../component/headlines";
 import MeetP from "../component/portal_component/meet_parent";
-import MeetST from "../component/portal_component/meet_students";
 import MeetT from "../component/portal_component/meet_teachers";
 import Parentsidebar from "../portal_sidebar/parent_sidebar";
 import Payfees from "../component/portal_component/payfees";
+import MyChild from "../component/portal_component/mychild";
 
 function ParentPortal(){
    return(
     <>
     <div id="main">
     <input type="text" id="parentid" style={{display:"none"}} readOnly/>
-        <input type="text" id="childId" style={{display:"none"}} readOnly/>
+        <input type="text" id="childportid" style={{display:"none"}} readOnly/>
     <Parentsidebar />
     <Headline />
     <br/>
@@ -21,12 +21,15 @@ function ParentPortal(){
             <br/>
     <div id="parentdash">
     <MeetT />
-    <MeetST />
     <MeetP />
     </div>
 
     <div id="payfees" style={{display:"none"}}>
       <Payfees />
+    </div>
+    <div id="mychild" style={{display:"none"}}>
+      {/* <MyChild /> */}
+      <p>In production</p>
     </div>
 
     <br/>

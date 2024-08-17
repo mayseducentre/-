@@ -16,7 +16,7 @@ import AdminPage from "./pages/admin";
 import ComputingAbbrev from "./component/comp_abbreviations";
 import LibraryLog from "./pages/library_create";
 import LibraryWebsites from "./library/website";
-import LibraryAudio from "./library/audio";
+import LibraryEvent from "./library/event_media";
 
 window.addEventListener("keyup", (e)=>{
   if(e.ctrlKey && e.altKey && e.key === "a"){
@@ -66,7 +66,7 @@ function App() {
       <Route path="/library" element={<Library />} />
       <Route path="/librarybooks" element={<LibraryBooks />} />
       <Route path="/libraryvideos" element={<LibraryVideos />} />
-      <Route path="/libraryaudios" element={<LibraryAudio />} />
+      <Route path="/libraryevent" element={<LibraryEvent />} />
       <Route path="/librarywebsites" element={<LibraryWebsites />} />
       <Route path="/computing_abbrev" element={<ComputingAbbrev />} />
       <Route path="/ins_guide" element={<InsGuide />} />

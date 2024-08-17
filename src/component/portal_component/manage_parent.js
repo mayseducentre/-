@@ -28,7 +28,33 @@ function PushChng(e){
     .catch(err => console.log(err))
 }
 
+function DelAcc(){
+    
+    var userid=document.getElementById("parentIDs").value;
 
+    
+    if(userid==""){
+        alert("Please enter id")
+    }
+    if(userid !==""){
+        var prompt= window.prompt("Enter password");
+    }
+    
+
+    if(userid !== "" && prompt === process.env.REACT_APP_ADMIN_LOG){
+        fetch(`${path}/parentaccount/${userid}`,{
+            method:"DELETE",
+            headers:{
+                "Content-type":"application/json"
+            }
+        })
+        .then(res => res.json())
+        .then(data => {console.log(data)
+        alert("Deleted Successful")})
+        .catch(err => console.log(err))
+    }
+   
+}
 export default function ManageP(){
 
     const [stu, setStu]=useState([]);
@@ -98,13 +124,14 @@ export default function ManageP(){
                         <div className="col-lg-8 col-md-6">
                              
             
-                            <div className="checkout__input">
-                                <p>Permissions<span>*</span></p>
+                        <div className="checkout__input">
+                                <p>Actions<span>*</span></p>
                                 <select id="permit" style={select}>
-                                    <option value="accept">Accept</option>
+                                    <option value="enrolled">Enroll</option>
                                     <option value="deny">Deny</option>
                                 </select>
                             </div>
+                          
                           
                           </div> 
                         <br/>
@@ -114,6 +141,7 @@ export default function ManageP(){
                             <div className="checkout__order">
                                
                                 <button type="submit" className="site-btn">Push Changes</button>
+                                <button onClick={DelAcc} style={{background:"red",color:"white"}} className="site-btn">Delete Account</button>
                             
                             </div>
                         </div>

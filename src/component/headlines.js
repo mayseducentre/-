@@ -16,7 +16,7 @@ export default function Headline(){
         <>
     
         <div className="headline animate__animated animate__fadeInLeft">
-            <p><span style={{fontFamily:"cursive",fontWeight:"700",color:"white",background:"#994500",padding:"10px 12px",textTransform:"uppercase"}}>Annoucement:</span> Install the MEC app now. <a href="#/ins_guide">Installation guide</a></p>
+            <p><span style={{fontFamily:"cursive",fontWeight:"700",color:"white",background:"#994500",padding:"10px 12px",textTransform:"uppercase"}}>Annoucement:</span> Graduation Day. Enjoy your graduation.<a href="#/ins_guide">Installation guide</a></p>
             </div>
 
             

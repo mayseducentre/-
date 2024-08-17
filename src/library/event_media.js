@@ -8,41 +8,47 @@ import { useEffect, useState } from "react";
 
 
    var path=process.env.REACT_APP_API_URL;
+
 function ScrollContainer(event){
   
   event.preventDefault()
 
     var scroll1=document.getElementById("scroll1");
     var scroll2=document.getElementById("scroll2");
-    var scroll3=document.getElementById("scroll3");
 
     if(event.deltaY > 0){
         scroll1.scrollLeft += 100;
         scroll2.scrollLeft += 100;
-        scroll3.scrollLeft += 100;
        }
        else{
         scroll1.scrollLeft -=100;
         scroll2.scrollLeft -=100;
-        scroll3.scrollLeft -=100;
        }
        
 }
 
 
 
-function handleIframe(book){
-    document.getElementById("frame").src=book.url;
-    document.getElementById("iframe_name").value=book.name
-    document.getElementById("view").innerHTML=book.name
+function handleIframe(web){
+    document.getElementById("imgdisplay").src=`${web.url}`;
+    document.getElementById("event_name").innerHTML=web.name;
     document.getElementById("iframe").style.display="block";
     document.getElementById("bookmain").style.display="none";
 
 }
 
-function LibraryBooks() {
-     const [dict, setDict]=useState([]);
-     const [story, setStory]=useState([]);
+
+function graduateFrame(gr){
+  document.getElementById("imgdisplay").src=gr.url;
+  document.getElementById("event_name").innerHTML=gr.name;
+  document.getElementById("iframe").style.display="block";
+  document.getElementById("bookmain").style.display="none";
+
+}
+
+function LibraryEvents() {
+     const [graduate, setGraduation]=useState([]);
+
      const [featured, setFeatured]=useState([]);
      
 const [loading, setLoading]=useState(false);
@@ -55,7 +61,7 @@ const [loading, setLoading]=useState(false);
       .then(res => res.json())
       .then(data => {
         if(data.length > 0){
-          setFeatured(data[0].featuredbooks)
+          setFeatured(data[0].featuredexhibit)
           setLoading(true)
         }
       })
@@ -67,7 +73,7 @@ const [loading, setLoading]=useState(false);
       .then(res => res.json())
       .then(data => {
         if(data.length > 0){
-          setStory(data[0].storybooks)
+          setGraduation(data[0].featuredgraduation)
           setLoading(true)
         }
       })
@@ -76,22 +82,14 @@ const [loading, setLoading]=useState(false);
 
 
        
-      fetch(`${path}/library`)
-      .then(res => res.json())
-      .then(data => {
-        if(data.length > 0){
-          setDict(data[0].dictionary)
-          setLoading(true)
-        }
-      })
-      .catch(err => console.log("Error fetching data", err))
+     
      }, [])
     return (
         <>
 <Header />
 
 <div id="bookmain">
-  <Breadcrumb title="Library - Books"/>
+  <Breadcrumb title="Library - Event Media"/>
     <br/>
     <br/>
     <br/>
@@ -99,24 +97,17 @@ const [loading, setLoading]=useState(false);
 
 
     <div>
-        <h5 style={{color:"black",textTransform:"none",marginLeft:"20px"}}>Featured Books</h5>
+        <h5 style={{color:"black",textTransform:"none",marginLeft:"20px"}}>Featured Exhibitions</h5>
         
 
         <center>{loading ? <a></a> : <a><i className="fa fa-spinner fa-spin"></i> Loading</a>}</center>
 <div className="scroll-container" id="scroll1" onWheel={ScrollContainer}>
 
-<Link to="/computing_abbrev">
-<div className="scroll-item">
- <img src={require("../img/load.gif")} />
-<textarea readOnly>Computing Abbreviations Finder</textarea>
-</div>
-</Link>
 
-
-{featured.map(book => (
- <div className="scroll-item" key={book.id} onClick={()=>handleIframe(book)}>
- <img src={require("../img/l.gif")} />
-<textarea value={book.name} readOnly></textarea>
+{featured.map(web => (
+ <div className="scroll-item" key={web.id} onClick={()=>handleIframe(web)}>
+ <img src={web.url} />
+<textarea value={web.name} readOnly></textarea>
     </div>
 ))} 
 
@@ -125,43 +116,38 @@ const [loading, setLoading]=useState(false);
 
 </div>
 
-
 <div>
-<h5 style={{color:"black",textTransform:"none",marginLeft:"20px"}}>Story Books</h5>
+<h5 style={{color:"black",textTransform:"none",marginLeft:"20px"}}>2024 Graduation Pics</h5>
 <center>{loading ? <a></a> : <a><i className="fa fa-spinner fa-spin"></i> Loading</a>}</center>
 <div className="scroll-container" id="scroll2" onWheel={ScrollContainer}>
-
-{story.map(book => (
- <div className="scroll-item" onClick={()=>handleIframe(book)}>
- <img src={require("../img/events-2.jpg")} />
-<textarea value={book.name} readOnly></textarea>
-    </div>
-))} 
-
-</div>
-</div>
-
-<div>
-        <h5 style={{color:"black",textTransform:"none",marginLeft:"20px"}}>Dictionary</h5>
-        
-<center>{loading ? <a></a> : <a><i className="fa fa-spinner fa-spin"></i> Loading</a>}</center>
-<div className="scroll-container" id="scroll3" onWheel={ScrollContainer}>
-{dict.map(book => (
- <div className="scroll-item" onClick={()=>handleIframe(book)}>
- <img src={require("../img/dict.jpg")} />
-<textarea value={book.name} readOnly></textarea>
-</div>
+{graduate.map(gr =>(
+  <div className="scroll-item" key={gr.id} onClick={()=>graduateFrame(gr)}>
+  <img src={gr.url} />
+ <textarea value={gr.name} readOnly></textarea>
+     </div>
 ))}
-   
-    
+
 </div>
 </div>
+
+
+
 
 </div>
 
 
 <div id="iframe" style={{display:"none"}}>
-    <Iframe />
+  <div style={{width:"100%",background:"cornsilk",padding:"10px 12px",position:"fixed",top:"60px"}}>
+    <a onClick={()=>{window.location.reload()}}>Library </a>
+    <i className="fa fa-arrow-right"></i>
+    <a id="event_name"></a>
+  </div>
+  <br/>
+  <br/>
+<center>
+
+<img id="imgdisplay" src={require("../img/about.jpg")} style={{width:"auto",height:"auto"}} />
+</center>
 </div>
 <ScrollToTop smooth className="scrolly"/>
        
@@ -174,6 +160,6 @@ const [loading, setLoading]=useState(false);
 
   
 
-  export default LibraryBooks;
+  export default LibraryEvents;
 
  

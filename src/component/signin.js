@@ -85,7 +85,7 @@ function logintoPortal(data){
         const storedhash= data[i].passcode;
         var passwordcheck= bcrypt.compareSync(log_pass, storedhash);
 
-        if(log_userid === data[i].id && passwordcheck && data[i].role === "student" && data[i].status === "accept"){
+        if(log_userid === data[i].id && passwordcheck && data[i].role === "student" && data[i].status === "enrolled"){
             document.getElementById("portalogin").style.display="none";
            
             document.getElementById("stuportal").style.display="block";
@@ -99,7 +99,7 @@ function logintoPortal(data){
         }
 
         
-        if(log_userid === data[i].id && passwordcheck && data[i].role === "staff" && data[i].status === "accept"){
+        if(log_userid === data[i].id && passwordcheck && data[i].role === "staff" && data[i].status === "enrolled"){
             document.getElementById("portalogin").style.display="none";
            
             document.getElementById("teachportal").style.display="block";
@@ -117,12 +117,12 @@ function logintoPortal(data){
             
         }
 
-        if(log_userid === data[i].id && passwordcheck && data[i].role === "parent" && data[i].status === "accept"){
+        if(log_userid === data[i].id && passwordcheck && data[i].role === "parent" && data[i].status === "enrolled"){
             document.getElementById("portalogin").style.display="none";
            
             document.getElementById("parentportal").style.display="block";
             document.getElementById("parentusername").innerHTML=data[i].name;
-            document.getElementById("childId").innerHTML=data[i].child_id;
+            document.getElementById("childportid").value=data[i].child_id;
             document.getElementById("parentid").value=data[i].id;
              document.getElementById("parentimgport").src=data[i].thumbnailUrl;
             document.getElementById("parentheadimg").src=data[i].thumbnailUrl;
@@ -182,14 +182,21 @@ export default function SignLog(){
                         <div className="field input-field">
                             <input type="password" name="password" placeholder="Password" id="portal_key" className="password" required/>
                             <i className='bx bx-hide eye-icon'></i>
+                            <a>Forgot password</a>
                         </div>
-
+<br/>
                        
 
                         <div className="form-link">
                         <input type="checkbox" id="portalchk" /><label htmlFor="portalchk">Remember me</label>
                            
                         </div>
+
+                        <div className="form-link">
+                            <p>Dont have an account. <a href="#/account">Create one</a></p>
+                           
+                        </div>
+
 
                         <div className="field button-field">
                             

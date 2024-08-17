@@ -9,13 +9,14 @@ const select= {
 }
 
 var path=process.env.REACT_APP_API_URL;
-function CreateIt() {
+function CreateIt(e) {
+    e.preventDefault();
+
     document.getElementById("postyIt").style.opacity="0.1"
     var type_item=document.getElementById("type_item").value;
     var item_name=document.getElementById("item_name").value;
     var item_url=document.getElementById("item_url").value;
     var item_desc=document.getElementById("item_desc").value;
-    var item_poster=document.getElementById("item_poster").value;
 
     if(type_item == "featuredbooks"){
     
@@ -25,8 +26,7 @@ function CreateIt() {
             var item={
                       "name": item_name,
                       "url": item_url,
-                      "description": item_desc,
-                      "poster":item_poster
+                      "description": item_desc
                 
             }
         const updatedbook=[...librarydata.featuredbooks, item];
@@ -40,65 +40,216 @@ function CreateIt() {
         })
         .then(res => res.json())
         .then(data => {console.log(data)
-        alert(`Posted ${type_item}`)})
+        alert(`Posted ${type_item} successfully`)
+    document.getElementById("postyIt").style.opacity="1"
+   document.getElementById("item_name").value=null;
+    document.getElementById("item_url").value=null;
+    document.getElementById("item_desc").value=null;})
         .catch(err => console.log(err))
     });
 }
+
+
+
+if(type_item == "featuredvideos"){
+    
     fetch(`${path}/library/lib`)
     .then(res => res.json())
     .then(librarydata => {
             var item={
                       "name": item_name,
                       "url": item_url,
-                      "description": item_desc,
-                      "poster":item_poster
+                      "description": item_desc
                 
             }
+        const updatedbook=[...librarydata.featuredvideos, item];
         
-    if(type_item == "featuredbooks"){
-        var updatedbook=[...librarydata.featuredbooks, item];
-      var library={featuredbooks: updatedbook}
-    }
-    if(type_item == "dictionary"){
-        var updatedbook=[...librarydata.dictionary, item];
-      var library={dictionary: updatedbook}
-    }
-    if(type_item == "featuredvideos"){
-        var updatedbook=[...librarydata.featuredvideos, item];
-      var library={featuredvideos: updatedbook}
-    }
-    if(type_item == "storybooks"){
-        var updatedbook=[...librarydata.storybooks, item];
-      var library={storybooks: updatedbook}
-    }
-    if(type_item == "featuredwebsites"){
-        var updatedbook=[...librarydata.featuredwebsites, item];
-      var library={featuredwebsites: updatedbook}
-    }
-    if(type_item == "featuredaudio"){
-        var updatedbook=[...librarydata.featuredaudio, item];
-      var library={featuredaudio: updatedbook}
-    }
         fetch(`${path}/library/lib`,{
             method:"PATCH",
-            body:JSON.stringify(library),
+            body:JSON.stringify({featuredvideos: updatedbook}),
             headers:{
                 "Content-type":"application/json"
             }
         })
         .then(res => res.json())
         .then(data => {console.log(data)
-        alert(`Posted ${type_item}`)
-        
+        alert(`Posted ${type_item} successfully`)
     document.getElementById("postyIt").style.opacity="1"
-       document.getElementById("item_name").value=null;
-        document.getElementById("item_url").value=null;
-        document.getElementById("item_desc").value=null;
-        document.getElementById("item_poster").value=null;
-    })
+   document.getElementById("item_name").value=null;
+    document.getElementById("item_url").value=null;
+    document.getElementById("item_desc").value=null;})
         .catch(err => console.log(err))
     });
-   
+}
+
+
+
+if(type_item == "featuredexhibit"){
+    
+    fetch(`${path}/library/lib`)
+    .then(res => res.json())
+    .then(librarydata => {
+            var item={
+                      "name": item_name,
+                      "url": item_url,
+                      "description": item_desc
+                
+            }
+        const updatedbook=[...librarydata.featuredexhibit, item];
+        
+        fetch(`${path}/library/lib`,{
+            method:"PATCH",
+            body:JSON.stringify({featuredexhibit: updatedbook}),
+            headers:{
+                "Content-type":"application/json"
+            }
+        })
+        .then(res => res.json())
+        .then(data => {console.log(data)
+        alert(`Posted ${type_item} successfully`)
+    document.getElementById("postyIt").style.opacity="1"
+   document.getElementById("item_name").value=null;
+    document.getElementById("item_url").value=null;
+    document.getElementById("item_desc").value=null;})
+        .catch(err => console.log(err))
+    });
+}
+
+
+
+
+if(type_item == "featuredwebsites"){
+    
+    fetch(`${path}/library/lib`)
+    .then(res => res.json())
+    .then(librarydata => {
+            var item={
+                      "name": item_name,
+                      "url": item_url,
+                      "description": item_desc
+                
+            }
+        const updatedbook=[...librarydata.featuredwebsites, item];
+        
+        fetch(`${path}/library/lib`,{
+            method:"PATCH",
+            body:JSON.stringify({featuredwebsites: updatedbook}),
+            headers:{
+                "Content-type":"application/json"
+            }
+        })
+        .then(res => res.json())
+        .then(data => {console.log(data)
+        alert(`Posted ${type_item} successfully`)
+    document.getElementById("postyIt").style.opacity="1"
+   document.getElementById("item_name").value=null;
+    document.getElementById("item_url").value=null;
+    document.getElementById("item_desc").value=null;})
+        .catch(err => console.log(err))
+    });
+}
+
+
+
+
+if(type_item == "storybooks"){
+    
+    fetch(`${path}/library/lib`)
+    .then(res => res.json())
+    .then(librarydata => {
+            var item={
+                      "name": item_name,
+                      "url": item_url,
+                      "description": item_desc
+                
+            }
+        const updatedbook=[...librarydata.storybooks, item];
+        
+        fetch(`${path}/library/lib`,{
+            method:"PATCH",
+            body:JSON.stringify({storybooks: updatedbook}),
+            headers:{
+                "Content-type":"application/json"
+            }
+        })
+        .then(res => res.json())
+        .then(data => {console.log(data)
+        alert(`Posted ${type_item} successfully`)
+    document.getElementById("postyIt").style.opacity="1"
+   document.getElementById("item_name").value=null;
+    document.getElementById("item_url").value=null;
+    document.getElementById("item_desc").value=null;})
+        .catch(err => console.log(err))
+    });
+}
+
+
+if(type_item == "dictionary"){
+    
+    fetch(`${path}/library/lib`)
+    .then(res => res.json())
+    .then(librarydata => {
+            var item={
+                      "name": item_name,
+                      "url": item_url,
+                      "description": item_desc
+                
+            }
+        const updatedbook=[...librarydata.dictionary, item];
+        
+        fetch(`${path}/library/lib`,{
+            method:"PATCH",
+            body:JSON.stringify({dictionary: updatedbook}),
+            headers:{
+                "Content-type":"application/json"
+            }
+        })
+        .then(res => res.json())
+        .then(data => {console.log(data)
+        alert(`Posted ${type_item} successfully`)
+    document.getElementById("postyIt").style.opacity="1"
+   document.getElementById("item_name").value=null;
+    document.getElementById("item_url").value=null;
+    document.getElementById("item_desc").value=null;
+})
+        .catch(err => console.log(err))
+    });
+}
+
+if(type_item == "featuredgraduation"){
+    
+    fetch(`${path}/library/lib`)
+    .then(res => res.json())
+    .then(librarydata => {
+            var item={
+                      "name": item_name,
+                      "url": item_url,
+                      "description": item_desc
+                
+            }
+        const updatedbook=[...librarydata.featuredgraduation, item];
+        
+        fetch(`${path}/library/lib`,{
+            method:"PATCH",
+            body:JSON.stringify({featuredgraduation: updatedbook}),
+            headers:{
+                "Content-type":"application/json"
+            }
+        })
+        .then(res => res.json())
+        .then(data => {console.log(data)
+        alert(`Posted ${type_item} successfully`)
+    document.getElementById("postyIt").style.opacity="1"
+   document.getElementById("item_name").value=null;
+    document.getElementById("item_url").value=null;
+    document.getElementById("item_desc").value=null;
+})
+        .catch(err => console.log(err))
+    });
+}
+
+
+
 }
 export default function CreateItem(){
     return(
@@ -121,7 +272,8 @@ export default function CreateItem(){
                                     <option value="featuredbooks">Books</option>
                                     <option value="featuredvideos">Videos</option>
                                     <option value="storybooks">Story Books</option>
-                                    <option value="featuredaudios">Audio</option>
+                                    <option value="featuredexhibit">Exhibitions</option>
+                                    <option value="featuredgraduation">2024 Graduation</option>
                                     <option value="featuredwebsites">Websites</option>
                                     <option value="dictionary">Dictionary</option>
                                      </select>
@@ -146,12 +298,7 @@ export default function CreateItem(){
                                         <input type="text" id="item_desc" required/>
                                     </div>
                                 </div>
-                                <div className="col-lg-6">
-                                    <div className="checkout__input">
-                                        <p>Item Poster<span>*</span></p>
-                                        <input type="text" id="item_poster" required/>
-                                    </div>
-                                </div>
+                              
                             </div>
                            
                              

@@ -97,6 +97,12 @@ function Teachersidebar(){
           <span>Assignments</span>
         </a>
       </li>
+      <li className="nav-item" onClick={AssignC}>
+        <a className="nav-link collapsed">
+          <i className="fa fa-diamond"></i>
+          <span>Lesson Note</span>
+        </a>
+      </li>
       
       <Link to="/">
       <li className="nav-item">
@@ -197,6 +203,7 @@ function Teachersidebar(){
   <a className="fa fa-comments-o" title="Staff Chat Room" onClick={StaffChatroom}><br /><small className="smaller">ChatRoom</small></a>
   <a className="fa fa-calendar-o" href="#/"><br /><small className="smaller">Calender</small></a>
   <a className="fa fa-group" href="#/"><br /><small className="smaller">Attendance</small></a>
+  <a className="fa fa-book" href="#/"><br /><small className="smaller">Lesson Notes</small></a>
   <a className="fa fa-user-o" href="#/user_setting"><br /><small className="smaller">Profile</small></a>
   <a className="fa fa-child" onClick={StudentPerf}><br /><small className="smaller">Performance</small></a>
   <a className="fa fa-shield" href="#/"><br /><small className="smaller">Support</small></a>

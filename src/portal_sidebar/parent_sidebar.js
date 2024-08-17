@@ -5,11 +5,19 @@ import "../style.css";
 function Payfee(){
   document.getElementById("parentdash").style.display="none"
   document.getElementById("payfees").style.display="block"
+  document.getElementById("mychild").style.display="none"
 }
 
 
 function PDash(){
   document.getElementById("parentdash").style.display="block"
+  document.getElementById("payfees").style.display="none"
+  document.getElementById("mychild").style.display="none"
+}
+
+function ChildS(){
+  document.getElementById("parentdash").style.display="none"
+  document.getElementById("mychild").style.display="block"
   document.getElementById("payfees").style.display="none"
 }
 
@@ -29,7 +37,7 @@ function Parentsidebar(){
                     <div>
                     <a href="#/user_setting" id="parentusername" style={{textTransform:"uppercase",color:"whitesmoke"}}>
                       </a>&nbsp;
-                      <img src={localStorage.getItem('topimgport')} style={{width:"40px",height:"40px",borderRadius:"50%",zIndex:"9"}} />
+                      <img id="parentheadimg" style={{width:"40px",height:"40px",borderRadius:"50%",zIndex:"9"}} />
                   
                     </div>
             </div>
@@ -41,7 +49,7 @@ function Parentsidebar(){
     <Link to="/user_setting">
       <li className="nav-item">
         <a className="nav-link">
-        <img src={localStorage.getItem('topimgport')} style={{width:"50px",height:"50px",borderRadius:"50%",zIndex:"9"}} />
+        <img id="parentimgport" style={{width:"50px",height:"50px",borderRadius:"50%",zIndex:"9"}} />
      &nbsp;<span style={{textTransform:"uppercase",color:"whitesmoke"}}>PARENT
                       </span>
         </a>
@@ -56,6 +64,12 @@ function Parentsidebar(){
         </a>
       </li>
 
+      <li className="nav-item" onClick={ChildS}>
+        <a className="nav-link collapsed">
+          <i className="fa fa-diamond"></i>
+          <span>My Child</span>
+        </a>
+      </li>
 
       
       <li className="nav-item">
@@ -64,6 +78,8 @@ function Parentsidebar(){
           <span>Completed assignments</span>
         </a>
       </li>
+      
+      
       
       
       <li className="nav-item">
@@ -104,7 +120,7 @@ function Parentsidebar(){
       <li className="nav-item">
         <a className="nav-link collapsed">
           <i className="fa fa-diamond"></i>
-          <span>Student Grades</span>
+          <span>Child Grades</span>
         </a>
       </li>
 
@@ -112,18 +128,12 @@ function Parentsidebar(){
       <li className="nav-item">
         <a className="nav-link collapsed">
           <i className="fa fa-diamond"></i>
-          <span>Calendar</span>
+          <span>School Calendar</span>
         </a>
       </li>
 
       
-      <li className="nav-item">
-        <a className="nav-link collapsed">
-          <i className="fa fa-diamond"></i>
-          <span>Student behavior</span>
-        </a>
-      </li>
-
+      
       
       <li className="nav-item">
         <a className="nav-link collapsed">
@@ -147,7 +157,8 @@ function Parentsidebar(){
   <a className="fa fa-dashboard" onClick={PDash}><br /><small className="smaller">Dashboard</small></a>
   <a className="fa fa-flag" title="Completed Assignments" href="#/"><br /><small className="smaller">CAS</small></a>
   <a className="fa fa-book" href="#/"><br /><small className="smaller">Stu_Grades</small></a>
-  <a className="fa fa-child" href="#/" title="Student Behaviour"><br /><small className="smaller">Behaviour</small></a>
+  <a className="fa fa-child" href="#/" title="Student Behaviour"><br /><small className="smaller">My_Child</small></a>
+  <a className="fa fa-calendar-o" href="#/" title="Student Behaviour"><br /><small className="smaller">Time Table</small></a>
   <a className="fa fa-bullhorn" href="#/"><br /><small className="smaller">Announcements</small></a>
   <a className="fa fa-calendar-o" href="#/"><br /><small className="smaller">Calender</small></a>
   <a className="fa fa-user-o" href="#/user_setting"><br /><small className="smaller">Profile</small></a>

@@ -70,8 +70,11 @@ function AdminPortal(){
      
        function studentTotal(data){
          var total=document.getElementById("student_total");
+         
+        var stuadm= document.getElementById("stuadm");
          for(var i=0; i<data.length; i++){
            total.innerHTML=data.length;
+           stuadm.innerHTML=data.length;
          }
        }
 

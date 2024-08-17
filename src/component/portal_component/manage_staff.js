@@ -27,6 +27,32 @@ function PushChng(e){
     alert("Pushed Successful")})
     .catch(err => console.log(err))
 }
+
+
+function DelAcc(){
+    
+    var userid=document.getElementById("staffIDs").value;
+    if(userid==""){
+        alert("Please enter id")
+    }
+    if(userid !==""){
+        var prompt= window.prompt("Enter password");
+    }
+    
+
+    if(userid !== "" && prompt === process.env.REACT_APP_ADMIN_LOG){
+    fetch(`${path}/staffaccount/${userid}`,{
+        method:"DELETE",
+        headers:{
+            "Content-type":"application/json"
+        }
+    })
+    .then(res => res.json())
+    .then(data => {console.log(data)
+    alert("Deleted Successful")})
+    .catch(err => console.log(err))
+    }
+}
 export default function ManageT(){
 
     const [stu, setStu]=useState([]);
@@ -93,14 +119,15 @@ export default function ManageT(){
                                 </div>
                         <div className="col-lg-8 col-md-6">
                              
-            
-                            <div className="checkout__input">
-                                <p>Permissions<span>*</span></p>
+                        <div className="checkout__input">
+                                <p>Actions<span>*</span></p>
                                 <select id="permit1" style={select}>
-                                    <option value="accept">Accept</option>
-                                    <option value="deny">Deny</option>
+                                    <option value="enrolled">Enroll</option>
+                                    <option value="expelled">Expelled</option>
+                                    <option value="left">Left the school</option>
                                 </select>
                             </div>
+                          
                           
                           </div> 
                         <br/>
@@ -110,6 +137,7 @@ export default function ManageT(){
                             <div className="checkout__order">
                                
                                 <button type="submit" className="site-btn">Push Changes</button>
+                                <button onClick={DelAcc} style={{background:"red",color:"white"}} className="site-btn">Delete Account</button>
                             
                             </div>
                         </div>

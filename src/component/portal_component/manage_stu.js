@@ -28,6 +28,32 @@ function PushChng(e){
     alert("Pushed Successful")})
     .catch(err => console.log(err))
 }
+
+function DelAcc(){
+    
+    var userid=document.getElementById("stuIDs").value;
+
+    if(userid==""){
+        alert("Please enter id")
+    }
+    if(userid !==""){
+        var prompt= window.prompt("Enter password");
+    }
+    
+
+    if(userid !== "" && prompt === process.env.REACT_APP_ADMIN_LOG){
+    fetch(`${path}/studentaccount/${userid}`,{
+        method:"DELETE",
+        headers:{
+            "Content-type":"application/json"
+        }
+    })
+    .then(res => res.json())
+    .then(data => {console.log(data)
+    alert("Deleted Successful")})
+    .catch(err => console.log(err))
+    }
+}
 export default function ManageST(){
 
     const [stu, setStu]=useState([]);
@@ -42,6 +68,9 @@ export default function ManageST(){
     return(
         <>
         <Breadcrumb title="Manage Student" />
+        <div style={{width:"100%",padding:"10px 12px",display:"flex", flexDirection:"row", background:"whitesmoke"}}>
+            <a id="stuadm"></a> students | 
+            &emsp;&emsp;&emsp;&nbsp;<i className="fa fa-search-o"></i><input style={{padding:"10px 12px",border:"none",background:"transparent"}} placeholder="Search Students..."/></div>
          <div className="col-12">
               <div className="card recent-sales overflow-auto">
 
@@ -96,10 +125,12 @@ export default function ManageST(){
                              
             
                             <div className="checkout__input">
-                                <p>Permissions<span>*</span></p>
+                                <p>Actions<span>*</span></p>
                                 <select id="permit2" style={select}>
-                                    <option value="accept">Accept</option>
-                                    <option value="deny">Deny</option>
+                                    <option value="enrolled">Enroll</option>
+                                    <option value="graduated">Graduated</option>
+                                    <option value="expelled">Expelled</option>
+                                    <option value="left">Left the school</option>
                                 </select>
                             </div>
                           
@@ -111,6 +142,7 @@ export default function ManageST(){
                             <div className="checkout__order">
                                
                                 <button type="submit" className="site-btn">Push Changes</button>
+                                <button onClick={DelAcc} style={{background:"red",color:"white"}} className="site-btn">Delete Account</button>
                             
                             </div>
                         </div>

@@ -24,7 +24,7 @@ function Sortout(){
         document.getElementById("parentlogic").style.display="none"
     }
     if(role == "parent"){
-        document.getElementById("parentlogic").style.display="block"
+        document.getElementById("parentlogic").style.display="block";
         document.getElementById("stafflogic").style.display="none"
         document.getElementById("studentlogic").style.display="none";
         
@@ -102,9 +102,13 @@ export default function Accountform(){
         var userclass=document.getElementById("class_account").value;
         var subject=document.getElementById("subject_account").value;
         var gender=document.getElementById("gender_account").value;
-        var childid=document.getElementById("childid_account").value;
+        var childid1=document.getElementById("childid_account1").value;
+        var childid2=document.getElementById("childid_account2").value;
         var phone=document.getElementById("phone_account").value;
+        var birth=document.getElementById("birth_account").value;
         var Pphone=document.getElementById("Pphone_account").value;
+        var childlevel=document.getElementById("childlevel_account").value;
+        var stafflevel=document.getElementById("stafflevel").value;
     
         const salt=bcrypt.genSaltSync(10);
         const hashedpassword=bcrypt.hashSync(passcode, salt);
@@ -118,7 +122,7 @@ export default function Accountform(){
             user_email: formRef.current.user_email.value,
             reply_to: formRef.current.user_email.value,
             to_name: formRef.current.user_name.value,
-            mays_msg:`Your userID is '${id}'. Please use this ${id} to login into the portal. https://mayseducentre.github.io/-#/portal` 
+            mays_msg:`${name}, your userID is '${id}'. Please use this ${id} to login into the portal. https://mayseducentre.github.io/-#/portal` 
          };
  
         var apifetch=`${path}/${role}account`;
@@ -147,9 +151,12 @@ export default function Accountform(){
             "thumbnailUrl": base64data,
             "gender": gender,
             "class": userclass,
+            "birth_date": birth,
             "performance":"active",
             "notice":"",
-            "status":"accept"
+            "report":"",
+            "status":"enrolled",
+            "account_date":timestamp
         }
     } 
 
@@ -167,7 +174,10 @@ export default function Accountform(){
             "contact": phone,
             "thumbnailUrl": base64data,
             "notice":"",
-            "status":"accept"
+            "report":"",
+            "status":"enrolled",
+            "staff_level":stafflevel,
+            "account_date":timestamp
         }
     } 
 
@@ -181,12 +191,18 @@ export default function Accountform(){
             "gender": gender,
             "role":"parent",
             "contact": Pphone,
-            "child_id": childid,
+            "child_id": childid1,
+            "other_child_id": childid2,
+            "child_level":childlevel,
             "notice":"",
+            "report":"",
             "thumbnailUrl": base64data,
-            "status":"accept"
+            "status":"enrolled",
+            "account_date":timestamp
         }
-    } if(role == "none"){
+    } 
+   
+    if(role == "none"){
         alert("Please role cannot be none!")
     }
     document.getElementById("waitbtn").style.display="block";
@@ -223,7 +239,7 @@ export default function Accountform(){
          })
          .then(res => res.json())
          .then(data => {console.log(data)
-            alert("Signed up successfully")
+            alert("Signed up successfully! ID has been submitted to your mail.")
            
            document.getElementById("name_account").value="";;
            document.getElementById("passcode_confirm").value="";
@@ -340,13 +356,18 @@ window.location.reload()})
     }
 
     function verifyID(data){
-        var childid=document.getElementById("childid_account");
+        var childid1=document.getElementById("childid_account1");
+        var childid2=document.getElementById("childid_account2");
 
         for(var i=0; i < data.length; i++){
-            if(childid.value.length ==10 && childid.value !==data[i].id){
+            if(childid1.value.length ==10 && childid1.value !==data[i].id){
               alert("Sorry child's ID does not exist.")
               window.location.reload();
             }
+            if(childid2.value.length ==10 && childid2.value !==data[i].id){
+                alert("Sorry child's ID does not exist.")
+                window.location.reload();
+              }
         }
     }
     return(
@@ -384,7 +405,7 @@ window.location.reload()})
                     </div>
                     <div className="col-lg-6">
                             <div className="checkout__input">
-                                <p>Email<span>*</span></p>
+                                <p>Email <small>[Students should provide their guardian/parent email]</small><span>*</span></p>
                                 <input type="email" onKeyDown={Checkemail} onBlur={Checkemail} id="email_account" name="user_email" placeholder="Valid email" required autoComplete="off"/>
                             </div>
                             <div id="verify">
@@ -427,7 +448,10 @@ window.location.reload()})
                                     
                                      </select>
                             </div>
-
+                 <div className="checkout__input">
+                                <p>Date of Birth<span>*</span></p>
+                                <input type="date" id="birth_account" placeholder="Enter your date of birth"/>
+                            </div>
                           
                     </div>
 
@@ -448,6 +472,17 @@ window.location.reload()})
                                      </select>
                             </div>
 
+                            <div className="checkout__input">
+                                <p>Staff Level<span>*</span></p>
+                                <select style={select} id="stafflevel">
+                               
+                                        <option value="basic_jhs">Basic/JHS</option>
+                                        <option value="daycare">DayCare</option>
+                                   
+                                    
+                                     </select>
+                            </div>
+
                           
                     </div>
 
@@ -459,10 +494,26 @@ window.location.reload()})
                             </div>
                     <div className="checkout__input">
                                 <p>Child's ID<span>*</span></p>
-                                <input type="text" id="childid_account" onKeyUp={checkID} placeholder="Enter student name" autoComplete="off"/>
+                                <input type="text" id="childid_account1" onKeyUp={checkID} placeholder="Enter child's id" autoComplete="off"/>
                             </div>
-                    
+                    <div className="checkout__input">
+                                <p>Other Child's ID<span>*</span></p>
+                                <input type="text" id="childid_account2" onKeyUp={checkID} placeholder="Enter child's id" autoComplete="off"/>
+                            </div>
+                            <div className="checkout__input">
+                                <p>Child's Level<span>*</span></p>
+                                <select style={select} id="childlevel_account">
+                               
+                                        <option value="basic_jhs">Basic/JHS</option>
+                                        <option value="daycare">DayCare</option>
+                                   
+                                    
+                                     </select>
+                            </div>
+
                     </div>
+
+                   
 
                     
                 </div>
@@ -478,8 +529,15 @@ window.location.reload()})
         </form>
     </div>
 </div>
+
+
 </section>
 
+<br/>
+<br/>
+<center>
+<p>Contact <a href="tel:0244370801">Admin</a> if you need any help</p>
+</center>
 
         </>
     )
