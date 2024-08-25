@@ -18,7 +18,7 @@ import Headline from "../component/headlines";
 function loadP(){
     setTimeout(()=>{
         const imgarray=["h.jpg","i.jpg","mays/cert.jpg","events-2.jpg"];
-        const textarray=["Mays Eductaional Centre","Learning today, leading tomorrow","MEC Portal","Why MDCEC for my child","Create an account now","Unparalleled Educational Experience","Technical Skills for all","Get in touch"]
+        const textarray=["May's Daycare and Eductaional Centre","Learning today, leading tomorrow","{process.env.REACT_APP_BRAND_SHORT} Portal","Why MDCEC for my child","Create an account now","Unparalleled Educational Experience","Technical Skills for all","Get in touch"]
 
         var imgrandom=Math.floor(Math.random()* imgarray.length);
         var textrandom=Math.floor(Math.random()* textarray.length);

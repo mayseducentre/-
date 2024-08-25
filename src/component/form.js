@@ -344,7 +344,7 @@ export default function Form(){
                             </div>
 
                             <div className="checkout__input">
-                                <p>How did you hear about May's Educational Centre<span>*</span></p>
+                                <p>How did you hear about {process.env.REACT_APP_BRAND}<span>*</span></p>
                                 <select style={select}>
                                     <option value="TV">TV</option>
                                     <option value="May's Website">May's Website</option>

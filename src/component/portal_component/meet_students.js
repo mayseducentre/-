@@ -19,7 +19,7 @@ export default function MeetST(){
 
                
                 <div className="card-body"  style={{maxHeight:"400px"}}>
-                  <h5 className="card-title">Meet Students <span>| MEC</span></h5>
+                  <h5 className="card-title">Meet Students <span>| {process.env.REACT_APP_BRAND_SHORT}</span></h5>
 
                   <table className="table table-borderless scrolltable">
                     <thead>

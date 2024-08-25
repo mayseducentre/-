@@ -19,7 +19,7 @@ export default function Library(){
        <div className="col-lg-4">
        <Link to="/librarybooks">
             <div className=" list">
-                <img src={require('../img/v.png')} className="list-img align-items-center" alt="image" />
+                <img src={require(`../img/${process.env.REACT_APP_LOGO}`)} className="list-img align-items-center" alt="image" />
                 <br/>
                 <h5 style={{fontWeight:"700",fontSize:"20px"}}>&emsp;&emsp;&emsp;Books</h5>
             </div>
@@ -30,7 +30,7 @@ export default function Library(){
         <div className="col-lg-4">
        <Link to="/libraryvideos">
             <div className=" list">
-                <img src={require('../img/v.png')} className="list-img align-items-center" alt="image" />
+                <img src={require(`../img/${process.env.REACT_APP_LOGO}`)} className="list-img align-items-center" alt="image" />
                 <br/>
                 <h5 style={{fontWeight:"700",fontSize:"20px"}}>&emsp;&emsp;&emsp;Videos</h5>
             </div>
@@ -41,7 +41,7 @@ export default function Library(){
         <div className="col-lg-4">
        <Link to="/libraryevent">
             <div className=" list">
-                <img src={require('../img/v.png')} className="list-img align-items-center" alt="i" />
+                <img src={require(`../img/${process.env.REACT_APP_LOGO}`)} className="list-img align-items-center" alt="i" />
                 <br/>
                 <h5 style={{fontWeight:"700",fontSize:"20px"}}>&emsp;&emsp;&emsp;Event Media</h5>
             </div>
@@ -50,7 +50,7 @@ export default function Library(){
 
         <div className="col-lg-4">
             <div className=" list">
-                <img src={require('../img/v.png')} className="list-img align-items-center" alt="image" />
+                <img src={require(`../img/${process.env.REACT_APP_LOGO}`)} className="list-img align-items-center" alt="image" />
                 <br/>
                 <h5 style={{fontWeight:"700",fontSize:"20px"}}>&emsp;&emsp;&emsp;MAPS</h5>
             </div>
@@ -63,7 +63,7 @@ export default function Library(){
     <div className="col-lg-4">
        <Link to="/librarywebsites">
             <div className=" list">
-                <img src={require('../img/v.png')} className="list-img align-items-center" alt="image" />
+                <img src={require(`../img/${process.env.REACT_APP_LOGO}`)} className="list-img align-items-center" alt="image" />
                 <br/>
                 <h5 style={{fontWeight:"700",fontSize:"20px"}}>&emsp;&emsp;&emsp;WEBSITES</h5>
             </div>
@@ -73,7 +73,7 @@ export default function Library(){
 
         <div className="col-lg-4">
             <div className=" list">
-                <img src={require('../img/v.png')} className="list-img align-items-center" alt="image" />
+                <img src={require(`../img/${process.env.REACT_APP_LOGO}`)} className="list-img align-items-center" alt="image" />
                 <br/>
                 <h5 style={{fontWeight:"700",fontSize:"20px"}}>&emsp;&emsp;&emsp;CALENDAR</h5>
             </div>

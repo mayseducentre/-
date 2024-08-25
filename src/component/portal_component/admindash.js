@@ -9,7 +9,7 @@ import { Bar, Line } from "react-chartjs-2";
 
         datasets:[
             {
-                label:'MEC Dataset',
+                label:'{process.env.REACT_APP_BRAND_SHORT} Dataset',
                 fill: false,
                 backgroundColor: 'teal',
                 color:'orange',

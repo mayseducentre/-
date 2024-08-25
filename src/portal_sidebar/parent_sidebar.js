@@ -33,7 +33,7 @@ function Parentsidebar(){
             <div className="container d-flex align-items-center justify-content-between">
        
                 <a href="#/" className="logo">
-                    <img src={require("../img/v.png")} alt="" className="img-fluid animate__animated animate__zoomIn"/></a>
+                    <img src={require(`../img/${process.env.REACT_APP_LOGO}`)} alt="" className="img-fluid animate__animated animate__zoomIn"/></a>
                     <div>
                     <a href="#/user_setting" id="parentusername" style={{textTransform:"uppercase",color:"whitesmoke"}}>
                       </a>&nbsp;

@@ -64,13 +64,13 @@ function LibraryVideos() {
     </div>
 
     <div className="scroll-item">
-    <iframe  src="https://www.youtube.com/embed/dxECczwpirE?si=Q5HT5DoTbrJFWK9Q" title="May's Educational Centre Graduation" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-    <textarea readOnly>MEC Graduation 2020</textarea>
+    <iframe  src="https://www.youtube.com/embed/dxECczwpirE?si=Q5HT5DoTbrJFWK9Q" title="May's Educational Centre Graduation" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
+    <textarea readOnly>{process.env.REACT_APP_BRAND_SHORT} Graduation 2020</textarea>
     </div>  
     
 {videos.map(video => (
  <div className="scroll-item">
-    <iframe src={video.url}  title="May's Educational Centre" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    <iframe src={video.url}  title="May's Educational Centre" frameBorder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
 <textarea value={video.name} readOnly></textarea>
     </div>
 ))} 
@@ -85,7 +85,7 @@ function LibraryVideos() {
 <center>{loading ? <a></a> : <a><i className="fa fa-spinner fa-spin"></i> Loading</a>}</center>
 <div className="scroll-container" id="scroll2" onWheel={ScrollContainer}>
     <div className="scroll-item">
-        <video poster={require("../img/v.png")}></video>
+        <video poster={require(`../img/${process.env.REACT_APP_LOGO}`)}></video>
       <textarea readOnly></textarea>
     </div>
     

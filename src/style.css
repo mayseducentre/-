@@ -1,5 +1,5 @@
 /* body{
-  background: url(./img/v.png);
+  background: url(./img/${process.env.REACT_APP_LOGO});
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -95,6 +95,10 @@
 */
 .navbar {
     padding: 0;
+    overflow-y: hidden;
+    overflow-x: scroll;
+    scrollbar-width:none;
+    scroll-behavior: smooth;
 }
 
 .navbar ul {
@@ -164,6 +168,9 @@
     color: #fff;
 }
 
+Link:hover{
+  text-decoration: none;
+}
 
 #hero {
     width: 100%;

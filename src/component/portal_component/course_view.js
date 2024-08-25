@@ -45,7 +45,7 @@ useEffect(()=>{
               </h2>
 
               <div className="d-flex align-items-center">
-                <img src={require("/./Users/USER/posty/src/img/v.png")} alt="" className="img-fluid post-author-img flex-shrink-0"/>
+                <img src={require(`/./Users/USER/posty/src/img/${process.env.REACT_APP_LOGO}`)} alt="" className="img-fluid post-author-img flex-shrink-0"/>
                 <div className="post-meta">
                   <p className="post-author">Staff</p>
                   

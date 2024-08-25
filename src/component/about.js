@@ -9,9 +9,9 @@ export default function About(){
             <img src={require("../img/nj.jpg")} className="img-fluid" alt=""/>
           </div>
           <div className="col-lg-6 pt-4 pt-lg-0 order-2 order-lg-1 content">
-            <h3>About MEC</h3>
+            <h3>About {process.env.REACT_APP_BRAND_SHORT}</h3>
             <p className="fst-italic">
-              At MEC, our mission is to cultivate a dynamic and inclusive learning environment where every student is empowered to reach their full potential.
+              At {process.env.REACT_APP_BRAND_SHORT}, our mission is to cultivate a dynamic and inclusive learning environment where every student is empowered to reach their full potential.
             </p>
             <ul>
               <li><i className="fa fa-check-circle"></i> We maintain high standards in academic and extracurricular activities, encouraging students to strive for their best.</li>
@@ -68,9 +68,9 @@ export default function About(){
         <div className="row">
           <div className="col-lg-4 d-flex align-items-stretch">
             <div className="content">
-              <h3>Why Choose MEC for your child?</h3>
+              <h3>Why Choose {process.env.REACT_APP_BRAND_SHORT} for your child?</h3>
               <p>
-              We understand that making decisions for your child’s education can be challenging. May's Educational Centre is proud to offer an unparalleled educational experience that will inspire your child to reach their full life potential. With the vision to train and nurture the Ghanaian child through quality education with love and affection enabling them to excel in life.</p>
+              We understand that making decisions for your child’s education can be challenging. {process.env.REACT_APP_BRAND} is proud to offer an unparalleled educational experience that will inspire your child to reach their full life potential. With the vision to train and nurture the Ghanaian child through quality education with love and affection enabling them to excel in life.</p>
               <div className="text-center">
                 <a href="#" className="more-btn">Learn More <i className="fa fa-chevron-right"></i></a>
               </div>
@@ -111,7 +111,7 @@ export default function About(){
     <br/>
     <br/>
 <center>
-    <iframe style={{width:"100%", height:"300px"}}  src="https://www.youtube.com/embed/dxECczwpirE?si=Q5HT5DoTbrJFWK9Q" title="May's Educational Centre" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    <iframe style={{width:"100%", height:"300px"}}  src="https://www.youtube.com/embed/dxECczwpirE?si=Q5HT5DoTbrJFWK9Q" title="{process.env.REACT_APP_BRAND}" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
     </center> 
     </>
     )

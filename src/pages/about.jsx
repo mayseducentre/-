@@ -16,9 +16,9 @@ export default function Aboutp(){
             <img src={require("../img/nj.jpg")} className="img-fluid" alt=""/>
           </div>
           <div className="col-lg-6 pt-4 pt-lg-0 order-2 order-lg-1 content">
-            <h3>About MEC</h3>
+            <h3>About {process.env.REACT_APP_BRAND_SHORT}</h3>
             <p className="fst-italic">
-              At MEC, our mission is to cultivate a dynamic and inclusive learning environment where every student is empowered to reach their full potential.
+              At {process.env.REACT_APP_BRAND_SHORT}, our mission is to cultivate a dynamic and inclusive learning environment where every student is empowered to reach their full potential.
             </p>
             <ul>
               <li><i className="fa fa-check-circle"></i> We maintain high standards in academic and extracurricular activities, encouraging students to strive for their best.</li>
@@ -52,7 +52,7 @@ export default function Aboutp(){
 
 <br/>
 <h4>Our History</h4>
-<p>MDCEC has a rich history of academic achievement and community involvement. Over the years, we have grown and evolved, continually adapting to the needs of our students and the demands of the modern world. Our dedeicated and supportive community have been the backbone of our success.</p>
+<p>MDCEC has a rich history of academic achievement and community involvement. Over the years, we have grown and evolved, continually adapting to the needs of our students and the demands of the modern world. Our dedicated and supportive community have been the backbone of our success.</p>
 
 <br/>
 <h4>Our Facilities</h4>

@@ -1,5 +1,5 @@
 export default function Footer(){
-    return(
+  return(
         <>
         
         <footer id="footer">
@@ -9,7 +9,7 @@ export default function Footer(){
         <div className="row">
 
           <div className="col-lg-3 col-md-6 footer-contact">
-            <h3>MEC</h3>
+           <img src={require(`../img/${process.env.REACT_APP_LOGO}`)} style={{width:"50px",height:"50px"}}/>&ensp;<a title="May's Daycare and Educational Centre" style={{fontSize:"30px",fontWeight:"bold"}}>{process.env.REACT_APP_BRAND_SHORT}</a> 
             <p>
               Dansoman <br/>
               Ghana<br/><br/>
@@ -19,13 +19,13 @@ export default function Footer(){
           </div>
 
           <div className="col-lg-2 col-md-6 footer-links">
-            <h4>Useful Links</h4>
+            <h4>Quick Links</h4>
             <ul>
               <li><i className="fa fa-chevron-right"></i> <a href="#">Home</a></li>
-              <li><i className="fa fa-chevron-right"></i> <a href="#">About us</a></li>
-              <li><i className="fa fa-chevron-right"></i> <a href="#">Services</a></li>
-              <li><i className="fa fa-chevron-right"></i> <a href="#">Terms of service</a></li>
-              <li><i className="fa fa-chevron-right"></i> <a href="#">Privacy policy</a></li>
+              <li><i className="fa fa-chevron-right"></i> <a href="#/about">About us</a></li>
+              <li><i className="fa fa-chevron-right"></i> <a href="#/mec_experience">Student Life</a></li>
+              <li><i className="fa fa-chevron-right"></i> <a href="#/admissions">Admissions</a></li>
+              <li><i className="fa fa-chevron-right"></i> <a href="#/portal">Portal</a></li>
             </ul>
           </div>
 
@@ -50,7 +50,7 @@ export default function Footer(){
 
       <div className="me-md-auto text-center text-md-start">
         <div className="copyright">
-          &copy; Copyright <strong><span>MEC</span></strong>. All Rights Reserved
+          &copy; Copyright <strong><span>{process.env.REACT_APP_BRAND_SHORT}</span></strong>. All Rights Reserved
         </div>
         <div className="credits">
           Designed by <a href="https://amzi-kwasi.github.io/al-app">AL</a>

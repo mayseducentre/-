@@ -8,7 +8,7 @@ export default function ChartComponent(){
 
         datasets:[
             {
-                label:'MEC Dataset',
+                label:'{process.env.REACT_APP_BRAND_SHORT} Dataset',
                 fill: false,
                 backgroundColor: 'teal',
                 color:'orange',

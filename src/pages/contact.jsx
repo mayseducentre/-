@@ -21,7 +21,7 @@ export default function Contact(){
                         <div className="section-title">
                             <span>Information</span>
                             <h2>Contact Us</h2>
-                            <p>As you might expect of a company that began as a high-end interiors contractor, we pay
+                            <p>As you might expect of a school that began as a high-end interiors contractor, we pay
                                 strict attention.</p>
                         </div>
                         <ul>

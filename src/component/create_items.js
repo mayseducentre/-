@@ -9,6 +9,8 @@ const select= {
 }
 
 var path=process.env.REACT_APP_API_URL;
+const randomdigit=Math.floor(Math.random()* 10).toString();
+const id=randomdigit;
 function CreateIt(e) {
     e.preventDefault();
 
@@ -24,6 +26,7 @@ function CreateIt(e) {
     .then(res => res.json())
     .then(librarydata => {
             var item={
+                      "id":id,
                       "name": item_name,
                       "url": item_url,
                       "description": item_desc
@@ -57,6 +60,7 @@ if(type_item == "featuredvideos"){
     .then(res => res.json())
     .then(librarydata => {
             var item={
+                       "id":id,
                       "name": item_name,
                       "url": item_url,
                       "description": item_desc
@@ -90,6 +94,7 @@ if(type_item == "featuredexhibit"){
     .then(res => res.json())
     .then(librarydata => {
             var item={
+                      "id":id,
                       "name": item_name,
                       "url": item_url,
                       "description": item_desc
@@ -124,6 +129,7 @@ if(type_item == "featuredwebsites"){
     .then(res => res.json())
     .then(librarydata => {
             var item={
+                       "id":id,
                       "name": item_name,
                       "url": item_url,
                       "description": item_desc
@@ -158,6 +164,7 @@ if(type_item == "storybooks"){
     .then(res => res.json())
     .then(librarydata => {
             var item={
+                       "id":id,
                       "name": item_name,
                       "url": item_url,
                       "description": item_desc
@@ -190,6 +197,7 @@ if(type_item == "dictionary"){
     .then(res => res.json())
     .then(librarydata => {
             var item={
+                       "id":id,
                       "name": item_name,
                       "url": item_url,
                       "description": item_desc
@@ -222,6 +230,7 @@ if(type_item == "featuredgraduation"){
     .then(res => res.json())
     .then(librarydata => {
             var item={
+                      "id":id,
                       "name": item_name,
                       "url": item_url,
                       "description": item_desc
@@ -250,6 +259,31 @@ if(type_item == "featuredgraduation"){
 
 
 
+}
+
+
+function UpdateHead(e){
+    var info=document.getElementById("upd_info").value;
+    var color=document.getElementById("upd_color").value;
+e.preventDefault()
+    fetch(`${path}/update/maysupd`, {
+        method:"PUT",
+        body:JSON.stringify({
+            "id":id,
+            "info":info,
+            "color":color
+        }),
+        headers:{
+            "Content-type":"application/json"
+        }
+    }
+    )
+    .then(res => res.json())
+    .then(data => {
+        console.log(data);
+        alert("Headline posted")
+    })
+    .catch(err => console.log(err))
 }
 export default function CreateItem(){
     return(
@@ -310,6 +344,53 @@ export default function CreateItem(){
                             <div className="checkout__order">
                                
                                 <button type="submit" id="postyIt" className="site-btn">Post Item</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+        </div>
+
+        <hr/>
+
+        <div>
+        <section className="checkout spad">
+        <div className="container">
+            <div className="checkout__form">
+                <form onSubmit={UpdateHead}>
+                    <div className="row">
+                        <div className="col-lg-8 col-md-6">
+                            <h3 className="checkout__title">HeadLine Info</h3>
+                            
+                            <div className="row">
+                            <div className="col-lg-6">
+                                    <div className="checkout__input">
+                                        <p>Info<span>*</span></p>
+                                        <input type="text" id="upd_info" required/>
+                                    </div>
+                                </div>
+
+                                <div className="col-lg-6">
+                                    <div className="checkout__input">
+                                        <p>Color<span>*</span></p>
+                                        <input type="text" id="upd_color" required/>
+                                    </div>
+                                </div>
+                                
+                              
+                            </div>
+                           
+                             
+                            
+                            
+                           
+                        </div>
+                        <div className="col-lg-4 col-md-6">
+                            <div className="checkout__order">
+                               
+                                <button type="submit"  className="site-btn">Post Item</button>
                             </div>
                         </div>
                     </div>

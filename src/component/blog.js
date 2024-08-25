@@ -25,11 +25,11 @@ export default function Blog(){
               </h2>
 
               <div className="d-flex align-items-center">
-                <img src={require("../img/v.png")} alt="" className="img-fluid post-author-img flex-shrink-0"/>
+                <img src={require(`../img/${process.env.REACT_APP_LOGO}`)} alt="" className="img-fluid post-author-img flex-shrink-0"/>
                 <div className="post-meta">
                   <p className="post-author">Unknown</p>
                   <p className="post-date">
-                    <time datetime="2022-01-01">Aug 16, 2024</time>
+                    <time dateTime="2022-01-01">Aug 16, 2024</time>
                   </p>
                 </div>
               </div>
@@ -51,11 +51,11 @@ export default function Blog(){
               </h2>
 
               <div className="d-flex align-items-center">
-                <img src={require("../img/v.png")} alt="" className="img-fluid post-author-img flex-shrink-0"/>
+                <img src={require(`../img/${process.env.REACT_APP_LOGO}`)} alt="" className="img-fluid post-author-img flex-shrink-0"/>
                 <div className="post-meta">
                   <p className="post-author">Unknown</p>
                   <p className="post-date">
-                    <time datetime="2022-01-01">Jan 1, 2020</time>
+                    <time dateTime="2022-01-01">Jan 1, 2020</time>
                   </p>
                 </div>
               </div>
@@ -77,11 +77,11 @@ export default function Blog(){
               </h2>
 
               <div className="d-flex align-items-center">
-                <img src={require("../img/v.png")} alt="" className="img-fluid post-author-img flex-shrink-0"/>
+                <img src={require(`../img/${process.env.REACT_APP_LOGO}`)} alt="" className="img-fluid post-author-img flex-shrink-0"/>
                 <div className="post-meta">
                   <p className="post-author">Unknown</p>
                   <p className="post-date">
-                    <time datetime="2022-01-01">Jun 22, 2022</time>
+                    <time dateTime="2022-01-01">Jun 22, 2022</time>
                   </p>
                 </div>
               </div>

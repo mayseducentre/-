@@ -22,7 +22,7 @@ export default function StudentPerform(){
 
                
                 <div className="card-body"  style={{maxHeight:"500px"}}>
-                  <h5 className="card-title">All Students <span>| MEC</span></h5>
+                  <h5 className="card-title">All Students <span>| {process.env.REACT_APP_BRAND_SHORT}</span></h5>
 
                   <table className="table table-borderless scrolltable">
                     <thead>

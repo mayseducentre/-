@@ -17,6 +17,7 @@ import ComputingAbbrev from "./component/comp_abbreviations";
 import LibraryLog from "./pages/library_create";
 import LibraryWebsites from "./library/website";
 import LibraryEvent from "./library/event_media";
+import Experience from "./pages/experience";
 
 window.addEventListener("keyup", (e)=>{
   if(e.ctrlKey && e.altKey && e.key === "a"){
@@ -57,12 +58,13 @@ function App() {
       <Route>
       <Route exact path="/" element={<Home />} />
       <Route path="*" element={<Error />} />
-      <Route path="/register" element={<Register />} />
+      <Route path="/admissions" element={<Register />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/portal" element={<Portal />} />
       <Route path="/account" element={<Account />} />
       <Route path="/admin" element={<AdminPage />} />
       <Route path="/about" element={<Aboutp />} />
+      <Route path="/mec_experience" element={<Experience />} />
       <Route path="/library" element={<Library />} />
       <Route path="/librarybooks" element={<LibraryBooks />} />
       <Route path="/libraryvideos" element={<LibraryVideos />} />

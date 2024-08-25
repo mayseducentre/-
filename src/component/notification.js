@@ -13,7 +13,7 @@ import 'react-notifications-component/dist/theme.css'
 const Notify = () => {
     const addNotification = () => {
         Store.addNotification({
-            title: "MEC APP",
+            title: "{process.env.REACT_APP_BRAND_SHORT} APP",
             message:"Signup ok",
             type:"success",
             insert:"top",
