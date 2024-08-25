@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/-/static/css/main.0a2f0c77.css",
-    "main.js": "/-/static/js/main.3bb00603.js",
+    "main.css": "/-/static/css/main.769a85bc.css",
+    "main.js": "/-/static/js/main.d462ed46.js",
     "static/js/206.582fe86a.chunk.js": "/-/static/js/206.582fe86a.chunk.js",
     "static/media/maysedu.mp4": "/-/static/media/maysedu.1e5924eb84727a275fa1.mp4",
     "static/media/an.gif": "/-/static/media/an.97d16bdec35dab6b1543.gif",
@@ -14,6 +14,7 @@
     "static/media/hero-bg.jpg": "/-/static/media/hero-bg.8947f2200e2804d08f4d.jpg",
     "static/media/IMG-20240817-WA0007.jpg": "/-/static/media/IMG-20240817-WA0007.5df3ccaadb941a1e141d.jpg",
     "static/media/may.jpg": "/-/static/media/may.43cdbbeb10581ad83e27.jpg",
+    "static/media/mays_logo.png": "/-/static/media/mays_logo.87084b829fc25cb7c7e5.png",
     "static/media/IMG-20240817-WA0014.jpg": "/-/static/media/IMG-20240817-WA0014.0bc45fad8777f6519047.jpg",
     "static/media/cert.jpg": "/-/static/media/cert.7bbb3f27eea2271eb31a.jpg",
     "static/media/IMG-20240817-WA0006.jpg": "/-/static/media/IMG-20240817-WA0006.94b57bf1034504fefa9f.jpg",
@@ -60,7 +61,7 @@
     "index.html": "/-/index.html"
   },
   "entrypoints": [
-    "static/css/main.0a2f0c77.css",
-    "static/js/main.3bb00603.js"
+    "static/css/main.769a85bc.css",
+    "static/js/main.d462ed46.js"
   ]
 }
