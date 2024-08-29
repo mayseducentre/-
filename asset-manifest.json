@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/-/static/css/main.769a85bc.css",
-    "main.js": "/-/static/js/main.f1971a18.js",
+    "main.css": "/-/static/css/main.db7093b6.css",
+    "main.js": "/-/static/js/main.5d4340ef.js",
     "static/js/206.582fe86a.chunk.js": "/-/static/js/206.582fe86a.chunk.js",
     "static/media/maysedu.mp4": "/-/static/media/maysedu.1e5924eb84727a275fa1.mp4",
     "static/media/an.gif": "/-/static/media/an.97d16bdec35dab6b1543.gif",
@@ -61,7 +61,7 @@
     "index.html": "/-/index.html"
   },
   "entrypoints": [
-    "static/css/main.769a85bc.css",
-    "static/js/main.f1971a18.js"
+    "static/css/main.db7093b6.css",
+    "static/js/main.5d4340ef.js"
   ]
 }
