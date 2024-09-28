@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
 
    
-var path=process.env.REACT_APP_API_URL;
+var path=process.env.REACT_APP_LIBRARY_API;
 function ScrollContainer(event){
     var scroll1=document.getElementById("scroll1");
     var scroll2=document.getElementById("scroll2");
@@ -65,7 +65,7 @@ function LibraryVideos() {
 
     <div className="scroll-item">
     <iframe  src="https://www.youtube.com/embed/dxECczwpirE?si=Q5HT5DoTbrJFWK9Q" title="May's Educational Centre Graduation" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
-    <textarea readOnly>{process.env.REACT_APP_BRAND_SHORT} Graduation 2020</textarea>
+    <textarea readOnly>MEC Graduation 2020</textarea>
     </div>  
     
 {videos.map(video => (

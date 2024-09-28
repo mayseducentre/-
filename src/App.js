@@ -14,10 +14,10 @@ import LibraryBooks from "./library/books";
 import LibraryVideos from "./library/videos";
 import AdminPage from "./pages/admin";
 import ComputingAbbrev from "./component/comp_abbreviations";
-import LibraryLog from "./pages/library_create";
+import ManageItems from "./pages/manage_items";
 import LibraryWebsites from "./library/website";
 import LibraryEvent from "./library/event_media";
-import Experience from "./pages/experience";
+import News from "./pages/news_update";
 
 window.addEventListener("keyup", (e)=>{
   if(e.ctrlKey && e.altKey && e.key === "a"){
@@ -35,7 +35,7 @@ window.addEventListener("keyup", (e)=>{
 }
 
 if(e.altKey && e.key === "t"){
-  window.location.href="#/create_items";
+  window.location.href="#/manage_items";
   
 }
 
@@ -64,7 +64,7 @@ function App() {
       <Route path="/account" element={<Account />} />
       <Route path="/admin" element={<AdminPage />} />
       <Route path="/about" element={<Aboutp />} />
-      <Route path="/mec_experience" element={<Experience />} />
+      <Route path="/news_updates" element={<News />} />
       <Route path="/library" element={<Library />} />
       <Route path="/librarybooks" element={<LibraryBooks />} />
       <Route path="/libraryvideos" element={<LibraryVideos />} />
@@ -72,7 +72,7 @@ function App() {
       <Route path="/librarywebsites" element={<LibraryWebsites />} />
       <Route path="/computing_abbrev" element={<ComputingAbbrev />} />
       <Route path="/ins_guide" element={<InsGuide />} />
-      <Route path="/create_items" element={<LibraryLog />} />
+      <Route path="/manage_items" element={<ManageItems />} />
       <Route path="/user_setting" element={<SignSet />} />
        </Route>
     </Routes>

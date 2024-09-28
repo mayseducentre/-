@@ -36,34 +36,34 @@ e.preventDefault();
     var email=document.getElementById("email_assign").value;
 
     if(subject == "English"){
-        var path=`${process.env.REACT_APP_API_URL}/engassign`;
+        var path=`${process.env.REACT_APP_ASSIGN_API}/engassign`;
     }
     if(subject == "Science"){
-        var path=`${process.env.REACT_APP_API_URL}/sciassign`;
+        var path=`${process.env.REACT_APP_ASSIGN_API}/sciassign`;
     }
     if(subject == "Social Studies"){
-        var path=`${process.env.REACT_APP_API_URL}/socassign`;
+        var path=`${process.env.REACT_APP_ASSIGN_API}/socassign`;
     }
     if(subject == "Mathematics"){
-        var path=`${process.env.REACT_APP_API_URL}/mathassign`;
+        var path=`${process.env.REACT_APP_ASSIGN_API}/mathassign`;
     }
     if(subject == "Computing"){
-        var path=`${process.env.REACT_APP_API_URL}/compassign`;
+        var path=`${process.env.REACT_APP_ASSIGN_API}/compassign`;
     }
     if(subject == "Creative Art"){
-        var path=`${process.env.REACT_APP_API_URL}/artassign`;
+        var path=`${process.env.REACT_APP_ASSIGN_API}/artassign`;
     }
     if(subject == "GA"){
-        var path=`${process.env.REACT_APP_API_URL}/gaassign`;
+        var path=`${process.env.REACT_APP_ASSIGN_API}/gaassign`;
     }
     if(subject == "French"){
-        var path=`${process.env.REACT_APP_API_URL}/frenchassign`;
+        var path=`${process.env.REACT_APP_ASSIGN_API}/frenchassign`;
     }
     if(subject == "RME"){
-        var path=`${process.env.REACT_APP_API_URL}/rmeassign`;
+        var path=`${process.env.REACT_APP_ASSIGN_API}/rmeassign`;
     }
     if(subject == "Career Tech"){
-        var path=`${process.env.REACT_APP_API_URL}/careertechassign`;
+        var path=`${process.env.REACT_APP_ASSIGN_API}/careertechassign`;
     }
    
  var d=new Date();

@@ -10,7 +10,7 @@ export default function Header(){
                     <ul>
                         <li><a href="#/">Home</a></li>
                         <li><a href="#/about">About</a></li>
-                        <li><a href="#/mec_experience">Experiences</a></li>
+                        <li><a href="#/news_updates">News and Updates</a></li>
                         <li><a href="#/library">Library</a></li>
                         <li><a href="#/contact">Contact</a></li>
                         <li><a href="#/admissions">Admissions</a></li>
@@ -18,13 +18,14 @@ export default function Header(){
                        <li><a href="#/account">Account</a></li>
                     </ul>
                 </nav>
+                <i className="fa fa-search head_search" style={{color:"white"}}></i>
             </div>
         </header>
        
         <div className="bottom-nav animate__animated animate__fadeInUp">
             <a className="fa fa-home" href="#/"><br /><small className="smaller">Home</small></a>
             <a className="fa fa-exclamation-circle" href="#/about"><br /><small className="smaller">About</small></a>
-            <a className="fa fa-plane" href="#/mec_experience"><br /><small className="smaller">Experiences</small></a>
+            <a className="fa fa-plane" href="#/news_updates"><br /><small className="smaller">News</small></a>
             <a className="fa fa-book" href="#/library"><br /><small className="smaller">Library</small></a>
             <a className="fa fa-phone" href="#/contact"><br /><small className="smaller">Contact</small></a>
             <a className="fa fa-credit-card" href="#/admissions"><br /><small className="smaller">Admissions</small></a>

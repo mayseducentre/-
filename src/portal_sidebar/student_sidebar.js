@@ -6,12 +6,14 @@ function AssignV(){
   document.getElementById("courseview").style.display="none"
   document.getElementById("resourceview").style.display="none"
   document.getElementById("extraactview").style.display="none"
+  document.getElementById("calendar").style.display="none"
 }
 function ExtraAct(){
   document.getElementById("assignview").style.display="none"
   document.getElementById("courseview").style.display="none"
   document.getElementById("resourceview").style.display="none"
   document.getElementById("extraactview").style.display="block"
+  document.getElementById("calendar").style.display="none"
 }
 
 
@@ -20,6 +22,15 @@ function CourseV(){
   document.getElementById("courseview").style.display="block"
   document.getElementById("resourceview").style.display="none"
   document.getElementById("extraactview").style.display="none"
+  document.getElementById("calendar").style.display="none"
+}
+
+function CalendarV(){
+  document.getElementById("assignview").style.display="none"
+  document.getElementById("courseview").style.display="none"
+  document.getElementById("resourceview").style.display="none"
+  document.getElementById("extraactview").style.display="none"
+  document.getElementById("calendar").style.display="block"
 }
 
 function Studentsidebar(){
@@ -59,7 +70,7 @@ function Studentsidebar(){
    
       <li className="nav-item" style={{cursor:"pointer"}} onClick={CourseV}>
         <a className="nav-link">
-          <i className="fa fa-grid"></i>
+          <i className="fa fa-diamond"></i>
           <span>Dashboard</span>
         </a>
       </li> 
@@ -73,43 +84,41 @@ function Studentsidebar(){
         </a>
       </li>
       
-      <Link to="/">
       <li className="nav-item" style={{cursor:"pointer"}}>
         <a className="nav-link collapsed">
-          <i className="fa fa-file-earmark"></i>
+          <i className="fa fa-diamond"></i>
           <span>Grades</span>
         </a>
       </li>
-      </Link>
 
-      <Link to="/">
       <li className="nav-item" style={{cursor:"pointer"}}>
         <a className="nav-link collapsed">
           <i className="fa fa-diamond"></i>
           <span>Messages and Notifications</span>
         </a>
       </li>
-      </Link>
-      
+
+      <li className="nav-item" style={{cursor:"pointer"}}>
+        <a className="nav-link collapsed">
+          <i className="fa fa-diamond"></i>
+          <span>Virtual Meeting</span>
+        </a>
+      </li>
 
       
-      <Link to="/">
-      <li className="nav-item" style={{cursor:"pointer"}}>
+      <li className="nav-item" style={{cursor:"pointer"}} onClick={CalendarV}>
         <a className="nav-link collapsed">
           <i className="fa fa-diamond"></i>
           <span>Calendar</span>
         </a>
       </li>
-      </Link>
 
-      <Link to="/">
       <li className="nav-item" style={{cursor:"pointer"}}>
         <a className="nav-link collapsed">
           <i className="fa fa-diamond"></i>
           <span>Attendance</span>
         </a>
       </li>
-      </Link>
 
       <li className="nav-item" style={{cursor:"pointer"}} onClick={ExtraAct}>
         <a className="nav-link collapsed">
@@ -118,15 +127,14 @@ function Studentsidebar(){
         </a>
       </li>
 
-      <Link to="/">
+    
       <li className="nav-item" style={{cursor:"pointer"}}>
         <a className="nav-link collapsed">
           <i className="fa fa-diamond"></i>
           <span>Support</span>
         </a>
       </li>
-
-      </Link> <Link to="/user_setting">
+<Link to="/user_setting">
       <li className="nav-item" style={{cursor:"pointer"}}>
         <a className="nav-link collapsed">
           <i className="fa fa-diamond"></i>
@@ -150,7 +158,8 @@ function Studentsidebar(){
   <a className="fa fa-bar-chart-o" onClick={AssignV}><br /><small className="smaller">Assignments</small></a>
   <a className="fa fa-graduation-cap"><br /><small className="smaller">Grades</small></a>
   <a className="fa fa-bullhorn"><br /><small className="smaller">Announcements</small></a>
-  <a className="fa fa-calendar-o"><br /><small className="smaller">Calender</small></a>
+  <a className="fa fa-laptop"><br /><small className="smaller">VR Meet</small></a>
+  <a className="fa fa-calendar-o" onClick={CalendarV}><br /><small className="smaller">Calender</small></a>
   <a className="fa fa-gamepad" onClick={ExtraAct}><br /><small className="smaller">Extra Activities</small></a>
   <a className="fa fa-user-o" href="#/user_setting"><br /><small className="smaller">My Profile</small></a>
   <a className="fa fa-shield"><br /><small className="smaller">Support</small></a>

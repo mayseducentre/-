@@ -11,10 +11,14 @@ import StudentPerform from "../component/portal_component/student_performance";
 import TeacherDash from "../component/portal_component/teacherdash";
 import Teachersidebar from "../portal_sidebar/teachers_sidebar";
 import MeetP from "../component/portal_component/meet_parent";
+import LNote from "../component/portal_component/lesson_note";
+import Meet from "../component/portal_component/meet_online";
+import RegisterBook from "../component/portal_component/registerbook";
+import ViewCalendar from "../component/portal_component/viewcalendar";
 
 function TeachersPortal(){
     
-    fetch(`${process.env.REACT_APP_API_URL}/studentaccount`)
+    fetch(`${process.env.REACT_APP_ACCOUNT_API}/studentaccount`)
     .then(res => res.json())
     .then(data => studentTotal(data))
     .catch(err => console.log(err))
@@ -109,6 +113,18 @@ function TeachersPortal(){
     </div>
     <div id="staffchatroom" style={{display:"none"}}>
     <StaffChatRoom />
+    </div>
+    <div id="teachersnote" style={{display:"none"}}>
+    <LNote />
+    </div>
+    <div id="meetonline" style={{display:"none"}}>
+    <Meet />
+    </div>
+    <div id="register" style={{display:"none"}}>
+    <RegisterBook />
+    </div>
+    <div id="calendar" style={{display:"none"}}>
+    <ViewCalendar />
     </div>
     <div id="footerport">
     <Footer />

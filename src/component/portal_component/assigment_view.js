@@ -4,6 +4,7 @@ import Breadcrumb from "../breadcrumb";
 
 
 var path=process.env.REACT_APP_API_URL;
+var assignpath=process.env.REACT_APP_ASSIGN_API;
 
 
 function AdjustC(){
@@ -15,55 +16,55 @@ content.style.height=(content.scrollHeight)+"px";
 }
 
 function Chose(){
-     fetch(`${path}/engassign`)
+     fetch(`${assignpath}/engassign`)
    .then(res => res.json())
    .then(data => displayAssign(data))
    .catch(err => console.log(err))
 
    
-   fetch(`${path}/sciassign`)
+   fetch(`${assignpath}/sciassign`)
    .then(res => res.json())
    .then(data => displayAssign(data))
    .catch(err => console.log(err))
 
    
-   fetch(`${path}/mathassign`)
+   fetch(`${assignpath}/mathassign`)
    .then(res => res.json())
    .then(data => displayAssign(data))
    .catch(err => console.log(err))
 
    
-   fetch(`${path}/socassign`)
+   fetch(`${assignpath}/socassign`)
    .then(res => res.json())
    .then(data => displayAssign(data))
    .catch(err => console.log(err))
 
-   fetch(`${path}/compassign`)
+   fetch(`${assignpath}/compassign`)
    .then(res => res.json())
    .then(data => displayAssign(data))
    .catch(err => console.log(err))
 
-   fetch(`${path}/artassign`)
+   fetch(`${assignpath}/artassign`)
    .then(res => res.json())
    .then(data => displayAssign(data))
    .catch(err => console.log(err))
 
-   fetch(`${path}/gaassign`)
+   fetch(`${assignpath}/gaassign`)
    .then(res => res.json())
    .then(data => displayAssign(data))
    .catch(err => console.log(err))
 
-   fetch(`${path}/frenchassign`)
+   fetch(`${assignpath}/frenchassign`)
    .then(res => res.json())
    .then(data => displayAssign(data))
    .catch(err => console.log(err))
 
-   fetch(`${path}/careertechassign`)
+   fetch(`${assignpath}/careertechassign`)
    .then(res => res.json())
    .then(data => displayAssign(data))
    .catch(err => console.log(err))
 
-   fetch(`${path}/rmeassign`)
+   fetch(`${assignpath}/rmeassign`)
    .then(res => res.json())
    .then(data => displayAssign(data))
    .catch(err => console.log(err))

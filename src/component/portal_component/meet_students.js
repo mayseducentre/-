@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-var path=process.env.REACT_APP_API_URL;
+var path=process.env.REACT_APP_ACCOUNT_API;
 export default function MeetST(){
 
     const [stu, setStu]=useState([]);

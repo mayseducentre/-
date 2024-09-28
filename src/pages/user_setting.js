@@ -8,7 +8,7 @@ var readonly={
     border:"none"
 }
 
-var path=process.env.REACT_APP_API_URL;
+var path=process.env.REACT_APP_ACCOUNT_API;
 
 
 function logPortal(e){

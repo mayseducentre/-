@@ -1,5 +1,6 @@
 import React from "react";
-import CreateItem from "../component/create_items";
+
+import Manage from "../component/manage";
 
 var readonly={
     padding:"2px 3px",
@@ -12,7 +13,7 @@ var readonly={
 function logAdmin(e){
 
  e.preventDefault();
-var adminpath=process.env.REACT_APP_LIBRARY_LOG;
+var adminpath=process.env.REACT_APP_MANAGE_ITEMS;
 
 var library_key=document.getElementById("library_key");
 
@@ -76,7 +77,7 @@ export default function LibraryLog(){
         </section>
 
 <div id="librarypage" style={{display:"none"}}>
-    <CreateItem />
+    <Manage />
 </div>
 
         </div>

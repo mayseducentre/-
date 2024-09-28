@@ -59,7 +59,7 @@ function Parentsidebar(){
 
       <li className="nav-item" onClick={PDash}>
         <a className="nav-link">
-          <i className="fa fa-PARENT"></i>
+          <i className="fa fa-diamond"></i>
           <span>Dashboard</span>
         </a>
       </li>

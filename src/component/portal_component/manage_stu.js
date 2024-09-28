@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import Breadcrumb from "../breadcrumb";
 
-var path=process.env.REACT_APP_API_URL;
+var path=process.env.REACT_APP_ACCOUNT_API;
 
 const select ={
     padding:"10px 12px",

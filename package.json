@@ -9,6 +9,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "animate.css": "^4.1.1",
+    "react-froala-wysiwyg": "^4.0.18",
     "bcryptjs": "^2.4.3",
     "chart.js": "^4.4.3",
     "crypto-js": "^4.2.0",

@@ -78,6 +78,7 @@ if(e.crtlKey && e.key === "s"){
 // }
 
 var path=process.env.REACT_APP_API_URL;
+var accountpath=process.env.REACT_APP_ACCOUNT_API;
 
 function ChangeImage(){
   var inputimg=document.getElementById("image-input");
@@ -98,7 +99,7 @@ function ChangeImage(){
     var role=document.getElementById("overviewroleport").innerHTML;
 
     var id= document.getElementById("idport").innerHTML;
-   var accountP=process.env.REACT_APP_API_URL;
+   var accountP=process.env.REACT_APP_ACCOUNT_API;
 
                 if(role == "student"){
                   var path=`${accountP}/studentaccount/${id}`
@@ -173,7 +174,7 @@ function DelAccount(){
   var role=document.getElementById("overviewroleport").innerHTML;
   var id= document.getElementById("idport").innerHTML;
  
-  var accountP=process.env.REACT_APP_API_URL;
+  var accountP=process.env.REACT_APP_ACCOUNT_API;
   const formData={
       user_email: document.getElementById("overviewemailport").value,
       reply_to: document.getElementById("overviewemailport").value,
@@ -241,7 +242,7 @@ function pushChanges(){
     var imageurl;
     // var d=new Date();
     // var time=d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-   var accountP=process.env.REACT_APP_API_URL;
+   var accountP=process.env.REACT_APP_ACCOUNT_API;
 
    if(role == "student"){
     var path=`${accountP}/studentaccount/${id}`
@@ -298,19 +299,19 @@ function pushChanges(){
 function Checkemail(){
   document.getElementById("overviewemailport").innerHTML=document.getElementById("emailport").value;
 
-  fetch(`${path}/studentaccount`)
+  fetch(`${accountpath}/studentaccount`)
   .then(res=>res.json())
   .then(data => checkData(data))
   .catch(err => console.log(err))
  
   
-  fetch(`${path}/staffaccount`)
+  fetch(`${accountpath}/staffaccount`)
   .then(res=>res.json())
   .then(data => checkData(data))
   .catch(err => console.log(err))
  
   
-  fetch(`${path}/parentaccount`)
+  fetch(`${accountpath}/parentaccount`)
   .then(res=>res.json())
   .then(data => checkData(data))
   .catch(err => {console.log(err)

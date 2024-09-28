@@ -9,6 +9,9 @@ const select= {
 }
 
 var path=process.env.REACT_APP_API_URL;
+var blogpath=process.env.REACT_APP_BLOG_API;
+var librarypath=process.env.REACT_APP_LIBRARY_API;
+
 const randomdigit=Math.floor(Math.random()* 10).toString();
 const id=randomdigit;
 function CreateIt(e) {
@@ -22,7 +25,7 @@ function CreateIt(e) {
 
     if(type_item == "featuredbooks"){
     
-    fetch(`${path}/library/lib`)
+    fetch(`${librarypath}/library/lib`)
     .then(res => res.json())
     .then(librarydata => {
             var item={
@@ -34,7 +37,7 @@ function CreateIt(e) {
             }
         const updatedbook=[...librarydata.featuredbooks, item];
         
-        fetch(`${path}/library/lib`,{
+        fetch(`${librarypath}/library/lib`,{
             method:"PATCH",
             body:JSON.stringify({featuredbooks: updatedbook}),
             headers:{
@@ -56,7 +59,7 @@ function CreateIt(e) {
 
 if(type_item == "featuredvideos"){
     
-    fetch(`${path}/library/lib`)
+    fetch(`${librarypath}/library/lib`)
     .then(res => res.json())
     .then(librarydata => {
             var item={
@@ -68,7 +71,7 @@ if(type_item == "featuredvideos"){
             }
         const updatedbook=[...librarydata.featuredvideos, item];
         
-        fetch(`${path}/library/lib`,{
+        fetch(`${librarypath}/library/lib`,{
             method:"PATCH",
             body:JSON.stringify({featuredvideos: updatedbook}),
             headers:{
@@ -90,7 +93,7 @@ if(type_item == "featuredvideos"){
 
 if(type_item == "featuredexhibit"){
     
-    fetch(`${path}/library/lib`)
+    fetch(`${librarypath}/library/lib`)
     .then(res => res.json())
     .then(librarydata => {
             var item={
@@ -102,7 +105,7 @@ if(type_item == "featuredexhibit"){
             }
         const updatedbook=[...librarydata.featuredexhibit, item];
         
-        fetch(`${path}/library/lib`,{
+        fetch(`${librarypath}/library/lib`,{
             method:"PATCH",
             body:JSON.stringify({featuredexhibit: updatedbook}),
             headers:{
@@ -125,7 +128,7 @@ if(type_item == "featuredexhibit"){
 
 if(type_item == "featuredwebsites"){
     
-    fetch(`${path}/library/lib`)
+    fetch(`${librarypath}/library/lib`)
     .then(res => res.json())
     .then(librarydata => {
             var item={
@@ -137,7 +140,7 @@ if(type_item == "featuredwebsites"){
             }
         const updatedbook=[...librarydata.featuredwebsites, item];
         
-        fetch(`${path}/library/lib`,{
+        fetch(`${librarypath}/library/lib`,{
             method:"PATCH",
             body:JSON.stringify({featuredwebsites: updatedbook}),
             headers:{
@@ -160,7 +163,7 @@ if(type_item == "featuredwebsites"){
 
 if(type_item == "storybooks"){
     
-    fetch(`${path}/library/lib`)
+    fetch(`${librarypath}/library/lib`)
     .then(res => res.json())
     .then(librarydata => {
             var item={
@@ -172,7 +175,7 @@ if(type_item == "storybooks"){
             }
         const updatedbook=[...librarydata.storybooks, item];
         
-        fetch(`${path}/library/lib`,{
+        fetch(`${librarypath}/library/lib`,{
             method:"PATCH",
             body:JSON.stringify({storybooks: updatedbook}),
             headers:{
@@ -193,7 +196,7 @@ if(type_item == "storybooks"){
 
 if(type_item == "dictionary"){
     
-    fetch(`${path}/library/lib`)
+    fetch(`${librarypath}/library/lib`)
     .then(res => res.json())
     .then(librarydata => {
             var item={
@@ -205,7 +208,7 @@ if(type_item == "dictionary"){
             }
         const updatedbook=[...librarydata.dictionary, item];
         
-        fetch(`${path}/library/lib`,{
+        fetch(`${librarypath}/library/lib`,{
             method:"PATCH",
             body:JSON.stringify({dictionary: updatedbook}),
             headers:{
@@ -226,7 +229,7 @@ if(type_item == "dictionary"){
 
 if(type_item == "featuredgraduation"){
     
-    fetch(`${path}/library/lib`)
+    fetch(`${librarypath}/library/lib`)
     .then(res => res.json())
     .then(librarydata => {
             var item={
@@ -238,7 +241,7 @@ if(type_item == "featuredgraduation"){
             }
         const updatedbook=[...librarydata.featuredgraduation, item];
         
-        fetch(`${path}/library/lib`,{
+        fetch(`${librarypath}/library/lib`,{
             method:"PATCH",
             body:JSON.stringify({featuredgraduation: updatedbook}),
             headers:{
@@ -285,11 +288,81 @@ e.preventDefault()
     })
     .catch(err => console.log(err))
 }
-export default function CreateItem(){
+
+
+function Newspost(e){
+    e.preventDefault();
+
+    document.getElementById("blogbtn").style.display="none";
+    document.getElementById("blogwait").style.display="block";
+    
+  var newshead=document.getElementById("news_head").value;
+    var newscontent=document.getElementById("news_content").value
+    var newscat=document.getElementById("news_cat").value
+    var inputimg=document.getElementById("news_img");
+    var date=new Date()
+    var timestamp=date.toLocaleDateString();
+    var datafile=inputimg.files[0];
+    var filereader= new FileReader();
+     filereader.readAsDataURL(datafile);
+  
+  
+     filereader.addEventListener("load", () => {
+         var base64data=filereader.result;
+
+         fetch(`${blogpath}/blog`,{
+            method:"POST",
+            body:JSON.stringify({
+                "id": id,
+                "news_img":base64data,
+                "news_heading":newshead,
+                "news_category":newscat,
+                "news_content":newscontent,
+                "date":timestamp
+            }),
+            headers:{
+                "Content-type":"application/json"
+            }
+         })
+         .then(res=> res.json())
+         .then(data => {
+            console.log(data)
+            
+    document.getElementById("blogbtn").style.display="block";
+    document.getElementById("blogwait").style.display="none";
+            alert("Posted Blog successfully")
+         })
+         .catch(err => console.log(err))
+
+
+     })
+}
+
+
+function imgfile(){
+    var inputimg=document.getElementById("news_img");
+    var datafile=inputimg.files[0];
+    var filereader= new FileReader();
+    var topimgport=document.getElementById("displayimage")
+     filereader.readAsDataURL(datafile);
+  
+  if(datafile.size > 5 * 1024 * 1024){
+    alert("Sorry your file must be less than 5mb")
+  }
+
+  else{
+    filereader.addEventListener("load", () => {
+      var url=filereader.result;
+      topimgport.src= url;
+  
+    })
+}
+  }
+export default function Manage(){
     return(
         <>
         <Header />
-        <Breadcrumb title="Create Items"/>
+        <Breadcrumb title="Manage Items"/>
 
         <div>
 
@@ -399,6 +472,74 @@ export default function CreateItem(){
         </div>
     </section>
         </div>
+  
+  
+  
+
+        <div>
+        <section className="checkout spad">
+        <div className="container">
+            <div className="checkout__form">
+                <form onSubmit={Newspost}>
+                    <div className="row">
+                        <div className="col-lg-8 col-md-6">
+                            <h3 className="checkout__title">Post News and Updates</h3>
+                            
+                            <div className="row">
+                            <div className="col-lg-6">
+                                    <div className="checkout__input">
+                                        <p>News_Image<span>*</span></p>
+                                        <input type="file" onChange={imgfile} accept="image" id="news_img" required/>
+                               <img id="displayimage" style={{maxWidth:"50%",maxHeight:"50%"}}/>
+                                    </div>
+                                </div>
+
+                                <div className="col-lg-6">
+                                    <div className="checkout__input">
+                                        <p>Heading<span>*</span></p>
+                                        <input type="text" id="news_head" required/>
+                                    </div>
+                                </div>
+
+
+                                <div className="col-lg-6">
+                                    <div className="checkout__input">
+                                        <p>Category<span>*</span></p>
+                                        <input type="text" id="news_cat" required/>
+                                    </div>
+                                </div>
+
+
+                                
+                                <div className="col-lg-6">
+                                    <div className="checkout__input">
+                                        <p>Content<span>*</span></p>
+                                        <textarea type="text" id="news_content" required></textarea>
+                                    </div>
+                                </div>
+                                
+                              
+                            </div>
+                           
+                             
+                            
+                            
+                           
+                        </div>
+                        <div className="col-lg-4 col-md-6">
+                            <div className="checkout__order">
+                               
+                                <button type="submit" id="blogbtn" className="site-btn">Post Item</button>
+                                <a id="blogwait" style={{display:"none"}}><i className="fa fa-spinner fa-spin"></i> Loading</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+        </div>
+ 
         <ScrollToTop smooth/>
         </>
     )

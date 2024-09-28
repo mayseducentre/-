@@ -10,7 +10,7 @@ var readonly={
     border:"none"
 }
 
-var path=process.env.REACT_APP_API_URL;
+var path=process.env.REACT_APP_ACCOUNT_API;
 
 
 function logPortal(e){
@@ -122,8 +122,7 @@ function logintoPortal(data){
            
             document.getElementById("parentportal").style.display="block";
             document.getElementById("parentusername").innerHTML=data[i].name;
-            document.getElementById("childportid").value=data[i].child_id;
-            document.getElementById("parentid").value=data[i].id;
+           document.getElementById("parentid").value=data[i].id;
              document.getElementById("parentimgport").src=data[i].thumbnailUrl;
             document.getElementById("parentheadimg").src=data[i].thumbnailUrl;
             

@@ -1,93 +1,61 @@
+import { useEffect, useState } from "react"
+
+
+const path=process.env.REACT_APP_BLOG_API;
 export default function Blog(){
+  const [blog, setBlog]=useState([]);
+
+  const [loading, setLoading]=useState(false);
+  useEffect(()=>{
+    fetch(`${path}/blog`)
+    .then(res =>res.json())
+    .then(data => {setBlog(data)
+      setLoading(true)
+    })
+    .catch(err=> console.log(err))
+  },[])
     return(
         <>
          <section id="recent-posts" className="recent-posts sections-bg">
       <div className="container" data-aos="fade-up">
 
         <div className="section-header">
-          <h2>Recent Blog Posts</h2>
+          <h2>News and Updates</h2>
           <p>Find out the most exciting and interesting information from our blog.</p>
         </div>
 
         <div className="row gy-4">
+        <center>{loading ? <a></a> : <a><i className="fa fa-spinner fa-spin"></i> Loading</a>}</center>
+{blog.slice(0, 4).map(blogger=>(
 
-          <div className="col-xl-4 col-md-6" onClick={()=>{window.location.href="#/libraryevent"}}>
-            <article>
+ <div className="col-xl-4 col-md-6" onClick={()=>{window.location.href="#/news_updates"}} key={blogger.id}>
+ <article>
 
-              <div className="post-img">
-                <img src={require("../img/mays/cert.jpg")} alt="" className="img-fluid"/>
-              </div>
+   <div className="post-img">
+     <img src={blogger.news_img} alt="" className="img-fluid"/>
+   </div>
 
-              <p className="post-category">2024 Graduation</p>
+   <p className="post-category">{blogger.news_category}</p>
 
-              <h2 className="title">
-                <a href="#/">2024 Graduation Ceremony</a>
-              </h2>
+   <h2 className="title">
+     <a href="#/">{blogger.news_heading}</a>
+   </h2>
+    <p>Find out ...</p>
+   <div className="d-flex align-items-center">
+     <img src={require(`../img/${process.env.REACT_APP_LOGO}`)} alt="" className="img-fluid post-author-img flex-shrink-0"/>
+     <div className="post-meta">
+     <a>Read More</a>
+     <br/>
+     <a>{blogger.date}</a>
+     </div>
+   </div>
 
-              <div className="d-flex align-items-center">
-                <img src={require(`../img/${process.env.REACT_APP_LOGO}`)} alt="" className="img-fluid post-author-img flex-shrink-0"/>
-                <div className="post-meta">
-                  <p className="post-author">Unknown</p>
-                  <p className="post-date">
-                    <time dateTime="2022-01-01">Aug 16, 2024</time>
-                  </p>
-                </div>
-              </div>
+ </article>
+</div>
+))}
+         
 
-            </article>
-          </div>
-
-          <div className="col-xl-4 col-md-6">
-            <article>
-
-              <div className="post-img">
-                <img src={require("../img/n.jpg")} alt="" className="img-fluid"/>
-              </div>
-
-              <p className="post-category">2020 Graduation</p>
-
-              <h2 className="title">
-                <a href="#/">Annual Graduation Ceremony</a>
-              </h2>
-
-              <div className="d-flex align-items-center">
-                <img src={require(`../img/${process.env.REACT_APP_LOGO}`)} alt="" className="img-fluid post-author-img flex-shrink-0"/>
-                <div className="post-meta">
-                  <p className="post-author">Unknown</p>
-                  <p className="post-date">
-                    <time dateTime="2022-01-01">Jan 1, 2020</time>
-                  </p>
-                </div>
-              </div>
-
-            </article>
-          </div>
-          
-          <div className="col-xl-4 col-md-6">
-            <article>
-
-              <div className="post-img">
-                <img src={require("../img/i.jpg")} alt="" className="img-fluid"/>
-              </div>
-
-              <p className="post-category">Entertainment</p>
-
-              <h2 className="title">
-                <a href="#/">MAY's fun club</a>
-              </h2>
-
-              <div className="d-flex align-items-center">
-                <img src={require(`../img/${process.env.REACT_APP_LOGO}`)} alt="" className="img-fluid post-author-img flex-shrink-0"/>
-                <div className="post-meta">
-                  <p className="post-author">Unknown</p>
-                  <p className="post-date">
-                    <time dateTime="2022-01-01">Jun 22, 2022</time>
-                  </p>
-                </div>
-              </div>
-
-            </article>
-          </div>
+         
         </div>
       </div>
     </section>

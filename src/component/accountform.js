@@ -87,8 +87,8 @@ export default function Accountform(){
 
     const formRef= useRef();
 
+    var accountapi=process.env.REACT_APP_ACCOUNT_API;
     function Postaccount(e){
-
         Checkemail();
 
 
@@ -113,7 +113,9 @@ export default function Accountform(){
         const salt=bcrypt.genSaltSync(10);
         const hashedpassword=bcrypt.hashSync(passcode, salt);
         const constantPrefix="011";
-        const timestamp= new Date().getTime().toString();
+        var d=new Date();
+        const timestamp= d.getTime().toString();
+        const acc_date=d.toLocaleDateString();
         const randomdigit=Math.floor(Math.random()* 10).toString();
         const id=constantPrefix+timestamp.slice(-6)+randomdigit;
         var passconfirm=document.getElementById("passcode_confirm").value;
@@ -125,7 +127,7 @@ export default function Accountform(){
             mays_msg:`${name}, your userID is '${id}'. Please use this ${id} to login into the portal. https://mayseducentre.github.io/-#/portal` 
          };
  
-        var apifetch=`${path}/${role}account`;
+        var apifetch=`${accountapi}/${role}account`;
 
     
        var inputimg=document.getElementById("portal_img");
@@ -156,7 +158,7 @@ export default function Accountform(){
             "notice":"",
             "report":"",
             "status":"enrolled",
-            "account_date":timestamp
+            "account_date":acc_date
         }
     } 
 
@@ -177,7 +179,7 @@ export default function Accountform(){
             "report":"",
             "status":"enrolled",
             "staff_level":stafflevel,
-            "account_date":timestamp
+            "account_date":acc_date
         }
     } 
 
@@ -198,7 +200,7 @@ export default function Accountform(){
             "report":"",
             "thumbnailUrl": base64data,
             "status":"enrolled",
-            "account_date":timestamp
+            "account_date":acc_date
         }
     } 
    
@@ -230,7 +232,7 @@ export default function Accountform(){
            
         
 
-         fetch(`${path}/${role}account`,  {
+         fetch(`${accountapi}/${role}account`,  {
             method:"POST",
             body:JSON.stringify(formpage),
             headers:{
@@ -305,19 +307,19 @@ function imgfile(){
 
     function Checkemail(){
        
- fetch(`${path}/studentaccount`)
+ fetch(`${accountapi}/studentaccount`)
  .then(res=>res.json())
  .then(data => checkData(data))
  .catch(err => console.log(err))
 
  
- fetch(`${path}/staffaccount`)
+ fetch(`${accountapi}/staffaccount`)
  .then(res=>res.json())
  .then(data => checkData(data))
  .catch(err => console.log(err))
 
  
- fetch(`${path}/parentaccount`)
+ fetch(`${accountapi}/parentaccount`)
  .then(res=>res.json())
  .then(data => checkData(data))
  .catch(err => {console.log(err)
@@ -349,7 +351,7 @@ window.location.reload()})
 
 
     function checkID(){
-        fetch(`${path}/studentaccount`)
+        fetch(`${accountapi}/studentaccount`)
         .then(res => res.json())
         .then(data => verifyID(data))
         .catch(err => console.log(err))
@@ -521,7 +523,7 @@ window.location.reload()})
                     <div className="checkout__order">
                         
                         <button type="submit" id="createbtn" className="site-btn" onClick={Checkemail}>Create Account</button>
-                        <button id="waitbtn" style={{display:"none"}} className="site-btn">Please Wait...</button>
+                        <a id="waitbtn" style={{display:"none"}}><i className="fa fa-spinner fa-spin"></i> Please Wait...</a>
                    
                     </div>
                 </div>

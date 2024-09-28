@@ -1,7 +1,8 @@
+import { useEffect, useState } from "react";
 import Breadcrumb from "../breadcrumb";
 import CreateAnnounce from "./create_announce";
 
-
+var assignpath=process.env.REACT_APP_ASSIGN_API;
 function Announce(){
     document.getElementById("announce_create").style.display="block";
     document.getElementById("compose").style.display="none";
@@ -17,6 +18,14 @@ function AnnounceV(){
     document.getElementById("announce_view").style.display="block";
 }
 export default function AnnounceHub(){
+    const [ann, setAnn]=useState([]);
+
+    useEffect(()=>{
+        fetch(`${assignpath}/mail`)
+        .then(res=>res.json())
+        .then(data=> setAnn(data))
+        .catch(err=> console.log(err))
+    },[])
     return(
         <>
         <Breadcrumb title="Announcement Hub" />
@@ -33,14 +42,17 @@ export default function AnnounceHub(){
                 <br/>
                 <br/>
                 <br/>
-            <div>
-            <img src={require("/./Users/USER/posty/src/img/google.png")} style={{width:"30px",height:"30px",borderRadius:"50%", position:"absolute"}}/>
-               <div style={{paddingLeft:"50px"}}>
-                <a><b>Head</b></a> <small style={{position:"absolute",right:"10px"}}>7/09/24</small>
-                <p>This is the message  i posted rcently and i want to add something to it to make it seem so good.</p>
-            </div>
-            </div>
+            {ann.map(mail=>(
+ <div key={mail.id}>
+ <img src={require("/./Users/USER/posty/src/img/google.png")} style={{width:"30px",height:"30px",borderRadius:"50%", position:"absolute"}}/>
+    <div style={{paddingLeft:"50px"}}>
+     <a><b>{mail.subject}</b></a> <small style={{position:"absolute",right:"10px"}}>{mail.date}</small>
+     <p>{mail.body}</p>
+ </div>
+ </div>
 
+            ))}
+           
             
         </div>
 

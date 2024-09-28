@@ -1,25 +1,27 @@
 import Breadcrumb from "../component/breadcrumb";
 import Footer from "../component/footer";
 import Headline from "../component/headlines";
+import Accessibility from "../component/portal_component/access";
 import AdminDash from "../component/portal_component/admindash";
 import AnnounceHub from "../component/portal_component/annnouncement_hub";
+import Calendar from "../component/portal_component/calendar";
 import ManageP from "../component/portal_component/manage_parent";
 import ManageT from "../component/portal_component/manage_staff";
 import ManageST from "../component/portal_component/manage_stu";
 import AdminSidebar from "../portal_sidebar/admin_sidebar";
 
 function AdminPortal(){
-   fetch(`${process.env.REACT_APP_API_URL}/studentaccount`)
+   fetch(`${process.env.REACT_APP_ACCOUNT_API}/studentaccount`)
    .then(res => res.json())
    .then(data => studentTotal(data))
    .catch(err => console.log(err))
    
-   fetch(`${process.env.REACT_APP_API_URL}/staffaccount`)
+   fetch(`${process.env.REACT_APP_ACCOUNT_API}/staffaccount`)
    .then(res => res.json())
    .then(data => staffTotal(data))
    .catch(err => console.log(err))
    
-   fetch(`${process.env.REACT_APP_API_URL}/parentaccount`)
+   fetch(`${process.env.REACT_APP_ACCOUNT_API}/parentaccount`)
    .then(res => res.json())
    .then(data => parentTotal(data))
    .catch(err => console.log(err))
@@ -118,7 +120,12 @@ function AdminPortal(){
     <div id="mng_parent" style={{display:"none"}}>
       <ManageP />
     </div>
-
+    <div id="accessibility" style={{display:"none"}}>
+      <Accessibility />
+    </div>
+    <div id="calendar" style={{display:"none"}}>
+      <Calendar />
+    </div>
 
     <div id="announcehub" style={{display:"none"}}>
       <AnnounceHub />

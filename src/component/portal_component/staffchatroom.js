@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 
 
-const path= process.env.REACT_APP_API_URL;
+const path= process.env.REACT_APP_ASSIGN_API;
 
 
 function Showmessage(){
