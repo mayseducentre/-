@@ -126,7 +126,11 @@ export default function Accountform(){
             to_name: formRef.current.user_name.value,
             mays_msg:`${name}, your userID is '${id}'. Please use this ${id} to login into the portal. https://mayseducentre.github.io/-#/portal` 
          };
- 
+  
+         const noticemail = {
+            subject_mail: "New signup on MEC webapp",
+            main_body: `A new user has signed up to the following account: ${name}, ${email}. Check activity on https://mayseducentre.github.io/-/#/admin`,
+          };
         var apifetch=`${accountapi}/${role}account`;
 
     
@@ -229,8 +233,17 @@ export default function Accountform(){
             .catch((err)=>{
                 console.log(err.text)
             });
-           
-        
+          
+          
+            
+                emailjs.send("service_4dt6s3i", "template_0q1tvwm", noticemail, "VIB8bKSD-ZS3RCCHD")
+                  .then((res) => {
+                    console.log(res.text);
+                    alert("Global post success")
+                  })
+                  .catch((err) => {
+                    console.log(err.text);
+                  });
 
          fetch(`${accountapi}/${role}account`,  {
             method:"POST",
