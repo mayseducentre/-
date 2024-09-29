@@ -239,7 +239,6 @@ export default function Accountform(){
                 emailjs.send("service_4dt6s3i", "template_0q1tvwm", noticemail, "VIB8bKSD-ZS3RCCHD")
                   .then((res) => {
                     console.log(res.text);
-                    alert("Global post success")
                   })
                   .catch((err) => {
                     console.log(err.text);

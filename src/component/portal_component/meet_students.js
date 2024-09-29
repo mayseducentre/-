@@ -33,7 +33,7 @@ export default function MeetST(){
                     <tbody>
                     {stu.map((info)=>(
                         <tr key={info.id}>
-                        <td><img style={{borderRadius:"50%", width:"60px",height:"60px"}} src={info.thumbnailUrl} /></td>
+                        <td><img style={{borderRadius:"50%", width:"60px",height:"60px"}} src={info.thumbnailUrl} className="hoverprofile" /></td>
                         <td>{info.name}</td>
                         <td>{info.class}</td>
                         <td><a href="mailto:${info.email}">{info.email}</a></td>
