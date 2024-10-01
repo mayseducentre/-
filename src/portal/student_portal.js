@@ -8,6 +8,9 @@ import ExtraActView from "../component/portal_component/extraactive";
 import MeetST from "../component/portal_component/meet_students";
 import Studentsidebar from "../portal_sidebar/student_sidebar";
 import MeetT from "../component/portal_component/meet_teachers";
+import AnnounceHubView from "../component/portal_component/viewannounce";
+import ViewCalendar from "../component/portal_component/viewcalendar";
+import Meet from "../component/portal_component/meet_online";
 
 function StudentPortal(){
    return(
@@ -29,6 +32,16 @@ function StudentPortal(){
     </div>
     <div id="extraactview" style={{display:"none"}}>
     <ExtraActView />
+    </div>
+    <div id="calendarviewer" style={{display:"none"}}>
+    <ViewCalendar />
+    </div>
+    <div id="announcem" style={{display:"none"}}>
+    <AnnounceHubView />
+    </div>
+    
+    <div id="meetme" style={{display:"none"}}>
+    <Meet />
     </div>
 
     <br/>

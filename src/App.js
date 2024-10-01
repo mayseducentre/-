@@ -16,8 +16,9 @@ import AdminPage from "./pages/admin";
 import ComputingAbbrev from "./component/comp_abbreviations";
 import ManageItems from "./pages/manage_items";
 import LibraryWebsites from "./library/website";
-import LibraryEvent from "./library/event_media";
 import News from "./pages/news_update";
+import MecMedia from "./library/mec_media";
+import PostB from "./pages/blogpost";
 
 window.addEventListener("keyup", (e)=>{
   if(e.ctrlKey && e.altKey && e.key === "a"){
@@ -68,11 +69,12 @@ function App() {
       <Route path="/library" element={<Library />} />
       <Route path="/librarybooks" element={<LibraryBooks />} />
       <Route path="/libraryvideos" element={<LibraryVideos />} />
-      <Route path="/libraryevent" element={<LibraryEvent />} />
+      <Route path="/librarymedia" element={<MecMedia/>} />
       <Route path="/librarywebsites" element={<LibraryWebsites />} />
       <Route path="/computing_abbrev" element={<ComputingAbbrev />} />
       <Route path="/ins_guide" element={<InsGuide />} />
       <Route path="/manage_items" element={<ManageItems />} />
+      <Route path="/blogpost" element={<PostB />} />
       <Route path="/user_setting" element={<SignSet />} />
        </Route>
     </Routes>

@@ -33,7 +33,7 @@ export default function MeetT(){
                     <tbody>
                     {staff.map((info)=>(
                         <tr key={info.id}>
-                        <td><img style={{borderRadius:"50%", width:"60px",height:"60px"}} src={info.thumbnailUrl} /></td>
+                        <td><img className="hoverprofile" src={info.thumbnailUrl} /></td>
                         <td>{info.name}</td>
                         <td>{info.subject}</td>
                         <td><a href="mailto:${info.email}">{info.email}</a></td>

@@ -9,11 +9,15 @@ const select= {
 }
 
 var path=process.env.REACT_APP_API_URL;
-var blogpath=process.env.REACT_APP_BLOG_API;
+const blogpath=process.env.REACT_APP_BLOG_API;
 var librarypath=process.env.REACT_APP_LIBRARY_API;
 
+var date=new Date();
+const constantPrefix="lib";
+const timestampt= date.getTime().toString();
 const randomdigit=Math.floor(Math.random()* 10).toString();
-const id=randomdigit;
+const id=constantPrefix+timestampt.slice(-6)+randomdigit;
+
 function CreateIt(e) {
     e.preventDefault();
 
@@ -91,7 +95,7 @@ if(type_item == "featuredvideos"){
 
 
 
-if(type_item == "featuredexhibit"){
+if(type_item == "mecmedia"){
     
     fetch(`${librarypath}/library/lib`)
     .then(res => res.json())
@@ -103,11 +107,11 @@ if(type_item == "featuredexhibit"){
                       "description": item_desc
                 
             }
-        const updatedbook=[...librarydata.featuredexhibit, item];
+        const updatedbook=[...librarydata.mecmedia, item];
         
         fetch(`${librarypath}/library/lib`,{
             method:"PATCH",
-            body:JSON.stringify({featuredexhibit: updatedbook}),
+            body:JSON.stringify({mecmedia: updatedbook}),
             headers:{
                 "Content-type":"application/json"
             }
@@ -227,38 +231,38 @@ if(type_item == "dictionary"){
     });
 }
 
-if(type_item == "featuredgraduation"){
+// if(type_item == "featuredgraduation"){
     
-    fetch(`${librarypath}/library/lib`)
-    .then(res => res.json())
-    .then(librarydata => {
-            var item={
-                      "id":id,
-                      "name": item_name,
-                      "url": item_url,
-                      "description": item_desc
+//     fetch(`${librarypath}/library/lib`)
+//     .then(res => res.json())
+//     .then(librarydata => {
+//             var item={
+//                       "id":id,
+//                       "name": item_name,
+//                       "url": item_url,
+//                       "description": item_desc
                 
-            }
-        const updatedbook=[...librarydata.featuredgraduation, item];
+//             }
+//         const updatedbook=[...librarydata.featuredgraduation, item];
         
-        fetch(`${librarypath}/library/lib`,{
-            method:"PATCH",
-            body:JSON.stringify({featuredgraduation: updatedbook}),
-            headers:{
-                "Content-type":"application/json"
-            }
-        })
-        .then(res => res.json())
-        .then(data => {console.log(data)
-        alert(`Posted ${type_item} successfully`)
-    document.getElementById("postyIt").style.opacity="1"
-   document.getElementById("item_name").value=null;
-    document.getElementById("item_url").value=null;
-    document.getElementById("item_desc").value=null;
-})
-        .catch(err => console.log(err))
-    });
-}
+//         fetch(`${librarypath}/library/lib`,{
+//             method:"PATCH",
+//             body:JSON.stringify({featuredgraduation: updatedbook}),
+//             headers:{
+//                 "Content-type":"application/json"
+//             }
+//         })
+//         .then(res => res.json())
+//         .then(data => {console.log(data)
+//         alert(`Posted ${type_item} successfully`)
+//     document.getElementById("postyIt").style.opacity="1"
+//    document.getElementById("item_name").value=null;
+//     document.getElementById("item_url").value=null;
+//     document.getElementById("item_desc").value=null;
+// })
+//         .catch(err => console.log(err))
+//     });
+// }
 
 
 
@@ -290,12 +294,16 @@ e.preventDefault()
 }
 
 
-function Newspost(e){
+function Postnews(e){
     e.preventDefault();
 
     document.getElementById("blogbtn").style.display="none";
     document.getElementById("blogwait").style.display="block";
     
+    
+const randomdigit=Math.floor(Math.random()* 10).toString();
+const idr=randomdigit;
+
   var newshead=document.getElementById("news_head").value;
     var newscontent=document.getElementById("news_content").value
     var newscat=document.getElementById("news_cat").value
@@ -308,12 +316,12 @@ function Newspost(e){
   
   
      filereader.addEventListener("load", () => {
-         var base64data=filereader.result;
+         const base64data=filereader.result;
 
          fetch(`${blogpath}/blog`,{
             method:"POST",
             body:JSON.stringify({
-                "id": id,
+                "id": idr,
                 "news_img":base64data,
                 "news_heading":newshead,
                 "news_category":newscat,
@@ -332,14 +340,16 @@ function Newspost(e){
     document.getElementById("blogwait").style.display="none";
             alert("Posted Blog successfully")
          })
-         .catch(err => console.log(err))
+         .catch(err => {console.log(err)
+            alert(err)
+         })
 
 
      })
 }
 
 
-function imgfile(){
+function imageview(){
     var inputimg=document.getElementById("news_img");
     var datafile=inputimg.files[0];
     var filereader= new FileReader();
@@ -379,8 +389,8 @@ export default function Manage(){
                                     <option value="featuredbooks">Books</option>
                                     <option value="featuredvideos">Videos</option>
                                     <option value="storybooks">Story Books</option>
-                                    <option value="featuredexhibit">Exhibitions</option>
-                                    <option value="featuredgraduation">2024 Graduation</option>
+                                    <option value="mecmedia">Media</option>
+                                    {/* <option value="featuredgraduation">2024 Graduation</option> */}
                                     <option value="featuredwebsites">Websites</option>
                                     <option value="dictionary">Dictionary</option>
                                      </select>
@@ -480,7 +490,7 @@ export default function Manage(){
         <section className="checkout spad">
         <div className="container">
             <div className="checkout__form">
-                <form onSubmit={Newspost}>
+                <form onSubmit={Postnews}>
                     <div className="row">
                         <div className="col-lg-8 col-md-6">
                             <h3 className="checkout__title">Post News and Updates</h3>
@@ -489,7 +499,7 @@ export default function Manage(){
                             <div className="col-lg-6">
                                     <div className="checkout__input">
                                         <p>News_Image<span>*</span></p>
-                                        <input type="file" onChange={imgfile} accept="image" id="news_img" required/>
+                                        <input type="file" onChange={imageview} accept="image" id="news_img" required/>
                                <img id="displayimage" style={{maxWidth:"50%",maxHeight:"50%"}}/>
                                     </div>
                                 </div>
@@ -544,3 +554,6 @@ export default function Manage(){
         </>
     )
 }
+
+
+

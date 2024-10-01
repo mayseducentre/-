@@ -7,6 +7,8 @@ import MeetT from "../component/portal_component/meet_teachers";
 import Parentsidebar from "../portal_sidebar/parent_sidebar";
 import Payfees from "../component/portal_component/payfees";
 import MyChild from "../component/portal_component/mychild";
+import ViewCalendar from "../component/portal_component/viewcalendar";
+import Meet from "../component/portal_component/meet_online";
 
 const path=process.env.REACT_APP_ACCOUNT_API;
 
@@ -54,7 +56,12 @@ function stuStatus(data){
     <div id="mychild" style={{display:"none"}}>
       <MyChild /> 
     </div>
-
+    <div id="calendarv" style={{display:"none"}}>
+      <ViewCalendar /> 
+    </div>
+    <div id="meetonline" style={{display:"none"}}>
+      <Meet /> 
+    </div>
     <br/>
     <br/>
     

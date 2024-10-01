@@ -222,7 +222,7 @@ function AdminSidebar(){
   <a className="fa fa-flash" ><br /><small className="smaller">Tracking</small></a>
   <a className="fa fa-laptop" title="Virtual Meeting"><br /><small className="smaller">VR Meet</small></a>
   <a className="fa fa-calendar-o" onClick={CreateCalendar}><br /><small className="smaller">Calendar</small></a>
-  <a className="fa fa-bullhorn" href="#/user_setting"><br /><small className="smaller">Announce_Hub</small></a>
+  <a className="fa fa-bullhorn" href="#/user_setting" onClick={Announcement}><br /><small className="smaller">Announce_Hub</small></a>
   <a className="fa fa-cog" onClick={Access}><br /><small className="smaller">Accessibility</small></a>
   <a className="fa fa-shield" ><br /><small className="smaller">Support</small></a>
 </div>

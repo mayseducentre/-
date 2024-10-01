@@ -1,11 +1,14 @@
 import { Link } from "react-router-dom";
 import "../style.css";
+// import Calendar from "../component/portal_component/calendar";
 
 
 function Payfee(){
   document.getElementById("parentdash").style.display="none"
   document.getElementById("payfees").style.display="block"
   document.getElementById("mychild").style.display="none"
+  document.getElementById("calendarv").style.display="none"
+  document.getElementById("meetonline").style.display="none"
 }
 
 
@@ -13,14 +16,33 @@ function PDash(){
   document.getElementById("parentdash").style.display="block"
   document.getElementById("payfees").style.display="none"
   document.getElementById("mychild").style.display="none"
+  document.getElementById("calendarv").style.display="none"
+  document.getElementById("meetonline").style.display="none"
 }
 
 function ChildS(){
   document.getElementById("parentdash").style.display="none"
   document.getElementById("mychild").style.display="block"
   document.getElementById("payfees").style.display="none"
+  document.getElementById("calendarv").style.display="none"
+  document.getElementById("meetonline").style.display="none"
+}
+function Calendarv(){
+  document.getElementById("parentdash").style.display="none"
+  document.getElementById("mychild").style.display="none"
+  document.getElementById("payfees").style.display="none"
+  document.getElementById("calendarv").style.display="block"
+  document.getElementById("meetonline").style.display="none"
 }
 
+
+function Onmeet(){
+  document.getElementById("parentdash").style.display="none"
+  document.getElementById("mychild").style.display="none"
+  document.getElementById("payfees").style.display="none"
+  document.getElementById("calendarv").style.display="none"
+  document.getElementById("meetonline").style.display="block"
+}
 
 function Parentsidebar(){
   
@@ -72,10 +94,10 @@ function Parentsidebar(){
       </li>
 
       
-      <li className="nav-item">
+      <li className="nav-item" onClick={Onmeet}>
         <a className="nav-link collapsed">
           <i className="fa fa-diamond"></i>
-          <span>Completed assignments</span>
+          <span>Online Meeting</span>
         </a>
       </li>
       
@@ -125,7 +147,7 @@ function Parentsidebar(){
       </li>
 
       
-      <li className="nav-item">
+      <li className="nav-item" onClick={Calendarv}>
         <a className="nav-link collapsed">
           <i className="fa fa-diamond"></i>
           <span>School Calendar</span>
@@ -155,12 +177,11 @@ function Parentsidebar(){
  
   <div className="bottom-nav animate__animated animate__fadeInUp">
   <a className="fa fa-dashboard" onClick={PDash}><br /><small className="smaller">Dashboard</small></a>
-  <a className="fa fa-flag" title="Completed Assignments" href="#/"><br /><small className="smaller">CAS</small></a>
+  <a className="fa fa-laptop" title="Online Meeting" onClick={Onmeet} href="#/"><br /><small className="smaller">VR Meet</small></a>
   <a className="fa fa-book" href="#/"><br /><small className="smaller">Stu_Grades</small></a>
   <a className="fa fa-child" href="#/" title="Student Behaviour"><br /><small className="smaller">My_Child</small></a>
-  <a className="fa fa-calendar-o" href="#/" title="Student Behaviour"><br /><small className="smaller">Time Table</small></a>
-  <a className="fa fa-bullhorn" href="#/"><br /><small className="smaller">Announcements</small></a>
-  <a className="fa fa-calendar-o" href="#/"><br /><small className="smaller">Calender</small></a>
+ <a className="fa fa-bullhorn" href="#/"><br /><small className="smaller">Announcements</small></a>
+  <a className="fa fa-calendar-o" onClick={Calendarv} href="#/"><br /><small className="smaller">Calender</small></a>
   <a className="fa fa-user-o" href="#/user_setting"><br /><small className="smaller">Profile</small></a>
   <a className="fa fa-money" onClick={Payfee}><br /><small className="smaller">Payments_Fees</small></a>
   <a className="fa fa-shield" href="#/"><br /><small className="smaller">Support</small></a>

@@ -8,7 +8,7 @@ const select= {
 
 var path=process.env.REACT_APP_ASSIGN_API;
 
-const randomdigit=Math.floor(Math.random()* 10).toString();
+const randomdigit=Math.floor(Math.random()* 30).toString();
 const id=randomdigit;
 
 

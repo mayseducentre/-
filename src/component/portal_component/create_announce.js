@@ -34,6 +34,7 @@ export default function CreateAnnounce() {
         subject: subject,
         date: date,
         body: body,
+        account: accounts
       }),
       headers: {
         "Content-type": "application/json",

@@ -14,7 +14,8 @@ function AssignC(){
   document.getElementById("teachersnote").style.display="none"
   document.getElementById("register").style.display="none"
   document.getElementById("meetonline").style.display="none"
-  document.getElementById("calendar").style.display="none"
+  document.getElementById("calendarviewing").style.display="none"
+  document.getElementById("messageme").style.display="none"
 }
 function staffDash(){
   document.getElementById("assigncreate").style.display="none"
@@ -26,7 +27,8 @@ function staffDash(){
   document.getElementById("teachersnote").style.display="none"
   document.getElementById("register").style.display="none"
   document.getElementById("meetonline").style.display="none"
-  document.getElementById("calendar").style.display="none"
+  document.getElementById("calendarviewing").style.display="none"
+  document.getElementById("messageme").style.display="none"
 }
 
 
@@ -40,7 +42,8 @@ function Assess(){
   document.getElementById("teachersnote").style.display="none"
   document.getElementById("register").style.display="none"
   document.getElementById("meetonline").style.display="none"
-  document.getElementById("calendar").style.display="none"
+  document.getElementById("calendarviewing").style.display="none"
+  document.getElementById("messageme").style.display="none"
 }
 
 
@@ -54,8 +57,9 @@ function Register(){
   document.getElementById("footerport").style.display="none"
   document.getElementById("teachersnote").style.display="none"
   document.getElementById("register").style.display="block"
-  document.getElementById("calendar").style.display="none"
+  document.getElementById("calendarviewing").style.display="none"
   document.getElementById("meetonline").style.display="none"
+  document.getElementById("messageme").style.display="none"
 }
 
 function StudentPerf(){
@@ -68,7 +72,8 @@ function StudentPerf(){
   document.getElementById("teachersnote").style.display="none"
   document.getElementById("register").style.display="none"
   document.getElementById("meetonline").style.display="none"
-  document.getElementById("calendar").style.display="none"
+  document.getElementById("calendarviewing").style.display="none"
+  document.getElementById("messageme").style.display="none"
 }
 
 function StaffChatroom(){
@@ -81,7 +86,8 @@ function StaffChatroom(){
   document.getElementById("teachersnote").style.display="none"
   document.getElementById("meetonline").style.display="none"
   document.getElementById("register").style.display="none"
-  document.getElementById("calendar").style.display="none"
+  document.getElementById("calendarviewing").style.display="none"
+  document.getElementById("messageme").style.display="none"
 }
 
 
@@ -95,7 +101,8 @@ function Lesson(){
   document.getElementById("teachersnote").style.display="block"
   document.getElementById("meetonline").style.display="none"
   document.getElementById("register").style.display="none"
-  document.getElementById("calendar").style.display="none"
+  document.getElementById("calendarviewing").style.display="none"
+  document.getElementById("messageme").style.display="none"
 }
 
 
@@ -109,11 +116,12 @@ function MeetOnline(){
   document.getElementById("teachersnote").style.display="none"
   document.getElementById("meetonline").style.display="block"
   document.getElementById("register").style.display="none"
-  document.getElementById("calendar").style.display="none"
+  document.getElementById("calendarviewing").style.display="none"
+  document.getElementById("messageme").style.display="none"
 }
 
 
-function CalendarV(){
+function viewCal(){
   document.getElementById("assigncreate").style.display="none"
   document.getElementById("staffdash").style.display="none"
   document.getElementById("assessment").style.display="none"
@@ -123,8 +131,25 @@ function CalendarV(){
   document.getElementById("teachersnote").style.display="none"
   document.getElementById("meetonline").style.display="none"
   document.getElementById("register").style.display="none"
-  document.getElementById("calendar").style.display="block"
+  document.getElementById("calendarviewing").style.display="block"
+  document.getElementById("messageme").style.display="none"
 }
+
+
+function Message(){
+  document.getElementById("assigncreate").style.display="none"
+  document.getElementById("staffdash").style.display="none"
+  document.getElementById("assessment").style.display="none"
+  document.getElementById("studentperformance").style.display="none"
+  document.getElementById("staffchatroom").style.display="none"
+  document.getElementById("footerport").style.display="none"
+  document.getElementById("teachersnote").style.display="none"
+  document.getElementById("meetonline").style.display="none"
+  document.getElementById("register").style.display="none"
+  document.getElementById("calendarviewing").style.display="none"
+  document.getElementById("messageme").style.display="block"
+}
+
 
 function Teachersidebar(){
   
@@ -191,7 +216,7 @@ function Teachersidebar(){
       
 
       
-      <li className="nav-item">
+      <li className="nav-item" onClick={Message}>
         <a className="nav-link collapsed">
           <i className="fa fa-diamond"></i>
           <span>Messages and Annoucements</span>
@@ -253,7 +278,7 @@ function Teachersidebar(){
       </li>
 
       
-      <li className="nav-item" onClick={CalendarV}>
+      <li className="nav-item" onClick={viewCal}>
         <a className="nav-link collapsed">
           <i className="fa fa-diamond"></i>
           <span>Calendar and Scheduling</span>
@@ -294,11 +319,11 @@ function Teachersidebar(){
   <a className="fa fa-dashboard" onClick={staffDash}><br /><small className="smaller">Dashboard</small></a>
   <a className="fa fa-bar-chart" onClick={AssignC}><br /><small className="smaller">Assignments</small></a>
   <a className="fa fa-book" href="#/"><br /><small className="smaller">Gradebook</small></a>
-  <a className="fa fa-bullhorn" href="#/"><br /><small className="smaller">Annoucement</small></a>
+  <a className="fa fa-bullhorn" href="#/" onClick={Message}><br /><small className="smaller">Annoucement</small></a>
   <a className="fa fa-filter" onClick={Assess}><br /><small className="smaller">Result</small></a>
   <a className="fa fa-file" onClick={Register}><br /><small className="smaller">Register</small></a>
   <a className="fa fa-comments-o" title="Staff Chat Room" onClick={StaffChatroom}><br /><small className="smaller">ChatRoom</small></a>
-  <a className="fa fa-calendar-o" onClick={CalendarV} href="#/"><br /><small className="smaller">Calender</small></a>
+  <a className="fa fa-calendar-o" onClick={viewCal} href="#/"><br /><small className="smaller">Calender</small></a>
   <a className="fa fa-group" href="#/"><br /><small className="smaller">Attendance</small></a>
   <a className="fa fa-laptop" href="#/" title="Virtual Classroom" onClick={MeetOnline}><br /><small className="smaller">VR Class</small></a>
   <a className="fa fa-paper" href="#/" title="Examination"><br /><small className="smaller">Exams</small></a>

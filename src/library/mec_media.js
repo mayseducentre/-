@@ -38,16 +38,16 @@ function handleIframe(web){
 }
 
 
-function graduateFrame(gr){
-  document.getElementById("imgdisplay").src=gr.url;
-  document.getElementById("event_name").innerHTML=gr.name;
-  document.getElementById("iframe").style.display="block";
-  document.getElementById("bookmain").style.display="none";
+// function graduateFrame(gr){
+//   document.getElementById("imgdisplay").src=gr.url;
+//   document.getElementById("event_name").innerHTML=gr.name;
+//   document.getElementById("iframe").style.display="block";
+//   document.getElementById("bookmain").style.display="none";
 
-}
+// }
 
-function LibraryEvents() {
-     const [graduate, setGraduation]=useState([]);
+function MecMedia() {
+    //  const [graduate, setGraduation]=useState([]);
 
      const [featured, setFeatured]=useState([]);
      
@@ -61,7 +61,7 @@ const [loading, setLoading]=useState(false);
       .then(res => res.json())
       .then(data => {
         if(data.length > 0){
-          setFeatured(data[0].featuredexhibit)
+          setFeatured(data[0].mecmedia)
           setLoading(true)
         }
       })
@@ -69,15 +69,15 @@ const [loading, setLoading]=useState(false);
 
 
        
-      fetch(`${path}/library`)
-      .then(res => res.json())
-      .then(data => {
-        if(data.length > 0){
-          setGraduation(data[0].featuredgraduation)
-          setLoading(true)
-        }
-      })
-      .catch(err => console.log("Error fetching data", err))
+      // fetch(`${path}/library`)
+      // .then(res => res.json())
+      // .then(data => {
+      //   if(data.length > 0){
+      //     setGraduation(data[0].featuredgraduation)
+      //     setLoading(true)
+      //   }
+      // })
+      // .catch(err => console.log("Error fetching data", err))
 
 
 
@@ -97,7 +97,7 @@ const [loading, setLoading]=useState(false);
 
 
     <div>
-        <h5 style={{color:"black",textTransform:"none",marginLeft:"20px"}}>Featured Exhibitions</h5>
+        <h5 style={{color:"black",textTransform:"none",marginLeft:"20px"}}>MEC Media</h5>
         
 
         <center>{loading ? <a></a> : <a><i className="fa fa-spinner fa-spin"></i> Loading</a>}</center>
@@ -115,7 +115,7 @@ const [loading, setLoading]=useState(false);
 </div>
 
 </div>
-
+{/* 
 <div>
 <h5 style={{color:"black",textTransform:"none",marginLeft:"20px"}}>2024 Graduation Pics</h5>
 <center>{loading ? <a></a> : <a><i className="fa fa-spinner fa-spin"></i> Loading</a>}</center>
@@ -128,7 +128,7 @@ const [loading, setLoading]=useState(false);
 ))}
 
 </div>
-</div>
+</div> */}
 
 
 
@@ -160,6 +160,6 @@ const [loading, setLoading]=useState(false);
 
   
 
-  export default LibraryEvents;
+  export default MecMedia;
 
  

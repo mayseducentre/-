@@ -15,6 +15,7 @@ import LNote from "../component/portal_component/lesson_note";
 import Meet from "../component/portal_component/meet_online";
 import RegisterBook from "../component/portal_component/registerbook";
 import ViewCalendar from "../component/portal_component/viewcalendar";
+import AnnounceHubView from "../component/portal_component/viewannounce";
 
 function TeachersPortal(){
     
@@ -123,8 +124,11 @@ function TeachersPortal(){
     <div id="register" style={{display:"none"}}>
     <RegisterBook />
     </div>
-    <div id="calendar" style={{display:"none"}}>
+    <div id="calendarviewing" style={{display:"none"}}>
     <ViewCalendar />
+    </div>
+    <div id="messageme" style={{display:"none"}}>
+    <AnnounceHubView />
     </div>
     <div id="footerport">
     <Footer />

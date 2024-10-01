@@ -39,11 +39,11 @@ export default function Library(){
 
 
         <div className="col-lg-4">
-       <Link to="/libraryevent">
+       <Link to="/librarymedia">
             <div className=" list">
                 <img src={require(`../img/${process.env.REACT_APP_LOGO}`)} className="list-img align-items-center" alt="i" />
                 <br/>
-                <h5 style={{fontWeight:"700",fontSize:"20px"}}>&emsp;&emsp;&emsp;Event Media</h5>
+                <h5 style={{fontWeight:"700",fontSize:"20px"}}>&emsp;&emsp;&emsp;MEC Media</h5>
             </div>
             </Link>
         </div>

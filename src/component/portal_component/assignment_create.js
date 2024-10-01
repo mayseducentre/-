@@ -105,6 +105,60 @@ e.preventDefault();
 
 }
 
+
+function fetchAssign(){
+
+    
+    var subject=document.getElementById("subj_assign").value;
+    if(subject === "English"){
+      var path=`${process.env.REACT_APP_ASSIGN_API}/engassign`;
+  }
+  if(subject === "Science"){
+      var path=`${process.env.REACT_APP_ASSIGN_API}/sciassign`;
+  }
+  if(subject === "Social Studies"){
+      var path=`${process.env.REACT_APP_ASSIGN_API}/socassign`;
+  }
+  if(subject === "Mathematics"){
+      var path=`${process.env.REACT_APP_ASSIGN_API}/mathassign`;
+  }
+  if(subject === "Computing"){
+      var path=`${process.env.REACT_APP_ASSIGN_API}/compassign`;
+  }
+  if(subject === "Creative Art"){
+      var path=`${process.env.REACT_APP_ASSIGN_API}/artassign`;
+  }
+  
+  
+    fetch(path)
+    .then(res => res.json())
+    .then(data => findCheck(data))
+    .catch(err => console.log(err))
+  
+  
+  }
+  
+  
+  function findCheck(data){
+    for(var i=0; i< data.length; i++){
+      document.getElementById("assignpost").innerHTML=
+      `
+      <h5>Assignment</h5>
+      <small>End of submision: ${data[i].end_subm}</small>
+      <br>
+      <small>Reference: ${data[i].reference}</small>
+      <center>
+      <h4><u>${data[i].topic}</u></h4>
+      </center>
+      <small>Posted by Sir/Madam ${data[i].name} on ${data[i].time}</small>
+      <br>
+      <br>
+      <textarea style="height:300px;border:none" readonly>${data[i].content}</textarea>
+      `
+           
+    }
+  }
+  
 export default function AssignCreate(){
     const [level, setLevel]=useState([]);
 
@@ -196,6 +250,10 @@ export default function AssignCreate(){
         </div>
     </section>
  
+ <button style={{padding:"10px 20px", borderRadius:"20px", background:"skyblue"}} onClick={fetchAssign}>Check Assignment</button>
+ <div id="assignpost">
+
+ </div>
  
         </>
     )
