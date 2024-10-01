@@ -318,19 +318,19 @@ function Teachersidebar(){
   <div className="bottom-nav animate__animated animate__fadeInUp">
   <a className="fa fa-dashboard" onClick={staffDash}><br /><small className="smaller">Dashboard</small></a>
   <a className="fa fa-bar-chart" onClick={AssignC}><br /><small className="smaller">Assignments</small></a>
-  <a className="fa fa-book" href="#/"><br /><small className="smaller">Gradebook</small></a>
-  <a className="fa fa-bullhorn" href="#/" onClick={Message}><br /><small className="smaller">Annoucement</small></a>
+  <a className="fa fa-book"><br /><small className="smaller">Gradebook</small></a>
+  <a className="fa fa-bullhorn" onClick={Message}><br /><small className="smaller">Annoucement</small></a>
   <a className="fa fa-filter" onClick={Assess}><br /><small className="smaller">Result</small></a>
   <a className="fa fa-file" onClick={Register}><br /><small className="smaller">Register</small></a>
   <a className="fa fa-comments-o" title="Staff Chat Room" onClick={StaffChatroom}><br /><small className="smaller">ChatRoom</small></a>
-  <a className="fa fa-calendar-o" onClick={viewCal} href="#/"><br /><small className="smaller">Calender</small></a>
-  <a className="fa fa-group" href="#/"><br /><small className="smaller">Attendance</small></a>
-  <a className="fa fa-laptop" href="#/" title="Virtual Classroom" onClick={MeetOnline}><br /><small className="smaller">VR Class</small></a>
-  <a className="fa fa-paper" href="#/" title="Examination"><br /><small className="smaller">Exams</small></a>
+  <a className="fa fa-calendar-o" onClick={viewCal}><br /><small className="smaller">Calender</small></a>
+  <a className="fa fa-group"><br /><small className="smaller">Attendance</small></a>
+  <a className="fa fa-laptop" title="Virtual Classroom" onClick={MeetOnline}><br /><small className="smaller">VR Class</small></a>
+  <a className="fa fa-paper" title="Examination"><br /><small className="smaller">Exams</small></a>
   <a className="fa fa-book" onClick={Lesson}><br /><small className="smaller">Notes</small></a>
   <a className="fa fa-user-o" href="#/user_setting"><br /><small className="smaller">Profile</small></a>
   <a className="fa fa-child" onClick={StudentPerf}><br /><small className="smaller">Performance</small></a>
-  <a className="fa fa-shield" href="#/"><br /><small className="smaller">Support</small></a>
+  <a className="fa fa-shield"><br /><small className="smaller">Support</small></a>
 </div>
 </>
     )
