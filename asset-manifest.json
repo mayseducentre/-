@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/-/static/css/main.041b9161.css",
-    "main.js": "/-/static/js/main.b1506040.js",
+    "main.js": "/-/static/js/main.a6e6aff1.js",
     "static/js/206.ff126ec5.chunk.js": "/-/static/js/206.ff126ec5.chunk.js",
     "static/media/maysedu.mp4": "/-/static/media/maysedu.1e5924eb84727a275fa1.mp4",
     "static/media/load.gif": "/-/static/media/load.7f686c03a467bef7dac6.gif",
@@ -9,16 +9,19 @@
     "static/media/bootstrap-icons.woff2?": "/-/static/media/bootstrap-icons.8a4497f49de333c5762d.woff2",
     "static/media/l.gif": "/-/static/media/l.88135ce9c0a28b8b06f2.gif",
     "static/media/hero-bg.jpg": "/-/static/media/hero-bg.8947f2200e2804d08f4d.jpg",
+    "static/media/lib.jpg": "/-/static/media/lib.38ef92193bcf78f8969d.jpg",
     "static/media/mays_logo.png": "/-/static/media/mays_logo.87084b829fc25cb7c7e5.png",
     "static/media/cert.jpg": "/-/static/media/cert.7bbb3f27eea2271eb31a.jpg",
     "static/media/cadet.jpg": "/-/static/media/cadet.6ab0320a587a57188b37.jpg",
     "static/media/speech.jpg": "/-/static/media/speech.95178e1d6bdc6db0ca47.jpg",
+    "static/media/stu.jpg": "/-/static/media/stu.b8c5d2a61a87b10baf62.jpg",
     "static/media/k.jpg": "/-/static/media/k.700c430e0a688d70e3aa.jpg",
     "static/media/kids.jpg": "/-/static/media/kids.bd28a4163cf659a72511.jpg",
     "static/media/nj.jpg": "/-/static/media/nj.783bcea81c2d9049584a.jpg",
     "static/media/play.jpg": "/-/static/media/play.26027e2bfb6f7478f9e0.jpg",
     "static/media/course-3.jpg": "/-/static/media/course-3.1d8f1686dd3fece82531.jpg",
     "static/media/pool.jpg": "/-/static/media/pool.3aaa428e90309a9e7e7f.jpg",
+    "static/media/build.jpg": "/-/static/media/build.2fb889a42be29a4d8805.jpg",
     "static/media/ui.jpg": "/-/static/media/ui.822ce626189516076d19.jpg",
     "static/media/events-2.jpg": "/-/static/media/events-2.349a60769975821146de.jpg",
     "static/media/about.jpg": "/-/static/media/about.3aa43b213aab086003cb.jpg",
@@ -34,6 +37,6 @@
   },
   "entrypoints": [
     "static/css/main.041b9161.css",
-    "static/js/main.b1506040.js"
+    "static/js/main.a6e6aff1.js"
   ]
 }
