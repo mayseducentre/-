@@ -3,6 +3,7 @@ import StudentPortal from "../portal/student_portal";
 import ParentPortal from "../portal/parent_portal";
 import TeachersPortal from "../portal/teachers_portal";
 import bcrypt from "bcryptjs";
+import Daycarestaffportal from "../portal/daycarestaff";
 
 var readonly={
     padding:"2px 3px",
@@ -99,13 +100,31 @@ function logintoPortal(data){
         }
 
         
-        if(log_userid === data[i].id && passwordcheck && data[i].role === "staff" && data[i].status === "enrolled"){
+        if(log_userid === data[i].id && passwordcheck && data[i].role === "staff" && data[i].status === "enrolled" && data[i].school !== "daycare"){
             document.getElementById("portalogin").style.display="none";
            
             document.getElementById("teachportal").style.display="block";
             document.getElementById("teacherusername").innerHTML=data[i].name;
             document.getElementById("staffname").value=data[i].name;
             document.getElementById("teacherid").value=data[i].id;
+            
+            document.getElementById("fn_assign").value=data[i].name;
+            document.getElementById("email_assign").value=data[i].email;
+            document.getElementById("subj_assign").value=data[i].subject;
+            document.getElementById("subject_owner").value=data[i].subject;
+            document.getElementById("teachimgport").src=data[i].thumbnailUrl;
+            document.getElementById("teachheadimg").src=data[i].thumbnailUrl;
+            
+            
+        }
+
+        if(log_userid === data[i].id && passwordcheck && data[i].role === "staff" && data[i].status === "enrolled" && data[i].school === "daycare"){
+            document.getElementById("portalogin").style.display="none";
+           
+            document.getElementById("daycarestaffportal").style.display="block";
+            document.getElementById("teacherusername").innerHTML=data[i].name;
+            document.getElementById("staffname").value=data[i].name;
+            document.getElementById("daycarestaffid").value=data[i].id;
             
             document.getElementById("fn_assign").value=data[i].name;
             document.getElementById("email_assign").value=data[i].email;
@@ -181,7 +200,7 @@ export default function SignLog(){
                         <div className="field input-field">
                             <input type="password" name="password" placeholder="Password" id="portal_key" className="password" required/>
                             <i className='bx bx-hide eye-icon'></i>
-                            <a>Forgot password</a>
+                            <a onClick={()=>{window.location.href="#/fgps"}}>Forgot password</a>
                         </div>
 <br/>
                        
@@ -222,6 +241,10 @@ export default function SignLog(){
 
 <div id="parentportal" style={{display:"none"}}>
     <ParentPortal />
+</div>
+
+<div id="daycarestaffportal" style={{display:"none"}}>
+    <Daycarestaffportal />
 </div>
 
         </div>

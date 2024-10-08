@@ -3,9 +3,9 @@ import Breadcrumb from "../breadcrumb";
 
 
 
-function handleIframe(table){
-    document.getElementById("imgdisplay").src=`${table.img}`;
-    document.getElementById("event_name").innerHTML=table.timetable_level;
+function handleIframe(cal){
+    document.getElementById("calimg").src=`${cal.img}`;
+    document.getElementById("callevel").innerHTML=cal.timetable_level;
     document.getElementById("iframe").style.display="block";
     document.getElementById("calv").style.display="none";
 
@@ -54,10 +54,10 @@ const [loading, setLoading]=useState(false);
 <div className="scroll-container" id="scroll1">
 
 
-{featured.map(table => (
- <div className="scroll-item" key={table.id} onClick={()=>handleIframe(table)}>
- <img src={table.img}/>
-<textarea value={table.timetable_level} readOnly></textarea>
+{featured.map(cal => (
+ <div className="scroll-item" key={cal.id} onClick={()=>handleIframe(cal)}>
+ <img src={cal.img}/>
+<textarea value={cal.timetable_level} readOnly></textarea>
     </div>
 ))} 
 
@@ -71,13 +71,13 @@ const [loading, setLoading]=useState(false);
   <div style={{width:"100%",background:"cornsilk",padding:"10px 12px",position:"fixed",top:"60px"}}>
     <a onClick={Back}>Calendar </a>
     <i className="fa fa-arrow-right"></i>
-    <a id="event_name"></a>
+    <a id="callevel"></a>
   </div>
   <br/>
   <br/>
 <center>
 
-<img id="imgdisplay" style={{width:"auto",height:"auto"}} />
+<img id="calimg" style={{width:"auto",height:"auto"}} />
 </center>
 
 <button style={{padding:"10px 20px", background:"none", border:"1px solid orange"}} onClick={Back}>Back</button>

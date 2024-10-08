@@ -4,13 +4,15 @@ var path=process.env.REACT_APP_ACCOUNT_API;
 export default function MeetT(){
 
     const [staff, setStaff]=useState([]);
-
+const stc=()=>{
+  fetch(`${path}/staffaccount`)
+  .then(res => res.json())
+  .then(data => setStaff(data))
+  .catch(err => console.log(err))
+  
+}
     useEffect(()=>{
-        fetch(`${path}/staffaccount`)
-        .then(res => res.json())
-        .then(data => setStaff(data))
-        .catch(err => console.log(err))
-        
+  stc()    
     },[])
     return(
         <>
@@ -19,6 +21,7 @@ export default function MeetT(){
 
                
                 <div className="card-body"  style={{maxHeight:"400px"}}>
+                  <a onClick={()=>{stc()}}>Refresh</a>
                   <h5 className="card-title">Meet Teachers <span>| {process.env.REACT_APP_BRAND_SHORT}</span></h5>
 
                   <table className="table table-borderless datatable">

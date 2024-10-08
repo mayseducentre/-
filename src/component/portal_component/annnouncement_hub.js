@@ -19,12 +19,15 @@ function AnnounceV(){
 }
 export default function AnnounceHub(){
     const [ann, setAnn]=useState([]);
-
+const refm=()=>{
+    
+    fetch(`${assignpath}/mail`)
+    .then(res=>res.json())
+    .then(data=> setAnn(data))
+    .catch(err=> console.log(err))
+}
     useEffect(()=>{
-        fetch(`${assignpath}/mail`)
-        .then(res=>res.json())
-        .then(data=> setAnn(data))
-        .catch(err=> console.log(err))
+        refm()
     },[])
     return(
         <>
@@ -36,8 +39,10 @@ export default function AnnounceHub(){
                     <input type="text" placeholder="Search in mails" style={{padding:"10px 12px", width:"90%", borderRadius:"20px"}}/>
                 </center>
                 <br/>
-                <br/>
-
+                
+<a onClick={()=>{refm()}}>Refresh</a>
+<br/>
+<br/>
                 <small>Primary</small>
                 <br/>
                 <br/>

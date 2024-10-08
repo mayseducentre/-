@@ -9,6 +9,7 @@ function AdminD(){
   document.getElementById("announcehub").style.display="none"
   document.getElementById("accessibility").style.display="none"
   document.getElementById("calendar").style.display="none"
+  document.getElementById("account").style.display="none"
 }
 
 function MngSt(){
@@ -19,6 +20,7 @@ function MngSt(){
   document.getElementById("announcehub").style.display="none"
   document.getElementById("accessibility").style.display="none"
   document.getElementById("calendar").style.display="none"
+  document.getElementById("account").style.display="none"
 }
 
 
@@ -30,6 +32,7 @@ function Access(){
   document.getElementById("announcehub").style.display="none"
   document.getElementById("accessibility").style.display="block"
   document.getElementById("calendar").style.display="none"
+  document.getElementById("account").style.display="none"
 }
 
 function MngT(){
@@ -40,6 +43,7 @@ function MngT(){
   document.getElementById("announcehub").style.display="none"
   document.getElementById("accessibility").style.display="none"
   document.getElementById("calendar").style.display="none"
+  document.getElementById("account").style.display="none"
 }
 
 function MngP(){
@@ -50,6 +54,7 @@ function MngP(){
   document.getElementById("announcehub").style.display="none"
   document.getElementById("accessibility").style.display="none"
   document.getElementById("calendar").style.display="none"
+  document.getElementById("account").style.display="none"
 }
 
 
@@ -61,6 +66,7 @@ function Announcement(){
   document.getElementById("announcehub").style.display="block"
   document.getElementById("accessibility").style.display="none"
   document.getElementById("calendar").style.display="none"
+  document.getElementById("account").style.display="none"
 }
 
 function CreateCalendar(){
@@ -71,6 +77,19 @@ function CreateCalendar(){
   document.getElementById("announcehub").style.display="none"
   document.getElementById("accessibility").style.display="none"
   document.getElementById("calendar").style.display="block"
+  document.getElementById("account").style.display="none"
+}
+
+
+function AccountD(){
+  document.getElementById("admindash").style.display="none";
+  document.getElementById("mng_parent").style.display="none";
+  document.getElementById("mng_staff").style.display="none";
+  document.getElementById("mng_stu").style.display="none";
+  document.getElementById("announcehub").style.display="none"
+  document.getElementById("accessibility").style.display="none"
+  document.getElementById("calendar").style.display="none"
+  document.getElementById("account").style.display="block"
 }
 
 function AdminSidebar(){
@@ -129,6 +148,12 @@ function AdminSidebar(){
       </li>
       
 
+      <li className="nav-item" onClick={AccountD}>
+        <a className="nav-link collapsed">
+          <i className="fa fa-diamond"></i>
+          <span>Daycare Account</span>
+        </a>
+      </li>
 
       
       <li className="nav-item" onClick={Access}>
@@ -218,11 +243,12 @@ function AdminSidebar(){
   <a className="fa fa-group"  onClick={MngSt}><br /><small className="smaller">Mng_Stu</small></a>
   <a className="fa fa-group" onClick={MngT}><br /><small className="smaller">Mng_Staff</small></a>
   <a className="fa fa-group" onClick={MngP}><br /><small className="smaller">Mng_Parent</small></a>
+  <a className="fa fa-group" onClick={AccountD}><br /><small className="smaller">Account</small></a>
   <a className="fa fa-database" ><br /><small className="smaller">Server</small></a>
   <a className="fa fa-flash" ><br /><small className="smaller">Tracking</small></a>
   <a className="fa fa-laptop" title="Virtual Meeting"><br /><small className="smaller">VR Meet</small></a>
   <a className="fa fa-calendar-o" onClick={CreateCalendar}><br /><small className="smaller">Calendar</small></a>
-  <a className="fa fa-bullhorn" href="#/user_setting" onClick={Announcement}><br /><small className="smaller">Announce_Hub</small></a>
+  <a className="fa fa-bullhorn" onClick={Announcement}><br /><small className="smaller">Announce_Hub</small></a>
   <a className="fa fa-cog" onClick={Access}><br /><small className="smaller">Accessibility</small></a>
   <a className="fa fa-shield" ><br /><small className="smaller">Support</small></a>
 </div>

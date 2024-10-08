@@ -54,6 +54,9 @@ export default function Contact(){
         </div>
     </section>
 
+
+<iframe src="https://www.google.com/maps/embed?pb=!4v1728159603136!6m8!1m7!1slFmycjwEkpPlEXhlOcdl-g!2m2!1d5.564983967022078!2d-0.2659501365222267!3f301.87363!4f0!5f0.7820865974627469" width="600" height="450" style={{border:"0"}} allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+
     <ScrollToTop smooth className="scrolly" />
     <Footer />
         </>

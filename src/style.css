@@ -182,7 +182,7 @@ Link:hover{
     width: 100%;
     height: 80vh;
     position: relative;
-  }
+    }
   
   #hero:before {
     content: "";
@@ -1913,4 +1913,170 @@ img {vertical-align: middle;}
 .hoverprofile:hover{
   width: 150px;
   height: 150px;
+}
+
+
+/*
+# Gallery
+--------------------------------*/
+/* .home-gallery {
+    overflow: hidden;
+}
+
+.gallery-wrap {
+    margin-right: -5px;
+    margin-left: -5px;
+}
+
+.gallery-grid {
+    margin: 5px;
+    overflow: hidden;
+}
+
+.gallery-grid img {
+    display: block;
+    max-width: 100%
+}
+
+.gallery-grid1x1 {
+    width: calc(100% / 8 - 10px);
+}
+
+.gallery-grid2x1,
+.gallery-grid2x2 {
+    width: calc(100% / 4 - 10px);
+    margin-bottom: 6px;
+}
+
+.gallery-grid2x2 {
+    width: calc(100% / 4 - 10px);
+    margin-bottom: 7px;
+}
+
+@media screen and (max-width: 1200px) {
+    .gallery-grid1x1 {
+        width: calc(100% / 4 - 10px);
+    }
+
+    .gallery-grid2x1,
+    .gallery-grid2x2 {
+        width: calc(100% / 2 - 10px);
+    }
+
+    .gallery-grid2x2 {
+        width: calc(100% / 2 - 10px);
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .gallery-grid1x1 {
+        width: calc(100% / 2 - 10px);
+    }
+
+    .gallery-grid2x1,
+    .gallery-grid2x2 {
+        width: calc(100% / 1- 10px);
+        margin-bottom: 6px;
+    }
+
+    .gallery-grid2x2 {
+        width: calc(100% / 1 - 10px);
+        margin-bottom: 7px;
+    }
+}
+
+.flex-wrap {
+  -ms-flex-wrap: wrap !important;
+      flex-wrap: wrap !important;
+} */
+
+
+
+ 
+/* .single-deal {
+  position: relative;
+  margin-bottom: 30px; }
+  .single-deal .overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    content: "";
+    background: #000;
+    opacity: 0;
+    visibility: hidden;
+    -webkit-transition: all 0.3s ease 0s;
+    -moz-transition: all 0.3s ease 0s;
+    -o-transition: all 0.3s ease 0s;
+    transition: all 0.3s ease 0s; }
+  .single-deal .deal-details {
+    position: absolute;
+    left: 50%;
+    top: 115%;
+    display: inline-block;
+    text-align: center;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    visibility: hidden;
+    -webkit-transition: all 0.3s ease 0s;
+    -moz-transition: all 0.3s ease 0s;
+    -o-transition: all 0.3s ease 0s;
+    transition: all 0.3s ease 0s; }
+    .single-deal .deal-details h6 {
+      color: #fff;
+      text-transform: uppercase; }
+  .single-deal:hover .overlay {
+    opacity: .5;
+    visibility: visible; }
+  .single-deal:hover .deal-details {
+    top: 50%;
+    opacity: 1;
+    visibility: visible; } */
+
+
+
+    
+.imgrow {
+  display: -ms-flexbox; /* IE10 */
+  display: flex;
+  -ms-flex-wrap: wrap; /* IE10 */
+  flex-wrap: wrap;
+  padding: 0 4px;
+}
+
+/* Create four equal columns that sits next to each other */
+.imgcolumn {
+  -ms-flex: 25%; /* IE10 */
+  flex: 25%;
+  max-width: 25%;
+  padding: 0 4px;
+}
+
+.imgcolumn img {
+  margin-top: 8px;
+  vertical-align: middle;
+  width: 100%;
+}
+
+/* Responsive layout - makes a two imgcolumn-layout instead of four columns */
+@media screen and (max-width: 800px) {
+  .imgcolumn {
+    -ms-flex: 50%;
+    flex: 50%;
+    max-width: 50%;
+  }
+}
+
+/* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 600px) {
+  .imgcolumn {
+    -ms-flex: 100%;
+    flex: 100%;
+    max-width: 100%;
+  }
 }

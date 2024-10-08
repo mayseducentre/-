@@ -8,13 +8,13 @@ export default function Meet(){
     }
     return(
         <>
-        {isMeeting ? (
+        {/* {isMeeting ? (
             <iframe style={{width:"100%",height:"100vh"}} src="https://whereby.com/meconline" allow="camera; microphone; fullscreen; speaker; display-capture"></iframe>
         ) : (
             <p>You have left the meeting.</p>
         
         )}
-        <button onClick={Quit}>Quit Meeting</button>
+        <button onClick={Quit}>Quit Meeting</button> */}
         </>
     )
 }

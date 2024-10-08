@@ -6,6 +6,7 @@ import ScrollToTop from "react-scroll-to-top";
 import Header from "./header";
 
 import emailjs from "emailjs-com";
+import { Link } from "react-router-dom";
 
 function Overview(){
     var overview=document.getElementById("profile-overview");
@@ -576,7 +577,9 @@ export default function UserSet() {
                 <div className="row mb-3">
                   <label for="fullName" className="col-md-4 col-lg-3 col-form-label">Account</label>
                   <div className="col-md-8 col-lg-9">
+                    <Link to="/fgps">
                   <button className="btn btn-primary" style={{background:"transparent",color:"black"}}>Change Password</button>
+                  </Link>
                   <br/>
                   <br/>
                   <button onClick={DelAccount} className="btn btn-primary" style={{background:"red",color:"white"}}>Delete Account</button>

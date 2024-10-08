@@ -2,6 +2,7 @@ import Breadcrumb from "../component/breadcrumb";
 import Footer from "../component/footer";
 import Headline from "../component/headlines";
 import Accessibility from "../component/portal_component/access";
+import DaycareStaff from "../component/portal_component/adm_account";
 import AdminDash from "../component/portal_component/admindash";
 import AnnounceHub from "../component/portal_component/annnouncement_hub";
 import Calendar from "../component/portal_component/calendar";
@@ -129,6 +130,10 @@ function AdminPortal(){
 
     <div id="announcehub" style={{display:"none"}}>
       <AnnounceHub />
+    </div>
+    
+    <div id="account" style={{display:"none"}}>
+      <DaycareStaff />
     </div>
 
     <Footer />

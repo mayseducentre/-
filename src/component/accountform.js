@@ -46,6 +46,7 @@ function checkps(){
         document.getElementById("passcode_account").style.backgroundColor="#fa7373"
         
         document.getElementById("passcode_confirm").style.backgroundColor="#fa7373";
+        
     
        
        }
@@ -108,7 +109,6 @@ export default function Accountform(){
         var birth=document.getElementById("birth_account").value;
         var Pphone=document.getElementById("Pphone_account").value;
         var childlevel=document.getElementById("childlevel_account").value;
-        var stafflevel=document.getElementById("stafflevel").value;
     
         const salt=bcrypt.genSaltSync(10);
         const hashedpassword=bcrypt.hashSync(passcode, salt);
@@ -123,6 +123,7 @@ export default function Accountform(){
         const formData={
             user_email: formRef.current.user_email.value,
             reply_to: formRef.current.user_email.value,
+            subj:"User ID generated",
             to_name: formRef.current.user_name.value,
             mays_msg:`${name}, your userID is '${id}'. Please use this ${id} to login into the portal. https://mayseducentre.github.io/-#/portal` 
          };
@@ -176,13 +177,11 @@ export default function Accountform(){
             "role":"staff",
             "gender": gender,
             "subject": subject,
-            "fees": "700",
             "contact": phone,
             "thumbnailUrl": base64data,
             "notice":"",
             "report":"",
             "status":"enrolled",
-            "staff_level":stafflevel,
             "account_date":acc_date
         }
     } 
@@ -486,16 +485,7 @@ window.location.reload()})
                                      </select>
                             </div>
 
-                            <div className="checkout__input">
-                                <p>Staff Level<span>*</span></p>
-                                <select style={select} id="stafflevel">
-                               
-                                        <option value="basic_jhs">Basic/JHS</option>
-                                        <option value="daycare">DayCare</option>
-                                   
-                                    
-                                     </select>
-                            </div>
+                            
 
                           
                     </div>
@@ -518,8 +508,8 @@ window.location.reload()})
                                 <p>Child's Level<span>*</span></p>
                                 <select style={select} id="childlevel_account">
                                
-                                        <option value="basic_jhs">Basic/JHS</option>
-                                        <option value="daycare">DayCare</option>
+                                        <option value="primary">Basic/Primary</option>
+                                        <option value="jhs">JHS</option>
                                    
                                     
                                      </select>

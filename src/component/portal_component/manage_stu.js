@@ -57,12 +57,14 @@ function DelAcc(){
 export default function ManageST(){
 
     const [stu, setStu]=useState([]);
-
+const stucc=()=>{
+    fetch(`${path}/studentaccount`)
+    .then(res => res.json())
+    .then(data => setStu(data))
+    .catch(err => console.log(err))
+}
     useEffect(()=>{
-        fetch(`${path}/studentaccount`)
-        .then(res => res.json())
-        .then(data => setStu(data))
-        .catch(err => console.log(err))
+       stucc()
         
     },[])
     return(
@@ -76,6 +78,7 @@ export default function ManageST(){
 
                
                 <div className="card-body"  style={{maxHeight:"400px"}}>
+          <a onClick={()=>{stucc()}}>Refresh</a>
                   <h5 className="card-title">Meet Students <span>| {process.env.REACT_APP_BRAND_SHORT}</span></h5>
 
                   <table className="table table-borderless scrolltable">

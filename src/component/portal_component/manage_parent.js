@@ -58,13 +58,15 @@ function DelAcc(){
 export default function ManageP(){
 
     const [stu, setStu]=useState([]);
-
+const prnt=()=>{
+    
+    fetch(`${path}/parentaccount`)
+    .then(res => res.json())
+    .then(data => setStu(data))
+    .catch(err => console.log(err))
+}
     useEffect(()=>{
-        fetch(`${path}/parentaccount`)
-        .then(res => res.json())
-        .then(data => setStu(data))
-        .catch(err => console.log(err))
-        
+        prnt()
     },[])
     return(
         <>
@@ -74,6 +76,7 @@ export default function ManageP(){
 
                
                 <div className="card-body"  style={{maxHeight:"400px"}}>
+                 <a onClick={()=>{prnt()}}>Refresh</a>
                   <h5 className="card-title">Meet Parents <span>| {process.env.REACT_APP_BRAND_SHORT}</span></h5>
 
                   <table className="table table-borderless scrolltable">

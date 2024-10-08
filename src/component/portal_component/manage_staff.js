@@ -56,13 +56,15 @@ function DelAcc(){
 export default function ManageT(){
 
     const [stu, setStu]=useState([]);
-
+const stf=()=>{
+    
+    fetch(`${path}/staffaccount`)
+    .then(res => res.json())
+    .then(data => setStu(data))
+    .catch(err => console.log(err))
+}
     useEffect(()=>{
-        fetch(`${path}/staffaccount`)
-        .then(res => res.json())
-        .then(data => setStu(data))
-        .catch(err => console.log(err))
-        
+        stf()
     },[])
     return(
         <>
@@ -70,8 +72,9 @@ export default function ManageT(){
          <div className="col-12">
               <div className="card recent-sales overflow-auto">
 
-               
                 <div className="card-body"  style={{maxHeight:"400px"}}>
+                <a onClick={()=>{stf()}}>Refresh</a>   
+           
                   <h5 className="card-title">Meet Staffs <span>| {process.env.REACT_APP_BRAND_SHORT}</span></h5>
 
                   <table className="table table-borderless scrolltable">
@@ -82,6 +85,7 @@ export default function ManageT(){
                         <th>Staff_Name</th>
                         <th>Staff_Subject</th>
                         <th>Staff_Email</th>
+                        <th>School</th>
                         <th>Status</th>
                         </tr>
                     </thead>
@@ -93,6 +97,7 @@ export default function ManageT(){
                         <td>{info.name}</td>
                         <td>{info.subject}</td>
                         <td><a href="mailto:${info.email}">{info.email}</a></td>
+                        <td>{info.school}</td>
                         <td>{info.status}</td>
                         </tr>
                       
