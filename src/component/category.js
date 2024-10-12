@@ -62,7 +62,7 @@ fetch(`${path}/clubs`)
             </div>
             <div className="row">
                 {clubs.map(club=>(
-                 <div className="col-lg-3 col-md-6 mb-4" key={club.id}>
+                 <div className="col-lg-3 col-md-6 mb-4" key={club.id} onClick={()=>{alert(club.description)}}>
                  <div className="cat-item position-relative overflow-hidden rounded mb-2">
                      <img className="img-fluid" src={require("../img/ui.jpg")} alt=""/>
                      <a className="cat-overlay text-white text-decoration-none" href="">

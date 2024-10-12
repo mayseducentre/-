@@ -81,21 +81,21 @@ export default function About(){
               <div className="row">
                 <div className="col-xl-4 d-flex align-items-stretch">
                   <div className="icon-box mt-4 mt-xl-0">
-                    <i className="fa fa-receipt"></i>
+                    <i className="fa fa-graduation-cap"></i>
                     <h4>Global Awareness</h4>
                     <p>Students experience a purposeful exchange of world views and interaction with other cultures.</p>
                   </div>
                 </div>
                 <div className="col-xl-4 d-flex align-items-stretch">
                   <div className="icon-box mt-4 mt-xl-0">
-                    <i className="fa fa-cube-alt"></i>
+                    <i className="fa fa-book"></i>
                     <h4>Standard-Based Learning</h4>
                     <p>Our curriculum is positioned so students are successful wherever the future of their education may take them.</p>
                   </div>
                 </div>
                 <div className="col-xl-4 d-flex align-items-stretch">
                   <div className="icon-box mt-4 mt-xl-0">
-                    <i className="fa fa-images"></i>
+                    <i className="fa fa-paper-plane"></i>
                     <h4>Balanced and Robust Education</h4>
                     <p>We culivate well rounded, confident students across our curriculum and co-curricular activities</p>
                   </div>

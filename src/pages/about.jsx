@@ -55,7 +55,7 @@ export default function Aboutp(){
 
 <br/>
 <h4>Our History</h4>
-<p>MDCEC has a rich history of academic achievement and community involvement. Over the years, we have grown and evolved, continually adapting to the needs of our students and the demands of the modern world. Our dedicated and supportive community have been the backbone of our success.</p>
+<p>MDCEC has a rich history of academic achievement and community involvement. Over the years (30+), we have grown and evolved, continually adapting to the needs of our students and the demands of the modern world. Our dedicated and supportive community have been the backbone of our success.</p>
 
 <br/>
 <h4>Our Facilities</h4>

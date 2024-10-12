@@ -54,8 +54,8 @@ fetch(`${path}/blog`)
         <div className="row gy-4">
         {blog.map(blogger=>(
 
- <div className="col-xl-4 col-md-6" onClick={()=>{handleInfo(blogger)}} key={blogger.id}>
- <article>
+ <div className="col-xl-4 col-md-6" key={blogger.id}>
+ <article onClick={()=>{handleInfo(blogger)}}>
 
    <div className="post-img">
      <img src={blogger.news_img} alt="" className="img-fluid"/>

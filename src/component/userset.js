@@ -238,6 +238,7 @@ function pushChanges(){
     var role=document.getElementById("overviewroleport").innerHTML;
     var editcountry=document.getElementById("countryport").value;
     var editphone=document.getElementById("phoneport").value;
+    var editaddress=document.getElementById("addressport").value;
     var editsocial=document.getElementById("socialport").value;
     var editemail=document.getElementById("emailport").value;
     var imageurl;
@@ -272,6 +273,7 @@ function pushChanges(){
         body:JSON.stringify({
             "id":id,
             "email":editemail,
+            "address":editaddress,
             "contact":editphone,
             "notice":"",
             "country":editcountry,
@@ -525,6 +527,12 @@ export default function UserSet() {
                   </div>
                 </div>
 
+                <div className="row mb-3">
+                  <label for="Address" className="col-md-4 col-lg-3 col-form-label">Address</label>
+                  <div className="col-md-8 col-lg-9">
+                    <input name="addressport" type="text" className="form-control" id="addressport" onKeyUp={()=>{document.getElementById("overviewaddressport").innerHTML=document.getElementById("addressport").value}}/>
+                  </div>
+                </div>
                
 
                 <div className="row mb-3">
