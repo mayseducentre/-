@@ -162,6 +162,8 @@ export default function Accountform(){
             "performance":"active",
             "notice":"",
             "report":"",
+            "address":"",
+            "school":"MEC",
             "status":"enrolled",
             "account_date":acc_date
         }
@@ -180,7 +182,9 @@ export default function Accountform(){
             "contact": phone,
             "thumbnailUrl": base64data,
             "notice":"",
+            "school":"MEC",
             "report":"",
+            "address":"",
             "status":"enrolled",
             "account_date":acc_date
         }
@@ -200,6 +204,8 @@ export default function Accountform(){
             "other_child_id": childid2,
             "child_level":childlevel,
             "notice":"",
+            "school":"MEC",
+            "address":"",
             "report":"",
             "thumbnailUrl": base64data,
             "status":"enrolled",
@@ -540,7 +546,7 @@ window.location.reload()})
 <br/>
 <br/>
 <center>
-<p>Contact <a href="tel:0244370801">Admin</a> if you need any help</p>
+<p><a href="tel:0549271528">Get help</a> if you need any help. Via call or whatsapp</p>
 </center>
 
         </>

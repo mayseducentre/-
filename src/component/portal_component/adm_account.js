@@ -1,5 +1,4 @@
 
-import bcrypt from "bcryptjs"
 import emailjs from "emailjs-com"
 import { useRef } from "react";
 
@@ -46,7 +45,7 @@ export default function DaycareStaff(){
             reply_to: formRef.current.user_email.value,
             subj:"Invited to MEC daycare portal",
             to_name: formRef.current.user_name.value,
-            mays_msg:`You have been invited to join the MEC Daycare staff portal. Click the link below to create your account. ${name},use this id:   '${id}' to fill out the form. https://mayseducentre.github.io/-#/daycareform` 
+            mays_msg:`You have been invited to join the MEC Daycare staff portal. Click the link below to create your account. ${name},use this id:   '${id}' to fill out the form. https://mayseducentre.github.io/-#/daycareuser/account/form` 
          };
   
          const noticemail = {

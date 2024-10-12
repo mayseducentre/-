@@ -8,20 +8,52 @@ export default function InsGuide(){
         <Header />
         <Breadcrumb title="Installation Guide" />
         <div>
+            <h4>Installing MEC app on different devices.</h4>
+            <h6>Android (Chrome and other browsers)</h6>
             
-        <h2>How to install {process.env.REACT_APP_BRAND_SHORT} App</h2>
+            <p>1.<b>Automatic Install Prompt</b><br/>
+            When you visit the MEC webapp on chrome(or most modern browsers like Firefox, Edge), you should automatically see an "Add to Home Screen" prompt, or you can manually install it by going to the browser's menu (three dots<i className="fa fa-ellipsis-v"></i> in chrome) and selecting "Install app" or "Add to Home Screen".
+            </p>
+
+            <p>2.<b>Steps</b><br/>
             <ul>
-                <li>Open <a href="https://mayseducentre.github.io/-/">https://mayseducentre.github.io/-/</a> on any browser. If you are already on the {process.env.REACT_APP_BRAND_SHORT} website then don't bother to open the link.</li>
-                <li>On the top right corner of the browser you will see an icon <i className="fa fa-ellipsis-v"></i>. Click on that icon.</li>
-                <li>A modal box will display the controls of the browser. For example, when you open {process.env.REACT_APP_BRAND_SHORT} webpage on chrome, click the <i className="fa fa-ellipsis-v"></i> icon at the top right of the page, a modal box displaying "new tab","new window", "new incognito window" .etc. will show.</li>
-                <li>On the modal box, scroll down to find "Install App" or "Install {process.env.REACT_APP_BRAND_SHORT} app" in the list.</li>
-                <li>Click on "Install app" or "Install {process.env.REACT_APP_BRAND_SHORT} app". This will take some moment to install the app on your device.</li>
+            <li>Visit mayseducentre.github.io/-/ in chrome</li>
+            <li>Tap the three dots (menu) in the upper right corner.</li>
+            <li>Select "Add to Home Screen"</li>
             </ul>
-        </div>
+            </p>
 
-        <p>Some browsers may not allow you to install the app. This mostly occurs when the browser is outdated.</p>
-        <p>Try updating the browser if you face challenges of installing the app. Or click on save and share in the modalbox, a dropdown will appear to install mec app.</p><p>You can <a href="#/contact">Contact</a> us for help.</p>
+            <h6>IOS (Safari)</h6>
+            <p>1.<b>Manual Installation</b><br/>
+            IOS doesn't support the automatic install prompt like Android, but users can install MEC webapp manually through safari.
+            </p>
 
+            <p>2.<b>Steps:</b>
+            <ul>
+            <li>Open mayseducentre.github.io/-/ in Safari</li>
+            <li>Tap the <b>Share</b> button (square with an arrow pointing up).</li>
+            <li>Scroll down and select "Add to Home Screen"</li>
+            <li>Follow the prompts to add the app to the home screen</li>
+            </ul></p>
+        
+
+            
+            <h6>Desktop (Chrome, Edge, Firefox)</h6>
+            <p>1.<b>Install on Desktop</b><br/>
+          When users visit mayseducentre.github.io/-/ on a desktop browser (like chrome or Edge), they may see an install button in the address bar (or a browser menu option).
+            </p>
+
+            <p>2.<b>Steps (Chrome/Edge)</b>
+            <ul>
+            <li>Open mayseducentre.github.io/-/ in the browser</li>
+            <li>Look for the <b>"Install"</b> button in the address bar or in the browser menu.</li>
+            <li>Click on<b>Install</b> to add the app to the desktop</li>
+            </ul></p>
+            
+            <p>3.<b>For other browsers</b>
+            Firefox and other modern browsers offer a similar installation option, though it might be labeled differently (like "Save to desktop")
+            </p>
+            </div>
         <Footer />
         </>
     )

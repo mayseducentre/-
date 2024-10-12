@@ -163,9 +163,9 @@ export default function Daycarestaffbar(){
                 <a href="#/" className="logo">
                     <img src={require(`../img/${process.env.REACT_APP_LOGO}`)} alt="" className="img-fluid animate__animated animate__zoomIn"/></a>
                     <div>
-                    <a href="#/user_setting" id="teacherusername" style={{textTransform:"uppercase",color:"whitesmoke"}}>
+                    <a href="#/user_setting" id="daycusername" style={{textTransform:"uppercase",color:"whitesmoke"}}>
                       </a>&nbsp;
-                      <img id="teachheadimg" style={{width:"40px",height:"40px",borderRadius:"50%",zIndex:"9"}} />
+                      <img id="daycheadimg" style={{width:"40px",height:"40px",borderRadius:"50%",zIndex:"9"}} />
                   
                     </div>
                     
@@ -178,7 +178,7 @@ export default function Daycarestaffbar(){
     <Link to="/user_setting">
       <li className="nav-item">
         <a className="nav-link">
-        <img id="teachimgport" style={{width:"50px",height:"50px",borderRadius:"50%",zIndex:"9"}} />
+        <img id="daycimgport" style={{width:"50px",height:"50px",borderRadius:"50%",zIndex:"9"}} />
      &nbsp;<span style={{textTransform:"uppercase",color:"whitesmoke"}}>Daycare Staff
                       </span>
         </a>

@@ -425,7 +425,7 @@ export default function UserSet() {
 
 
               <div className="row">
-                <div className="col-lg-3 col-md-4 label">Phone</div>
+                <div className="col-lg-3 col-md-4 label">Contact</div>
                 <div className="col-lg-9 col-md-8" id="overviewphoneport"></div>
               </div>
 
@@ -439,11 +439,27 @@ export default function UserSet() {
                 <div className="col-lg-9 col-md-8" id="overviewemailport"></div>
               </div>
              
-
+              <div className="row">
+                <div className="col-lg-3 col-md-4 label">Status</div>
+                <div className="col-lg-9 col-md-8" id="overviewstatusport"></div>
+              </div>
+             
               <div className="row">
                 <div className="col-lg-3 col-md-4 label">Social Media Link</div>
                 <div className="col-lg-9 col-md-8" id="overviewsocialport"></div>
               </div>
+
+              
+              <div className="row">
+                <div className="col-lg-3 col-md-4 label">Address</div>
+                <div className="col-lg-9 col-md-8" id="overviewaddressport"></div>
+              </div>
+
+              <div className="row">
+                <div className="col-lg-3 col-md-4 label">Account Date</div>
+                <div className="col-lg-9 col-md-8" id="overviewaccport"></div>
+              </div>
+             
              
             </div>
 

@@ -20,6 +20,7 @@ import News from "./pages/news_update";
 import MecMedia from "./library/mec_media";
 import PostB from "./pages/blogpost";
 import ForgetPs from "./component/forgetps";
+import DaycareForm from "./component/daycare_form";
 
 window.addEventListener("keyup", (e)=>{
   if(e.ctrlKey && e.altKey && e.key === "a"){
@@ -77,6 +78,7 @@ function App() {
       <Route path="/manage_items" element={<ManageItems />} />
       <Route path="/fgps" element={<ForgetPs />} />
       <Route path="/blogpost" element={<PostB />} />
+      <Route path="/daycareuser/account/form" element={<DaycareForm />} />
       <Route path="/user_setting" element={<SignSet />} />
        </Route>
     </Routes>

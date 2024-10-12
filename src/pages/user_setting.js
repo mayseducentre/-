@@ -90,7 +90,10 @@ document.getElementById("overviewgenderport").innerHTML=data[i].gender;
 document.getElementById("overviewroleport").innerHTML=data[i].role;
 document.getElementById("overviewcountryport").innerHTML=data[i].country;
 document.getElementById("overviewphoneport").innerHTML=data[i].contact;
+document.getElementById("overviewaddressport").innerHTML=data[i].address;
+document.getElementById("overviewstatusport").innerHTML=data[i].status;
 document.getElementById("overviewclassport").innerHTML=data[i].class;
+document.getElementById("overviewaccport").innerHTML=data[i].acc_date;
 document.getElementById("overviewemailport").innerHTML=data[i].email;
 document.getElementById("overviewsocialport").innerHTML=data[i].social_media_link;
         }

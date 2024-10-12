@@ -122,7 +122,7 @@ function logintoPortal(data){
             document.getElementById("portalogin").style.display="none";
            
             document.getElementById("daycarestaffportal").style.display="block";
-            document.getElementById("teacherusername").innerHTML=data[i].name;
+            document.getElementById("daycusername").innerHTML=data[i].name;
             document.getElementById("staffname").value=data[i].name;
             document.getElementById("daycarestaffid").value=data[i].id;
             
@@ -132,6 +132,9 @@ function logintoPortal(data){
             document.getElementById("subject_owner").value=data[i].subject;
             document.getElementById("teachimgport").src=data[i].thumbnailUrl;
             document.getElementById("teachheadimg").src=data[i].thumbnailUrl;
+
+            document.getElementById("daycimgport").src=data[i].thumbnailUrl;
+            document.getElementById("daycheadimg").src=data[i].thumbnailUrl;
             
             
         }
