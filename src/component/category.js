@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react"
 
-
+function handleclub(club){
+    alert(club.description)
+}
 var path=process.env.REACT_APP_API_URL;
 export default function Category(){
     const [courses,setCourses]=useState([]);
@@ -39,7 +41,7 @@ fetch(`${path}/clubs`)
                  <div className="col-lg-3 col-md-6 mb-4" key={course.id}>
                  <div className="cat-item position-relative overflow-hidden rounded mb-2">
                      <img className="img-fluid" src={require("../img/course-3.jpg")} alt=""/>
-                     <a className="cat-overlay text-white text-decoration-none" href="">
+                     <a className="cat-overlay text-white text-decoration-none">
                          <h4 className="text-white font-weight-medium">{course.course}</h4>
                          <span>Learn more</span>
                      </a>
@@ -62,10 +64,10 @@ fetch(`${path}/clubs`)
             </div>
             <div className="row">
                 {clubs.map(club=>(
-                 <div className="col-lg-3 col-md-6 mb-4" key={club.id} onClick={()=>{alert(club.description)}}>
+                 <div className="col-lg-3 col-md-6 mb-4" key={club.id} onClick={()=>handleclub(club)}>
                  <div className="cat-item position-relative overflow-hidden rounded mb-2">
                      <img className="img-fluid" src={require("../img/ui.jpg")} alt=""/>
-                     <a className="cat-overlay text-white text-decoration-none" href="">
+                     <a className="cat-overlay text-white text-decoration-none">
                          <h4 className="text-white font-weight-medium">{club.club}</h4>
                          <span>Learn more</span>
                      </a>
