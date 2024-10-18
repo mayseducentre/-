@@ -40,7 +40,7 @@ const refm=()=>{
                 </center>
                 <br/>
                 
-<a onClick={()=>{refm()}}>Refresh</a>
+<a onClick={()=>{refm()}} className="pointer">Refresh</a>
 <br/>
 <br/>
                 <small>Primary</small>

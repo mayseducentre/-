@@ -21,7 +21,7 @@ const stc=()=>{
 
                
                 <div className="card-body"  style={{maxHeight:"400px"}}>
-                  <a onClick={()=>{stc()}}>Refresh</a>
+                  <a className="pointer" onClick={()=>{stc()}}>Refresh</a>
                   <h5 className="card-title">Meet Teachers <span>| {process.env.REACT_APP_BRAND_SHORT}</span></h5>
 
                   <table className="table table-borderless datatable">
@@ -31,6 +31,7 @@ const stc=()=>{
                         <th>Staff_Name</th>
                         <th>Subject</th>
                         <th>Email</th>
+                        <th>Contact</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -39,7 +40,8 @@ const stc=()=>{
                         <td><img className="hoverprofile" src={info.thumbnailUrl} /></td>
                         <td>{info.name}</td>
                         <td>{info.subject}</td>
-                        <td><a href="mailto:${info.email}">{info.email}</a></td>
+                        <td><a onClick={()=>{window.href=`tel:${info.email}`}}>{info.email}</a></td>
+                        <td><a onClick={()=>{window.href=`tel:${info.contact}`}}>{info.contact}</a></td>
                         </tr>
                       
                     ))}

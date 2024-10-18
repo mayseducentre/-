@@ -52,7 +52,7 @@ export default function Library(){
             <div className=" list">
                 <img src={require(`../img/${process.env.REACT_APP_LOGO}`)} className="list-img align-items-center" alt="image" />
                 <br/>
-                <h5 style={{fontWeight:"700",fontSize:"20px"}}>&emsp;&emsp;&emsp;MAPS</h5>
+                <h5 style={{fontWeight:"700",fontSize:"20px"}}>&emsp;&emsp;&emsp;Quiz</h5>
             </div>
         </div>
 

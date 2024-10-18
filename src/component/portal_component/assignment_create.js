@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import emailjs from "emailjs-com";
 
 const select ={
     padding:"10px 12px",
@@ -15,6 +15,11 @@ content.style.height=(content.scrollHeight)+"px";
 }
 
 const pathline=process.env.REACT_APP_API_URL;
+var path = process.env.REACT_APP_ACCOUNT_API;
+var assignpath = process.env.REACT_APP_ASSIGN_API;
+
+const randomdigit = Math.floor(Math.random() * 10).toString();
+const id = randomdigit;
 
 function SendAssign(e){
 document.getElementById("plswait").style.display="block";
@@ -106,6 +111,7 @@ e.preventDefault();
 }
 
 
+
 function fetchAssign(){
 
     
@@ -141,8 +147,9 @@ function fetchAssign(){
   
   function findCheck(data){
     for(var i=0; i< data.length; i++){
-      document.getElementById("assignpost").innerHTML=
+      document.getElementById("assignpost").innerHTML +=
       `
+      <a>Id: ${data[i].id}</a>
       <h5>Assignment</h5>
       <small>End of submision: ${data[i].end_subm}</small>
       <br>
@@ -159,6 +166,94 @@ function fetchAssign(){
     }
   }
   
+
+  function DelAssign(){
+
+    
+    var subject=document.getElementById("subj_assign").value;
+    if(subject === "English"){
+      var path=`${process.env.REACT_APP_ASSIGN_API}/engassign/${assignid}`;
+  }
+  if(subject === "Science"){
+      var path=`${process.env.REACT_APP_ASSIGN_API}/sciassign/${assignid}`;
+  }
+  if(subject === "Social Studies"){
+      var path=`${process.env.REACT_APP_ASSIGN_API}/socassign/${assignid}`;
+  }
+  if(subject === "Mathematics"){
+      var path=`${process.env.REACT_APP_ASSIGN_API}/mathassign/${assignid}`;
+  }
+  if(subject === "Computing"){
+      var path=`${process.env.REACT_APP_ASSIGN_API}/compassign/${assignid}`;
+  }
+  if(subject === "Creative Art"){
+      var path=`${process.env.REACT_APP_ASSIGN_API}/artassign/${assignid}`;
+  }
+  
+  
+    fetch(path, {
+        method:"DELETE",
+        headers:{
+            "Content-type":"application/json"
+        }
+    })
+    .then(res => res.json())
+    .then(data => console.log(data))
+    .catch(err => console.log(err))
+  
+  
+  }
+  
+  
+  function SendAnnounce(e) {
+    e.preventDefault();
+    
+    var subject=document.getElementById("subj_assign").value;
+
+    var fullname=document.getElementById("fn_assign").value;
+
+    var stulevel=document.getElementById("level_assign").value;
+    var subject = `${subject} assignment posted`;
+    
+    var topic=document.getElementById("top_assign").value;
+    var body = `Sir/Madam ${fullname} has posted a/an ${subject} on mec portal for ${stulevel} on the topic ${topic}. Check assignment now. https://mayseducentre.github.io/-/#/portal`;
+    
+
+    // var d = new Date();
+    // var date = d.toLocaleDateString();
+
+    fetch(`${path}/studentaccount`)
+      .then((res) => res.json())
+      .then((data) => {
+        SendMail(data, subject, body);
+        alert("Sent Successfully");
+      })
+      .catch((err) => console.log(err));
+
+  }
+
+  function SendMail(data, subject, body) {
+    const formData = {
+      subject_mail: subject,
+      main_body: body,
+    };
+
+    // Loop through each account and send the email
+    data.forEach((account) => {
+      formData.bcc_email = account.email; // Assuming each account has an 'email' property
+
+      emailjs
+        .send("service_4dt6s3i", "template_0q1tvwm", formData, "VIB8bKSD-ZS3RCCHD")
+        .then((res) => {
+          console.log(res.text);
+          alert("Global post success")
+        })
+        .catch((err) => {
+          console.log(err.text);
+        });
+    });
+  }
+
 export default function AssignCreate(){
     const [level, setLevel]=useState([]);
 
@@ -255,6 +350,13 @@ export default function AssignCreate(){
 
  </div>
  
+ <div>
+    <h6>Delete Assignment</h6>
+    <form onSubmit={DelAssign}>
+    <input placeholder="enter id" id="delid" required/>
+    <button style={{background:"red",color:"white"}} className="site-btn">Delete Assignment</button>
+    </form>                  
+ </div>
         </>
     )
 }

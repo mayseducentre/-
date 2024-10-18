@@ -18,8 +18,7 @@ function Postnews(e){
     
     const constantPrefix="blg";
     const timestampt= date.getTime().toString();
-    const randomdigit=Math.floor(Math.random()* 10).toString();
-    const id=constantPrefix+timestampt.slice(-6)+randomdigit;
+    const id=constantPrefix+timestampt.slice(-6);
 
   var newshead=document.getElementById("news_head").value;
     var newscontent=document.getElementById("news_content").value

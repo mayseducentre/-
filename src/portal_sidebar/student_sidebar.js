@@ -47,7 +47,7 @@ function Message(){
   document.getElementById("resourceview").style.display="none"
   document.getElementById("extraactview").style.display="none"
   document.getElementById("calendar").style.display="none"
-  document.getElementById("announcem").style.display="block"
+  document.getElementById("announcem").style.display="block";
   document.getElementById("meetme").style.display="none"
 }
 

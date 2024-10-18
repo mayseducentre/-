@@ -99,6 +99,8 @@ if(choose.value === data[i].subject && stuclass.value === data[i].level){
    `
    assignpost.innerHTML=`
    <p>Please send your ${data[i].subject} assignment through this email <a href="mailto:${data[i].email}">${data[i].email}</a>. You can do the work in an exercise book and take a picture of it. Then attach that picture or file and send it to <a href="mailto:${data[i].email}">${data[i].email}</a></p>
+   <br/>
+   <a onclick="PstAssign()">View past assignments</a>
    `
    nothing.style.display="none";
    assignhub.style.display="block"
@@ -109,6 +111,100 @@ if(choose.value === data[i].subject && stuclass.value === data[i].level){
 else{
     nothing.style.display="block";
     assignhub.style.display="none"
+}
+}
+
+}
+
+
+function PstAssign(){
+    fetch(`${assignpath}/engassign`)
+  .then(res => res.json())
+  .then(data => Viewassign(data))
+  .catch(err => console.log(err))
+
+  
+  fetch(`${assignpath}/sciassign`)
+  .then(res => res.json())
+  .then(data => Viewassign(data))
+  .catch(err => console.log(err))
+
+  
+  fetch(`${assignpath}/mathassign`)
+  .then(res => res.json())
+  .then(data => Viewassign(data))
+  .catch(err => console.log(err))
+
+  
+  fetch(`${assignpath}/socassign`)
+  .then(res => res.json())
+  .then(data => Viewassign(data))
+  .catch(err => console.log(err))
+
+  fetch(`${assignpath}/compassign`)
+  .then(res => res.json())
+  .then(data => Viewassign(data))
+  .catch(err => console.log(err))
+
+  fetch(`${assignpath}/artassign`)
+  .then(res => res.json())
+  .then(data => Viewassign(data))
+  .catch(err => console.log(err))
+
+  fetch(`${assignpath}/gaassign`)
+  .then(res => res.json())
+  .then(data => Viewassign(data))
+  .catch(err => console.log(err))
+
+  fetch(`${assignpath}/frenchassign`)
+  .then(res => res.json())
+  .then(data => Viewassign(data))
+  .catch(err => console.log(err))
+
+  fetch(`${assignpath}/careertechassign`)
+  .then(res => res.json())
+  .then(data => Viewassign(data))
+  .catch(err => console.log(err))
+
+  fetch(`${assignpath}/rmeassign`)
+  .then(res => res.json())
+  .then(data => Viewassign(data))
+  .catch(err => console.log(err))
+}
+
+function Viewassign(data){
+   var choose=document.getElementById("choose");
+   var stuclass=document.getElementById("stu_class");
+   var nothing=document.getElementById("nothing");
+   var assignpast=document.getElementById("pastassign");
+   
+  
+
+for(var i= 0; i < data.length; i++){
+   
+  
+if(choose.value === data[i].subject && stuclass.value === data[i].level){
+   
+  assignpast.innerHTML +=`
+  <h5>Past Assignment</h5>
+  <small>End of submision: ${data[i].end_subm}</small>
+  <br>
+  <small>Reference: ${data[i].reference}</small>
+  <center>
+  <h4><u>${data[i].topic}</u></h4>
+  </center>
+  <small>Posted by Sir/Madam ${data[i].name} on ${data[i].time}</small>
+  <br>
+  <br>
+  <textarea style="height:300px;border:none" readonly>${data[i].content}</textarea>
+  `
+  nothing.style.display="none";
+  assignpast.style.display="block"
+  
+}
+else{
+   nothing.style.display="block";
+   assignpast.style.display="none"
 }
 }
 
@@ -154,6 +250,9 @@ useEffect(()=>{
         
         <div id="submitassign" style={{display:"none"}}>
            
+        </div>
+        <div id="pastassign" style={{display:"none"}}>
+
         </div>
         </>
     )

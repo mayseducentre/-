@@ -76,7 +76,7 @@ const prnt=()=>{
 
                
                 <div className="card-body"  style={{maxHeight:"400px"}}>
-                 <a onClick={()=>{prnt()}}>Refresh</a>
+                 <a onClick={()=>{prnt()}} className="pointer">Refresh</a>
                   <h5 className="card-title">Meet Parents <span>| {process.env.REACT_APP_BRAND_SHORT}</span></h5>
 
                   <table className="table table-borderless scrolltable">

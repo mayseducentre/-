@@ -41,14 +41,16 @@ localStorage.setItem("portalcheck", portcheck.checked)
     document.getElementById("loogin").style.display="block";
     document.getElementById("loginbtn").style.display="none";
    
-    
-    setTimeout(()=>{
 
         fetch(`${path}/studentaccount`)
         .then(res=>res.json())
         .then(data => {
            
-            logintoPortal(data)})
+            logintoPortal(data)
+        
+       document.getElementById("loogin").style.display="none";
+       document.getElementById("loginbtn").style.display="block";
+    })
         .catch(err => {console.log(err)
            alert("Error been encountered. Check internet connection and try again.")})
        
@@ -57,7 +59,11 @@ localStorage.setItem("portalcheck", portcheck.checked)
         .then(res=>res.json())
         .then(data => {
            
-            logintoPortal(data)})
+            logintoPortal(data)
+        
+       document.getElementById("loogin").style.display="none";
+       document.getElementById("loginbtn").style.display="block";
+    })
         .catch(err => {console.log(err)
            alert("Error been encountered. Check internet connection and try again.")})
        
@@ -66,13 +72,15 @@ localStorage.setItem("portalcheck", portcheck.checked)
         .then(res=>res.json())
         .then(data => {
            
-            logintoPortal(data)})
+            logintoPortal(data)
+        
+       document.getElementById("loogin").style.display="none";
+       document.getElementById("loginbtn").style.display="block";
+    })
         .catch(err => {console.log(err)
        alert("Error been encountered. Check internet connection and try again.")})
        
-       document.getElementById("loogin").style.display="none";
-    document.getElementById("loginbtn").style.display="block";
-    }, 3000)
+
     
 }
 
@@ -158,7 +166,7 @@ function logintoPortal(data){
                 document.getElementById("loginread").value=null;
             },3000)
     
-            document.getElementById("loginread").value="Not allowed to login. Invalid userID or password"
+            document.getElementById("loginread").value="Invalid userID or password"
             document.getElementById("loginread").style.color="red";
 
           
@@ -222,7 +230,7 @@ export default function SignLog(){
                         <div className="field button-field">
                             
                             <button id="loginbtn" type="submit">Login</button>
-                            <button id="loogin" style={{display:"none"}}>Please Wait <i className="fa fa-spinner fa-spin"></i>...</button>
+                            <a id="loogin" style={{display:"none"}}>Please Wait <i className="fa fa-spinner fa-spin"></i>...</a>
                             
                         </div>
                     </form>

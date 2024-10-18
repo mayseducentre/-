@@ -73,7 +73,7 @@ const stf=()=>{
               <div className="card recent-sales overflow-auto">
 
                 <div className="card-body"  style={{maxHeight:"400px"}}>
-                <a onClick={()=>{stf()}}>Refresh</a>   
+                <a onClick={()=>{stf()}} className="pointer">Refresh</a>   
            
                   <h5 className="card-title">Meet Staffs <span>| {process.env.REACT_APP_BRAND_SHORT}</span></h5>
 
