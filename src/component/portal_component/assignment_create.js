@@ -168,9 +168,10 @@ function fetchAssign(){
   }
   
 
-  function DelAssign(){
+  function DelAssign(e){
 
-    
+    e.preventDefault();
+
     var subject=document.getElementById("subj_assign").value;
     var assignid=document.getElementById("delid").value;
 
@@ -201,7 +202,9 @@ function fetchAssign(){
         }
     })
     .then(res => res.json())
-    .then(data => console.log(data))
+    .then(data =>{ console.log(data)
+alert("Assignment has been deleted successfully")}
+)
     .catch(err => console.log(err))
   
   
@@ -353,6 +356,8 @@ export default function AssignCreate(){
 
  </div>
  
+ <br/>
+ <br/>
  <div>
     <h6>Delete Assignment</h6>
     <form onSubmit={DelAssign}>

@@ -40,8 +40,8 @@ const stc=()=>{
                         <td><img className="hoverprofile" src={info.thumbnailUrl} /></td>
                         <td>{info.name}</td>
                         <td>{info.subject}</td>
-                        <td><a onClick={()=>{window.href=`tel:${info.email}`}}>{info.email}</a></td>
-                        <td><a onClick={()=>{window.href=`tel:${info.contact}`}}>{info.contact}</a></td>
+                        <td><a onClick={()=>{window.location.href=`tel:${info.email}`}}>{info.email}</a></td>
+                        <td><a onClick={()=>{window.location.href=`tel:${info.contact}`}}>{info.contact}</a></td>
                         </tr>
                       
                     ))}
