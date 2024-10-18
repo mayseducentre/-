@@ -96,6 +96,7 @@ e.preventDefault();
     .then(res => res.json())
     .then(data => {
         console.log(data)
+      SendAnnounce();
         alert("Posted Successfully")
            document.getElementById("content_assign").value=null;
 
@@ -171,6 +172,8 @@ function fetchAssign(){
 
     
     var subject=document.getElementById("subj_assign").value;
+    var assignid=document.getElementById("delid").value;
+
     if(subject === "English"){
       var path=`${process.env.REACT_APP_ASSIGN_API}/engassign/${assignid}`;
   }
