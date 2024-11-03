@@ -1,19 +1,28 @@
 {
   "files": {
-    "main.css": "/-/static/css/main.34d042b9.css",
-    "main.js": "/-/static/js/main.9b8419b7.js",
+    "main.css": "/-/static/css/main.abd37823.css",
+    "main.js": "/-/static/js/main.7ca2702c.js",
     "static/js/206.582fe86a.chunk.js": "/-/static/js/206.582fe86a.chunk.js",
     "static/media/html tutorial 1.mp4": "/-/static/media/html tutorial 1.62b35348378614102f79.mp4",
     "static/media/maysedu.mp4": "/-/static/media/maysedu.1e5924eb84727a275fa1.mp4",
+    "static/media/stat.jpg": "/-/static/media/stat.bf1a5a1955cd2157d3a7.jpg",
+    "static/media/crowd.jpg": "/-/static/media/crowd.ef5dcc8566ab7bf03175.jpg",
     "static/media/class.jpg": "/-/static/media/class.f3d1b473af7a58ba5f66.jpg",
+    "static/media/smiles.jpg": "/-/static/media/smiles.8388acd311ada3accd7d.jpg",
     "static/media/read.jpg": "/-/static/media/read.02fd82e59e1a28477acc.jpg",
     "static/media/all.jpg": "/-/static/media/all.d042c3cbb41a9f853ba3.jpg",
     "static/media/mec3.jpg": "/-/static/media/mec3.20cc2fe2391a755b1cc5.jpg",
+    "static/media/present.jpg": "/-/static/media/present.0dedc8a2482aa0c64e66.jpg",
+    "static/media/abc.jpg": "/-/static/media/abc.4d007fe6d0d40bf069ab.jpg",
+    "static/media/cpu.jpg": "/-/static/media/cpu.5d60d089239d48996465.jpg",
+    "static/media/alone.jpg": "/-/static/media/alone.b1b1215e2c8842c4ae0a.jpg",
     "static/media/wildlife.jpg": "/-/static/media/wildlife.19cea4eed915c0d834eb.jpg",
     "static/media/j1.jpg": "/-/static/media/j1.800d268276701db571a8.jpg",
     "static/media/clas.jpg": "/-/static/media/clas.e93857c0e21238d6fcd8.jpg",
+    "static/media/labo.jpg": "/-/static/media/labo.72cc03da49dedddf2646.jpg",
     "static/media/lab.jpg": "/-/static/media/lab.f38e7b61b170c9d22f2e.jpg",
     "static/media/creative.jpg": "/-/static/media/creative.7bc2cf7b2ddb4f127116.jpg",
+    "static/media/act.jpg": "/-/static/media/act.35220b913b2df3b792d0.jpg",
     "static/media/redcross.jpg": "/-/static/media/redcross.aecd54cbe60a2483ccc7.jpg",
     "static/media/friends.jpg": "/-/static/media/friends.2867b6d32f14453374fe.jpg",
     "static/media/load.gif": "/-/static/media/load.7f686c03a467bef7dac6.gif",
@@ -24,6 +33,7 @@
     "static/media/graphic.jpg": "/-/static/media/graphic.9dde5338bd3edf1d530d.jpg",
     "static/media/hero-bg.jpg": "/-/static/media/hero-bg.8947f2200e2804d08f4d.jpg",
     "static/media/lib.jpg": "/-/static/media/lib.38ef92193bcf78f8969d.jpg",
+    "static/media/ictlab.jpg": "/-/static/media/ictlab.5b63590c371f79b09893.jpg",
     "static/media/mays_logo.png": "/-/static/media/mays_logo.87084b829fc25cb7c7e5.png",
     "static/media/cert.jpg": "/-/static/media/cert.7bbb3f27eea2271eb31a.jpg",
     "static/media/cadet.jpg": "/-/static/media/cadet.6ab0320a587a57188b37.jpg",
@@ -57,7 +67,7 @@
     "index.html": "/-/index.html"
   },
   "entrypoints": [
-    "static/css/main.34d042b9.css",
-    "static/js/main.9b8419b7.js"
+    "static/css/main.abd37823.css",
+    "static/js/main.7ca2702c.js"
   ]
 }
