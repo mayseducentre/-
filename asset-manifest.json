@@ -1,25 +1,37 @@
 {
   "files": {
-    "main.css": "/-/static/css/main.abd37823.css",
-    "main.js": "/-/static/js/main.7ca2702c.js",
+    "main.css": "/-/static/css/main.f53538d7.css",
+    "main.js": "/-/static/js/main.746145db.js",
     "static/js/206.582fe86a.chunk.js": "/-/static/js/206.582fe86a.chunk.js",
     "static/media/html tutorial 1.mp4": "/-/static/media/html tutorial 1.62b35348378614102f79.mp4",
     "static/media/maysedu.mp4": "/-/static/media/maysedu.1e5924eb84727a275fa1.mp4",
     "static/media/stat.jpg": "/-/static/media/stat.bf1a5a1955cd2157d3a7.jpg",
     "static/media/crowd.jpg": "/-/static/media/crowd.ef5dcc8566ab7bf03175.jpg",
     "static/media/class.jpg": "/-/static/media/class.f3d1b473af7a58ba5f66.jpg",
+    "static/media/art1.jpg": "/-/static/media/art1.cebd224c68aaeaaca2a0.jpg",
+    "static/media/sammy.jpg": "/-/static/media/sammy.a97c635c2fbf046d6746.jpg",
+    "static/media/chairman.jpg": "/-/static/media/chairman.be5f0471d066b23d424c.jpg",
     "static/media/smiles.jpg": "/-/static/media/smiles.8388acd311ada3accd7d.jpg",
     "static/media/read.jpg": "/-/static/media/read.02fd82e59e1a28477acc.jpg",
     "static/media/all.jpg": "/-/static/media/all.d042c3cbb41a9f853ba3.jpg",
+    "static/media/agama.jpg": "/-/static/media/agama.b9381469304b66b02c79.jpg",
     "static/media/mec3.jpg": "/-/static/media/mec3.20cc2fe2391a755b1cc5.jpg",
+    "static/media/ruler.jpg": "/-/static/media/ruler.b0f54342d893c456b926.jpg",
+    "static/media/out.jpg": "/-/static/media/out.0dedc8a2482aa0c64e66.jpg",
     "static/media/present.jpg": "/-/static/media/present.0dedc8a2482aa0c64e66.jpg",
     "static/media/abc.jpg": "/-/static/media/abc.4d007fe6d0d40bf069ab.jpg",
     "static/media/cpu.jpg": "/-/static/media/cpu.5d60d089239d48996465.jpg",
+    "static/media/art2.jpg": "/-/static/media/art2.f5df6d99fa0d7e41960f.jpg",
+    "static/media/art4.jpg": "/-/static/media/art4.c912ff64e1e9e43c1b84.jpg",
     "static/media/alone.jpg": "/-/static/media/alone.b1b1215e2c8842c4ae0a.jpg",
+    "static/media/art3.jpg": "/-/static/media/art3.f4b45d926d35f1a75873.jpg",
     "static/media/wildlife.jpg": "/-/static/media/wildlife.19cea4eed915c0d834eb.jpg",
+    "static/media/ackaziah.jpg": "/-/static/media/ackaziah.ba99e55e98f039215b6b.jpg",
     "static/media/j1.jpg": "/-/static/media/j1.800d268276701db571a8.jpg",
     "static/media/clas.jpg": "/-/static/media/clas.e93857c0e21238d6fcd8.jpg",
     "static/media/labo.jpg": "/-/static/media/labo.72cc03da49dedddf2646.jpg",
+    "static/media/art6.jpg": "/-/static/media/art6.a4dd234d07393ea3ea64.jpg",
+    "static/media/art5.jpg": "/-/static/media/art5.0a319d40b16adaae7c85.jpg",
     "static/media/lab.jpg": "/-/static/media/lab.f38e7b61b170c9d22f2e.jpg",
     "static/media/creative.jpg": "/-/static/media/creative.7bc2cf7b2ddb4f127116.jpg",
     "static/media/act.jpg": "/-/static/media/act.35220b913b2df3b792d0.jpg",
@@ -67,7 +79,7 @@
     "index.html": "/-/index.html"
   },
   "entrypoints": [
-    "static/css/main.abd37823.css",
-    "static/js/main.7ca2702c.js"
+    "static/css/main.f53538d7.css",
+    "static/js/main.746145db.js"
   ]
 }
