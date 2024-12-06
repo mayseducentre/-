@@ -1,0 +1,25 @@
+{
+  "short_name": "MEC App",
+  "name": "May's Educational Centre",
+  "icons": [
+    {
+      "src": "mayslogo.png",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "mayslogo.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "mayslogo.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
