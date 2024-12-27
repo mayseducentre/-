@@ -203,7 +203,7 @@ function Studentsidebar(){
   <div className="bottom-nav animate__animated animate__fadeInUp">
   <a className="fa fa-dashboard" onClick={CourseV}><br /><small className="smaller">Dashboard</small></a>
   <a className="fa fa-bar-chart-o" onClick={AssignV}><br /><small className="smaller">Assignments</small></a>
-  <a className="fa fa-graduation-cap"><br /><small className="smaller">Grades</small></a>
+  <a className="fa fa-graduation-cap" oncClickk={Checkgrades}><br /><small className="smaller">Grades</small></a>
   <a className="fa fa-bullhorn" onClick={Message}><br /><small className="smaller">Announcements</small></a>
   <a className="fa fa-laptop" onClick={Meetme}><br /><small className="smaller">VR Meet</small></a>
   <a className="fa fa-calendar-o" onClick={CalendarV}><br /><small className="smaller">Calender</small></a>

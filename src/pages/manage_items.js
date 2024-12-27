@@ -13,7 +13,7 @@ var readonly={
 function logAdmin(e){
 
  e.preventDefault();
-var adminpath=process.env.REACT_APP_MANAGE_ITEMS;
+var adminpath= "manageitems2024";
 
 var library_key=document.getElementById("library_key");
 
