@@ -49,7 +49,7 @@ const refm=()=>{
                 <br/>
             {ann.map(mail=>(
  <div key={mail.id}>
- <img src={require("/./Users/USER/mec/src/img/google.png")} style={{width:"30px",height:"30px",borderRadius:"50%", position:"absolute"}}/>
+ <img src={require("/workspaces/-/src/img/google.png")} style={{width:"30px",height:"30px",borderRadius:"50%", position:"absolute"}}/>
     <div style={{paddingLeft:"50px"}}>
      <a><b>{mail.subject}</b></a> <small style={{position:"absolute",right:"10px"}}>{mail.date}</small>
      <p>{mail.body}</p>

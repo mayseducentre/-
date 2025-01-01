@@ -35,7 +35,7 @@ useEffect(()=>{
             <article>
 
               <div className="post-img">
-                <img src={require("/./Users/USER/mec/src/img/course-3.jpg")} alt="" className="img-fluid"/>
+                <img src={require("/workspaces/-/src/img/course-3.jpg")} alt="" className="img-fluid"/>
               </div>
 
               <p className="post-category">Subject</p>
@@ -45,7 +45,7 @@ useEffect(()=>{
               </h2>
 
               <div className="d-flex align-items-center">
-                <img src={require(`/./Users/USER/mec/src/img/${process.env.REACT_APP_LOGO}`)} alt="" className="img-fluid post-author-img flex-shrink-0"/>
+                <img src={require(`/workspaces/-/src/img/${process.env.REACT_APP_LOGO}`)} alt="" className="img-fluid post-author-img flex-shrink-0"/>
                 <div className="post-meta">
                   <p className="post-author">Staff</p>
                   
