@@ -12,7 +12,7 @@ var readonly={
 function logAdmin(e){
 
  e.preventDefault();
-var adminpath=process.env.REACT_APP_ADMIN_LOG;
+var adminpath="admin@mays2024";
 
 var admin_key=document.getElementById("admin_key");
 
