@@ -20,7 +20,7 @@ export default function Headline(){
            
     <p>
     <span style={{fontFamily:"cursive",fontWeight:"700",color:"white",background:"#994500",padding:"10px 12px",textTransform:"uppercase"}}>Annoucement:</span>
-<a style={{color:`${upd.color}`}}>{upd.info}</a>
+<a style={{color:`${upd.color}`}}>&emsp; {upd.info}</a>
   &emsp;  <a href="#/ins_guide">Installation guide</a>
     </p>
            
