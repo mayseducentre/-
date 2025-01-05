@@ -17,6 +17,7 @@
     "react-device-detect": "^2.2.3",
     "react-dom": "^18.3.1",
     "react-froala-wysiwyg": "^4.3.0",
+    "react-loading-skeleton": "^3.5.0",
     "react-notifications-component": "^4.0.1",
     "react-router-dom": "^6.28.0",
     "react-scripts": "5.0.1",
