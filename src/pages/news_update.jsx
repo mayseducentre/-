@@ -3,6 +3,7 @@ import Breadcrumb from "../component/breadcrumb";
 import Footer from "../component/footer";
 import Header from "../component/header";
 import { useEffect, useState } from "react";
+import Skeleton from "react-loading-skeleton"
 import NewsInfo from "../component/news_info";
 
 
@@ -49,7 +50,13 @@ fetch(`${path}/blog`)
           <h2>News and Updates</h2>
           <p>Find out the most exciting and interesting information from our blog.</p>
         </div>
-        <center>{loading ? <a></a> : <a><div className="loadery"></div></a>}</center>
+        <center>{loading ? <a></a> : <a><div className="loadery"></div>
+       <div>
+       <Skeleton width={300} height={30}/>
+       <Skeleton width={300}/>
+       <Skeleton count={3}/>
+        </div> 
+        </a>}</center>
 
         <div className="row gy-4">
         {blog.map(blogger=>(
