@@ -229,7 +229,7 @@ export default function DaycareStaff(){
                     <div className="checkout__order">
                         
                         <button type="submit" id="createbtn" className="site-btn" onClick={Checkemail}>Create Account</button>
-                        <a id="waitbtn" style={{display:"none"}}><i className="fa fa-spinner fa-spin"></i> Please Wait...</a>
+                        <a id="waitbtn" style={{display:"none"}}><div className="loadery"></div></a>
                    
                     </div>
                 </div>

@@ -55,7 +55,7 @@ function LibraryVideos() {
     <div>
         <h5 style={{color:"black",textTransform:"none",marginLeft:"20px"}}>Featured Videos</h5>
         
-<center>{loading ? <a></a> : <a><i className="fa fa-spinner fa-spin"></i> Loading</a>}</center>
+<center>{loading ? <a></a> : <a><div className="loadery"></div></a>}</center>
 <div className="scroll-container" id="scroll1" onWheel={ScrollContainer}>
     
     <div className="scroll-item">
@@ -82,7 +82,7 @@ function LibraryVideos() {
 <div>
         <h5 style={{color:"black",textTransform:"none",marginLeft:"20px"}}>Songs</h5>
         
-<center>{loading ? <a></a> : <a><i className="fa fa-spinner fa-spin"></i> Loading</a>}</center>
+<center>{loading ? <a></a> : <a><div className="loadery"></div></a>}</center>
 <div className="scroll-container" id="scroll2" onWheel={ScrollContainer}>
     <div className="scroll-item">
         <video poster={require(`../img/${process.env.REACT_APP_LOGO}`)}></video>

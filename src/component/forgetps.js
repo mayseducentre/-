@@ -268,7 +268,7 @@ export default function ForgetPs(){
                             <div className="field button-field" id="pschk">
                                 
                                 <button id="pssub">Submit</button>
-                                <a style={{display:"none"}} id="lod"><i className="fa fa-spinner fa-spin"></i> Loading</a>
+                                <a style={{display:"none"}} id="lod"><div className="loadery"></div></a>
                             </div>
                         </form>
 

@@ -542,7 +542,7 @@ export default function Manage(){
                             <div className="checkout__order">
                                
                                 <button type="submit" id="blogbtn" className="site-btn">Post Item</button>
-                                <a id="blogwait" style={{display:"none"}}><i className="fa fa-spinner fa-spin"></i> Loading</a>
+                                <a id="blogwait" style={{display:"none"}}><div className="loadery"></div></a>
                             </div>
                         </div>
                     </div>

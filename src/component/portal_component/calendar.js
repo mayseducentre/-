@@ -119,7 +119,7 @@ export default function Calendar(){
                         </div>
                         <div className="col-lg-4 col-md-6">
                             <div className="checkout__order">
-                               <a style={{display:"none"}} id="load"><i className="fa fa-spinner fa-spin"></i> Loading...</a>
+                               <a style={{display:"none"}} id="load"><div className="loadery"></div>...</a>
                                 <button type="submit" id="tab"  className="site-btn">Post Timetable</button>
                             </div>
                         </div>

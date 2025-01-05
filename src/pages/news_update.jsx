@@ -49,7 +49,7 @@ fetch(`${path}/blog`)
           <h2>News and Updates</h2>
           <p>Find out the most exciting and interesting information from our blog.</p>
         </div>
-        <center>{loading ? <a></a> : <a><i className="fa fa-spinner fa-spin"></i> Loading</a>}</center>
+        <center>{loading ? <a></a> : <a><div className="loadery"></div></a>}</center>
 
         <div className="row gy-4">
         {blog.map(blogger=>(

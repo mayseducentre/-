@@ -25,7 +25,7 @@ export default function Blog(){
         </div>
 
         <div className="row gy-4">
-        <center>{loading ? <a></a> : <a><i className="fa fa-spinner fa-spin"></i> Loading</a>}</center>
+        <center>{loading ? <a></a> : <a><div className="loadery"></div></a>}</center>
 {blog.slice(0, 4).map(blogger=>(
 
  <div className="col-xl-4 col-md-6" onClick={()=>{window.location.href="#/news_updates"}} key={blogger.id}>

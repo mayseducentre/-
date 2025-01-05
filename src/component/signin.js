@@ -234,8 +234,10 @@ export default function SignLog(){
                         <div className="field button-field">
                             
                             <button id="loginbtn" type="submit">Login</button>
-                            <a id="loogin" style={{display:"none"}}>Please Wait <i className="fa fa-spinner fa-spin"></i>...</a>
                             
+                           <center>
+                             <div className="loadery" id="loogin" style={{display:"none"}}></div>
+                            </center>
                         </div>
                     </form>
 

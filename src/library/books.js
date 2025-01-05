@@ -102,7 +102,7 @@ const [loading, setLoading]=useState(false);
         <h5 style={{color:"black",textTransform:"none",marginLeft:"20px"}}>Featured Books</h5>
         
 
-        <center>{loading ? <a></a> : <a><i className="fa fa-spinner fa-spin"></i> Loading</a>}</center>
+        <center>{loading ? <a></a> : <a><div className="loadery"></div></a>}</center>
 <div className="scroll-container" id="scroll1" onWheel={ScrollContainer}>
 
 <Link to="/computing_abbrev">
@@ -128,7 +128,7 @@ const [loading, setLoading]=useState(false);
 
 <div>
 <h5 style={{color:"black",textTransform:"none",marginLeft:"20px"}}>Story Books</h5>
-<center>{loading ? <a></a> : <a><i className="fa fa-spinner fa-spin"></i> Loading</a>}</center>
+<center>{loading ? <a></a> : <a><div className="loadery"></div></a>}</center>
 <div className="scroll-container" id="scroll2" onWheel={ScrollContainer}>
 
 {story.map(book => (
@@ -144,7 +144,7 @@ const [loading, setLoading]=useState(false);
 <div>
         <h5 style={{color:"black",textTransform:"none",marginLeft:"20px"}}>Dictionary</h5>
         
-<center>{loading ? <a></a> : <a><i className="fa fa-spinner fa-spin"></i> Loading</a>}</center>
+<center>{loading ? <a></a> : <a><div className="loadery"></div></a>}</center>
 <div className="scroll-container" id="scroll3" onWheel={ScrollContainer}>
 {dict.map(book => (
  <div className="scroll-item" onClick={()=>handleIframe(book)}>

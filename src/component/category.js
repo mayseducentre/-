@@ -34,7 +34,7 @@ fetch(`${path}/clubs`)
             <div className="text-center mb-5">
                 <h1>Explore Top Subjects</h1>
                 
-<center>{loading ? <a></a> : <a><i className="fa fa-spinner fa-spin"></i> Loading</a>}</center>
+<center>{loading ? <a></a> : <a><div className="loadery"></div></a>}</center>
             </div>
             <div className="row">
                 {courses.map(course=>(
@@ -60,7 +60,7 @@ fetch(`${path}/clubs`)
             <div className="text-center mb-5">
                 <h1>Explore {process.env.REACT_APP_BRAND_SHORT} CLUBS</h1>
                 
-<center>{loading ? <a></a> : <a><i className="fa fa-spinner fa-spin"></i> Loading</a>}</center>
+<center>{loading ? <a></a> : <a><div className="loadery"></div></a>}</center>
             </div>
             <div className="row">
                 {clubs.map(club=>(
