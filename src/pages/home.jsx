@@ -13,7 +13,8 @@ import Noties from "../notification/noties";
 import NotificationPermission from "../notification/noties_permission";
 import Headline from "../component/headlines";
 import Imgsec from "../component/imgsec";
-
+import Skeleton from "react-loading-skeleton"
+import "react-loading-skeleton/dist/skeleton.css"
 
 
 // function loadP(){
@@ -30,11 +31,27 @@ import Imgsec from "../component/imgsec";
 //         document.getElementById("hero").style.backgroundRepeat= "no-repeat";
 //     },1000)
 // }
-
+function Loadit(){
+setTimeout(()=>{
+    document.getElementById("skeleton").style.display="none";
+    document.getElementById("mainc").style.display="block"
+}, 3000)
+}
 export default function Home(){
     return(
-        <main>
+        <main onLoad={Loadit}>
+            <div id="skeleton" style={{position:"fixed",top:"0",left:"0",width:"100%", height:"100vh",backgroundColor:"white",zIndex:"9999"}}>
+                <br/>
             
+                <Skeleton width={400} height={250}/>
+                <Skeleton count={3} width={200} />
+                <Skeleton width={30} height={30}/>
+                <Skeleton count={2}/>
+                <Skeleton width={400} count={3}/>
+                <Skeleton width={500} />
+
+            </div>
+           <div id="mainc" style={{display:"none"}}> 
         <Header />
         <Headline />
         <br/>
@@ -50,6 +67,7 @@ export default function Home(){
         <Imgsec />
         <ScrollToTop smooth className="scrolly"/>
         <Footer />
+        </div>
            </main>
     )
 }
