@@ -32,7 +32,7 @@ fetch(`${path}/clubs`)
          <div className="container-fluid py-5">
         <div className="container pt-5 pb-3">
             <div className="text-center mb-5">
-                <h1>Explore Top Subjects</h1>
+                <h1>MDCEC Excellence</h1>
                 
 <center>{loading ? <a></a> : <a><div className="loadery"></div></a>}</center>
             </div>
@@ -66,7 +66,7 @@ fetch(`${path}/clubs`)
                 {clubs.map(club=>(
                  <div className="col-lg-3 col-md-6 mb-4" key={club.id} onClick={()=>handleclub(club)}>
                  <div className="cat-item position-relative overflow-hidden rounded mb-2">
-                     <img className="img-fluid" src={require("../img/ui.jpg")} alt=""/>
+                     <img className="img-fluid" src={require("../img/mays/bask.jpg")} alt=""/>
                      <a className="cat-overlay text-white text-decoration-none">
                          <h4 className="text-white font-weight-medium">{club.club}</h4>
                          <span>Learn more</span>

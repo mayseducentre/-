@@ -15,7 +15,7 @@ var librarypath=process.env.REACT_APP_LIBRARY_API;
 var date=new Date();
 const constantPrefix="lib";
 const timestampt= date.getTime().toString();
-const randomdigit=Math.floor(Math.random()* 10).toString();
+const randomdigit=Math.floor(Math.random()* 100).toString();
 const id=constantPrefix+timestampt.slice(-6)+randomdigit;
 
 function CreateIt(e) {

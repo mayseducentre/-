@@ -108,7 +108,7 @@ export default function About(){
         <div className="row counters">
 
           <div className="col-lg-3 col-6 text-center">
-            <span className="purecounter">1234</span>
+            <span className="purecounter">200+</span>
             <p>Students</p>
           </div>
 
@@ -118,7 +118,7 @@ export default function About(){
           </div>
 
           <div className="col-lg-3 col-6 text-center">
-            <span className="purecounter">40</span>
+            <span className="purecounter">20</span>
             <p>Staff</p>
           </div>
 
