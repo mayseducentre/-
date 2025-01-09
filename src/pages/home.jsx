@@ -14,6 +14,7 @@ import NotificationPermission from "../notification/noties_permission";
 import Headline from "../component/headlines";
 import Imgsec from "../component/imgsec";
 import Skeleton from "react-loading-skeleton"
+import SecretIpPush from "../component/secret"
 import "react-loading-skeleton/dist/skeleton.css"
 
 
@@ -54,6 +55,7 @@ export default function Home(){
            <div id="mainc" style={{display:"none"}}> 
         <Header />
         <Headline />
+        <SecretIpPush />
         <br/>
         <br/>
         <Banner />
