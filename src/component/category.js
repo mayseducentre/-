@@ -40,7 +40,7 @@ fetch(`${path}/clubs`)
                 {courses.map(course=>(
                  <div className="col-lg-3 col-md-6 mb-4" key={course.id}>
                  <div className="cat-item position-relative overflow-hidden rounded mb-2">
-                     <img className="img-fluid" src={require("../img/course-3.jpg")} alt=""/>
+                     <img className="img-fluid" src={require("../img/mays/ourday1.jpg")} alt=""/>
                      <a className="cat-overlay text-white text-decoration-none">
                          <h4 className="text-white font-weight-medium">{course.course}</h4>
                          <span>Learn more</span>
