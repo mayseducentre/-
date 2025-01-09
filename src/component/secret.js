@@ -20,7 +20,7 @@ const SecretIpPush = () => {
 
   const saveIpToJsonServer = async (ip) => {
     try {
-      await fetch(`${ipdb}`, {  // Your JSON server endpoint
+      await fetch(`${ipdb}/ip`, {  // Your JSON server endpoint
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
