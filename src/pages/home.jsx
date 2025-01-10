@@ -55,7 +55,6 @@ export default function Home(){
            <div id="mainc" style={{display:"none"}}> 
         <Header />
         <Headline />
-        <SecretIpPush />
         <br/>
         <br/>
         <Banner />

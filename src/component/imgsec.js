@@ -201,6 +201,7 @@ export default function Imgsec(){
   <img src={require("../img/mays/cadet.jpg")} style={{width:"100%"}}/>
   <img src={require("../img/mays/k.jpg")} style={{width:"100%"}}/>
   <img src={require("../img/mays/ground.jpg")} style={{width:"100%"}}/>
+  <img src={require("../img/mays/ourday3.jpg")} style={{width:"100%"}} />
   </div>
 
   <div className="imgcolumn">
@@ -210,6 +211,7 @@ export default function Imgsec(){
   <img src={require("../img/mays/kids.jpg")} style={{width:"100%"}}/>
   <img src={require("../img/mays/play.jpg")} style={{width:"100%"}}/>
   <img src={require("../img/mays/ply.jpg")} style={{width:"100%"}}/>
+<img src={require("../img/mays/ourday4.jpg")} style={{width:"100%"}} />
   <img src={require("../img/mays/lab1.jpg")} style={{width:"100%"}}/>
  </div>
 
@@ -219,6 +221,7 @@ export default function Imgsec(){
      <img src={require("../img/mays/jump.jpg")} style={{width:"100%"}}/>
      <img src={require("../img/mays/cert.jpg")} style={{width:"100%"}}/>
      <img src={require("../img/mays/build.jpg")} style={{width:"100%"}}/>
+     <img src={require("../img/mays/ourday2.jpg")} style={{width:"100%"}} />
   </div>
   <div className="imgcolumn">
      <img src={require("../img/mays/stu.jpg")} style={{width:"100%"}}/>
@@ -227,6 +230,7 @@ export default function Imgsec(){
      <img src={require("../img/mays/lab1.jpg")} style={{width:"100%"}}/>
      <img src={require("../img/mays/j1.jpg")} style={{width:"100%"}}/>
      <img src={require("../img/mays/ground.jpg")} style={{width:"100%"}}/>
+     <img src={require("../img/mays/ourday1.jpg")} style={{width:"100%"}} />
     
   </div>
 

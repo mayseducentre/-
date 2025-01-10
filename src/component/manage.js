@@ -301,7 +301,7 @@ function Postnews(e){
     document.getElementById("blogwait").style.display="block";
     
     
-const randomdigit=Math.floor(Math.random()* 10).toString();
+const randomdigit=Math.floor(Math.random()* 100).toString();
 
 const timestamptr= date.getTime().toString();
 const idr=randomdigit + timestamptr;
