@@ -2288,3 +2288,68 @@ img {vertical-align: middle;}
   90%,
   100% {background-position:calc(1*100%/3) 50%,calc(0*100%/3) calc(50% + calc(var(--s)/8)),calc(0*100%/3) calc(50% - calc(var(--s)/8)), calc(2*100%/3) 50%,calc(3*100%/3) calc(50% + calc(var(--s)/8)),calc(3*100%/3) calc(50% - calc(var(--s)/8))}
 }
+.lesson-note-form {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #f9f9f9;
+}
+
+.lesson-note-form input[type="text"],
+.lesson-note-form input[type="number"],
+.lesson-note-form textarea,
+.lesson-note-form select {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+}
+
+.lesson-note-form textarea {
+  height: 100px;
+}
+
+.lesson-note-form button {
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.lesson-note-form button:hover {
+  background-color: #0056b3;
+}
+
+.lesson-note-form label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.lesson-note-form input::placeholder,
+.lesson-note-form textarea::placeholder {
+  color: #999;
+}
+
+@media (max-width: 768px) {
+  .lesson-note-form {
+    padding: 1rem;
+  }
+
+  .lesson-note-form button {
+    font-size: 14px;
+  }
+}

@@ -227,7 +227,7 @@ function Teachersidebar(){
       <li className="nav-item" onClick={Lesson}>
         <a className="nav-link collapsed">
           <i className="fa fa-diamond"></i>
-          <span>Note</span>
+          <span>Lesson Note</span>
         </a>
       </li>
       

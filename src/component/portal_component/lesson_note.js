@@ -50,10 +50,110 @@ export default function LNote(){
         })
         .catch(err => console.log(err))
     }
-    return(
-        <>
-        <Breadcrumb title="Notes" />
-        <br/>
+    
+  const [lessonNote, setLessonNote] = useState({
+    subject: '',
+    class: '',
+    week: '',
+    day: '',
+    topic: '',
+    subTopic: '',
+    introduction: '',
+    teachingAids: '',
+    objectives: '',
+    mainContent: '',
+    conclusion: '',
+    evaluation: '',
+    references: ''
+  });
+
+  const handleChange = (e) => {
+    setLessonNote({ ...lessonNote, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('https://your-glitch-project-name.glitch.me/lesson-notes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(lessonNote)
+      });
+      if (response.ok) {
+        alert('Lesson note submitted successfully');
+        setLessonNote({
+          subject: '',
+          class: '',
+          week: '',
+          day: '',
+          topic: '',
+          subTopic: '',
+          introduction: '',
+          teachingAids: '',
+          objectives: '',
+          mainContent: '',
+          conclusion: '',
+          evaluation: '',
+          references: ''
+        });
+      } else {
+        const errorData = await response.json();
+        alert(`Error: ${errorData.message}`);
+      }
+    } catch (error) {
+      alert('An error occurred. Please try again.');
+      console.error('Error:', error);
+    }
+  };
+
+  return (
+    <>
+    <Breadcrumb title="Lesson Note" />
+    <br/>
+    <form className="lesson-note-form" onSubmit={handleSubmit}>
+      <label htmlFor="subject">Subject</label>
+      <input name="subject" id="subject" placeholder="Subject" value={lessonNote.subject} onChange={handleChange} required />
+
+      <label htmlFor="class">Class</label>
+      <input name="class" id="class" placeholder="Class" value={lessonNote.class} onChange={handleChange} required />
+
+      <label htmlFor="week">Week</label>
+      <input name="week" id="week" placeholder="Week" value={lessonNote.week} onChange={handleChange} required />
+
+      <label htmlFor="day">Day</label>
+      <input name="day" id="day" placeholder="Day" value={lessonNote.day} onChange={handleChange} required />
+
+      <label htmlFor="topic">Topic</label>
+      <input name="topic" id="topic" placeholder="Topic" value={lessonNote.topic} onChange={handleChange} required />
+
+      <label htmlFor="subTopic">Sub-Topic</label>
+      <input name="subTopic" id="subTopic" placeholder="Sub-Topic" value={lessonNote.subTopic} onChange={handleChange} />
+
+      <label htmlFor="introduction">Introduction</label>
+      <textarea name="introduction" id="introduction" placeholder="Introduction" value={lessonNote.introduction} onChange={handleChange} required></textarea>
+
+      <label htmlFor="teachingAids">Teaching Aids</label>
+      <textarea name="teachingAids" id="teachingAids" placeholder="Teaching Aids" value={lessonNote.teachingAids} onChange={handleChange} required></textarea>
+
+      <label htmlFor="objectives">Objectives</label>
+      <textarea name="objectives" id="objectives" placeholder="Objectives" value={lessonNote.objectives} onChange={handleChange} required></textarea>
+
+      <label htmlFor="mainContent">Main Content</label>
+      <textarea name="mainContent" id="mainContent" placeholder="Main Content" value={lessonNote.mainContent} onChange={handleChange} required></textarea>
+
+      <label htmlFor="conclusion">Conclusion</label>
+      <textarea name="conclusion" id="conclusion" placeholder="Conclusion" value={lessonNote.conclusion} onChange={handleChange} required></textarea>
+
+      <label htmlFor="evaluation">Evaluation</label>
+      <textarea name="evaluation" id="evaluation" placeholder="Evaluation" value={lessonNote.evaluation} onChange={handleChange} required></textarea>
+
+      <label htmlFor="references">References</label>
+      <textarea name="references" id="references" placeholder="References" value={lessonNote.references} onChange={handleChange}></textarea>
+
+      <button type="submit">Submit Lesson Note</button>
+    </form>
         {/* <button style={{padding:"10px 12px",background:"black",color:"white"}}>Speech to Text</button>
         <br/>
         <br/>
@@ -67,6 +167,7 @@ export default function LNote(){
 </center>
 
 <div id="user_note"></div> */}
+        
         </>
     )
 }
