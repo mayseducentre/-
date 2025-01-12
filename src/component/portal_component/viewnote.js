@@ -44,6 +44,7 @@ export default function NoteView() {
     <>
     <Header />
     <Breadcrumb title="View Lesson Note" />
+<br/>
 
     <div>
       <h2>Lesson Notes for Review</h2>
@@ -51,6 +52,7 @@ export default function NoteView() {
         <ul className="lesson-notes-list">
           {lessonNotes.map((note) => (
             <li key={note.id} className="lesson-note-item">
+              <h6>Posted by {note.name}</h6>
               <p><strong>Subject:</strong> {note.subject}</p>
               <p><strong>Class:</strong> {note.classLevel}</p>
               <p><strong>Date:</strong> {note.date}</p>
@@ -72,7 +74,7 @@ export default function NoteView() {
               <div>
                 <button
                   onClick={() => handleMark(note.id)}
-                  className="mark-button"
+                  className="mark-button" style={{borderRadius:"10px",padding:"10px 12px", background:"orange", color:"white"}}
                 >
                   Mark as Reviewed
                 </button>

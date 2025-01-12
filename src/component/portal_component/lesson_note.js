@@ -93,6 +93,8 @@ export default function LNote() {
   };
 
   const handleDelete = async (id) => {
+    var redelete=window.confirm("You are ready to delete the note. It would be permanently deleted.");
+    if(redelete== true){
     try {
       const response = await fetch(`${notedb}/note/${id}`, {
         method: 'DELETE',
@@ -106,6 +108,7 @@ export default function LNote() {
     } catch (error) {
       console.error('Error deleting lesson note:', error);
     }
+  }
   };
 
   return (
