@@ -137,7 +137,7 @@ function logintoPortal(data){
             document.getElementById("daycusername").innerHTML=data[i].name;
             document.getElementById("staffname").value=data[i].name;
             document.getElementById("daycarestaffid").value=data[i].id;
-            
+            document.getElementById("notename").value=data[i].name;            
             document.getElementById("fn_assign").value=data[i].name;
             document.getElementById("email_assign").value=data[i].email;
             document.getElementById("subj_assign").value=data[i].subject;

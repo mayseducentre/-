@@ -3,8 +3,11 @@ import Breadcrumb from "../breadcrumb";
 
 export default function LNote() {
   const notedb = process.env.REACT_APP_NOTE_DB;
+  const fullname=document.getElementById("notename").value;
+
   const [formData, setFormData] = useState({
     subject: '',
+    name:`${fullname}`,
     classLevel: '',
     date: new Date().toISOString().split('T')[0],
     duration: '',
@@ -50,6 +53,7 @@ export default function LNote() {
         alert('Lesson note submitted successfully!');
         setFormData({
           subject: '',
+          name:`${fullname}`,
           classLevel: '',
           date: new Date().toISOString().split('T')[0],
           duration: '',
@@ -107,8 +111,14 @@ export default function LNote() {
   return (
     <>
     <Breadcrumb title="Create Lesson Note" />
+
+    <br />
+
     <div>
       <form onSubmit={handleSubmit} className="lesson-note-form">
+        <label>FullName</label>
+        <input type="text" name="fullname" id="notename" readOnly/>
+
         <label>Subject:</label>
         <input type="text" name="subject" value={formData.subject} onChange={handleChange} required />
 
