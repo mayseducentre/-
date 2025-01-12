@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 function LessonNoteList() {
   const [lessonNotes, setLessonNotes] = useState([]);
+const notedb=process.env.REACT_APP_NOTE_DB 
 
   useEffect(() => {
     fetchLessonNotes();
@@ -9,7 +10,7 @@ function LessonNoteList() {
 
   const fetchLessonNotes = async () => {
     try {
-      const response = await fetch('https://your-glitch-project-name.glitch.me/lesson-notes');
+      const response = await fetch(`${notedb}/note`);
       if (response.ok) {
         const data = await response.json();
         setLessonNotes(data);
@@ -30,6 +31,7 @@ function LessonNoteList() {
       ) : (
         lessonNotes.map((note, index) => (
           <div key={index} className="lesson-note">
+            <h3>Posted by {note.username} on {note.date}</h3>
             <h3>{note.subject} - {note.class}</h3>
             <p><strong>Week:</strong> {note.week}</p>
             <p><strong>Day:</strong> {note.day}</p>

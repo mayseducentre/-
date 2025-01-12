@@ -51,7 +51,13 @@ export default function LNote(){
         .catch(err => console.log(err))
     }
     
+
+  const notedb=process.env.REACT_APP_NOTE_DB
+  var d=new Date();
+  var time =d.getDate();
+    
   const [lessonNote, setLessonNote] = useState({
+    username:'',
     subject: '',
     class: '',
     week: '',
@@ -64,7 +70,8 @@ export default function LNote(){
     mainContent: '',
     conclusion: '',
     evaluation: '',
-    references: ''
+    references: '',
+    date: `${time}`
   });
 
   const handleChange = (e) => {
@@ -74,7 +81,7 @@ export default function LNote(){
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('https://your-glitch-project-name.glitch.me/lesson-notes', {
+      const response = await fetch(`${notedb}/note`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -84,6 +91,7 @@ export default function LNote(){
       if (response.ok) {
         alert('Lesson note submitted successfully');
         setLessonNote({
+          username:'',
           subject: '',
           class: '',
           week: '',
@@ -96,7 +104,8 @@ export default function LNote(){
           mainContent: '',
           conclusion: '',
           evaluation: '',
-          references: ''
+          references: '',
+          date:`${time}`
         });
       } else {
         const errorData = await response.json();
@@ -113,6 +122,9 @@ export default function LNote(){
     <Breadcrumb title="Lesson Note" />
     <br/>
     <form className="lesson-note-form" onSubmit={handleSubmit}>
+      <label htmlFor="username">Full Name</label>
+      <input name="username" id="username" placeholder="Full Name" value={lessonNote.username} onChange={handleChange} required />
+
       <label htmlFor="subject">Subject</label>
       <input name="subject" id="subject" placeholder="Subject" value={lessonNote.subject} onChange={handleChange} required />
 

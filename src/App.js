@@ -14,6 +14,7 @@ import LibraryBooks from "./library/books";
 import LibraryVideos from "./library/videos";
 import AdminPage from "./pages/admin";
 import ComputingAbbrev from "./component/comp_abbreviations";
+import LessonNoteList from "./component/portal_component/viewnote.js";
 import ManageItems from "./pages/manage_items";
 import LibraryWebsites from "./library/website";
 import News from "./pages/news_update";
@@ -82,6 +83,7 @@ function App() {
       <Route path="/vrtour" element={<VRTour />} />
       <Route path="/daycareuser/account/form" element={<DaycareForm />} />
       <Route path="/user_setting" element={<SignSet />} />
+      <Route path="/admin/note" element={<LessonNoteList />} />
        </Route>
     </Routes>
     </HashRouter>
