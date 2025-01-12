@@ -180,10 +180,10 @@ function AdminSidebar(){
       </li>
 
 
-      <li className="nav-item">
+      <li className="nav-item" onClick={()=>{window.location.href="#/admin/note"}}>
         <a className="nav-link collapsed">
           <i className="fa fa-diamond"></i>
-          <span>Server</span>
+          <span>Lesson Note</span>
         </a>
       </li>
 
@@ -244,7 +244,7 @@ function AdminSidebar(){
   <a className="fa fa-group" onClick={MngT}><br /><small className="smaller">Mng_Staff</small></a>
   <a className="fa fa-group" onClick={MngP}><br /><small className="smaller">Mng_Parent</small></a>
   <a className="fa fa-group" onClick={AccountD}><br /><small className="smaller">Account</small></a>
-  <a className="fa fa-database" ><br /><small className="smaller">Server</small></a>
+  <a className="fa fa-database" onClick={()=>{window.location.href="#/admin/note"}} ><br /><small className="smaller">Lesson Note</small></a>
   <a className="fa fa-flash" ><br /><small className="smaller">Tracking</small></a>
   <a className="fa fa-laptop" title="Virtual Meeting"><br /><small className="smaller">VR Meet</small></a>
   <a className="fa fa-calendar-o" onClick={CreateCalendar}><br /><small className="smaller">Calendar</small></a>

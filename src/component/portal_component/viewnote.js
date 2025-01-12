@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import Header from "../header";
+import Breadcrumb from "../breadcrumb"
 
 function LessonNoteList() {
   const [lessonNotes, setLessonNotes] = useState([]);
@@ -25,9 +27,16 @@ const notedb=process.env.REACT_APP_NOTE_DB
 
   return (
     <div>
-      <h2>Lesson Notes</h2>
+      <Header />
+      <Breadcrumb title="View Lesson Notes" />
+      <br />
+      <br />
+
+      
       {lessonNotes.length === 0 ? (
+        <center> 
         <p>No lesson notes available.</p>
+        </center>
       ) : (
         lessonNotes.map((note, index) => (
           <div key={index} className="lesson-note">
