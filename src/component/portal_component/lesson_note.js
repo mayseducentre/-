@@ -1,81 +1,39 @@
+import React, { useState, useEffect } from 'react';
 import Breadcrumb from "../breadcrumb";
-import Speech from "./speech";
 
-import 'froala-editor/css/froala_style.min.css';
-import 'froala-editor/css/froala_editor.pkgd.min.css';
-import FroalaEditorComponent from 'react-froala-wysiwyg';
-import { useState } from "react";
-
-var path=process.env.REACT_APP_ACCOUNT_API;
-
-function getNote(){
-    var id=document.getElementById("teacherid").value;
-    fetch(`${path}/staffaccount/${id}`)
-    .then(res => res.json())
-    .then(data => displayNote(data))
-    .catch(err => console.log(err))
-   
-    }
-
-    function displayNote(data){
-        for(var i=0; i < data.length; i++){
-        var div= document.createElement("div");
-        div.innerHTML=`${data[i].note}` 
-
-        document.getElementById("user_note").appendChild(div)
-        }
-    }
-
-export default function LNote(){
-    const [content, setContent]=useState('');
-
-    const modelChange=(newcontent) =>{
-        setContent(newcontent)
-    }
-
-    function sendContent(){
-        var id=document.getElementById("teacherid").value;
-        fetch(`${path}/staffaccount/${id}`,{
-            method:"PATCH",
-            body: JSON.stringify({
-                "note":content
-            }),
-            headers:{
-                "Content-type":"application/json"
-            }
-        })
-        .then(res => res.json())
-        .then(data => {console.log(data)
-            alert("Saved successfully")
-        })
-        .catch(err => console.log(err))
-    }
-    
-
-  const notedb=process.env.REACT_APP_NOTE_DB
-  var d=new Date();
-  var time =d.getDate();
-    
-  const [lessonNote, setLessonNote] = useState({
-    username:'',
+export default function LNote() {
+  const notedb = process.env.REACT_APP_NOTE_DB;
+  const [formData, setFormData] = useState({
     subject: '',
-    class: '',
+    classLevel: '',
+    date: new Date().toISOString().split('T')[0],
+    duration: '',
     week: '',
     day: '',
     topic: '',
     subTopic: '',
-    introduction: '',
-    teachingAids: '',
+    reference: '',
     objectives: '',
-    mainContent: '',
+    rpk: '',
+    tlms: '',
+    introduction: '',
+    contentDevelopment: '',
+    activity: '',
     conclusion: '',
     evaluation: '',
-    references: '',
-    date: `${time}`
+    assignment: ''
   });
 
+  const [lessonNotes, setLessonNotes] = useState([]); // State to hold fetched lesson notes
+
+  useEffect(() => {
+    setFormData({ ...formData, date: new Date().toISOString().split('T')[0] });
+    fetchLessonNotes(); // Fetch existing notes on component mount
+  }, []);
+
   const handleChange = (e) => {
-    setLessonNote({ ...lessonNote, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (e) => {
@@ -84,102 +42,142 @@ export default function LNote(){
       const response = await fetch(`${notedb}/note`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(lessonNote)
+        body: JSON.stringify(formData),
       });
       if (response.ok) {
-        alert('Lesson note submitted successfully');
-        setLessonNote({
-          username:'',
+        alert('Lesson note submitted successfully!');
+        setFormData({
           subject: '',
-          class: '',
+          classLevel: '',
+          date: new Date().toISOString().split('T')[0],
+          duration: '',
           week: '',
           day: '',
           topic: '',
           subTopic: '',
-          introduction: '',
-          teachingAids: '',
+          reference: '',
           objectives: '',
-          mainContent: '',
+          rpk: '',
+          tlms: '',
+          introduction: '',
+          contentDevelopment: '',
+          activity: '',
           conclusion: '',
           evaluation: '',
-          references: '',
-          date:`${time}`
+          assignment: ''
         });
+        fetchLessonNotes(); // Refresh notes after submission
       } else {
-        const errorData = await response.json();
-        alert(`Error: ${errorData.message}`);
+        alert('Failed to submit lesson note.');
       }
     } catch (error) {
-      alert('An error occurred. Please try again.');
       console.error('Error:', error);
+      alert('An error occurred.');
+    }
+  };
+
+  const fetchLessonNotes = async () => {
+    try {
+      const response = await fetch(`${notedb}/note`);
+      const data = await response.json();
+      setLessonNotes(data); // Store notes in state
+    } catch (error) {
+      console.error('Error fetching lesson notes:', error);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await fetch(`${notedb}/note/${id}`, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        alert('Lesson note deleted successfully!');
+        fetchLessonNotes(); // Refresh notes after deletion
+      } else {
+        alert('Failed to delete lesson note.');
+      }
+    } catch (error) {
+      console.error('Error deleting lesson note:', error);
     }
   };
 
   return (
     <>
-    <Breadcrumb title="Lesson Note" />
-    <br/>
-    <form className="lesson-note-form" onSubmit={handleSubmit}>
-      <label htmlFor="username">Full Name</label>
-      <input name="username" id="username" placeholder="Full Name" value={lessonNote.username} onChange={handleChange} required />
+    <Breadcrumb title="Create Lesson Note" />
+    <div>
+      <form onSubmit={handleSubmit} className="lesson-note-form">
+        <label>Subject:</label>
+        <input type="text" name="subject" value={formData.subject} onChange={handleChange} required />
 
-      <label htmlFor="subject">Subject</label>
-      <input name="subject" id="subject" placeholder="Subject" value={lessonNote.subject} onChange={handleChange} required />
+        <label>Class:</label>
+        <input type="text" name="classLevel" value={formData.classLevel} onChange={handleChange} required />
 
-      <label htmlFor="class">Class</label>
-      <input name="class" id="class" placeholder="Class" value={lessonNote.class} onChange={handleChange} required />
+        <label>Date:</label>
+        <input type="text" name="date" value={formData.date} readOnly />
 
-      <label htmlFor="week">Week</label>
-      <input name="week" id="week" placeholder="Week" value={lessonNote.week} onChange={handleChange} required />
+        <label>Duration:</label>
+        <input type="text" name="duration" value={formData.duration} onChange={handleChange} />
 
-      <label htmlFor="day">Day</label>
-      <input name="day" id="day" placeholder="Day" value={lessonNote.day} onChange={handleChange} required />
+        <label>Week:</label>
+        <input type="number" name="week" value={formData.week} onChange={handleChange} required />
 
-      <label htmlFor="topic">Topic</label>
-      <input name="topic" id="topic" placeholder="Topic" value={lessonNote.topic} onChange={handleChange} required />
+        <label>Day:</label>
+        <input type="text" name="day" value={formData.day} onChange={handleChange} />
 
-      <label htmlFor="subTopic">Sub-Topic</label>
-      <input name="subTopic" id="subTopic" placeholder="Sub-Topic" value={lessonNote.subTopic} onChange={handleChange} />
+        <label>Topic:</label>
+        <input type="text" name="topic" value={formData.topic} onChange={handleChange} required />
 
-      <label htmlFor="introduction">Introduction</label>
-      <textarea name="introduction" id="introduction" placeholder="Introduction" value={lessonNote.introduction} onChange={handleChange} required></textarea>
+        <label>Sub-Topic:</label>
+        <input type="text" name="subTopic" value={formData.subTopic} onChange={handleChange} required />
 
-      <label htmlFor="teachingAids">Teaching Aids</label>
-      <textarea name="teachingAids" id="teachingAids" placeholder="Teaching Aids" value={lessonNote.teachingAids} onChange={handleChange} required></textarea>
+        <label>Reference:</label>
+        <input type="text" name="reference" value={formData.reference} onChange={handleChange} required />
 
-      <label htmlFor="objectives">Objectives</label>
-      <textarea name="objectives" id="objectives" placeholder="Objectives" value={lessonNote.objectives} onChange={handleChange} required></textarea>
+        <label>Objectives:</label>
+        <textarea name="objectives" value={formData.objectives} onChange={handleChange} required />
 
-      <label htmlFor="mainContent">Main Content</label>
-      <textarea name="mainContent" id="mainContent" placeholder="Main Content" value={lessonNote.mainContent} onChange={handleChange} required></textarea>
+        <label>RPK:</label>
+        <textarea name="rpk" value={formData.rpk} onChange={handleChange} required />
 
-      <label htmlFor="conclusion">Conclusion</label>
-      <textarea name="conclusion" id="conclusion" placeholder="Conclusion" value={lessonNote.conclusion} onChange={handleChange} required></textarea>
+        <label>TLMs:</label>
+        <textarea name="tlms" value={formData.tlms} onChange={handleChange} required />
 
-      <label htmlFor="evaluation">Evaluation</label>
-      <textarea name="evaluation" id="evaluation" placeholder="Evaluation" value={lessonNote.evaluation} onChange={handleChange} required></textarea>
+        <label>Introduction:</label>
+        <textarea name="introduction" value={formData.introduction} onChange={handleChange} required />
 
-      <label htmlFor="references">References</label>
-      <textarea name="references" id="references" placeholder="References" value={lessonNote.references} onChange={handleChange}></textarea>
+        <label>Content Development:</label>
+        <textarea name="contentDevelopment" value={formData.contentDevelopment} onChange={handleChange} required />
 
-      <button type="submit">Submit Lesson Note</button>
-    </form>
-        {/* <button style={{padding:"10px 12px",background:"black",color:"white"}}>Speech to Text</button>
-        <br/>
-        <br/>
-        <button style={{padding:"10px 12px",background:"black",color:"white"}}>Note Editor</button> */}
-<Speech />
-{/* <FroalaEditorComponent tag='textarea' model={content} onModelChange={modelChange}/>
+        <label>Activity:</label>
+        <textarea name="activity" value={formData.activity} onChange={handleChange} required />
 
-<center>
-<button  onClick={sendContent}>Save on Cloud</button>
-<button onClick={getNote}>Get Note</button>
-</center>
+        <label>Conclusion:</label>
+        <textarea name="conclusion" value={formData.conclusion} onChange={handleChange} required />
 
-<div id="user_note"></div> */}
-        
-        </>
-    )
+        <label>Evaluation:</label>
+        <textarea name="evaluation" value={formData.evaluation} onChange={handleChange} required />
+
+        <label>Assignment:</label>
+        <textarea name="assignment" value={formData.assignment} onChange={handleChange} required />
+
+        <button type="submit">Submit Lesson Note</button>
+      </form>
+
+      <h2>Lesson Notes</h2>
+      <ul>
+        {lessonNotes.map((note) => (
+          <li key={note.id}>
+            <p><strong>Topic:</strong> {note.topic}</p>
+            <p><strong>Class:</strong> {note.classLevel}</p>
+            <p><strong>Date:</strong> {note.date}</p>
+            <button onClick={() => handleDelete(note.id)}>Delete</button>
+          </li>
+        ))}
+      </ul>
+    </div>
+    </>
+  );
 }
