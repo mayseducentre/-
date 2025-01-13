@@ -7,9 +7,9 @@ export default function LNote() {
 
   const [formData, setFormData] = useState({
     subject: '',
-    name:'',
+    fname:'',
     classLevel: '',
-    date:'',
+    dateW:'',
     dateposted: new Date().toISOString().split('T')[0],
     duration: '',
     week: '',
@@ -54,9 +54,9 @@ export default function LNote() {
         alert('Lesson note submitted successfully!');
         setFormData({
           subject: '',
-          name:'',
+          fname:'',
           classLevel:'',
-          date:'',
+          dateW:'',
           dateposted: new Date().toISOString().split('T')[0],
           duration: '',
           week: '',
@@ -122,7 +122,7 @@ export default function LNote() {
     <div>
       <form onSubmit={handleSubmit} className="lesson-note-form">
         <label>FullName</label>
-        <input type="text" name="fullname" value={formData.name} onChange={handleChange} required/>
+        <input type="text" name="fullname" value={formData.fetchLessonNotesname} onChange={handleChange} required/>
 
         <label>Subject:</label>
         <input type="text" name="subject" value={formData.subject} onChange={handleChange} required />
@@ -131,7 +131,7 @@ export default function LNote() {
         <input type="text" name="classLevel" value={formData.classLevel} onChange={handleChange} required />
 
         <label>Date:</label>
-        <input type="text" name="date" value={formData.date} onChange={handleChange} required />
+        <input type="text" name="date" value={formData.dateW} onChange={handleChange} required />
 
         <label>Duration:</label>
         <input type="text" name="duration" value={formData.duration} onChange={handleChange} />
