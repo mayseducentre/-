@@ -45,14 +45,16 @@ export default function NoteView() {
     <Header />
     <Breadcrumb title="View Lesson Note" />
 <br/>
-
-    <div>
+<a href="#/admin">Sign in as Admin</a>
+<br/>
+<br/>
+    <div style={{margin:"5px"}}>
       <h2>Lesson Notes for Review</h2>
       {lessonNotes.length > 0 ? (
         <ul className="lesson-notes-list">
           {lessonNotes.map((note) => (
             <li key={note.id} className="lesson-note-item">
-              <h6>Posted by {note.name}</h6>
+              <h6>Posted by {note.name} on {note.dateposted}</h6>
               <p><strong>Subject:</strong> {note.subject}</p>
               <p><strong>Class:</strong> {note.classLevel}</p>
               <p><strong>Date:</strong> {note.date}</p>
@@ -87,6 +89,8 @@ export default function NoteView() {
         <p>No lesson notes available.</p>
       )}
     </div>
+
+    
     </>
   );
 }

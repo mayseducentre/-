@@ -9,7 +9,8 @@ export default function LNote() {
     subject: '',
     name:'',
     classLevel: '',
-    date: new Date().toISOString().split('T')[0],
+    date:'',
+    dateposted: new Date().toISOString().split('T')[0],
     duration: '',
     week: '',
     day: '',
@@ -54,8 +55,9 @@ export default function LNote() {
         setFormData({
           subject: '',
           name:'',
-          classLevel: '',
-          date: new Date().toISOString().split('T')[0],
+          classLevel:'',
+          date:'',
+          dateposted: new Date().toISOString().split('T')[0],
           duration: '',
           week: '',
           day: '',
@@ -129,7 +131,7 @@ export default function LNote() {
         <input type="text" name="classLevel" value={formData.classLevel} onChange={handleChange} required />
 
         <label>Date:</label>
-        <input type="text" name="date" value={formData.date} readOnly />
+        <input type="text" name="date" value={formData.date} required />
 
         <label>Duration:</label>
         <input type="text" name="duration" value={formData.duration} onChange={handleChange} />
