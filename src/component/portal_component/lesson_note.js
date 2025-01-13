@@ -131,7 +131,7 @@ export default function LNote() {
         <input type="text" name="classLevel" value={formData.classLevel} onChange={handleChange} required />
 
         <label>Date:</label>
-        <input type="text" name="date" value={formData.date} required />
+        <input type="text" name="date" value={formData.date} onChange={handleChange} required />
 
         <label>Duration:</label>
         <input type="text" name="duration" value={formData.duration} onChange={handleChange} />
