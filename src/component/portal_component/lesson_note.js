@@ -185,7 +185,8 @@ export default function LNote() {
           <li key={note.id}>
             <p><strong>Topic:</strong> {note.topic}</p>
             <p><strong>Class:</strong> {note.classLevel}</p>
-            <p><strong>Date:</strong> {note.date}</p>
+            <p><strong>Date Posted:</strong> {note.date}</p>
+            <p>{note.status}</p>
             <button onClick={() => handleDelete(note.id)}>Delete</button>
           </li>
         ))}

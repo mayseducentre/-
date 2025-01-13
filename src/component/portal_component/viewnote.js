@@ -48,7 +48,7 @@ export default function NoteView() {
 <a href="#/admin">Sign in as Admin</a>
 <br/>
 <br/>
-    <div style={{margin:"5px"}}>
+    <div style={{marginLeft:"5px"}}>
       <h2>Lesson Notes for Review</h2>
       {lessonNotes.length > 0 ? (
         <ul className="lesson-notes-list">
@@ -74,6 +74,8 @@ export default function NoteView() {
               <p><strong>Evaluation:</strong> {note.evaluation}</p>
               <p><strong>Assignment:</strong> {note.assignment}</p>
               <div>
+                <br/>
+              
                 <button
                   onClick={() => handleMark(note.id)}
                   className="mark-button" style={{borderRadius:"10px",padding:"10px 12px", background:"orange", color:"white"}}
@@ -89,7 +91,8 @@ export default function NoteView() {
         <p>No lesson notes available.</p>
       )}
     </div>
-
+<br/>
+<br/>
     
     </>
   );
