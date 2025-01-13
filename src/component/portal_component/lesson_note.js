@@ -7,10 +7,9 @@ export default function LNote() {
 
   const [formData, setFormData] = useState({
     subject: '',
-    fname:'',
+    name:'',
     classLevel: '',
-    dateW:'',
-    dateposted: new Date().toISOString().split('T')[0],
+    date: new Date().toISOString().split('T')[0],
     duration: '',
     week: '',
     day: '',
@@ -54,10 +53,9 @@ export default function LNote() {
         alert('Lesson note submitted successfully!');
         setFormData({
           subject: '',
-          fname:'',
+          name:'',
           classLevel:'',
-          dateW:'',
-          dateposted: new Date().toISOString().split('T')[0],
+          date: new Date().toISOString().split('T')[0],
           duration: '',
           week: '',
           day: '',
@@ -121,8 +119,8 @@ export default function LNote() {
 
     <div>
       <form onSubmit={handleSubmit} className="lesson-note-form">
-        <label>FullName</label>
-        <input type="text" name="fullname" value={formData.fetchLessonNotesname} onChange={handleChange} required/>
+        <label>Name</label>
+        <input type="text" name="name" value={formData.name} onChange={handleChange} required/>
 
         <label>Subject:</label>
         <input type="text" name="subject" value={formData.subject} onChange={handleChange} required />
@@ -130,8 +128,8 @@ export default function LNote() {
         <label>Class:</label>
         <input type="text" name="classLevel" value={formData.classLevel} onChange={handleChange} required />
 
-        <label>Date:</label>
-        <input type="text" name="date" value={formData.dateW} onChange={handleChange} required />
+        <label>Date Posted:</label>
+        <input type="text" name="date" value={formData.date} readOnly/>
 
         <label>Duration:</label>
         <input type="text" name="duration" value={formData.duration} onChange={handleChange} />
@@ -139,7 +137,7 @@ export default function LNote() {
         <label>Week:</label>
         <input type="number" name="week" value={formData.week} onChange={handleChange} required />
 
-        <label>Day:</label>
+        <label>Day / Date:</label>
         <input type="text" name="day" value={formData.day} onChange={handleChange} />
 
         <label>Topic:</label>

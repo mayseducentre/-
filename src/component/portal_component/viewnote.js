@@ -54,13 +54,13 @@ export default function NoteView() {
         <ul className="lesson-notes-list">
           {lessonNotes.map((note) => (
             <li key={note.id} className="lesson-note-item">
-              <h6>Posted by {note.fname} on {note.dateposted}</h6>
+              <h6>Posted by {note.name}</h6>
               <p><strong>Subject:</strong> {note.subject}</p>
               <p><strong>Class:</strong> {note.classLevel}</p>
-              <p><strong>Date:</strong> {note.dateW}</p>
+              <p><strong>Date Posted:</strong> {note.date}</p>
               <p><strong>Duration:</strong> {note.duration}</p>
               <p><strong>Week:</strong> {note.week}</p>
-              <p><strong>Day:</strong> {note.day}</p>
+              <p><strong>Day / Date:</strong> {note.day}</p>
               <p><strong>Topic:</strong> {note.topic}</p>
               <p><strong>Sub-Topic:</strong> {note.subTopic}</p>
               <p><strong>Reference:</strong> {note.reference}</p>
