@@ -118,7 +118,6 @@ function logintoPortal(data){
             document.getElementById("teacherid").value=data[i].id;
             
             document.getElementById("fn_assign").value=data[i].name;
-            document.getElementById("notename").value=data[i].name;
             document.getElementById("email_assign").value=data[i].email;
             document.getElementById("fn_grades").value=data[i].name;
             document.getElementById("email_grades").value=data[i].email;
