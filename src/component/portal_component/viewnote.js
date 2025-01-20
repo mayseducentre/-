@@ -64,11 +64,11 @@ export default function NoteView() {
               <p><strong>Topic:</strong> {note.topic}</p>
               <p><strong>Sub-Topic:</strong> {note.subTopic}</p>
               <p><strong>Reference:</strong> {note.reference}</p>
-              <p><strong>Objectives:</strong> {note.objectives}</p>
+              <p><strong>Objectives:</strong></p><textarea style={{height:"350px",border:"none"}} readOnly>{note.objectives}</textarea>
               <p><strong>RPK:</strong> {note.rpk}</p>
               <p><strong>TLMs:</strong> {note.tlms}</p>
-              <p><strong>Introduction:</strong> {note.introduction}</p>
-              <p><strong>Content Development:</strong> {note.contentDevelopment}</p>
+              <p><strong>Introduction:</strong></p> <textarea style={{border:"none", height:"350px"}} readOnly> {note.introduction}</textarea>
+              <p><strong>Content Development:</strong></p><textarea style={{border:"none", height:"350px"}} readOnly> {note.contentDevelopment}</textarea>
               <p><strong>Activity:</strong> {note.activity}</p>
               <p><strong>Conclusion:</strong> {note.conclusion}</p>
               <p><strong>Evaluation:</strong> {note.evaluation}</p>
