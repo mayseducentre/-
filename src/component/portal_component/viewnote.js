@@ -88,7 +88,7 @@ export default function NoteView() {
           ))}
         </ul>
       ) : (
-        <p>No lesson notes available.</p>
+        <p><div className="loadery"></div> <br/>No lesson notes available.</p>
       )}
     </div>
 <br/>
