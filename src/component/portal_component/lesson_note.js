@@ -161,7 +161,7 @@ export default function LNote() {
         <label>Introduction:</label>
         <textarea name="introduction" value={formData.introduction} onChange={handleChange} required />
 
-        <label>Content Development:</label>
+        <label>Core Point:</label>
         <textarea name="contentDevelopment" value={formData.contentDevelopment} onChange={handleChange} required />
 
         <label>Activity:</label>

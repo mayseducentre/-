@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Header from "../header";
 import Breadcrumb from "../breadcrumb";
+import ScrollToTop from "react-scroll-to-top"
 
 export default function NoteView() {
   const notedb = process.env.REACT_APP_NOTE_DB;
@@ -104,9 +105,7 @@ export default function NoteView() {
             style={{
               padding: "10px 12px",
               width: "250px",
-              position:"fixed",
               borderRadius: "20px",
-              border:"none",
               marginRight: "10px",
             }}
           />
@@ -186,7 +185,7 @@ export default function NoteView() {
                 <pre style={{ whiteSpace: "pre-wrap" }}>{note.tlms}</pre>
                 <p><strong>Introduction:</strong></p>
                 <pre style={{ whiteSpace: "pre-wrap" }}>{note.introduction}</pre>
-                <p><strong>Content Development:</strong></p>
+                <p><strong>Core Point:</strong></p>
                 <pre style={{ whiteSpace: "pre-wrap" }}>{note.contentDevelopment}</pre>
                 <p><strong>Activity:</strong></p>
                 <pre style={{ whiteSpace: "pre-wrap" }}>{note.activity}</pre>
@@ -223,6 +222,7 @@ export default function NoteView() {
       </div>
       <br />
       <br />
+      <ScrollToTop smooth className="scrolly" /> 
     </>
   );
 }
