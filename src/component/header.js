@@ -21,7 +21,8 @@ export default function Header(){
                 <i className="fa fa-search head_search" style={{color:"white"}}></i>
             </div>
         </header>
-       
+       <br/>
+       <br/>
         <div className="bottom-nav animate__animated animate__fadeInUp">
             <a className="fa fa-home" href="#/"><br /><small className="smaller">Home</small></a>
             <a className="fa fa-exclamation-circle" href="#/about"><br /><small className="smaller">About</small></a>

@@ -289,6 +289,9 @@ export default function GradeCreate(){
     <button style={{background:"red",color:"white"}} className="site-btn">Delete Grades</button>
     </form>                  
  </div>
+
+ <br />
+ <br />
         </>
     )
 }
