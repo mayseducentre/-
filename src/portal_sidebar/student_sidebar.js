@@ -68,7 +68,7 @@ function Meetme(){
   document.getElementById("meetme").style.display="block"
 }
 
-function Checkgrades(){
+function Checkgrading(){
   
   document.getElementById("assignview").style.display="none"
   document.getElementById("courseview").style.display="none"
@@ -131,7 +131,7 @@ function Studentsidebar(){
         </a>
       </li>
       
-      <li className="nav-item" style={{cursor:"pointer"}} onClick={Checkgrades}>
+      <li className="nav-item" style={{cursor:"pointer"}} onClick={Checkgrading}>
         <a className="nav-link collapsed">
           <i className="fa fa-diamond"></i>
           <span>Grades</span>
@@ -203,7 +203,7 @@ function Studentsidebar(){
   <div className="bottom-nav animate__animated animate__fadeInUp">
   <a className="fa fa-dashboard" onClick={CourseV}><br /><small className="smaller">Dashboard</small></a>
   <a className="fa fa-bar-chart-o" onClick={AssignV}><br /><small className="smaller">Assignments</small></a>
-  <a className="fa fa-graduation-cap" oncClickk={Checkgrades}><br /><small className="smaller">Grades</small></a>
+  <a className="fa fa-graduation-cap" onClick={Checkgrading}><br /><small className="smaller">Grades</small></a>
   <a className="fa fa-bullhorn" onClick={Message}><br /><small className="smaller">Announcements</small></a>
   <a className="fa fa-laptop" onClick={Meetme}><br /><small className="smaller">VR Meet</small></a>
   <a className="fa fa-calendar-o" onClick={CalendarV}><br /><small className="smaller">Calender</small></a>
