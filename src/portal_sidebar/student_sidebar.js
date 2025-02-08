@@ -6,7 +6,7 @@ function AssignV(){
   document.getElementById("courseview").style.display="none"
   document.getElementById("resourceview").style.display="none"
   document.getElementById("extraactview").style.display="none"
-  document.getElementById("gradescheck").style.display="none"
+  document.getElementById("checkmygrade").style.display="none"
   document.getElementById("calendar").style.display="none"
   document.getElementById("announcem").style.display="none"
   document.getElementById("meetme").style.display="none"
@@ -17,7 +17,7 @@ function ExtraAct(){
   document.getElementById("resourceview").style.display="none"
   document.getElementById("extraactview").style.display="block"
   document.getElementById("calendar").style.display="none"
-  document.getElementById("gradescheck").style.display="none"
+  document.getElementById("checkmygrade").style.display="none"
   document.getElementById("announcem").style.display="none"
   document.getElementById("meetme").style.display="none"
 }
@@ -29,7 +29,7 @@ function CourseV(){
   document.getElementById("resourceview").style.display="none"
   document.getElementById("extraactview").style.display="none"
   document.getElementById("calendar").style.display="none"
-  document.getElementById("gradescheck").style.display="none"
+  document.getElementById("checkmygrade").style.display="none"
   document.getElementById("announcem").style.display="none"
   document.getElementById("meetme").style.display="none"
 }
@@ -40,7 +40,7 @@ function CalendarV(){
   document.getElementById("resourceview").style.display="none"
   document.getElementById("extraactview").style.display="none"
   document.getElementById("calendarviewer").style.display="block"
-  document.getElementById("gradescheck").style.display="none"
+  document.getElementById("checkmygrade").style.display="none"
   document.getElementById("announcem").style.display="none"
   document.getElementById("meetme").style.display="none"
 }
@@ -52,7 +52,7 @@ function MessageA(){
   document.getElementById("extraactview").style.display="none"
   document.getElementById("calendar").style.display="none"
   document.getElementById("announcem").style.display="block";
-  document.getElementById("gradescheck").style.display="none"
+  document.getElementById("checkmygrade").style.display="none"
   document.getElementById("meetme").style.display="none"
 }
 
@@ -64,7 +64,7 @@ function Meetme(){
   document.getElementById("extraactview").style.display="none"
   document.getElementById("calendar").style.display="none"
   document.getElementById("announcem").style.display="none"
-  document.getElementById("gradescheck").style.display="none"
+  document.getElementById("checkmygrade").style.display="none"
   document.getElementById("meetme").style.display="block"
 }
 
