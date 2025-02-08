@@ -31,6 +31,7 @@ const stuc=()=>{
                         <th>Student_Name</th>
                         <th>Level/Class</th>
                         <th>Email</th>
+                        <th>Last seen</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -40,6 +41,7 @@ const stuc=()=>{
                         <td>{info.name}</td>
                         <td>{info.class}</td>
                         <td><a href="mailto:${info.email}">{info.email}</a></td>
+                        <td>{info.lastseen}</td>
                         </tr>
                       
                     ))}

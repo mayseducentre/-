@@ -100,9 +100,10 @@ if(choose.value === data[i].subject && stuclass.value === data[i].level){
    assignpost.innerHTML=`
    <p>Please send your ${data[i].subject} assignment through this email <a href="mailto:${data[i].email}">${data[i].email}</a>. You can do the work in an exercise book and take a picture of it. Then attach that picture or file and send it to <a href="mailto:${data[i].email}">${data[i].email}</a></p>
    <br/>
-   <a onclick="PstAssign()">View past assignments</a>
+   
    `
    nothing.style.display="none";
+   document.getElementById("pstbtn").style.display="block"
    assignhub.style.display="block"
    assignpost.style.display="block"
   
@@ -130,7 +131,7 @@ function PstAssign(){
   .catch(err => console.log(err))
 
   
-  fetch(`${assignpath}/mathassign`)
+  fetch(`${assignpath}/mathassign`)  .then(res => res.json())
   .then(res => res.json())
   .then(data => Viewassign(data))
   .catch(err => console.log(err))
@@ -199,6 +200,7 @@ if(choose.value === data[i].subject && stuclass.value === data[i].level){
   <textarea style="height:300px;border:none" readonly>${data[i].content}</textarea>
   `
   nothing.style.display="none";
+  document.getElementById("pstbtn").style.display="none"
   assignpast.style.display="block"
   
 }
@@ -245,6 +247,8 @@ useEffect(()=>{
 
         <div id="assignhub" style={{padding:"10px 12px",display:"none"}}>
         </div>
+        <button id="pstbtn" style={{padding:"10px 12px", background:"orange",display:"none"}} onClick={PstAssign}>Past Assignments</button>
+    
         <br/>
         <br/>
         
@@ -254,7 +258,7 @@ useEffect(()=>{
         <br/>
         <br/>
         <div id="pastassign" style={{display:"none"}}>
-
+    
         </div>
 
         <br />

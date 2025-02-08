@@ -28,7 +28,7 @@ function Chose(){
                                       for(var i= 0; i < data.length; i++){
                                           
                                              
-                                             if(choose.value === data[i].subject && stuclass.value === data[i].level){
+                                             if(choose.value === data[i].subject){
                                                  var div=document.createElement("div");
                                                     gradeshub.innerHTML=`
                                                        <h5>Grades</h5>
@@ -75,7 +75,7 @@ function Chose(){
                                                                                                                                   for(var i= 0; i < data.length; i++){
                                                                                                                                      
                                                                                                                                        
-                                                                                                                                       if(choose.value === data[i].subject && stuclass.value === data[i].level){
+                                                                                                                                       if(choose.value === data[i].subject){
                                                                                                                                           
                                                                                                                                             gradepast.innerHTML +=`
                                                                                                                                               <h5>Past Grades</h5>
@@ -123,7 +123,7 @@ function Chose(){
                                                                                                                                                                                                                                                                              ))}
                                                                                                                                                                                                                                                                                         
                                                                                                                                                                                                                                                                                                 </select>
-                                                                                                                                                                                                                                                                                                        <input type="text" id="stu_classgrade" style={{display:"none"}} readOnly/>
+                                                                                                                                                                                                                                                                                                        <input type="text" id="stuclassgrade" style={{display:"none"}} readOnly/>
                                                                                                                                                                                                                                                                                                                 </div>
                                                                                                                                                                                                                                                                                                                         </div>
 

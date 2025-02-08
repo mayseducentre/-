@@ -86,7 +86,9 @@ localStorage.setItem("portalcheck", portcheck.checked)
 
 function logintoPortal(data){
 
-
+var dates=new Date();
+var dateseen=dates.toLocaleDateString()
+var timeseen=dates.toLocaleTimeString();
 
     for(var i=0; i < data.length; i++){
         var log_userid=document.getElementById("portal_id").value;
@@ -95,13 +97,28 @@ function logintoPortal(data){
         var passwordcheck= bcrypt.compareSync(log_pass, storedhash);
 
         if(log_userid === data[i].id && passwordcheck && data[i].role === "student" && data[i].status === "enrolled"){
+            fetch(`${path}/studentaccount/${data[i].id}`,{
+                method:"PATCH",
+                body:JSON.stringify({
+                    "lastseen":`${dateseen} , ${timeseen}`
+                }),
+                headers:{
+                    "Content-type":"application/json"
+                }
+                
+            })
+            .then(res => res.json())
+            .then(data => console.log(data))
+            .catch(err => console.log(err))
+
+
             document.getElementById("portalogin").style.display="none";
            
             document.getElementById("stuportal").style.display="block";
             document.getElementById("studentusername").innerHTML=data[i].name;
             document.getElementById("studentid").value=data[i].id;
             document.getElementById("stu_class").value=data[i].class;
-            document.getElementById("stu_classgrade").value=data[i].class;
+            document.getElementById("stuclassgrade").value=data[i].class;
             document.getElementById("stuimgport").src=data[i].thumbnailUrl;
             document.getElementById("stuheadimg").src=data[i].thumbnailUrl;
              
