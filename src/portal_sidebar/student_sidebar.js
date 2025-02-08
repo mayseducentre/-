@@ -4,17 +4,16 @@ import "../style.css";
 function AssignV(){
   document.getElementById("assignview").style.display="block"
   document.getElementById("courseview").style.display="none"
-  document.getElementById("resourceview").style.display="none"
   document.getElementById("extraactview").style.display="none"
   document.getElementById("checkmygrade").style.display="none"
   document.getElementById("calendar").style.display="none"
   document.getElementById("announcem").style.display="none"
   document.getElementById("meetme").style.display="none"
 }
+
 function ExtraAct(){
   document.getElementById("assignview").style.display="none"
   document.getElementById("courseview").style.display="none"
-  document.getElementById("resourceview").style.display="none"
   document.getElementById("extraactview").style.display="block"
   document.getElementById("calendar").style.display="none"
   document.getElementById("checkmygrade").style.display="none"
@@ -26,7 +25,6 @@ function ExtraAct(){
 function CourseV(){
   document.getElementById("assignview").style.display="none"
   document.getElementById("courseview").style.display="block"
-  document.getElementById("resourceview").style.display="none"
   document.getElementById("extraactview").style.display="none"
   document.getElementById("calendar").style.display="none"
   document.getElementById("checkmygrade").style.display="none"
@@ -37,7 +35,6 @@ function CourseV(){
 function CalendarV(){
   document.getElementById("assignview").style.display="none"
   document.getElementById("courseview").style.display="none"
-  document.getElementById("resourceview").style.display="none"
   document.getElementById("extraactview").style.display="none"
   document.getElementById("calendarviewer").style.display="block"
   document.getElementById("checkmygrade").style.display="none"
@@ -48,7 +45,6 @@ function CalendarV(){
 function MessageA(){
   document.getElementById("assignview").style.display="none"
   document.getElementById("courseview").style.display="none"
-  document.getElementById("resourceview").style.display="none"
   document.getElementById("extraactview").style.display="none"
   document.getElementById("calendar").style.display="none"
   document.getElementById("announcem").style.display="block";
@@ -60,7 +56,6 @@ function MessageA(){
 function Meetme(){
   document.getElementById("assignview").style.display="none"
   document.getElementById("courseview").style.display="none"
-  document.getElementById("resourceview").style.display="none"
   document.getElementById("extraactview").style.display="none"
   document.getElementById("calendar").style.display="none"
   document.getElementById("announcem").style.display="none"
@@ -72,7 +67,6 @@ function GradeC(){
   
   document.getElementById("assignview").style.display="none"
   document.getElementById("courseview").style.display="none"
-  document.getElementById("resourceview").style.display="none"
   document.getElementById("extraactview").style.display="none"
   document.getElementById("calendar").style.display="none"
   document.getElementById("announcem").style.display="none"
