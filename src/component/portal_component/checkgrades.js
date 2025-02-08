@@ -100,7 +100,7 @@ else{
 
 }
 
-export default function CheckGrades(){
+export default function CheckGrade(){
     
     const [course, setCourse]=useState([]);
 useEffect(()=>{
@@ -113,7 +113,7 @@ useEffect(()=>{
     
     return(
         <>
-        <Breadcrumb title="Classes and Assignments" />
+        <Breadcrumb title="Grades" />
         <div className="row">
         <div className="col-lg-3 col-md-auto mb-4">
         <select className="choose" id="choose" onChange={Chose}>

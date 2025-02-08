@@ -77,7 +77,7 @@ function Checkgrading(){
   document.getElementById("calendar").style.display="none"
   document.getElementById("announcem").style.display="none"
   document.getElementById("meetme").style.display="none"
-  document.getElementById("gradescheck").style.display="block"
+  document.getElementById("checkmygrade").style.display="block"
 }
 
 function Studentsidebar(){

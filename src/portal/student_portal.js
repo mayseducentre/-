@@ -11,7 +11,7 @@ import MeetT from "../component/portal_component/meet_teachers";
 import AnnounceHubView from "../component/portal_component/viewannounce";
 import ViewCalendar from "../component/portal_component/viewcalendar";
 import Meet from "../component/portal_component/meet_online";
-import CheckGrades from "../component/portal_component/checkgrades";
+import CheckGrade from "../component/portal_component/checkgrades";
 
 function StudentPortal(){
    return(
@@ -30,6 +30,7 @@ function StudentPortal(){
     </div>
     <div id="assignview" style={{display:"none"}}>
     <AssignView />
+    <CheckGrade />
     </div>
     <div id="extraactview" style={{display:"none"}}>
     <ExtraActView />
@@ -44,8 +45,8 @@ function StudentPortal(){
     <div id="meetme" style={{display:"none"}}>
     <Meet />
     </div>
-    <div id="gradescheck" style={{display:"none"}}>
-    <CheckGrades />
+    <div id="checkmygrade" style={{display:"none"}}>
+    <CheckGrade />
     </div>
 
     <br/>
