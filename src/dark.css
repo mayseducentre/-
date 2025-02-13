@@ -1,0 +1,27 @@
+/* Default Light Mode */
+#app-wrapper {
+  background-color: #ffffff;
+    color: #000000;
+      transition: all 0.3s ease-in-out;
+      }
+
+      /* Dark Mode */
+      #app-wrapper.dark-mode {
+        background-color: #121212;
+          color: #ffffff;
+          }
+
+          /* Toggle Button */
+          .dark-mode-toggle {
+            padding: 10px 15px;
+              font-size: 16px;
+                border: none;
+                  cursor: pointer;
+                    background-color: #007bff;
+                      color: white;
+                        border-radius: 5px;
+                        }
+
+                        .dark-mode-toggle:hover {
+                          opacity: 0.8;
+                          }

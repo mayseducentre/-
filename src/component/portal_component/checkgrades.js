@@ -28,8 +28,8 @@ function Chose(){
                                       for(var i= 0; i < data.length; i++){
                                           
                                              
-                                             if(choose.value === data[i].subject){
-                                                 var div=document.createElement("div");
+                                             if(data[i].subject === "Computing"){
+                                                
                                                     gradeshub.innerHTML=`
                                                        <h5>Grades</h5>
                                                           <br>
