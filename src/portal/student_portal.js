@@ -4,7 +4,7 @@ import Footer from "../component/footer";
 import Headline from "../component/headlines";
 import AssignView from "../component/portal_component/assigment_view";
 import CourseView from "../component/portal_component/course_view";
-import ExtraActView from "../component/portal_component/extraactive";
+import ProjectUpload from "../component/portal_component/projectupload";
 import MeetST from "../component/portal_component/meet_students";
 import Studentsidebar from "../portal_sidebar/student_sidebar";
 import MeetT from "../component/portal_component/meet_teachers";
@@ -32,8 +32,8 @@ function StudentPortal(){
     <AssignView />
   
     </div>
-    <div id="extraactview" style={{display:"none"}}>
-    <ExtraActView />
+    <div id="projectupload" style={{display:"none"}}>
+    <ProjectUpload />
     </div>
     <div id="calendarviewer" style={{display:"none"}}>
     <ViewCalendar />

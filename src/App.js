@@ -23,6 +23,7 @@ import PostB from "./pages/blogpost";
 import ForgetPs from "./component/forgetps";
 import DaycareForm from "./component/daycare_form";
 import VRTour from "./library/vr_tour";
+import ProjectView from "./component/portal_component/projectview.js"
 
 window.addEventListener("keyup", (e)=>{
   if(e.ctrlKey && e.altKey && e.key === "a"){
@@ -75,6 +76,7 @@ function App() {
       <Route path="/libraryvideos" element={<LibraryVideos />} />
       <Route path="/librarymedia" element={<MecMedia/>} />
       <Route path="/librarywebsites" element={<LibraryWebsites />} />
+      <Route path="/projects" element={<ProjectView />} />
       <Route path="/computing_abbrev" element={<ComputingAbbrev />} />
       <Route path="/ins_guide" element={<InsGuide />} />
       <Route path="/manage_items" element={<ManageItems />} />

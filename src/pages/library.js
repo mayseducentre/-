@@ -80,11 +80,13 @@ export default function Library(){
 
 
         <div className="col-lg-4">
+            <Link to="/projects">
             <div className=" list">
                 <img src={require(`../img/${process.env.REACT_APP_LOGO}`)} className="list-img align-items-center" alt="image" />
                 <br/>
-                <h5 style={{fontWeight:"700",fontSize:"20px"}}>&emsp;&emsp;&emsp;CALENDAR</h5>
+                <h5 style={{fontWeight:"700",fontSize:"20px"}}>&emsp;&emsp;&emsp;Students Projects</h5>
             </div>
+            </Link>
         </div>
 
         

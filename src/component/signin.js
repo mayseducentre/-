@@ -126,6 +126,7 @@ var timeseen=dates.toLocaleTimeString();
         }
 
         
+        
         if(log_userid === data[i].id && passwordcheck && data[i].role === "staff" && data[i].status === "enrolled" && data[i].school !== "daycare"){
             document.getElementById("portalogin").style.display="none";
            

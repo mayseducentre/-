@@ -11,10 +11,10 @@ function AssignV(){
   document.getElementById("meetme").style.display="none"
 }
 
-function ExtraAct(){
+function UploadProj(){
   document.getElementById("assignview").style.display="none"
   document.getElementById("courseview").style.display="none"
-  document.getElementById("extraactview").style.display="block"
+  document.getElementById("projectupload").style.display="block"
   document.getElementById("calendarviewer").style.display="none"
   document.getElementById("checkmygrade").style.display="none"
   document.getElementById("announcem").style.display="none"
@@ -161,10 +161,10 @@ function Studentsidebar(){
         </a>
       </li>
 
-      <li className="nav-item" style={{cursor:"pointer"}} onClick={ExtraAct}>
+      <li className="nav-item" style={{cursor:"pointer"}} onClick={UploadProj}>
         <a className="nav-link collapsed">
           <i className="fa fa-diamond"></i>
-          <span>Extracurricular activities</span>
+          <span>Upload Projects</span>
         </a>
       </li>
 
@@ -201,7 +201,7 @@ function Studentsidebar(){
   <a className="fa fa-bullhorn" onClick={MessageA}><br /><small className="smaller">Announcements</small></a>
   <a className="fa fa-laptop" onClick={Meetme}><br /><small className="smaller">VR Meet</small></a>
   <a className="fa fa-calendar-o" onClick={CalendarV}><br /><small className="smaller">Calender</small></a>
-  <a className="fa fa-gamepad" onClick={ExtraAct}><br /><small className="smaller">Extra Activities</small></a>
+  <a className="fa fa-gamepad" onClick={UploadProj}><br /><small className="smaller">Upload Projects</small></a>
   <a className="fa fa-user-o" href="#/user_setting"><br /><small className="smaller">My Profile</small></a>
   <a className="fa fa-shield"><br /><small className="smaller">Support</small></a>
 </div>
