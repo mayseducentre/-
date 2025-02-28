@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Breadcrumb from "../breadcrumb";
 
 const API_URL = `${process.env.REACT_APP_NOTE_DB}/projects`; // Replace with your Glitch DB URL
 
@@ -14,6 +15,8 @@ const ProjectView = () => {
 
                               return (
                                   <div>
+                                    <Breadcrumb title="View Projects" />
+                                    
                                         <h2>All Student Projects</h2>
                                               <ul>
                                                       {projects.map((project) => (
