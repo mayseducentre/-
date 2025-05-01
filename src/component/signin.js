@@ -160,7 +160,6 @@ var timeseen=dates.toLocaleTimeString();
             document.getElementById("email_assign").value=data[i].email;
             document.getElementById("subj_assign").value=data[i].subject;
             document.getElementById("subject_owner").value=data[i].subject;
-            document.getElementById("sub_sheet").value=data[i].subject;
             document.getElementById("teachimgport").src=data[i].thumbnailUrl;
             document.getElementById("teachheadimg").src=data[i].thumbnailUrl;
 

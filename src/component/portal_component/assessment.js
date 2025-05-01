@@ -14,12 +14,21 @@ const Assessment = () => {
                         const subjects = [
                             "Ga", "Computing", "Creative Art", "Math", "Science",
                                 "History", "Owop", "French", "Social", "English",
-                                    "Career Tech", "RME"
+                                    "Career Tech", "RME", "Library"
                                       ];
 
                                         // Link store — you can add more
                                           const sheetLinks = {
-                                              "Computing_JHS 1": "https://docs.google.com/spreadsheets/d/1oJU0E8cdQIVdPePm2BJAWLyTeJuoXDy65SQQx8d9z9A/edit"
+                                              "Computing_JHS 1": "https://docs.google.com/spreadsheets/d/1oJU0E8cdQIVdPePm2BJAWLyTeJuoXDy65SQQx8d9z9A/edit",
+                                              "Ga_JHS 1":"https://docs.google.com/spreadsheets/d/1-p_JRZlXBLAWs4B70qIvUxAw-C4cM3jC/edit", 
+                                              "Creative Art_JHS 1":"https://docs.google.com/spreadsheets/d/1005Rf3xYGEx28p-CzJ0Dfb-FAF3fQKHP/edit",
+                                              "Math_JHS 1":"https://docs.google.com/spreadsheets/d/1-mddl0uG_AM90nsxZmpJFPOA5J-dYIVC/edit",
+                                              "Science_JHS 1":"https://docs.google.com/spreadsheets/d/1-fFv1PxRkVcbQJ9pm7k_6rIILGWrvorv/edit",
+                                              "French_JHS 1":"https://docs.google.com/spreadsheets/d/1-wvb72Jkd5jFP1CuRbzLcC9ZNCukHZ_6/edit", 
+                                              "Social_JHS 1":"https://docs.google.com/spreadsheets/d/1-h67MKcYsdDmh-VTtb8Y3apTv1RqJ-1k/edit", 
+                                              "English_JHS 1":"https://docs.google.com/spreadsheets/d/1-uYj3akmfj4Oa1l-Z2ASqUAXD3-9XTzS/edit",
+                                              "Career Tech_JHS 1":"https://docs.google.com/spreadsheets/d/1-TB2YBgFYJ1q7Jwk11MyPBXsZ-x1VAen/edit ",
+                                              "RME_JHS 1":"https://docs.google.com/spreadsheets/d/1-mMzUJAcOEooXSz_MupwtEM98toVdGfw/edit",
                                                 };
 
                                                   const handleLoad = () => {
