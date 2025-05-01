@@ -254,7 +254,7 @@ function Teachersidebar(){
       <li className="nav-item" onClick={Assess}>
         <a className="nav-link collapsed">
           <i className="fa fa-diamond"></i>
-          <span>Assessments Result</span>
+          <span>Assessments</span>
         </a>
       </li>
   
@@ -345,7 +345,7 @@ function Teachersidebar(){
   <a className="fa fa-bar-chart" onClick={AssignC}><br /><small className="smaller">Assignments</small></a>
   <a className="fa fa-book" onClick={CreateGrade}><br /><small className="smaller">Gradebook</small></a>
   <a className="fa fa-bullhorn" onClick={Message}><br /><small className="smaller">Annoucement</small></a>
-  <a className="fa fa-filter" onClick={Assess}><br /><small className="smaller">Result</small></a>
+  <a className="fa fa-filter" onClick={Assess}><br /><small className="smaller">Assessment</small></a>
   <a className="fa fa-file" onClick={Register}><br /><small className="smaller">Register</small></a>
   <a className="fa fa-comments-o" title="Staff Chat Room" onClick={StaffChatroom}><br /><small className="smaller">ChatRoom</small></a>
   <a className="fa fa-calendar-o" onClick={viewCal}><br /><small className="smaller">Calender</small></a>
