@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import Breadcrumb from "../breadcrumb";
-
+import Assessment from "./assessment"
 var path=process.env.REACT_APP_ACCOUNT_API;
 
 const select ={
@@ -67,6 +67,7 @@ export default function Accessibility(){
             </div>
             <br/>
             <br/>
+            <Assessment />
        </>
     )
 }

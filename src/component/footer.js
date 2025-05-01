@@ -27,6 +27,7 @@ export default function Footer(){
               <li><i className="fa fa-chevron-right"></i> <a href="#/mec_experience">Student Life</a></li>
               <li><i className="fa fa-chevron-right"></i> <a href="#/admissions">Admissions</a></li>
               <li><i className="fa fa-chevron-right"></i> <a href="#/portal">Portal</a></li>
+              <li><i className="fa fa-chevron-right"></i><a href="#/assess">Assessment Sheet</a></li>
             </ul>
           </div>
 

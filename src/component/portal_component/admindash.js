@@ -1,7 +1,4 @@
-import { Chart } from "chart.js";
-import { Bar, Line } from "react-chartjs-2";
 
-  
   export default function AdminDash(){
    
     const data={
@@ -133,7 +130,7 @@ import { Bar, Line } from "react-chartjs-2";
                     <div className="d-flex align-items-center">
                      
                       
-            <Line data={data} options={options}/>
+            
                     </div>
                   </div>
   
