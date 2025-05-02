@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import Breadcrumb from "../breadcrumb";
+import Header from "../header";
 
 const Assessment = () => {
   const [selectedClass, setSelectedClass] = useState("");
@@ -13,7 +15,7 @@ const Assessment = () => {
 
                         const subjects = [
                             "Ga", "Computing", "Creative Art", "Math", "Science",
-                                "History", "Owop", "French", "Social", "English",
+                                "History", "Owop", "French", "Social", "English","Health Safety",
                                     "Career Tech", "RME", "Library"
                                       ];
 
@@ -27,8 +29,83 @@ const Assessment = () => {
                                               "French_JHS 1":"https://docs.google.com/spreadsheets/d/1-wvb72Jkd5jFP1CuRbzLcC9ZNCukHZ_6/edit", 
                                               "Social_JHS 1":"https://docs.google.com/spreadsheets/d/1-h67MKcYsdDmh-VTtb8Y3apTv1RqJ-1k/edit", 
                                               "English_JHS 1":"https://docs.google.com/spreadsheets/d/1-uYj3akmfj4Oa1l-Z2ASqUAXD3-9XTzS/edit",
-                                              "Career Tech_JHS 1":"https://docs.google.com/spreadsheets/d/1-TB2YBgFYJ1q7Jwk11MyPBXsZ-x1VAen/edit ",
+                                              "Career Tech_JHS 1":"https://docs.google.com/spreadsheets/d/1-TB2YBgFYJ1q7Jwk11MyPBXsZ-x1VAen/edit",
                                               "RME_JHS 1":"https://docs.google.com/spreadsheets/d/1-mMzUJAcOEooXSz_MupwtEM98toVdGfw/edit",
+                                              "Ga_JHS 2":"https://docs.google.com/spreadsheets/d/10evZxOEUq_gzNc2ae-o42GVgiIdA0VeX/edit", 
+                                              "Creative Art_JHS 2":"https://docs.google.com/spreadsheets/d/10k0zLjYdettjunLMVOk3jszE8lKs1aVW/edit",
+                                              "Math_JHS 2":"https://docs.google.com/spreadsheets/d/10VSfIeG1aOXxb60KRxJ6XaK8boM41dTs/edit",
+                                              "Science_JHS 2":"https://docs.google.com/spreadsheets/d/10OodmNFrvB-8VOtK_VqPY6nQqkZxgVhB/edit",
+                                              "French_JHS 2":"https://docs.google.com/spreadsheets/d/10iP7NdZ2SpQY8Yvo-K97SQl9tibFYgKe/edit", 
+                                              "Social_JHS 2":"https://docs.google.com/spreadsheets/d/10Jamt35axQ6KRroyEAQHMNzOlWPl6QSe/edit", 
+                                              "English_JHS 2":"https://docs.google.com/spreadsheets/d/10fazLxwDwcRNkbz2Sls5am_gnqXVej8s/edit",
+                                              "Career Tech_JHS 2":"https://docs.google.com/spreadsheets/d/10qNBh0Cs6YwWwVXjMCZlxW_nqoNCwppc/edit",
+                                              "RME_JHS 2":"https://docs.google.com/spreadsheets/d/10USoJVkcShrVO9r7WGlrYgAaukI3EV3N/edit",
+                                              "Computing_JHS 2":"https://docs.google.com/spreadsheets/d/10bVhcUdA25jvpRGxrB7zZMvZwIWSOLwf/edit",
+                                              "Ga_Class 6":"https://docs.google.com/spreadsheets/d/14bt2cIKD4gWmT-IDuhGPLuHVyGUvkjUb/edit",
+                                              "Owop_Class 6":"https://docs.google.com/spreadsheets/d/14yNdfgsRlLKC7RDJnxrkbwLkQA9kcVEm/edit",
+                                              "RME_Class 6":"https://docs.google.com/spreadsheets/d/14vMIlkGGAffulTIeAh0QlGMRg_PFBHI_/edit",
+                                              "Career tech_Class 6":"https://docs.google.com/spreadsheets/d/14SHy4wu_xpFuOg1ZJWgMCogPhajiXQHt/edit",
+                                              "French_Class 6":"https://docs.google.com/spreadsheets/d/14fpiwyWzRU-LoLWFUXnuox07GhyNk6zz/edit",
+                                              "Computing_Class 6":"https://docs.google.com/spreadsheets/d/15-fPA75lq3P4YKc3xCu_1VAFIRM_CYBr/edit",
+                                              "Creative Art_Class 6":"https://docs.google.com/spreadsheets/d/14m3kFA5lX4dUDqL9GQEZlFE7zl6BvK_q/edit",
+                                              "History_Class 6":"https://docs.google.com/spreadsheets/d/14YXDcPhZdtiMQ3Hyq5A5Ey5wqxe7lYxk/edit",
+                                              "Science_Class 6":"https://docs.google.com/spreadsheets/d/14v1wWYSf0z4jKza1pMzeybKmQoGxXlfz/edit",
+                                              "Math_Class 6":"https://docs.google.com/spreadsheets/d/151g8cpQsDxPLiet2WOouFY6jLM-anIOa/edit",
+                                              "English_Class 6":"https://docs.google.com/spreadsheets/d/14iGUiXaXZIm-UOkcGt-QCBiOeicW4xuF/edit",
+                                              "Ga_Class 5":"https://docs.google.com/spreadsheets/d/14Q1DRTEiB1-fEESk3ZD7Ub916mYw-zgV/edit",
+                                              "Owop_Class 5":"https://docs.google.com/spreadsheets/d/14DVUY0s4KGFwNjoTCeKu32j88olG7Y6f/edit",
+                                              "RME_Class 5":"https://docs.google.com/spreadsheets/d/148mA37NkPnbD4yo3Awfw8wJXafwstbvB/edit",
+                                              "Career tech_Class 5":"https://docs.google.com/spreadsheets/d/147FMMEBkbTasuDvRaZs7ap6aZaUzZZG-/edit",
+                                              "French_Class 5":"https://docs.google.com/spreadsheets/d/14-u17dVI4HD32nDLD5cldUQ2dKDpAMa2/edit",
+                                              "Computing_Class 5":"https://docs.google.com/spreadsheets/d/14EXFHUxDN7ubjEepOxQQOTzrchtQeg6b/edit",
+                                              "Creative Art_Class 5":"https://docs.google.com/spreadsheets/d/143XNTRnXcDt0g-bj728aHmN5WYL70E4m/edit",
+                                              "History_Class 5":"https://docs.google.com/spreadsheets/d/14P0-H4YQ1iBLfT7dzSIMz6Zz7N1jsIRw/edit",
+                                              "Science_Class 5":"https://docs.google.com/spreadsheets/d/148BDAutbdK_gIo2v7pz2xcHrzhtjGEMC/edit",
+                                              "Math_Class 5:":"https://docs.google.com/spreadsheets/d/14GvyQCbrPUn5b-YSG8Iyy21GduLVW9tc/edit",
+                                              "English_Class 5":"https://docs.google.com/spreadsheets/d/143KQDAmNhOBY_YsXTgYco4NNcD64AtxB/edit",
+                                              "Ga_Class 4":"https://docs.google.com/spreadsheets/d/13a3BcM-1_JfRX2_7R3U7djgIRl8wy9ai/edit",
+                                              "Owop_Class 4":"https://docs.google.com/spreadsheets/d/13xbu2Fn2fFcvwuB0j5QCPHFrS3LXTTf1/edit",
+                                              "RME_Class 4":"https://docs.google.com/spreadsheets/d/13vtXGPRdq-mNQoMzQACiHpV2RJqA0f8q/edit",
+                                              "Career tech_Class 4":"https://docs.google.com/spreadsheets/d/13JuZBA0umLlv16L0lrLUC8AP4MSb4dXM/edit",
+                                              "French_Class 4":"https://docs.google.com/spreadsheets/d/13hMOmTpuk3oh1Z3TEN6eenA9SwzAbX4C/edit",
+                                              "Computing_Class 4":"https://docs.google.com/spreadsheets/d/13z516MavGtE0nUqmWB81UhAmB1izvQN8/edit",
+                                              "Creative Art_Class 4":"https://docs.google.com/spreadsheets/d/13lleDGTtsk7Fky1_pz-RiFaT20VYSaaq/edit",
+                                              "History_Class 4":"https://docs.google.com/spreadsheets/d/13RWGM8Ke94gEolWsMUVSPRHwz7-iASl_/edit",
+                                              "Science_Class 4":"https://docs.google.com/spreadsheets/d/13MdJu9JaPOSuyfPmYk4Qg0-krcDYO6TS/edit",
+                                              "Math_Class 4":"https://docs.google.com/spreadsheets/d/13MdJu9JaPOSuyfPmYk4Qg0-krcDYO6TS/edit",
+                                              "English_Class 4":"https://docs.google.com/spreadsheets/d/13jnGr5PtxhBUZQgDSAmGbYtszUqWj6ja/edit",
+                                              "Health Safety_Class 4":"https://docs.google.com/spreadsheets/d/13So6KPrN_Q_eeuu_Styr5tnwdVj41Zop/edit",
+                                              "Ga_Class 1":"https://docs.google.com/spreadsheets/d/11E6yv_jlWAUdhLBm1FeIrFnEth_Xjg5c/edit",
+                                              "RME_Class 1":"https://docs.google.com/spreadsheets/d/1105ZtK6n8yoco_oX50_k6OAH4bNU-IAV/edit",
+                                              "Health Safety_Class 1":"https://docs.google.com/spreadsheets/d/115ft5oAQ1_aLpOZGRvpQDrS01i9Y7cwA/edit",
+                                              "French_Class 1":"https://docs.google.com/spreadsheets/d/11FoCOe5Uc1fZkgXUMWWcWfMvo_9-QBzg/edit",
+                                              "Computing_Class 1":"https://docs.google.com/spreadsheets/d/112zmRbljo1idacddfAU6Pchn64OYTcx-/edit",
+                                              "History_Class 1":"https://docs.google.com/spreadsheets/d/115G6qfPIY-o8sFFlO3pRraw3IZFNtDKx/edit",
+                                              "Science_Class 1":"https://docs.google.com/spreadsheets/d/10yhblO2sV7PCwtmufCU0nrtBDZC_23cl/edit",
+                                              "Math_Class 1":"https://docs.google.com/spreadsheets/d/11336xtuYI53d5x9PLSS71jJgb7iBKXLe/edit",
+                                              "English_Class 1":"https://docs.google.com/spreadsheets/d/11HmSXNp8_P3LcUdzRa7OrCWphHCxeRlD/edit",
+                                              "Ga_Class 2": "https://docs.google.com/spreadsheets/d/12AcQh4mpqTHM4oqm5UpkFMmmIzq-IInW/edit",
+                                              "RME_Class 2":"https://docs.google.com/spreadsheets/d/11aqCkzldUtGRJ5TwJfcFlyeP-iCzVogj/edit",
+                                              "French_Class 2":"https://docs.google.com/spreadsheets/d/12GjiBGLOQLi8KStFJ009wq6LvEob3R7x/edit",
+                                              "Computing_Class 2":"https://docs.google.com/spreadsheets/d/11kKA1FdtE_AnpuM3a8UyuGqtpfQeC5eE/edit",
+                                              "Creative Art_Class 2":"https://docs.google.com/spreadsheets/d/12NA7dIxNvh6nK7WTQ_8wOu8MR9ZoZEtt/edit",
+                                              "History_Class 2":"https://docs.google.com/spreadsheets/d/11ySnnQvVCjnaCguP1zB8EuDSfE1RkVPS/edit",
+                                              "Science_Class 2":"https://docs.google.com/spreadsheets/d/11THjk4LRBnqdyTxRxrtazV2H3d8S8rOn/edit",
+                                              "Math_Class 2":"https://docs.google.com/spreadsheets/d/11no_ziIg-y0c4H1LUMXjHeLrEicMrgD4/edit",
+                                              "English_Class 2":"https://docs.google.com/spreadsheets/d/12MoP8aHpaWBLu__QqtzJXpElrQ3jaPTM/edit",
+                                              "Health Safety_Class 2":"https://docs.google.com/spreadsheets/d/128WsyccgAy5-q9Lu8Wlz7-A8WOAz-6th/edit",
+
+                                              "Ga_Class 3":"https://docs.google.com/spreadsheets/d/12cok-i6NFIT1FOvBfh_hPwlXV5YviZdu/edit",
+                                              "Owop_Class 3":"https://docs.google.com/spreadsheets/d/12nDt3QFToDhqMm6axqElA8lTFLAvc2do/edit",
+                                              "RME_Class 3":"https://docs.google.com/spreadsheets/d/12ifJxs2SUy5aOnX_3ueuaO3SPrEEoLQR/edit",
+                                              "Health Safety_Class 3":"https://docs.google.com/spreadsheets/d/12b0fTNeOoJ_zaAxTut8XNO0lFI6u5cLR/edit",
+                                              "French_Class 3":"https://docs.google.com/spreadsheets/d/12eEJz0YiRbTI0rc-N0XmFyIhow7_dxWw/edit",
+                                              "Computing_Class 3":"https://docs.google.com/spreadsheets/d/12ohmZP4qw8OthDXOBQFSJUDJFIe5obj1/edit",
+                                              "Creative Art_Class 3":"https://docs.google.com/spreadsheets/d/12Ns1lDQ8QHZgUOQlz4jTI4HiMzVfvJNc/edit",
+                                              "History_Class 3":"https://docs.google.com/spreadsheets/d/12udQ86xhjM0QlLKwlCiAUgnKRuz_A42u/edit",
+                                              "Science_Class 3":"https://docs.google.com/spreadsheets/d/12gUqD473nAkdauQMqBtB8Y6PxyECUAdb/edit",
+                                              "Math_Class 3":"https://docs.google.com/spreadsheets/d/12pG0i-qhkRipTrn2eqLgu5JI1_vyHmP_/edit",
+                                              "English_Class 3":"https://docs.google.com/spreadsheets/d/12eYNZnSNwN0m9vcmh89stv0lfKg1NLlx/edit"
                                                 };
 
                                                   const handleLoad = () => {
@@ -36,7 +113,7 @@ const Assessment = () => {
                                                           const link = sheetLinks[key];
 
                                                               if (link) {
-                                                                    const embedLink = link.replace("/edit", "/preview");
+                                                                    const embedLink = link.replace("/edit", "/edit?usp=drivesdk");
                                                                           setSheetUrl(embedLink);
                                                                               } else {
                                                                                     alert("No Google Sheet found for this selection.");
@@ -55,6 +132,12 @@ const Assessment = () => {
                                                                                                                                     };
 
                                                                                                                                       return (
+                                                                                                                                          <>
+                                                                                                                                          <Breadcrumb title="Assessment" />
+                                                                                                                                         <Header />
+                                                                                                                                         <br/>
+                                                                                                                                         <a href="#/ins_guide">Download MEC App</a>
+                                                                                                                                         <p>Please download Google Sheet from the playstore or apple store to be able to edit sheet.</p>
                                                                                                                                           <div style={{
                                                                                                                                                 fontFamily: "Arial, sans-serif",
                                                                                                                                                       maxWidth: "900px",
@@ -138,7 +221,7 @@ const Assessment = () => {
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         fontWeight: "bold"
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   }}
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           >
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    Edit in New Tab
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    Edit in Sheet
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             </button>
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   </div>
 
@@ -155,6 +238,7 @@ const Assessment = () => {
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             />
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   )}
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      </>
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         );
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         };
 
