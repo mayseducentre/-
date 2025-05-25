@@ -5,6 +5,7 @@ import Header from "../component/header";
 import Breadcrumb from "../component/breadcrumb";
 import Iframe from "./iframe";
 import { useEffect, useState } from "react";
+import MediaGallery from "../component/media";
 
 
    var path=process.env.REACT_APP_LIBRARY_API;
@@ -95,6 +96,8 @@ const [loading, setLoading]=useState(false);
     <br/>
     <br/>
 
+<MediaGallery />
+<br/>
 
     <div>
         <h5 style={{color:"black",textTransform:"none",marginLeft:"20px"}}>MEC Media</h5>
@@ -209,8 +212,9 @@ const [loading, setLoading]=useState(false);
   </div>
 
   </div> 
+  <br/>
 <ScrollToTop smooth className="scrolly"/>
-       
+      
 <Footer />
 
       </>
