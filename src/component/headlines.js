@@ -19,7 +19,7 @@ export default function Headline(){
         <div className="headline animate__animated animate__fadeInLeft">
            
     <a>
-    <span style={{fontFamily:"cursive",fontWeight:"700",color:"white",background:"#994500",padding:"10px 12px",textTransform:"uppercase"}}>Annoucement:</span>
+    <span style={{fontFamily:"cursive",fontWeight:"700",color:"white",background:"#994500",padding:"10px 12px",textTransform:"uppercase"}}>Announcement:</span>
 <a style={{color:`${upd.color}`}}>&emsp; {upd.info}</a>
   &nbsp;  <a href="#/ins_guide">Install guide</a>
     </a>

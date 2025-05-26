@@ -1,21 +1,112 @@
 export const mediaImages = [
       {
           id: 1,
-              url: "https://drive.google.com/uc?export=view&id=YOUR_IMAGE_ID",
-                  category: "Graduation",
-                      title: "Graduation Ceremony 2024"
+              url: "https://drive.google.com/thumbnail?id=11aXcyfXhBxOmou8ENOtVRL0944GeGa-c",
+                  category: "Excursion",
+                      title: "AU day"
                         },
-                          {
-                              id: 2,
-                                  url: "https://drive.google.com/file/d/1-Yx1zD-nN_QoC3L3dhzLaygUOfh56h_i/view",
-                                      category: "Excursion",
-                                          title: "AU day"
-                                            },
-                                              {
-                                                  id: 3,
-                                                      url: "https://drive.google.com/uc?export=view&id=11Tbt-_nsyZe-Clxy9pABVZ1mvv7NMyTz",
-                                                          category: "Excursion",
-                                                              title: "Mays Daycare"
-                                                                }
-                                                                  
+                        {
+                            id:2,
+                            url:"https://res.cloudinary.com/drl2ooijr/image/upload/v1748175427/IMG-20250524-WA0010_u2jj5n.jpg",
+                            category: "Excursion",
+                            title:"Au day"
+                        },
+                        {
+                            id:"3",
+                            url:"https://res.cloudinary.com/drl2ooijr/image/upload/v1748175427/IMG-20250524-WA0008_f5uvst.jpg",
+                            category:"School",
+                            title:"other"
+                            },
+                            {
+                            id:"4",
+                            url:"https://res.cloudinary.com/drl2ooijr/image/upload/v1748175427/IMG-20250524-WA0007_geskkc.jpg",
+                            category:"School",
+                            title:"other"
+                            },
+                            {
+                            id:"5",
+                            url:"https://res.cloudinary.com/drl2ooijr/image/upload/v1748175425/IMG-20250524-WA0005_ptvezt.jpg",
+                            category:"School",
+                            title:"other"
+                            },
+                            {
+                            id:"6",
+                            url:"https://res.cloudinary.com/drl2ooijr/image/upload/v1748175425/IMG-20250524-WA0004_qtex8a.jpg",
+                            category:"School",
+                            title:"other"
+                            },
+                            {
+                            id:"7",
+                            url:"https://res.cloudinary.com/drl2ooijr/image/upload/v1748175379/IMG-20250524-WA0064_a6kp1s.jpg",
+                            category:"School",
+                            title:"other"
+                            },
+                            {
+                            id:"8",
+                            url:"https://res.cloudinary.com/drl2ooijr/image/upload/v1748175377/IMG-20250524-WA0063_b8volx.jpg",
+                            category:"School",
+                            title:"other"
+                            },
+                            {
+                            id:"9",
+                            url:"https://res.cloudinary.com/drl2ooijr/image/upload/v1748175375/IMG-20250524-WA0058_w1yo6t.jpg",
+                            category:"School",
+                            title:"other"
+                            },
+                            {
+                            id:"10",
+                            url:"https://res.cloudinary.com/drl2ooijr/image/upload/v1748175371/IMG-20250524-WA0051_nhvlf3.jpg",
+                            category:"School",
+                            title:"other"
+                            },
+                            {
+                            id:"11",
+                            url:"https://res.cloudinary.com/drl2ooijr/image/upload/v1748199272/IMG_20250124_104921_2_sp9v7y.jpg",
+                            category:"School",
+                            title:"other"
+                            },
+                            {
+                            id:"12",
+                            url:"https://res.cloudinary.com/drl2ooijr/image/upload/v1748199272/IMG_20250219_130516_jukgap.jpg",
+                            category:"School",
+                            title:"other"
+                            },
+                            {
+                            id:"13",
+                            url:"https://res.cloudinary.com/drl2ooijr/image/upload/v1748199271/IMG_20250305_113314_erzb3n.jpg",
+                            category:"School",
+                            title:"other"
+                            },
+                            {
+                            id:"14",
+                            url:"https://res.cloudinary.com/drl2ooijr/image/upload/v1748199268/IMG_20250305_120707_1_mi0xr1.jpg",
+                            category:"School",
+                            title:"other"
+                            },
+                            {
+                            id:"15",
+                            url:"https://res.cloudinary.com/drl2ooijr/image/upload/v1748199267/IMG_20250305_125738_1_dganuw.jpg",
+                            category:"School",
+                            title:"other"
+                            },
+                            {
+                            id:"16",
+                            url:"https://res.cloudinary.com/drl2ooijr/image/upload/v1748199265/IMG_20250314_153329_vwr7ag.jpg",
+                            category:"School",
+                            title:"other"
+                            },
+                            {
+                            id:"17",
+                            url:"https://res.cloudinary.com/drl2ooijr/image/upload/v1748199265/IMG_20250314_153247_ll9vsv.jpg",
+                            category:"School",
+                            title:"other"
+                            },
+                            {
+                            id:"18",
+                            url:"https://res.cloudinary.com/drl2ooijr/image/upload/v1748199264/IMG_20250523_154042_1_njmkqp.jpg",
+                            category:"School",
+                            title:"other"
+                            }
+
+                        
                                                                   ];

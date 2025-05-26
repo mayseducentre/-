@@ -38,7 +38,7 @@ export default function About(){
           <div className="col-xl-5" data-aos="fade-up" data-aos-delay="200">
             <span className="about-meta">MORE ABOUT US</span>
             <h2 className="about-title">May's DayCare and Educational Centre</h2>
-            <p className="about-description">At MEC, our mission is to cultivate a dynamic and inclusive learning environment where every student is empowered to reach their full potential.</p>
+            <p className="about-description">At MDCEC, our mission is to cultivate a dynamic and inclusive learning environment where every student is empowered to reach their full potential.</p>
 
             <div className="row feature-list-wrapper">
               <div className="col-md-6">
@@ -52,7 +52,7 @@ export default function About(){
                 <ul className="feature-list">
                   <li><i className="fa fa-check-circle"></i> Inclusive learning environment</li>
                   <li><i className="fa fa-check-circle"></i> 24/7 security</li>
-                  <li><i className="fa fa-check-circle"></i> Well trained staffs</li>
+                  <li><i className="fa fa-check-circle"></i> Well trained staff</li>
                 </ul>
               </div>
             </div>
@@ -72,7 +72,7 @@ export default function About(){
                     <i className="fa fa-phone"></i>
                     <div>
                       <p className="contact-label">Call us anytime</p>
-                      <p className="contact-number">0541362570</p>
+                      <p className="contact-number">024 437 0801</p>
                     </div>
                   </div>
                 </div>

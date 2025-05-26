@@ -13,7 +13,7 @@ const paginatedImages = filteredImages.slice( (currentPage - 1) * itemsPerPage, 
 
 const totalPages = Math.ceil(filteredImages.length / itemsPerPage);
 
-return ( <section style={styles.container}> <header style={styles.header}> <h1 style={styles.title}>School Media Gallery</h1> <p style={styles.subtitle}>Browse photos by category and search keywords</p> </header>
+return ( <section style={styles.container}> <header style={styles.header}> <p style={styles.subtitle}>Browse photos by category and search keywords</p> </header>
 
 <div style={styles.categoryContainer}>
     {categories.map((cat) => (
