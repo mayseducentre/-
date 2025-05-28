@@ -79,7 +79,7 @@ const stucc=()=>{
                
                 <div className="card-body"  style={{maxHeight:"400px"}}>
           <a onClick={()=>{stucc()}} className="pointer">Refresh</a>
-                  <h5 className="card-title">Meet Students <span>| {process.env.REACT_APP_BRAND_SHORT}</span></h5>
+                  <h5 className="card-title">Meet Students (acc)<span>| {process.env.REACT_APP_BRAND_SHORT}</span></h5>
 
                   <table className="table table-borderless scrolltable">
                     <thead>

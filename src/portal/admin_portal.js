@@ -4,6 +4,7 @@ import Headline from "../component/headlines";
 import Accessibility from "../component/portal_component/access";
 import DaycareStaff from "../component/portal_component/adm_account";
 import AdminDash from "../component/portal_component/admindash";
+import AdminPanel from "../component/portal_component/adminpanel";
 import AnnounceHub from "../component/portal_component/annnouncement_hub";
 import Calendar from "../component/portal_component/calendar";
 import ManageP from "../component/portal_component/manage_parent";
@@ -114,6 +115,8 @@ function AdminPortal(){
 
     <div id="mng_stu" style={{display:"none"}}>
       <ManageST />
+      <br />
+      <AdminPanel />
     </div>
     <div id="mng_staff" style={{display:"none"}}>
       <ManageT />
