@@ -1,287 +1,149 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import bcrypt from "bcryptjs";
+
 import StudentPortal from "../portal/student_portal";
 import ParentPortal from "../portal/parent_portal";
 import TeachersPortal from "../portal/teachers_portal";
-import bcrypt from "bcryptjs";
 import Daycarestaffportal from "../portal/daycarestaff";
 
-var readonly={
-    padding:"2px 3px",
-    width:"100%",
-    border:"none"
-}
+const path = process.env.REACT_APP_ACCOUNT_API;
 
-var path=process.env.REACT_APP_ACCOUNT_API;
+export default function SignLog() {
+  const [userId, setUserId] = useState("");
+    const [password, setPassword] = useState("");
+      const [rememberMe, setRememberMe] = useState(false);
+        const [loading, setLoading] = useState(false);
+          const [loginError, setLoginError] = useState("");
+            const [portal, setPortal] = useState(null); // student | teacher | parent | daycare
 
+              const [userData, setUserData] = useState([]);
 
-function logPortal(e){
-    e.preventDefault();
+                useEffect(() => {
+                    // Load local storage credentials
+                        const savedId = localStorage.getItem("portalid");
+                            const savedKey = localStorage.getItem("portalkey");
+                                const savedCheck = localStorage.getItem("portalcheck") === "true";
 
+                                    if (savedId && savedKey) {
+                                          setUserId(savedId);
+                                                setPassword(savedKey);
+                                                      setRememberMe(savedCheck);
+                                                          }
+                                                            }, []);
 
-    var portcheck=document.getElementById("portalchk");
+                                                              useEffect(() => {
+                                                                  // Fetch all users
+                                                                      async function fetchAccounts() {
+                                                                            try {
+                                                                                    const [students, staff, parents] = await Promise.all([
+                                                                                              fetch(`${path}/studentaccount`).then(res => res.json()),
+                                                                                                        fetch(`${path}/staffaccount`).then(res => res.json()),
+                                                                                                                  fetch(`${path}/parentaccount`).then(res => res.json()),
+                                                                                                                          ]);
+                                                                                                                                  setUserData([...students, ...staff, ...parents]);
+                                                                                                                                        } catch (err) {
+                                                                                                                                                alert("Network error. Try again.");
+                                                                                                                                                        console.error(err);
+                                                                                                                                                              }
+                                                                                                                                                                  }
+                                                                                                                                                                      fetchAccounts();
+                                                                                                                                                                        }, []);
 
-    if(portcheck.checked == true){
-        var log_userid=document.getElementById("portal_id").value;
-        var log_pass=document.getElementById("portal_key").value;
+                                                                                                                                                                          const handleLogin = async (e) => {
+                                                                                                                                                                              e.preventDefault();
+                                                                                                                                                                                  setLoading(true);
+                                                                                                                                                                                      setLoginError("");
 
-localStorage.setItem("portalid", log_userid);
-localStorage.setItem("portalkey",log_pass);
-localStorage.setItem("portalcheck", portcheck.checked)
+                                                                                                                                                                                          if (rememberMe) {
+                                                                                                                                                                                                localStorage.setItem("portalid", userId);
+                                                                                                                                                                                                      localStorage.setItem("portalkey", password);
+                                                                                                                                                                                                            localStorage.setItem("portalcheck", rememberMe.toString());
+                                                                                                                                                                                                                } else {
+                                                                                                                                                                                                                      localStorage.removeItem("portalid");
+                                                                                                                                                                                                                            localStorage.removeItem("portalkey");
+                                                                                                                                                                                                                                  localStorage.removeItem("portalcheck");
+                                                                                                                                                                                                                                      }
 
-}
+                                                                                                                                                                                                                                          let success = false;
 
-    else{
-        localStorage.removeItem("portalid");
-        localStorage.removeItem("portalkey");
-        localStorage.removeItem("portalcheck");
-    }
+                                                                                                                                                                                                                                              for (const user of userData) {
+                                                                                                                                                                                                                                                    if (user.id === userId && bcrypt.compareSync(password, user.passcode) && user.status === "enrolled") {
+                                                                                                                                                                                                                                                            const dateSeen = new Date().toLocaleString();
 
+                                                                                                                                                                                                                                                                    if (user.role === "student") {
+                                                                                                                                                                                                                                                                              await updateLastSeen("studentaccount", user.id, dateSeen);
+                                                                                                                                                                                                                                                                                        setPortal({ type: "student", user });
+                                                                                                                                                                                                                                                                                                } else if (user.role === "staff" && user.school !== "daycare") {
+                                                                                                                                                                                                                                                                                                          setPortal({ type: "teacher", user });
+                                                                                                                                                                                                                                                                                                                  } else if (user.role === "staff" && user.school === "daycare") {
+                                                                                                                                                                                                                                                                                                                            setPortal({ type: "daycare", user });
+                                                                                                                                                                                                                                                                                                                                    } else if (user.role === "parent") {
+                                                                                                                                                                                                                                                                                                                                              setPortal({ type: "parent", user });
+                                                                                                                                                                                                                                                                                                                                                      }
 
-    
-    document.getElementById("loogin").style.display="block";
-    document.getElementById("loginbtn").style.display="none";
-   
+                                                                                                                                                                                                                                                                                                                                                              success = true;
+                                                                                                                                                                                                                                                                                                                                                                      break;
+                                                                                                                                                                                                                                                                                                                                                                            }
+                                                                                                                                                                                                                                                                                                                                                                                }
 
-        fetch(`${path}/studentaccount`)
-        .then(res=>res.json())
-        .then(data => {
-           
-            logintoPortal(data)
-        
-       document.getElementById("loogin").style.display="none";
-       document.getElementById("loginbtn").style.display="block";
-    })
-        .catch(err => {console.log(err)
-           alert("Error been encountered. Check internet connection and try again.")})
-       
-        
-        fetch(`${path}/staffaccount`)
-        .then(res=>res.json())
-        .then(data => {
-           
-            logintoPortal(data)
-        
-       document.getElementById("loogin").style.display="none";
-       document.getElementById("loginbtn").style.display="block";
-    })
-        .catch(err => {console.log(err)
-           alert("Error been encountered. Check internet connection and try again.")})
-       
-        
-        fetch(`${path}/parentaccount`)
-        .then(res=>res.json())
-        .then(data => {
-           
-            logintoPortal(data)
-        
-       document.getElementById("loogin").style.display="none";
-       document.getElementById("loginbtn").style.display="block";
-    })
-        .catch(err => {console.log(err)
-       alert("Error been encountered. Check internet connection and try again.")})
-       
+                                                                                                                                                                                                                                                                                                                                                                                    if (!success) {
+                                                                                                                                                                                                                                                                                                                                                                                          setLoginError("Invalid user ID or password");
+                                                                                                                                                                                                                                                                                                                                                                                              }
 
-    
-}
+                                                                                                                                                                                                                                                                                                                                                                                                  setLoading(false);
+                                                                                                                                                                                                                                                                                                                                                                                                    };
 
-function logintoPortal(data){
+                                                                                                                                                                                                                                                                                                                                                                                                      const updateLastSeen = async (type, id, datetime) => {
+                                                                                                                                                                                                                                                                                                                                                                                                          try {
+                                                                                                                                                                                                                                                                                                                                                                                                                await fetch(`${path}/${type}/${id}`, {
+                                                                                                                                                                                                                                                                                                                                                                                                                        method: "PATCH",
+                                                                                                                                                                                                                                                                                                                                                                                                                                headers: { "Content-Type": "application/json" },
+                                                                                                                                                                                                                                                                                                                                                                                                                                        body: JSON.stringify({ lastseen: datetime }),
+                                                                                                                                                                                                                                                                                                                                                                                                                                              });
+                                                                                                                                                                                                                                                                                                                                                                                                                                                  } catch (err) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        console.error("Failed to update last seen", err);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                            }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                              };
 
-var dates=new Date();
-var dateseen=dates.toLocaleDateString()
-var timeseen=dates.toLocaleTimeString();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                if (portal) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                    const { type, user } = portal;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                        if (type === "student") return <StudentPortal user={user} />;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                            if (type === "teacher") return <TeachersPortal user={user} />;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                if (type === "daycare") return <Daycarestaffportal user={user} />;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    if (type === "parent") return <ParentPortal user={user} />;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      }
 
-    for(var i=0; i < data.length; i++){
-        var log_userid=document.getElementById("portal_id").value;
-        var log_pass=document.getElementById("portal_key").value;
-        const storedhash= data[i].passcode;
-        var passwordcheck= bcrypt.compareSync(log_pass, storedhash);
-
-        if(log_userid === data[i].id && passwordcheck && data[i].role === "student" && data[i].status === "enrolled"){
-            fetch(`${path}/studentaccount/${data[i].id}`,{
-                method:"PATCH",
-                body:JSON.stringify({
-                    "lastseen":`${dateseen} , ${timeseen}`
-                }),
-                headers:{
-                    "Content-type":"application/json"
-                }
-                
-            })
-            .then(res => res.json())
-            .then(data => console.log(data))
-            .catch(err => console.log(err))
-
-
-            document.getElementById("portalogin").style.display="none";
-           
-            document.getElementById("stuportal").style.display="block";
-            document.getElementById("studentusername").innerHTML=data[i].name;
-            document.getElementById("studentid").value=data[i].id;
-            document.getElementById("stu_class").value=data[i].class;
-            document.getElementById("stuclassgrade").value=data[i].class;
-            document.getElementById("stuimgport").src=data[i].thumbnailUrl;
-            document.getElementById("stuheadimg").src=data[i].thumbnailUrl;
-             
-      
-        }
-
-        
-        
-        if(log_userid === data[i].id && passwordcheck && data[i].role === "staff" && data[i].status === "enrolled" && data[i].school !== "daycare"){
-            document.getElementById("portalogin").style.display="none";
-           
-            document.getElementById("teachportal").style.display="block";
-            document.getElementById("teacherusername").innerHTML=data[i].name;
-            document.getElementById("staffname").value=data[i].name;
-            document.getElementById("teacherid").value=data[i].id;
-            
-            document.getElementById("fn_assign").value=data[i].name;
-            document.getElementById("email_assign").value=data[i].email;
-            document.getElementById("fn_grades").value=data[i].name;
-            document.getElementById("email_grades").value=data[i].email;
-            document.getElementById("subj_assign").value=data[i].subject;
-            document.getElementById("subj_grades").value=data[i].subject;
-            document.getElementById("subject_owner").value=data[i].subject;
-            document.getElementById("teachimgport").src=data[i].thumbnailUrl;
-            document.getElementById("teachheadimg").src=data[i].thumbnailUrl;
-            
-            
-        }
-
-        if(log_userid === data[i].id && passwordcheck && data[i].role === "staff" && data[i].status === "enrolled" && data[i].school === "daycare"){
-            document.getElementById("portalogin").style.display="none";
-           
-            document.getElementById("daycarestaffportal").style.display="block";
-            document.getElementById("daycusername").innerHTML=data[i].name;
-            document.getElementById("staffname").value=data[i].name;
-            document.getElementById("daycarestaffid").value=data[i].id;
-                       
-            document.getElementById("fn_assign").value=data[i].name;
-            document.getElementById("email_assign").value=data[i].email;
-            document.getElementById("subj_assign").value=data[i].subject;
-            document.getElementById("subject_owner").value=data[i].subject;
-            document.getElementById("teachimgport").src=data[i].thumbnailUrl;
-            document.getElementById("teachheadimg").src=data[i].thumbnailUrl;
-
-            document.getElementById("daycimgport").src=data[i].thumbnailUrl;
-            document.getElementById("daycheadimg").src=data[i].thumbnailUrl;
-            
-            
-        }
-
-        if(log_userid === data[i].id && passwordcheck && data[i].role === "parent" && data[i].status === "enrolled"){
-            document.getElementById("portalogin").style.display="none";
-           
-            document.getElementById("parentportal").style.display="block";
-            document.getElementById("parentusername").innerHTML=data[i].name;
-           document.getElementById("parentid").value=data[i].id;
-             document.getElementById("parentimgport").src=data[i].thumbnailUrl;
-            document.getElementById("parentheadimg").src=data[i].thumbnailUrl;
-            
-           
-      
-            
-        }
-
-        else {
-            setTimeout(()=>{
-                document.getElementById("loginread").value=null;
-            },3000)
-    
-            document.getElementById("loginread").value="Invalid userID or password"
-            document.getElementById("loginread").style.color="red";
-
-          
-            
-        }
-       }
-
-       
-}
-
-
-function Logon(){
-    setTimeout(()=>{
-    document.getElementById("portal_id").value=localStorage.getItem("portalid")
-    document.getElementById("portal_key").value=localStorage.getItem("portalkey")
-    document.getElementById("portalchk").checked=localStorage.getItem("portalcheck")
-    },1000)
-}
-
-   
-export default function SignLog(){
-    
-   
-
-    return(
-        <div>
-            <section className="containerS" id="portalogin" onLoad={Logon()}>
-            
-              <div className="formpage login" id="login">
-                
-            <a onClick={()=>{window.history.back()}} style={{fontSize:"30px",cursor:"pointer"}}>&times;</a>
-            
-                <div className="form-content">
-                    <header>Login</header>
-                    <form className="form" onSubmit={logPortal}>
-                    <input style={readonly} id="loginread" readOnly/>
-                     
-                        <div className="field input-field">
-                            <input type="text" placeholder="User_Id" name="id"  id="portal_id" className="input" required/>
-                        </div>
-
-                        <div className="field input-field">
-                            <input type="password" name="password" placeholder="Password" id="portal_key" className="password" required/>
-                            <i className='bx bx-hide eye-icon'></i>
-                            <a onClick={()=>{window.location.href="#/fgps"}}>Forgot password</a>
-                        </div>
-<br/>
-                       
-
-                        <div className="form-link">
-                        <input type="checkbox" id="portalchk" /><label htmlFor="portalchk">Remember me</label>
-                           
-                        </div>
-
-                        <div className="form-link">
-                            <p>Dont have an account. <a href="#/account">Create one</a></p>
-                           
-                        </div>
-
-
-                        <div className="field button-field">
-                            
-                            <button id="loginbtn" type="submit">Login</button>
-                            
-                           <center>
-                             <div className="loadery" id="loogin" style={{display:"none"}}></div>
-                            </center>
-                        </div>
-                    </form>
-
-                  
-                </div>
-            </div>
-        </section>
-
-<div id="stuportal" style={{display:"none"}}>
-    <StudentPortal />
-</div>
-
-
-<div id="teachportal" style={{display:"none"}}>
-    <TeachersPortal />
-</div>
-
-
-<div id="parentportal" style={{display:"none"}}>
-    <ParentPortal />
-</div>
-
-<div id="daycarestaffportal" style={{display:"none"}}>
-    <Daycarestaffportal />
-</div>
-
-        </div>
-    )
-}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        return (
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <section className="containerS" id="portalogin">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <div className="formpage login" id="login">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <a onClick={() => window.history.back()} style={{ fontSize: "30px", cursor: "pointer" }}>&times;</a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <div className="form-content">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <header>Login</header>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <form className="form" onSubmit={handleLogin}>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  {loginError && <input style={{ color: "red", border: "none", width: "100%" }} readOnly value={loginError} />}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <div className="field input-field">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <input type="text" placeholder="User_Id" value={userId} onChange={(e) => setUserId(e.target.value)} required />
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div className="field input-field">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <a onClick={() => (window.location.href = "#/fgps")}>Forgot password</a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <br />
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div className="form-link">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <input type="checkbox" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} />
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <label>Remember me</label>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <div className="form-link">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <p>Don't have an account? <a href="#/account">Create one</a></p>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <div className="field button-field">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <button type="submit" disabled={loading}>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            {loading ? "Logging in..." : "Login"}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          </button>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </form>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  </section>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    );
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    }
