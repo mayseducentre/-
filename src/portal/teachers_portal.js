@@ -19,92 +19,104 @@ import ViewCalendar from "../component/portal_component/viewcalendar";
 import AnnounceHubView from "../component/portal_component/viewannounce";
 import GradeCreate from "../component/portal_component/postgrades";
 
-function TeachersPortal() {
+function TeachersPortal({ user }) {
   useEffect(() => {
-      fetch(`${process.env.REACT_APP_ACCOUNT_API}/studentaccount`)
-            .then((res) => res.json())
-                  .then((data) => {
-                          const studentTotal = document.getElementById("stu_total");
-                                  if (studentTotal) studentTotal.innerHTML = data.length;
-                                        })
-                                              .catch((err) => console.log(err));
+    fetch(`${process.env.REACT_APP_ACCOUNT_API}/studentaccount`)
+      .then((res) => res.json())
+      .then((data) => {
+        const studentTotal = document.getElementById("stu_total");
+        if (studentTotal) studentTotal.innerHTML = data.length;
+      })
+      .catch((err) => console.log(err));
 
-                                                  fetch(`${process.env.REACT_APP_API_URL}/courses`)
-                                                        .then((res) => res.json())
-                                                              .then((data) => {
-                                                                      const subjTotal = document.getElementById("subj_total");
-                                                                              if (subjTotal) subjTotal.innerHTML = data.length;
-                                                                                    })
-                                                                                          .catch((err) => console.log(err));
-                                                                                            }, []);
+    fetch(`${process.env.REACT_APP_API_URL}/courses`)
+      .then((res) => res.json())
+      .then((data) => {
+        const subjTotal = document.getElementById("subj_total");
+        if (subjTotal) subjTotal.innerHTML = data.length;
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
-                                                                                              return (
-                                                                                                  <>
-                                                                                                        <div id="main">
-                                                                                                                <input type="text" id="teacherid" style={{ display: "none" }} readOnly />
-                                                                                                                        <input type="text" id="subject_owner" style={{ display: "none" }} readOnly />
+  return (
+    <>
+      <div id="main">
+        <input
+          type="text"
+          value={user.id}
+          id="teacherid"
+          style={{ display: "none" }}
+          readOnly
+        />
+        <input
+          type="text"
+          value={user.subject}
+          id="subject_owner"
+          style={{ display: "none" }}
+          readOnly
+        />
 
-                                                                                                                                <Teachersidebar />
-                                                                                                                                        <Headline />
-                                                                                                                                                <br />
-                                                                                                                                                        <br />
-                                                                                                                                                                <br />
+        <Teachersidebar user={user} />
+        <Headline />
+        <br />
+        <br />
+        <br />
 
-                                                                                                                                                                        <div id="staffdash">
-                                                                                                                                                                                  <TeacherDash />
-                                                                                                                                                                                            <MeetT />
-                                                                                                                                                                                                      <MeetST />
-                                                                                                                                                                                                                <MeetP />
-                                                                                                                                                                                                                        </div>
+        <div id="staffdash">
+          <TeacherDash />
+          <MeetT />
+          <MeetST />
+          <MeetP />
+        </div>
 
-                                                                                                                                                                                                                                <div id="assigncreate" style={{ display: "none" }}>
-                                                                                                                                                                                                                                          <AssignCreate />
-                                                                                                                                                                                                                                                  </div>
+        <div id="assigncreate" style={{ display: "none" }}>
+          <AssignCreate />
+        </div>
 
-                                                                                                                                                                                                                                                          <div id="assessment" style={{ display: "none" }}>
-                                                                                                                                                                                                                                                                    <Assessment />
-                                                                                                                                                                                                                                                                            </div>
+        <div id="assessment" style={{ display: "none" }}>
+          <Assessment />
+        </div>
 
-                                                                                                                                                                                                                                                                                    <div id="studentperformance" style={{ display: "none" }}>
-                                                                                                                                                                                                                                                                                              <StudentPerform />
-                                                                                                                                                                                                                                                                                                      </div>
+        <div id="studentperformance" style={{ display: "none" }}>
+          <StudentPerform />
+        </div>
 
-                                                                                                                                                                                                                                                                                                              <div id="staffchatroom" style={{ display: "none" }}>
-                                                                                                                                                                                                                                                                                                                        <StaffChatRoom />
-                                                                                                                                                                                                                                                                                                                                </div>
+        <div id="staffchatroom" style={{ display: "none" }}>
+          <StaffChatRoom />
+        </div>
 
-                                                                                                                                                                                                                                                                                                                                        <div id="teachersnote" style={{ display: "none" }}>
-                                                                                                                                                                                                                                                                                                                                                  <LNote />
-                                                                                                                                                                                                                                                                                                                                                          </div>
+        <div id="teachersnote" style={{ display: "none" }}>
+          <LNote />
+        </div>
 
-                                                                                                                                                                                                                                                                                                                                                                  <div id="meetonline" style={{ display: "none" }}>
-                                                                                                                                                                                                                                                                                                                                                                            <Meet />
-                                                                                                                                                                                                                                                                                                                                                                                    </div>
+        <div id="meetonline" style={{ display: "none" }}>
+          <Meet />
+        </div>
 
-                                                                                                                                                                                                                                                                                                                                                                                            <div id="register" style={{ display: "none" }}>
-                                                                                                                                                                                                                                                                                                                                                                                                      <RegisterBook />
-                                                                                                                                                                                                                                                                                                                                                                                                              </div>
+        <div id="register" style={{ display: "none" }}>
+          <RegisterBook />
+        </div>
 
-                                                                                                                                                                                                                                                                                                                                                                                                                      <div id="calendarviewing" style={{ display: "none" }}>
-                                                                                                                                                                                                                                                                                                                                                                                                                                <ViewCalendar />
-                                                                                                                                                                                                                                                                                                                                                                                                                                        </div>
+        <div id="calendarviewing" style={{ display: "none" }}>
+          <ViewCalendar />
+        </div>
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                <div id="messageme" style={{ display: "none" }}>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                          <AnnounceHubView />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                  </div>
+        <div id="messageme" style={{ display: "none" }}>
+          <AnnounceHubView />
+        </div>
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <div id="creategrade" style={{ display: "none" }}>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <GradeCreate />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div>
+        <div id="creategrade" style={{ display: "none" }}>
+          <GradeCreate />
+        </div>
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div id="footerport">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <Footer />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div>
+        <div id="footerport">
+          <Footer />
+        </div>
+      </div>
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <ScrollToTop smooth className="scrolly" />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      </>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        );
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        }
+      <ScrollToTop smooth className="scrolly" />
+    </>
+  );
+}
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        export default TeachersPortal;
+export default TeachersPortal;
