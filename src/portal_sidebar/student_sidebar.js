@@ -74,7 +74,7 @@ function GradeC(){
   document.getElementById("checkmygrade").style.display="block"
 }
 
-function Studentsidebar(){
+function Studentsidebar({user}){
   
 
 
@@ -87,8 +87,9 @@ function Studentsidebar(){
                     <img src={require(`../img/${process.env.REACT_APP_LOGO}`)} alt="" className="img-fluid animate__animated animate__zoomIn"/></a>
                     <div>
                     <a href="#/user_setting" id="studentusername" style={{textTransform:"uppercase",color:"whitesmoke"}}>
+                    {user.name}
                       </a>&nbsp;
-                      <img id="stuheadimg" style={{width:"40px",height:"40px",borderRadius:"50%",zIndex:"9"}} />
+                      <img id="stuheadimg" src={user.thumbnailUrl} style={{width:"40px",height:"40px",borderRadius:"50%",zIndex:"9"}} />
                   
                     </div>
             </div>
@@ -101,7 +102,7 @@ function Studentsidebar(){
      <Link to="/user_setting">
       <li className="nav-item" style={{cursor:"pointer"}}>
         <a className="nav-link">
-        <img id="stuimgport" style={{width:"50px",height:"50px",borderRadius:"50%",zIndex:"9"}} />
+        <img id="stuimgport" src={user.thumbnailUrl} style={{width:"50px",height:"50px",borderRadius:"50%",zIndex:"9"}} />
      &nbsp;<span style={{textTransform:"uppercase",color:"whitesmoke"}}>STUDENT
                       </span>
         </a>

@@ -56,6 +56,7 @@ function TeachersPortal({ user }) {
           readOnly
         />
 
+      
         <Teachersidebar user={user} />
         <Headline />
         <br />
@@ -70,7 +71,7 @@ function TeachersPortal({ user }) {
         </div>
 
         <div id="assigncreate" style={{ display: "none" }}>
-          <AssignCreate />
+          <AssignCreate user={user}/>
         </div>
 
         <div id="assessment" style={{ display: "none" }}>
@@ -106,7 +107,7 @@ function TeachersPortal({ user }) {
         </div>
 
         <div id="creategrade" style={{ display: "none" }}>
-          <GradeCreate />
+          <GradeCreate user={user} />
         </div>
 
         <div id="footerport">

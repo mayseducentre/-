@@ -100,7 +100,7 @@ function Chose(){
 
                                                                                                                                                                             }
 
-                                                                                                                                                                            export default function GradeSys(){
+                                                                                                                                                                            export default function GradeSys({user}){
                                                                                                                                                                                 
                                                                                                                                                                                     const [course, setCourse]=useState([]);
                                                                                                                                                                                     useEffect(()=>{
@@ -123,7 +123,7 @@ function Chose(){
                                                                                                                                                                                                                                                                              ))}
                                                                                                                                                                                                                                                                                         
                                                                                                                                                                                                                                                                                                 </select>
-                                                                                                                                                                                                                                                                                                        <input type="text" id="stuclassgrade" style={{display:"none"}} readOnly/>
+                                                                                                                                                                                                                                                                                                        <input type="text" value={user.class} id="stuclassgrade" style={{display:"none"}} readOnly/>
                                                                                                                                                                                                                                                                                                                 </div>
                                                                                                                                                                                                                                                                                                                         </div>
 

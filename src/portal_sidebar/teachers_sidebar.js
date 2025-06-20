@@ -213,6 +213,7 @@ function Teachersidebar({ user }) {
                     borderRadius: "50%",
                     zIndex: "9",
                   }}
+                  src={user.thumbnailUrl}
                 />
                 &nbsp;
                 <span

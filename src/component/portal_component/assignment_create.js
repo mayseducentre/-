@@ -33,7 +33,7 @@ e.preventDefault();
         
     var fullname=document.getElementById("fn_assign").value;
     var endsub=document.getElementById("endsub_assign").value;
-    var subject=document.getElementById("subj_assign").value;
+    var subject=document.getElementById("subject_owner").value;
     var reference=document.getElementById("ref_assign").value;
     var stulevel=document.getElementById("level_assign").value;
     var topic=document.getElementById("top_assign").value;
@@ -260,7 +260,7 @@ alert("Assignment has been deleted successfully")}
     });
   }
 
-export default function AssignCreate(){
+export default function AssignCreate({user}){
     const [level, setLevel]=useState([]);
 
     useEffect(()=>{
@@ -284,13 +284,13 @@ export default function AssignCreate(){
                                 <div className="col-lg-6">
                                     <div className="checkout__input">
                                         <p>Full Name<span>*</span></p>
-                                        <input type="text" id="fn_assign" required readOnly/>
+                                        <input value={user.name} type="text" id="fn_assign" required readOnly/>
                                     </div>
                                 </div>
                                 <div className="col-lg-6">
                                     <div className="checkout__input">
                                         <p>Email<span>*</span></p>
-                                        <input type="text" id="email_assign" required readOnly/>
+                                        <input value={user.email} type="text" id="email_assign" required readOnly/>
                                     </div>
                                 </div>
                                 <div className="col-lg-6">
@@ -302,7 +302,7 @@ export default function AssignCreate(){
                                 <div className="col-lg-6">
                                     <div className="checkout__input">
                                         <p>Subject<span>*</span></p>
-                                        <input type="text" id="subj_assign" required readOnly/>
+                                        <input type="text" value={user.subject} id="subj_assign" required readOnly/>
                                     </div>
                                 </div>
                                 <div className="col-lg-6">

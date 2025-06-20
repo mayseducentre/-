@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import emailjs from "emailjs-com";
+import { use } from "react";
 
 
 
@@ -194,7 +195,7 @@ alert("Grades has been deleted successfully")}
 //     });
 //   }
 
-export default function GradeCreate(){
+export default function GradeCreate({user}){
     const [level, setLevel]=useState([]);
 
     useEffect(()=>{
@@ -218,20 +219,20 @@ export default function GradeCreate(){
                                 <div className="col-lg-6">
                                     <div className="checkout__input">
                                         <p>Full Name<span>*</span></p>
-                                        <input type="text" id="fn_grades" required readOnly/>
+                                        <input value={user.name} type="text" id="fn_grades" required readOnly/>
                                     </div>
                                 </div>
                                 <div className="col-lg-6">
                                     <div className="checkout__input">
                                         <p>Email<span>*</span></p>
-                                        <input type="text" id="email_grades" required readOnly/>
+                                        <input value={user.email} type="text" id="email_grades" required readOnly/>
                                     </div>
                                 </div>
                                 
                                 <div className="col-lg-6">
                                     <div className="checkout__input">
                                         <p>Subject<span>*</span></p>
-                                        <input type="text" id="subj_grades" required readOnly/>
+                                        <input value={user.subject} type="text" id="subj_grades" required readOnly/>
                                     </div>
                                 </div>
                                

@@ -13,14 +13,14 @@ import ViewCalendar from "../component/portal_component/viewcalendar";
 import Meet from "../component/portal_component/meet_online";
 import GradeSys from "../component/portal_component/checkgrades";
 
-function StudentPortal(){
+function StudentPortal({user}){
    return(
     <>
     <div id="main">
       
     <input type="text" id="studentid" style={{display:"none"}} readOnly/>
       <Headline />
-    <Studentsidebar />
+    <Studentsidebar user={user}/>
     <br/>
     <br/>
     <div id="courseview">
@@ -29,7 +29,7 @@ function StudentPortal(){
     <MeetT />
     </div>
     <div id="assignview" style={{display:"none"}}>
-    <AssignView />
+    <AssignView user={user}/>
   
     </div>
     <div id="projectupload" style={{display:"none"}}>
@@ -46,7 +46,7 @@ function StudentPortal(){
     <Meet />
     </div>
     <div id="checkmygrade" style={{display:"none"}}>
-    <GradeSys />
+    <GradeSys user={user}/>
     </div>
 
     <br/>

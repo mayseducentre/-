@@ -79,7 +79,7 @@ const ForgetPs = () => {
     setLoading(true);
 
     try {
-      const res = await fetch(`${accountapi}/${userInfo.role}/${userInfo.id}`, {
+      const res = await fetch(`${accountapi}/${userInfo.role}account/${userInfo.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ passcode: password }),

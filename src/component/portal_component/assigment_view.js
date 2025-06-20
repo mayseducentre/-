@@ -212,7 +212,7 @@ else{
 
 }
 
-export default function AssignView(){
+export default function AssignView({user}){
     
     const [course, setCourse]=useState([]);
 useEffect(()=>{
@@ -235,7 +235,7 @@ useEffect(()=>{
       ))}
            
         </select>
-        <input type="text" id="stu_class" style={{display:"none"}} readOnly/>
+        <input type="text" value={user.class} id="stu_class" style={{display:"none"}} readOnly/>
         </div>
         </div>
 
