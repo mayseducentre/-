@@ -8,7 +8,7 @@ const Assessment = () => {
       const [sheetUrl, setSheetUrl] = useState("");
 
         const classes = [
-            "Class 1", "Class 2", "Class 3",
+            "KG 2","Class 1", "Class 2", "Class 3",
                 "Class 4", "Class 5", "Class 6",
                     "JHS 1", "JHS 2", "JHS 3"
                       ];
@@ -90,6 +90,9 @@ const Assessment = () => {
                                               "Science_Class 1":"https://docs.google.com/spreadsheets/d/10yhblO2sV7PCwtmufCU0nrtBDZC_23cl/edit",
                                               "Math_Class 1":"https://docs.google.com/spreadsheets/d/11336xtuYI53d5x9PLSS71jJgb7iBKXLe/edit",
                                               "English_Class 1":"https://docs.google.com/spreadsheets/d/11HmSXNp8_P3LcUdzRa7OrCWphHCxeRlD/edit",
+                                              "Programme Activities_Class 1":"https://docs.google.com/spreadsheets/d/1FVgLGfBv3ezUobJ6E7w3lV4BXoPHz2TslFkKju51qMQ/edit",
+                                              "Library_Class 1":"https://docs.google.com/spreadsheets/d/1icLG0Fpk4EdGXjbMgvdwg8Rm1qGvSD2OcI5rn0-tGzI/edit",
+                                              "Creative Art_Class 1":"https://docs.google.com/spreadsheets/d/1n-QeIGgQgpkyvRle_-74ByW7_XGVlzrkTl07YnykIGU/edit",
                                               "Ga_Class 2": "https://docs.google.com/spreadsheets/d/1wSuOHxaiD17xuNPJpHUh5BJNCB4Qsd-3VUwDQq6LH6E/edit",
                                               "RME_Class 2":"https://docs.google.com/spreadsheets/d/1rVMCAi6d83LVtU-RgeCk50kOopoaU7HlbJ6f0C6ectU/edit",
                                               "French_Class 2":"https://docs.google.com/spreadsheets/d/1xzpmCptwBwDSYCZ-F-NTIRxXiMbjmVR866wSHcKiwhM/edit",
@@ -100,7 +103,7 @@ const Assessment = () => {
                                               "Math_Class 2":"https://docs.google.com/spreadsheets/d/1WoO4BdidpiEaslbSppHvC3EYgpB_KEj5PxTcfWNFmes/edit",
                                               "Library_Class 2":"https://docs.google.com/spreadsheets/d/1dX_fX8YWsVGqZ45hhf2oRiKzRC0fhaDprQEcU3gfCjI/edit",
                                               "English_Class 2":"https://docs.google.com/spreadsheets/d/1xHUbweY8XH8IMuyMGPHZvIHKwNu4eQs2LkUrvxGBz5s/edit",
-                                              "Program Activity_Class 2":"https://docs.google.com/spreadsheets/d/1jBHNRWOggln5nkjn99bPHBusYP46MKtTonwgpb1HDnQ/edit",
+                                              "Programme Activities_Class 2":"https://docs.google.com/spreadsheets/d/1jBHNRWOggln5nkjn99bPHBusYP46MKtTonwgpb1HDnQ/edit",
                                               "Health Safety_Class 2":"https://docs.google.com/spreadsheets/d/1gKR6T0FB-avgOn3nmnW2mtj9_-vNgbcNBCPZFLzvw2E/edit",
 
                                               "Ga_Class 3":"https://docs.google.com/spreadsheets/d/1XZLnKP0tY9VMjWp7fX1jdq600h9wkQEivgjM8lzk-h4/edit",
