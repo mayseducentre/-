@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/-/static/css/main.639643a0.css",
-    "main.js": "/-/static/js/main.52936eee.js",
+    "main.js": "/-/static/js/main.9e8ebb66.js",
     "static/js/206.92fb2264.chunk.js": "/-/static/js/206.92fb2264.chunk.js",
     "static/media/mec.mp4": "/-/static/media/mec.3d56fddc1572354259d5.mp4",
     "static/media/maysedu.mp4": "/-/static/media/maysedu.1e5924eb84727a275fa1.mp4",
@@ -63,6 +63,6 @@
   },
   "entrypoints": [
     "static/css/main.639643a0.css",
-    "static/js/main.52936eee.js"
+    "static/js/main.9e8ebb66.js"
   ]
 }
