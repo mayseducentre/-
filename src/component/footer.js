@@ -1,5 +1,15 @@
 
 export default function Footer(){
+  function getaccess(){
+    var access=window.prompt("Enter pin");
+    if(access === "2025."){
+
+    window.location.href="#/adms";
+    }
+    else{
+      alert("Permission not granted.")
+    }
+  }
   return(
         <>
         
@@ -28,6 +38,7 @@ export default function Footer(){
               <li><i className="fa fa-chevron-right"></i> <a href="#/admissions">Admissions</a></li>
               <li><i className="fa fa-chevron-right"></i> <a href="#/portal">Portal</a></li>
               <li><i className="fa fa-chevron-right"></i><a href="#/assess">Assessment Sheet</a></li>
+              <li><i className="fa fa-chevron-right"></i><a onClick={getaccess}>AAS</a></li>
             </ul>
           </div>
 
@@ -65,8 +76,10 @@ export default function Footer(){
         <a href="#" className="google-plus"><i className="fa fa-skype"></i></a>
         <a href="#" className="linkedin"><i className="fa fa-linkedin"></i></a>
       </div>
+      <br/>
     </div>
   </footer>
+  
   </>
     )
 }

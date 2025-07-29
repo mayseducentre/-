@@ -25,6 +25,7 @@ import DaycareForm from "./component/daycare_form";
 import VRTour from "./library/vr_tour";
 import ProjectView from "./component/portal_component/projectview.js"
 import Assessment from "./component/portal_component/assessment.js";
+import AssessmentA from "./component/portal_component/assessment admin.js";
 
 
 window.addEventListener("keyup", (e)=>{
@@ -55,6 +56,13 @@ if(e.altKey && e.key === "l"){
 if(e.altKey && e.key === "h"){
   window.location.href="/-/";
   
+}
+if(e.altKey && e.key === "."){
+  window.location.href="#/adms";
+  
+}
+if(e.shiftKey && e.key === "."){
+  window.location.href="#/assess"
 }
   })
 
@@ -88,7 +96,7 @@ function App() {
       <Route path="/daycareuser/account/form" element={<DaycareForm />} />
       <Route path="/user_setting" element={<SignSet />} />
       <Route path="/assess" element={<Assessment />} />
-      
+      <Route path="/adms" element={<AssessmentA />} />
       <Route path="/admin/note" element={<LessonNoteList />} />
        </Route>
     </Routes>
