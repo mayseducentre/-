@@ -26,6 +26,7 @@ import VRTour from "./library/vr_tour";
 import ProjectView from "./component/portal_component/projectview.js"
 import Assessment from "./component/portal_component/assessment.js";
 import AssessmentA from "./component/portal_component/assessment admin.js";
+import LongSwipeToAssess from "./component/shortcut.js";
 
 
 window.addEventListener("keyup", (e)=>{
@@ -69,6 +70,9 @@ if(e.shiftKey && e.key === "."){
 function App() {
 
   return (
+    <>
+    <LongSwipeToAssess />
+    
     <HashRouter>
     <Routes>
       <Route>
@@ -101,6 +105,7 @@ function App() {
        </Route>
     </Routes>
     </HashRouter>
+    </>
   );
 }
 
