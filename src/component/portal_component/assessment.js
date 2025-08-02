@@ -436,6 +436,14 @@ const Assessment = () => {
           />
         )}
       </div>
+
+      <br/>
+      <br/>
+
+      <p>Please your feedback would be considered as valuable. Kindly share your feedback <a href="sms:0549548274">here</a>. Thank you.</p>
+    <br/>
+    <br/>
+    <br/>
     </>
   );
 };

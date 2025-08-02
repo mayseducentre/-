@@ -27,6 +27,7 @@ import ProjectView from "./component/portal_component/projectview.js"
 import Assessment from "./component/portal_component/assessment.js";
 import AssessmentA from "./component/portal_component/assessment admin.js";
 import LongSwipeToAssess from "./component/shortcut.js";
+import LessonNoteGenerator from "./component/notegen.js";
 
 
 window.addEventListener("keyup", (e)=>{
@@ -102,6 +103,7 @@ function App() {
       <Route path="/assess" element={<Assessment />} />
       <Route path="/adms" element={<AssessmentA />} />
       <Route path="/admin/note" element={<LessonNoteList />} />
+       <Route path="/notegen" element={<LessonNoteGenerator />} />
        </Route>
     </Routes>
     </HashRouter>
