@@ -1,0 +1,169 @@
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* headerx & Tabs */
+.headerx {
+  background: #fff;
+  border-bottom: 1px solid #e3e6ea;
+}
+.headerx-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.title {
+  font-weight: 800;
+  color: #1f7a3f;
+  font-size: 20px;
+}
+.tabs {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+.tab-notebtn {
+  border: 1px solid #d6dbe1;
+  background: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.tab-notebtn.active {
+  background: #1f7a3f;
+  color: #fff;
+  border-color: #1f7a3f;
+}
+
+/* Cards & Sections */
+.card {
+  background: #fff;
+  border: 1px solid #e3e6ea;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.card h2 {
+  margin-top: 0;
+  font-size: 18px;
+}
+.section-notetitle {
+  font-weight: 700;
+  margin: 12px 0 6px;
+}
+
+/* Form controls */
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+input, select, textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #cfd6de;
+  border-radius: 8px;
+  box-sizing: border-box;
+  background: #fff;
+}
+textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+/* Grids */
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+@media (max-width: 900px) {
+  .grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 520px) {
+  .grid-4 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Buttons */
+.notebtn {
+  border: 1px solid #d6dbe1;
+  background: #fff;
+  color: #222;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.notebtn.primary {
+  background: #1f7a3f;
+  color: #fff;
+  border-color: #1f7a3f;
+}
+.notebtn.danger {
+  background: #c0392b;
+  color: #fff;
+  border-color: #c0392b;
+}
+.notebtn.info {
+  background: #165996;
+  color: #fff;
+  border-color: #165996;
+}
+.notebtn + .notebtn {
+  margin-left: 8px;
+}
+
+/* List items */
+.lesson-item {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  border: 1px solid #e3e6ea;
+  border-radius: 10px;
+}
+.lesson-item .meta {
+  font-size: 12px;
+  color: #555;
+}
+
+/* Printable */
+.printable {
+  padding: 24px;
+}
+.printable h1 {
+  font-size: 20px;
+  margin: 0 0 8px;
+}
+.printable h3 {
+  font-size: 14px;
+  margin: 12px 0 4px;
+}
+.printable p {
+  margin: 4px 0 10px;
+  line-height: 1.45;
+}
+.separator {
+  height: 1px;
+  background: #ddd;
+  margin: 10px 0 16px;
+}
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 11px;
+  border: 1px solid #d6dbe1;
+  border-radius: 999px;
+  color: #444;
+}

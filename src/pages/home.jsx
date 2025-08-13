@@ -16,6 +16,7 @@ import Imgsec from "../component/imgsec";
 import Skeleton from "react-loading-skeleton"
 import SecretIpPush from "../component/secret"
 import "react-loading-skeleton/dist/skeleton.css"
+import LongSwipeToAssess from "../component/shortcut";
 
 
 // function loadP(){
@@ -54,6 +55,7 @@ export default function Home(){
             </div>
            <div id="mainc" style={{display:"none"}}> 
         <Header />
+        <LongSwipeToAssess />
         <Headline />
         <br/>
         <br/>

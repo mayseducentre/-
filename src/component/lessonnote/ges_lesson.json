@@ -1,0 +1,50 @@
+[
+  {
+    "id": "seed-JHS1-ICT-T1-W1",
+    "class": "JHS 1",
+    "subject": "ICT",
+    "term": "Term 1",
+    "week": "Week 1",
+    "topic": "Parts of the Computer",
+    "subtopic": "Input and Output Devices",
+    "objectives": "By the end of the lesson, students will be able to identify input and output devices and explain their functions.",
+    "materials": "Pictures of computer parts, real devices (keyboard, mouse, speakers)",
+    "introduction": "Elicit from learners devices they have used on a computer and what they used them for.",
+    "activities": "1) Display images and real devices. 2) Learners classify as input or output. 3) Groups present findings.",
+    "conclusion": "Summarize differences between input and output devices with examples from class.",
+    "assessment": "Learners list three input and three output devices with one function each.",
+    "homework": "Draw and label two input and two output devices."
+  },
+  {
+    "id": "seed-B4-Maths-T2-W4",
+    "class": "B4",
+    "subject": "Mathematics",
+    "term": "Term 2",
+    "week": "Week 4",
+    "topic": "Fractions",
+    "subtopic": "Equivalent Fractions",
+    "objectives": "Pupils will identify and generate equivalent fractions using visual and numerical methods.",
+    "materials": "Fraction circles, number line, chart paper",
+    "introduction": "Review numerator and denominator with fraction circles.",
+    "activities": "1) Demonstrate equivalence using folding/partitioning. 2) Simplify to lowest terms. 3) Pair practice.",
+    "conclusion": "Exit ticket: write two fractions equivalent to 2/3 and explain.",
+    "assessment": "Worksheet on visual models and numeric equivalence.",
+    "homework": "Find three equivalents for 3/4 and draw simple models."
+  },
+  {
+    "id": "seed-B3-Science-T1-W1",
+    "class": "B3",
+    "subject": "Science",
+    "term": "Term 1",
+    "week": "Week 1",
+    "topic": "Parts of a Plant",
+    "subtopic": "Functions of Plant Parts",
+    "objectives": "Pupils will name and describe parts of a plant and state their functions.",
+    "materials": "Charts, real plants, pictures",
+    "introduction": "Show a real plant and ask learners to identify visible parts.",
+    "activities": "1) Discuss functions of roots, stems, leaves, flowers, fruits. 2) Group worksheet to match part to function. 3) Observe and label a plant.",
+    "conclusion": "Recap key functions; learners explain one part to class.",
+    "assessment": "Label diagram and match parts to functions; oral questions.",
+    "homework": "Draw and label a plant; write one function per part."
+  }
+]

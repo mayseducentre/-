@@ -308,14 +308,16 @@ const Assessment = () => {
       <Header />
       <br />
       <a href="#/ins_guide">Download MEC App</a>
-      <p>
+      <p style={{display:"none"}}>
         Please download Google Sheet from the playstore or apple store for
         mobile devices to be able to edit sheet.
       </p>
+      <center style={{color:"red", fontSize:"30px"}}>Assessment Closed</center>
       <div
         style={{
           fontFamily: "Arial, sans-serif",
           maxWidth: "900px",
+          display:"none",
           margin: "2rem auto",
           padding: "2rem",
           border: "1px solid #e0e0e0",

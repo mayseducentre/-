@@ -290,15 +290,20 @@ const AssessmentA = () => {
       <Breadcrumb title="Assessment - Admin" />
       <Header />
       <br />
+      <div style={{display:"none"}}>
       <p>
         Please download Google Sheet from the playstore or apple store for
         mobile devices to be able to edit sheet.
       </p>
       <p>The system automatically updates itself. No need to save and change formulas. Teachers must be granted access. Teachers hub link:<a href="https://mayseducentre.github.io/-/#/assess">here</a></p>
+     </div>
+
+     <center style={{color:"red",fontSize:"30px"}}>Assessment Closed</center>
       <div
         style={{
           fontFamily: "Arial, sans-serif",
           maxWidth: "900px",
+          display:"none",
           margin: "2rem auto",
           padding: "2rem",
           border: "1px solid #e0e0e0",

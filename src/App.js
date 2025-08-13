@@ -28,6 +28,7 @@ import Assessment from "./component/portal_component/assessment.js";
 import AssessmentA from "./component/portal_component/assessment admin.js";
 import LongSwipeToAssess from "./component/shortcut.js";
 import LessonNoteGenerator from "./component/notegen.js";
+import NoteSys from "./component/lessonnote/lesson_note.js";
 
 
 window.addEventListener("keyup", (e)=>{
@@ -71,8 +72,7 @@ if(e.shiftKey && e.key === "."){
 function App() {
 
   return (
-    <>
-    <LongSwipeToAssess />
+    
     
     <HashRouter>
     <Routes>
@@ -103,11 +103,12 @@ function App() {
       <Route path="/assess" element={<Assessment />} />
       <Route path="/adms" element={<AssessmentA />} />
       <Route path="/admin/note" element={<LessonNoteList />} />
+      <Route path="/ges_lessonnote" element={<NoteSys />} />
        <Route path="/notegen" element={<LessonNoteGenerator />} />
        </Route>
     </Routes>
     </HashRouter>
-    </>
+    
   );
 }
 
