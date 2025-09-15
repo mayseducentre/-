@@ -1,6 +1,8 @@
 import bcrypt from "bcryptjs";
 import { useEffect, useRef, useState } from "react";
 import emailjs from "emailjs-com";
+import { toFirestoreFields, fromFirestoreFields } from "./firestore";
+
 
 const select = {
   padding: "10px 12px",
@@ -256,7 +258,7 @@ export default function Accountform() {
 
         fetch(`${accountapi}/${role}account`, {
           method: "POST",
-          body: JSON.stringify(formpage),
+          body: JSON.stringify(toFirestoreFields(formpage)),
           headers: {
             "Content-type": "application/json",
           },
@@ -319,61 +321,61 @@ export default function Accountform() {
   }
 
   function Checkemail() {
-    fetch(`${accountapi}/studentaccount`)
-      .then((res) => res.json())
-      .then((data) => checkData(data))
-      .catch((err) => console.log(err));
+  const collections = ["studentaccount", "staffaccount", "parentaccount"];
 
-    fetch(`${accountapi}/staffaccount`)
-      .then((res) => res.json())
-      .then((data) => checkData(data))
-      .catch((err) => console.log(err));
+  collections.forEach(col => {
+    fetch(`${accountapi}/${col}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.documents) {
+          const docs = data.documents.map(doc => fromFirestoreFields(doc));
+          checkData(docs); // pass converted objects
+        }
+      })
+      .catch(err => console.log(err));
+  });
+}
 
-    fetch(`${accountapi}/parentaccount`)
-      .then((res) => res.json())
-      .then((data) => checkData(data))
-      .catch((err) => console.log(err));
-  }
-
-  function checkData(data) {
-    for (var i = 0; i < data.length; i++) {
-      var email = document.getElementById("email_account").value;
-
-      if (email === data[i].email) {
-        alert("This email already exist. Please change email.");
-        document.getElementById("email_account").value = null;
-        setTimeout(() => {
-          document.getElementById("error_msg").value = null;
-        }, 7000);
-
-        document.getElementById("error_msg").value = "email already exist";
-        document.getElementById("error_msg").style.color = "red";
-      }
+function checkData(docs) {
+  const email = document.getElementById("email_account").value;
+  for (let i = 0; i < docs.length; i++) {
+    if (email === docs[i].email) {
+      alert("This email already exists. Please change email.");
+      document.getElementById("email_account").value = "";
+      document.getElementById("error_msg").value = "email already exists";
+      document.getElementById("error_msg").style.color = "red";
+      break;
     }
   }
+}
 
   function checkID() {
-    fetch(`${accountapi}/studentaccount`)
-      .then((res) => res.json())
-      .then((data) => verifyID(data))
-      .catch((err) => console.log(err));
-  }
-
-  function verifyID(data) {
-    var childid1 = document.getElementById("childid_account1");
-    var childid2 = document.getElementById("childid_account2");
-
-    for (var i = 0; i < data.length; i++) {
-      if (childid1.value.length == 10 && childid1.value !== data[i].id) {
-        alert("Sorry child's ID does not exist.");
-        window.location.reload();
+  fetch(`${accountapi}/studentaccount`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.documents) {
+        const docs = data.documents.map(doc => fromFirestoreFields(doc));
+        verifyID(docs);
       }
-      if (childid2.value.length == 10 && childid2.value !== data[i].id) {
-        alert("Sorry child's ID does not exist.");
-        window.location.reload();
-      }
-    }
+    })
+    .catch(err => console.log(err));
+}
+
+function verifyID(docs) {
+  var childid1 = document.getElementById("childid_account1");
+  var childid2 = document.getElementById("childid_account2");
+
+  const ids = docs.map(d => d.id);
+
+  if (childid1.value.length === 10 && !ids.includes(childid1.value)) {
+    alert("Sorry child's ID does not exist.");
+    window.location.reload();
   }
+  if (childid2.value.length === 10 && !ids.includes(childid2.value)) {
+    alert("Sorry child's ID does not exist.");
+    window.location.reload();
+  }
+}
   return (
     <>
       <section className="checkout spad">
@@ -445,7 +447,6 @@ export default function Accountform() {
                       </p>
                       <input
                         type="email"
-                        onKeyDown={Checkemail}
                         onBlur={Checkemail}
                         id="email_account"
                         name="user_email"

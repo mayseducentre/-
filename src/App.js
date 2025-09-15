@@ -26,9 +26,7 @@ import VRTour from "./library/vr_tour";
 import ProjectView from "./component/portal_component/projectview.js"
 import Assessment from "./component/portal_component/assessment.js";
 import AssessmentA from "./component/portal_component/assessment admin.js";
-import LongSwipeToAssess from "./component/shortcut.js";
-import LessonNoteGenerator from "./component/notegen.js";
-import NoteSys from "./component/lessonnote/lesson_note.js";
+import LessonNoteTemp from "./component/portal_component/note_temp.js";
 
 
 window.addEventListener("keyup", (e)=>{
@@ -72,7 +70,7 @@ if(e.shiftKey && e.key === "."){
 function App() {
 
   return (
-    
+  
     
     <HashRouter>
     <Routes>
@@ -103,8 +101,7 @@ function App() {
       <Route path="/assess" element={<Assessment />} />
       <Route path="/adms" element={<AssessmentA />} />
       <Route path="/admin/note" element={<LessonNoteList />} />
-      <Route path="/ges_lessonnote" element={<NoteSys />} />
-       <Route path="/notegen" element={<LessonNoteGenerator />} />
+       <Route path="/digital_note" element={<LessonNoteTemp />} />
        </Route>
     </Routes>
     </HashRouter>

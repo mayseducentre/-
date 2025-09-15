@@ -39,6 +39,7 @@ export default function Footer(){
               <li><i className="fa fa-chevron-right"></i> <a href="#/portal">Portal</a></li>
               <li><i className="fa fa-chevron-right"></i><a href="#/assess">Assessment Sheet</a></li>
               <li><i className="fa fa-chevron-right"></i><a onClick={getaccess}>AAS</a></li>
+              <li><i className="fa fa-chevron-right"></i><a href="#/digital_note">Digital Note</a></li>
             </ul>
           </div>
 
