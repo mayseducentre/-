@@ -59,7 +59,7 @@ function LibraryVideos() {
 <div className="scroll-container" id="scroll1" onWheel={ScrollContainer}>
     
     <div className="scroll-item">
-        <video src={require("../src/video/maysedu.mp4")} controls></video>
+        <video src="https://drive.google.com/file/d/1YL5_2bMGsPw5aH9CV9EV-DoWuE0wvVRW/view?usp=drivesdk" controls></video>
       <textarea readOnly>Welcome to May's Edu Centre</textarea>
     </div>
 

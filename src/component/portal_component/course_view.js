@@ -35,7 +35,7 @@ useEffect(()=>{
             <article>
 
               <div className="post-img">
-                <img src={require("/img/course-3.jpg")} alt="" className="img-fluid"/>
+                <img src={require("./..//../img/course-3.jpg")} alt="" className="img-fluid"/>
               </div>
 
               <p className="post-category">Subject</p>
