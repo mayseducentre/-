@@ -35,7 +35,7 @@ export default function Banner(){
     </div>
   </section> */}
 
-<video src={require("./src/video/mec.mp4")} style={{width:"100%"}} muted autoPlay loop></video>
+<video src={require("../src/video/mec.mp4")} style={{width:"100%"}} muted autoPlay loop></video>
      
         </>
     )
