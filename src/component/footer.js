@@ -10,6 +10,16 @@ export default function Footer(){
       alert("Permission not granted.")
     }
   }
+
+  function openGen(){
+    var access= window.prompt("Enter School Code");
+    if(access === "MDCEC"){
+      window.location.href="/autoe.html";
+    }
+    else {
+      alert("Permission not granted.")
+    }
+  }
   return(
         <>
         
@@ -40,7 +50,7 @@ export default function Footer(){
               <li><i className="fa fa-chevron-right"></i><a href="#/assess">Assessment Sheet</a></li>
               <li><i className="fa fa-chevron-right"></i><a onClick={getaccess}>AAS</a></li>
               <li><i className="fa fa-chevron-right"></i><a href="#/digital_note">Digital Note</a></li>
-              <li><i className="fa fa-chevron-right"></i><a href="/autoe.html" target="_blank" rel="noopener noreferrer">Exam Gen</a></li>
+              <li><i className="fa fa-chevron-right"></i><a onClick={openGen} target="_blank" rel="noopener noreferrer">Exam Gen</a></li>
             </ul>
           </div>
 
