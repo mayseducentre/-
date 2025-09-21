@@ -1,8 +1,7 @@
-import bcrypt from "bcryptjs";
+import { hash } from "bcrypt-ts";
 import { useEffect, useRef, useState } from "react";
 import emailjs from "emailjs-com";
 import { toFirestoreFields, fromFirestoreFields } from "./firestore";
-
 
 const select = {
   padding: "10px 12px",
@@ -44,7 +43,7 @@ export default function Accountform() {
 
       document.getElementById("passcode_confirm").style.backgroundColor =
         "#fa7373";
-    } else if (passconf == password) {
+    } else if (passconf === password) {
       document.getElementById("passcode_account").style.backgroundColor =
         "#9ef178";
 
@@ -61,21 +60,19 @@ export default function Accountform() {
   }
 
   var path = process.env.REACT_APP_API_URL;
-
   let userIP = "";
-
-  const [ipReady, setIpReady] = useState(false);
+  const [level, setLevel] = useState([]);
+  const [subject, setSubject] = useState([]);
+  const formRef = useRef();
+  var accountapi = process.env.REACT_APP_ACCOUNT_API;
 
   useEffect(() => {
     fetch("https://api.ipify.org?format=json")
       .then((res) => res.json())
       .then((data) => {
         userIP = data.ip;
-        setIpReady(true); // just to force a re-render if needed
       });
   }, []);
-  const [level, setLevel] = useState([]);
-  const [subject, setSubject] = useState([]);
 
   useEffect(() => {
     fetch(`${path}/level`)
@@ -87,14 +84,10 @@ export default function Accountform() {
       .then((res) => res.json())
       .then((data) => setSubject(data))
       .catch((err) => console.log(err));
-  }, []);
+  }, [path]);
 
-  const formRef = useRef();
-
-  var accountapi = process.env.REACT_APP_ACCOUNT_API;
-  function Postaccount(e) {
+  async function Postaccount(e) {
     Checkemail();
-
     e.preventDefault();
 
     var name = document.getElementById("name_account").value;
@@ -111,8 +104,7 @@ export default function Accountform() {
     var Pphone = document.getElementById("Pphone_account").value;
     var childlevel = document.getElementById("childlevel_account").value;
 
-    const salt = bcrypt.genSaltSync(10);
-    const hashedpassword = bcrypt.hashSync(passcode, salt);
+    const hashedpassword = await hash(passcode, 10);
     const constantPrefix = "011";
     var d = new Date();
     const timestamp = d.getTime().toString();
@@ -133,7 +125,6 @@ export default function Accountform() {
       subject_mail: "New signup on MEC webapp",
       main_body: `A new user has signed up to the following account: ${name}, ${email}. Check activity on https://mayseducentre.github.io/-/#/admin`,
     };
-    var apifetch = `${accountapi}/${role}account`;
 
     var inputimg = document.getElementById("portal_img");
     var datafile = inputimg.files[0];
@@ -142,69 +133,56 @@ export default function Accountform() {
 
     filereader.addEventListener("load", () => {
       var base64data = filereader.result;
+      let formpage = null;
 
-      if (role == "student") {
-        var formpage = {
-          id: id,
-          name: name,
-          email: email,
+      if (role === "student") {
+        formpage = {
+          id, name, email,
           passcode: hashedpassword,
           country: "Ghana",
           role: "student",
           thumbnailUrl: base64data,
-          gender: gender,
+          gender,
           class: userclass,
           birth_date: birth,
           performance: "active",
-          notice: "",
-          report: "",
-          address: "",
-          school: "MEC",
+          notice: "", report: "",
+          address: "", school: "MEC",
           ip: userIP,
           status: "enrolled",
           account_date: acc_date,
         };
       }
-
-      if (role == "staff") {
-        var formpage = {
-          id: id,
-          name: name,
-          email: email,
+      if (role === "staff") {
+        formpage = {
+          id, name, email,
           passcode: hashedpassword,
           country: "Ghana",
           role: "staff",
-          gender: gender,
-          subject: subject,
+          gender,
+          subject,
           contact: phone,
           thumbnailUrl: base64data,
-          notice: "",
-          school: "MEC",
-          report: "",
-          address: "",
+          notice: "", school: "MEC",
+          report: "", address: "",
           ip: userIP,
           status: "enrolled",
           account_date: acc_date,
         };
       }
-
-      if (role == "parent") {
-        var formpage = {
-          id: id,
-          name: name,
-          email: email,
+      if (role === "parent") {
+        formpage = {
+          id, name, email,
           passcode: hashedpassword,
           country: "Ghana",
-          gender: gender,
+          gender,
           role: "parent",
           contact: Pphone,
           child_id: childid1,
           other_child_id: childid2,
           child_level: childlevel,
-          notice: "",
-          school: "MEC",
-          address: "",
-          report: "",
+          notice: "", school: "MEC",
+          address: "", report: "",
           thumbnailUrl: base64data,
           status: "enrolled",
           ip: userIP,
@@ -212,63 +190,35 @@ export default function Accountform() {
         };
       }
 
-      if (role == "none") {
+      if (role === "none") {
         alert("Please role cannot be none!");
+        return;
       }
+
       document.getElementById("waitbtn").style.display = "block";
       document.getElementById("createbtn").style.display = "none";
 
       const confirmationbox = window.confirm(
-        `You are creating an account as a ${role}. And are you sure that ${email} is valid. We will send a code to  your mail.`
+        `You are creating an account as a ${role}. And are you sure that ${email} is valid. We will send a code to your mail.`
       );
 
       if (
         passcode.length >= 8 &&
-        passconfirm == passcode &&
+        passconfirm === passcode &&
         confirmationbox === true &&
         role !== "none"
       ) {
-        emailjs
-          .send(
-            "service_4dt6s3i",
-            "template_wwdrjbl",
-            formData,
-            "VIB8bKSD-ZS3RCCHD"
-          )
-          .then((res) => {
-            console.log(res.text);
-          })
-          .catch((err) => {
-            console.log(err.text);
-          });
-
-        emailjs
-          .send(
-            "service_4dt6s3i",
-            "template_0q1tvwm",
-            noticemail,
-            "VIB8bKSD-ZS3RCCHD"
-          )
-          .then((res) => {
-            console.log(res.text);
-          })
-          .catch((err) => {
-            console.log(err.text);
-          });
+        emailjs.send("service_4dt6s3i", "template_wwdrjbl", formData, "VIB8bKSD-ZS3RCCHD");
+        emailjs.send("service_4dt6s3i", "template_0q1tvwm", noticemail, "VIB8bKSD-ZS3RCCHD");
 
         fetch(`${accountapi}/${role}account`, {
           method: "POST",
           body: JSON.stringify(toFirestoreFields(formpage)),
-          headers: {
-            "Content-type": "application/json",
-          },
+          headers: { "Content-type": "application/json" },
         })
           .then((res) => res.json())
-          .then((data) => {
-            console.log(data);
-            alert(
-              "Signed up successfully! Please check your mail for your id. NB: if you haven't received your mail after 2 minutes, contact admin. 0549271528"
-            );
+          .then(() => {
+            alert("Signed up successfully! Please check your mail for your id. NB: if you haven't received your mail after 2 minutes, contact admin. 0549271528");
             setTimeout(() => {
               document.getElementById("waitbtn").style.display = "none";
               document.getElementById("createbtn").style.display = "block";
@@ -279,26 +229,19 @@ export default function Accountform() {
             document.getElementById("passcode_account").value = "";
             document.getElementById("email_account").value = "";
           })
-          .catch((err) => {
-            console.log(err);
+          .catch(() => {
             alert("Failed to signup");
           });
       } else if (passcode.length < 8) {
         var errormsg = document.getElementById("error_msg");
         errormsg.value = "Error occurred. Password must have 8 characters";
         errormsg.style.color = "red";
-
-        setTimeout(() => {
-          errormsg.value = null;
-        }, 5000);
+        setTimeout(() => { errormsg.value = null; }, 5000);
       } else if (passconfirm !== passcode) {
         var errormsg = document.getElementById("error_msg");
         errormsg.value = "Error occurred. Password do not match";
         errormsg.style.color = "red";
-
-        setTimeout(() => {
-          errormsg.value = null;
-        }, 5000);
+        setTimeout(() => { errormsg.value = null; }, 5000);
       }
     });
   }
@@ -321,61 +264,59 @@ export default function Accountform() {
   }
 
   function Checkemail() {
-  const collections = ["studentaccount", "staffaccount", "parentaccount"];
+    const collections = ["studentaccount", "staffaccount", "parentaccount"];
+    collections.forEach((col) => {
+      fetch(`${accountapi}/${col}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.documents) {
+            const docs = data.documents.map((doc) => fromFirestoreFields(doc));
+            checkData(docs);
+          }
+        });
+    });
+  }
 
-  collections.forEach(col => {
-    fetch(`${accountapi}/${col}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.documents) {
-          const docs = data.documents.map(doc => fromFirestoreFields(doc));
-          checkData(docs); // pass converted objects
-        }
-      })
-      .catch(err => console.log(err));
-  });
-}
-
-function checkData(docs) {
-  const email = document.getElementById("email_account").value;
-  for (let i = 0; i < docs.length; i++) {
-    if (email === docs[i].email) {
-      alert("This email already exists. Please change email.");
-      document.getElementById("email_account").value = "";
-      document.getElementById("error_msg").value = "email already exists";
-      document.getElementById("error_msg").style.color = "red";
-      break;
+  function checkData(docs) {
+    const email = document.getElementById("email_account").value;
+    for (let i = 0; i < docs.length; i++) {
+      if (email === docs[i].email) {
+        alert("This email already exists. Please change email.");
+        document.getElementById("email_account").value = "";
+        document.getElementById("error_msg").value = "email already exists";
+        document.getElementById("error_msg").style.color = "red";
+        break;
+      }
     }
   }
-}
 
   function checkID() {
-  fetch(`${accountapi}/studentaccount`)
-    .then(res => res.json())
-    .then(data => {
-      if (data.documents) {
-        const docs = data.documents.map(doc => fromFirestoreFields(doc));
-        verifyID(docs);
-      }
-    })
-    .catch(err => console.log(err));
-}
-
-function verifyID(docs) {
-  var childid1 = document.getElementById("childid_account1");
-  var childid2 = document.getElementById("childid_account2");
-
-  const ids = docs.map(d => d.id);
-
-  if (childid1.value.length === 10 && !ids.includes(childid1.value)) {
-    alert("Sorry child's ID does not exist.");
-    window.location.reload();
+    fetch(`${accountapi}/studentaccount`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.documents) {
+          const docs = data.documents.map((doc) => fromFirestoreFields(doc));
+          verifyID(docs);
+        }
+      });
   }
-  if (childid2.value.length === 10 && !ids.includes(childid2.value)) {
-    alert("Sorry child's ID does not exist.");
-    window.location.reload();
+
+  function verifyID(docs) {
+    var childid1 = document.getElementById("childid_account1");
+    var childid2 = document.getElementById("childid_account2");
+    const ids = docs.map((d) => d.id);
+
+    if (childid1.value.length === 10 && !ids.includes(childid1.value)) {
+      alert("Sorry child's ID does not exist.");
+      window.location.reload();
+    }
+    if (childid2.value.length === 10 && !ids.includes(childid2.value)) {
+      alert("Sorry child's ID does not exist.");
+      window.location.reload();
+    }
   }
-}
+
+ 
   return (
     <>
       <section className="checkout spad">
