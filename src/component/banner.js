@@ -35,7 +35,7 @@ export default function Banner(){
     </div>
   </section> */}
 
-<video src="https://drive.google.com/file/d/1H5HBcb1028JcLyVkK4bZM4bSUcXak0_v/view?usp=drivesdk" style={{width:"100%"}} muted autoPlay loop></video>
+<video src={process.env.PUBLIC_URL + "/video/mec.mp4"} style={{width:"100%"}} muted autoPlay loop></video>
      
         </>
     )
