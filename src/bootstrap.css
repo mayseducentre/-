@@ -9660,7 +9660,7 @@ a.text-dark:hover, a.text-dark:focus {
   }
 
   a:not(.btn) {
-    text-decoration: underline;
+    text-decoration: none;
   }
 
   abbr[title]::after {
