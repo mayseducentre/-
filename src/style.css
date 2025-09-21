@@ -1862,6 +1862,7 @@ button{
 .div-row{
   margin-left: auto;
   margin-right: auto;
+  text-decoration: none !important;
 }
 
 

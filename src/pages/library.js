@@ -16,7 +16,7 @@ export default function Library(){
        <div className="row div-row">
 
       
-       <div className="col-lg-4">
+       <div className="col-lg-4" style={{textDecoration:"none !important"}}>
        <Link to="/librarybooks">
             <div className=" list">
                 <img src={require("../img/book.jpg")} className="list-img align-items-center" alt="image" />
