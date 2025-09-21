@@ -71,7 +71,7 @@ export default function Library(){
     <div className="col-lg-4">
        <Link to="/librarywebsites">
             <div className=" list">
-                <img src={require("../img/website.webp")} className="list-img align-items-center" alt="image" />
+                <img src={require("../img/web.jpg")} className="list-img align-items-center" alt="image" />
                 <br/>
                 <h5 style={{fontWeight:"700",fontSize:"20px"}}>&emsp;&emsp;&emsp;WEBSITES</h5>
             </div>
