@@ -41,7 +41,7 @@ export default function Library(){
         <div className="col-lg-4">
        <Link to="/librarymedia">
             <div className=" list">
-                <img src={require("../img/media.jpg")} className="list-img align-items-center" alt="i" />
+                <img src={require("../img/media.png")} className="list-img align-items-center" alt="i" />
                 <br/>
                 <h5 style={{fontWeight:"700",fontSize:"20px"}}>&emsp;&emsp;&emsp;MEC Media</h5>
             </div>
@@ -82,7 +82,7 @@ export default function Library(){
         <div className="col-lg-4">
             <Link to="/projects">
             <div className=" list">
-                <img src={require(`../img/${process.env.REACT_APP_LOGO}`)} className="list-img align-items-center" alt="image" />
+                <img src={require("../img/stu.jpg")} className="list-img align-items-center" alt="image" />
                 <br/>
                 <h5 style={{fontWeight:"700",fontSize:"20px"}}>&emsp;&emsp;&emsp;Students Projects</h5>
             </div>
