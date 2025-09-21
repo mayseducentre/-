@@ -17,42 +17,42 @@ export default function Library(){
 
       
        <div className="col-lg-4" style={{textDecoration:"none !important"}}>
-       <Link to="/librarybooks">
+       <Link to="/librarybooks" className="nounderline">
             <div className=" list">
                 <img src={require("../img/book.jpg")} className="list-img align-items-center" alt="image" />
                 <br/>
-                <h5 style={{fontWeight:"700",fontSize:"20px"}}>&emsp;&emsp;&emsp;Books</h5>
+                <a style={{fontWeight:"700",fontSize:"15px"}}>&emsp;&emsp;&emsp;Books</a>
             </div>
         </Link>
         </div>
 
 
         <div className="col-lg-4">
-       <Link to="/libraryvideos">
+       <Link to="/libraryvideos" className="nounderline">
             <div className=" list">
                 <img src={require("../img/vid.jpg")} className="list-img align-items-center" alt="image" />
                 <br/>
-                <h5 style={{fontWeight:"700",fontSize:"20px"}}>&emsp;&emsp;&emsp;Videos</h5>
+                <a style={{fontWeight:"700",fontSize:"15px"}}>&emsp;&emsp;&emsp;Videos</a>
             </div>
             </Link>
         </div>
 
 
         <div className="col-lg-4">
-       <Link to="/librarymedia">
+       <Link to="/librarymedia" className="nounderline">
             <div className=" list">
                 <img src={require("../img/media.png")} className="list-img align-items-center" alt="i" />
                 <br/>
-                <h5 style={{fontWeight:"700",fontSize:"20px"}}>&emsp;&emsp;&emsp;MEC Media</h5>
+                <a style={{fontWeight:"700",fontSize:"15px"}}>&emsp;&emsp;&emsp;MEC Media</a>
             </div>
             </Link>
         </div>
         <div className="col-lg-4">
-       <Link to="/vrtour">
+       <Link to="/vrtour" className="nounderline">
             <div className=" list">
                 <img src={require("../img/vr.jpg")} className="list-img align-items-center" alt="i" />
                 <br/>
-                <h5 style={{fontWeight:"700",fontSize:"20px"}}>&emsp;&emsp;&emsp;MEC VR Tour</h5>
+                <a style={{fontWeight:"700",fontSize:"15px"}}>&emsp;&emsp;&emsp;MEC VR Tour</a>
             </div>
             </Link>
         </div>
@@ -60,31 +60,28 @@ export default function Library(){
             <div className=" list">
                 <img src={require("../img/drive.png")} className="list-img align-items-center" alt="image" />
                 <br/>
-                <h5 style={{fontWeight:"700",fontSize:"20px"}}>&emsp;&emsp;&emsp;MEC Drive</h5>
+                <a style={{fontWeight:"700",fontSize:"15px"}}>&emsp;&emsp;&emsp;MEC Drive</a>
             </div>
         </div>
 
 
-
-
-
     <div className="col-lg-4">
-       <Link to="/librarywebsites">
+       <Link to="/librarywebsites" className="nounderline">
             <div className=" list">
                 <img src={require("../img/web.jpg")} className="list-img align-items-center" alt="image" />
                 <br/>
-                <h5 style={{fontWeight:"700",fontSize:"20px"}}>&emsp;&emsp;&emsp;WEBSITES</h5>
+                <a style={{fontWeight:"700",fontSize:"15px"}}>&emsp;&emsp;&emsp;Websites</a>
             </div>
             </Link>
         </div>
 
 
         <div className="col-lg-4">
-            <Link to="/projects">
+            <Link to="/projects" className="nounderline">
             <div className=" list">
                 <img src={require("../img/stu.jpg")} className="list-img align-items-center" alt="image" />
                 <br/>
-                <h5 style={{fontWeight:"700",fontSize:"20px"}}>&emsp;&emsp;&emsp;Students Projects</h5>
+                <a style={{fontWeight:"700",fontSize:"15px"}}>&emsp;&emsp;&emsp;Students Projects</a>
             </div>
             </Link>
         </div>
