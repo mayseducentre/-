@@ -7,7 +7,7 @@
 } */
 
 #header {
-    background: white;
+    background: #FFF8E7;
     transition: all 0.5s;
     z-index: 999;
     position: fixed;
@@ -63,7 +63,7 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
-        background: white;
+        background: #FFF8E7;
         padding: 2px 8px;
         z-index: 9;
         flex-wrap: nowrap;
