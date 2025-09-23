@@ -567,19 +567,19 @@ section {
     width: 120px;
     height: 1px;
     display: inline-block;
-    background: #d3a936;
+    background: #F4C542;
     margin: 4px 10px;
   }
   
   #footer {
     color: #ffffff;
     font-size: 14px;
-    background: #d3a936;
+    background: #F4C542;
   }
   
   #footer .footer-top {
     padding: 60px 0 30px 0;
-    background: #a34a01;
+    background: #7B3F00;
   }
   
   #footer .footer-top .footer-contact {
