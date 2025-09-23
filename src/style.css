@@ -7,14 +7,14 @@
 } */
 
 #header {
-    background: #FFF8E7;
+    background: lightgrey;
     transition: all 0.5s;
     z-index: 999;
     position: fixed;
     top: 0;
     height: 60px;
-    color:black;
-    border-bottom: #F4C542;
+    color:grey;
+    
 }
 
 #header .logo {
@@ -63,7 +63,7 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
-        background: #FFF8E7;
+        background: lightgrey;
         padding: 2px 8px;
         z-index: 9;
         flex-wrap: nowrap;
@@ -77,7 +77,7 @@
 
 
     .bottom-nav a {
-        color: black !important;
+        color: gray !important;
         text-align: center;
         padding: 10px 12px;
         text-decoration: none;

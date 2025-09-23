@@ -1,4 +1,5 @@
-export default function Header(){
+
+export default function Header(props){
     return(
         <>
          <header id="header" className="fixed-top d-flex align-items-center">
@@ -6,6 +7,7 @@ export default function Header(){
        
                 <a href="#/" className="logo">
                     <img src={require(`../img/${process.env.REACT_APP_LOGO}`)} alt="" className="img-fluid animate__animated animate__zoomIn"/></a>
+                    <a>&ensp; {props.navtext}</a>
                 <nav id="navbar" className="navbar animate__animated animate__fadeInRight">
                     <ul>
                         <li><a href="#/">Home</a></li>
