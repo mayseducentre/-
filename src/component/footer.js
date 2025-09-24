@@ -2,7 +2,7 @@
 export default function Footer(){
   function getaccess(){
     var access=window.prompt("Enter pin");
-    if(access === "2025."){
+    if(access === "M2025."){
 
     window.location.href="#/adms";
     }
@@ -18,6 +18,19 @@ export default function Footer(){
     }
     else {
       alert("Permission not granted.")
+    }
+  }
+  function Aconfig(){
+    var conf=window.confirm("Are you a MDCEC staff?")
+
+    if(conf === true){
+      var access=window.prompt("Enter School code");
+      if(access === "MDCEC."){
+       window.location.href="#/assess"
+      }
+      else{
+        alert("Permission not granted")
+      }
     }
   }
   return(
@@ -47,7 +60,7 @@ export default function Footer(){
               <li><i className="fa fa-chevron-right"></i> <a href="#/mec_experience">Student Life</a></li>
               <li><i className="fa fa-chevron-right"></i> <a href="#/admissions">Admissions</a></li>
               <li><i className="fa fa-chevron-right"></i> <a href="#/portal">Portal</a></li>
-              <li><i className="fa fa-chevron-right"></i><a href="#/assess">Assessment Sheet</a></li>
+              <li><i className="fa fa-chevron-right"></i><a onClick={Aconfig}>Assessment Sheet</a></li>
               <li><i className="fa fa-chevron-right"></i><a onClick={getaccess}>AAS</a></li>
               <li><i className="fa fa-chevron-right"></i><a href="#/digital_note">Digital Note</a></li>
               <li><i className="fa fa-chevron-right"></i><a onClick={openGen} target="_blank" rel="noopener noreferrer">Exam Gen</a></li>
