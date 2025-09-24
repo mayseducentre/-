@@ -91,7 +91,7 @@ export default function Footer(){
           &copy; Copyright <strong><span>{process.env.REACT_APP_BRAND_SHORT}</span></strong>. All Rights Reserved
         </div>
         <div className="credits">
-          Designed by <a href="https://amzi-kwasi.github.io/al-app">AL</a>
+          Designed by <a>AL</a>
         </div>
       </div>
       <div className="social-links text-center text-md-right pt-3 pt-md-0">
