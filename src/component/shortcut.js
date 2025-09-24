@@ -13,7 +13,14 @@ export default function LongSwipeToAssess() {
                                   const dx = endX - startX.current;
 
                                         if (dx > 150) {
-                                                window.location.href = '#/assess'; // Redirect on long swipe right
+                                          var conf= window.confirm("Are you a MDCEC staff?")
+                                          if(conf === true){
+                                            var access=window.prompt("Enter School code")
+                                            if(access === "MDCEC."){
+
+                                               window.location.href = '#/assess'// Redirect on long swipe right
+                                            }
+                                          }
                                                       }
                                                           };
 
