@@ -20,6 +20,9 @@ export default function LongSwipeToAssess() {
 
                                                window.location.href = '#/assess'// Redirect on long swipe right
                                             }
+                                            else{
+                                              alert("Permission not granted")
+                                            }
                                           }
                                                       }
                                                           };
