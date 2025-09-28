@@ -17,6 +17,7 @@ import Skeleton from "react-loading-skeleton"
 import SecretIpPush from "../component/secret"
 import "react-loading-skeleton/dist/skeleton.css"
 import LongSwipeToAssess from "../component/shortcut";
+import MAI from "../component/mecaibtn";
 
 
 // function loadP(){
@@ -67,6 +68,7 @@ export default function Home(){
         <NotificationPermission /> */}
         <Blog />
         <Imgsec />
+        <MAI />
         <ScrollToTop smooth className="scrolly"/>
         <Footer />
         </div>

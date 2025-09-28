@@ -1,0 +1,744 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>MEC AI — Mays Daycare Virtual Assistant</title>
+<style>
+:root{
+  --bg: #fffdf8;
+  --panel: #fffaf3;
+  --accent: #d4a017;
+  --accent-2: #c49a6c;
+  --ai-bubble: #fff6e6;
+  --user-bubble: #f6f5f3;
+  --muted: #6b5b4a;
+  --shadow: 0 14px 40px rgba(24,20,12,0.06);
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+html,body{height:100%;margin:0;background:var(--bg);color:#241f1a}
+.app{max-width:1100px;margin:18px auto;height:calc(100vh - 36px);display:flex;flex-direction:column;border-radius:12px;box-shadow:var(--shadow);overflow:hidden;background:linear-gradient(180deg,#fff,#fffaf3)}
+header{display:flex;align-items:center;gap:12px;padding:10px 12px;border-bottom:1px solid rgba(0,0,0,0.04);background:linear-gradient(180deg,#fff,#fffaf3)}
+.logo{width:60px;height:60px;border-radius:10px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center}
+.logo img{width:58px;height:58px;object-fit:cover;border-radius:8px}
+.brand{display:flex;flex-direction:column}
+.brand .title{font-size:1.15rem;font-weight:700;color:var(--accent-2)}
+.brand .subtitle{font-size:0.85rem;color:var(--muted);margin-top:3px}
+.top-actions{margin-left:auto;display:flex;gap:8px;align-items:center}
+.btn{border:1px solid rgba(0,0,0,0.06);background:#fff;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:0.9rem;color:#241f1a}
+.btn.ghost{background:transparent}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;border:0}
+
+/* layout */
+main{display:flex;flex:1;min-height:0}
+.sidebar{width:260px;border-right:1px solid #f3efe7;padding:14px;box-sizing:border-box;background:#fffaf7}
+.sidebar h4{margin:6px 0 8px 0;font-size:0.95rem;color:var(--muted)}
+.kb-stats{font-size:0.82rem;color:var(--muted);margin-bottom:10px}
+.small{font-size:0.85rem;color:var(--muted)}
+.chat-panel{flex:1;display:flex;flex-direction:column;min-width:0}
+.chat-scroll{flex:1;overflow:auto;padding:24px;display:flex;flex-direction:column;gap:12px;background:linear-gradient(180deg,#fffaf7,#fff);min-height:0;height:calc(100vh - 260px)}
+
+/* messages */
+.msg-row{display:flex;gap:12px;align-items:flex-end;max-width:100%}
+.msg-row.ai{justify-content:flex-start}
+.msg-row.user{justify-content:flex-end}
+.avatar{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700}
+.avatar.ai{background:linear-gradient(180deg,var(--accent),var(--accent-2));color:#fff}
+.avatar.user{background:#efeae0;color:#241f1a}
+.bubble{max-width:76%;padding:12px 14px;border-radius:12px;line-height:1.45;word-break:break-word;box-shadow:0 1px 0 rgba(12,10,8,0.02);white-space:pre-wrap}
+.bubble.ai{background:var(--ai-bubble);border-left:4px solid var(--accent-2)}
+.bubble.user{background:var(--user-bubble);border-right:3px solid rgba(0,0,0,0.03)}
+.time{font-size:0.75rem;color:var(--muted);margin-top:8px}
+
+/* composer */
+.input-area{display:flex;flex-direction:column;border-top:1px solid #f2ebe1;padding:12px;background:#fff}
+.top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.suggestions-toggle{display:flex;gap:8px;align-items:center}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.chip{background:#fff4e6;padding:8px 12px;border-radius:999px;font-size:0.9rem;cursor:pointer;border:1px solid rgba(12,10,8,0.03);color:#5b3f20}
+.composer{display:flex;gap:8px;align-items:center}
+.text-input{flex:1;padding:12px;border-radius:12px;border:1px solid #efe6dc;background:#fff;font-size:1rem;outline:none}
+.send-wrap{display:flex;gap:8px;align-items:center}
+.file-input{display:none}
+.img-preview{max-width:220px;border-radius:10px;margin-top:8px;border:1px solid #efe6dc;display:block}
+.muted{color:var(--muted);font-size:0.85rem}
+
+/* admin modal */
+.admin-modal{position:fixed;right:20px;top:80px;width:560px;background:#fff;border-radius:12px;padding:14px;box-shadow:var(--shadow);z-index:80;border:1px solid #efe6dc}
+.admin-modal h3{margin:0 0 8px 0;color:var(--accent-2)}
+.kb-list{max-height:300px;overflow:auto;margin-top:8px;border:1px solid #f7efe0;padding:8px;border-radius:8px}
+.kb-item{padding:8px;border-radius:8px;border:1px solid rgba(2,6,23,0.03);margin-bottom:8px}
+
+/* typing indicator */
+.typing-dots{display:inline-flex;gap:5px;align-items:center;padding:6px 10px}
+.typing-dots span{width:7px;height:7px;border-radius:50%;background:var(--accent-2);opacity:0;animation:blink 1.2s infinite}
+.typing-dots span:nth-child(1){animation-delay:0}
+.typing-dots span:nth-child(2){animation-delay:0.18s}
+.typing-dots span:nth-child(3){animation-delay:0.36s}
+@keyframes blink{0%,80%,100%{opacity:0}40%{opacity:1}}
+
+/* responsive */
+@media (max-width:900px){
+  .sidebar{display:none}
+  .admin-modal{left:10px;right:10px;top:90px;width:auto}
+  .chat-scroll{padding:14px;height:calc(100vh - 290px)}
+}
+</style>
+</head>
+<body>
+  <div class="app" role="application" aria-label="MDCEC AI chat application">
+    <header>
+      <div class="logo" aria-hidden="true">
+        <img src="https://drive.google.com/uc?id=1VeIhTO9YeHkt7-gl8sxAiK1XNxZnr_y4" alt="MEC Logo" onerror="this.style.display='none'">
+      </div>
+      <div class="brand">
+        <div class="title">MEC AI</div>
+        <div class="subtitle">Virtual Assistant</div>
+      </div>
+      <div class="top-actions" role="toolbar" aria-label="Top actions">
+        <button id="exportBtn" class="btn">Export Chat</button>
+        <button id="resetBtn" class="btn ghost">Reset Chat</button>
+        <button id="adminBtn" class="btn">Admin</button>
+      </div>
+    </header>
+
+    <main>
+      <aside class="sidebar" aria-label="Sidebar">
+        <h4>Quick actions</h4>
+        <div class="kb-stats">KB entries: <span id="kbCount">0</span></div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <button class="btn" id="suggestHours">School hours</button>
+          <button class="btn" id="suggestEnroll">How to enroll</button>
+          <button class="btn" id="suggestFees">Fees</button>
+          <button class="btn" id="suggestMeals">Meal policy</button>
+          <button class="btn" id="suggestSafety">Safety</button>
+        </div>
+
+        <div style="margin-top:12px">
+          <div class="small muted">Resources</div>
+          <ul style="padding-left:18px;margin-top:6px">
+            <li><a href="https://learn.khanacademy.org/khan-academy-kids/" target="_blank">Khan Academy Kids</a></li>
+            <li><a href="https://kids.nationalgeographic.com" target="_blank">National Geographic Kids</a></li>
+            <li><a href="https://www.storylineonline.net" target="_blank">Storyline Online</a></li>
+            <li><a href="https://code.org" target="_blank">Code.org</a></li>
+          </ul>
+        </div>
+
+        <div style="margin-top:12px" class="muted">Tip: Double-click header to open Admin</div>
+      </aside>
+
+      <section class="chat-panel" aria-label="Chat panel">
+        <div id="chatScroll" class="chat-scroll" tabindex="0" aria-live="polite"></div>
+
+        <div class="input-area" role="region" aria-label="Message composer">
+          <div class="top-row">
+            <div class="suggestions-toggle">
+              <button id="suggestToggleBtn" class="btn ghost" title="Show/hide suggestions">Suggestions</button>
+              <span class="muted" style="font-size:0.88rem;margin-left:6px">Suggestions hide while typing</span>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <button id="exportKBBtn" class="btn">Export KB</button>
+              <button id="importKBBtn" class="btn">Import KB</button>
+            </div>
+          </div>
+
+          <div id="chipsContainer" class="chips" aria-hidden="false"></div>
+
+          <div class="composer" role="group" aria-label="Composer">
+            <input id="fileInput" class="file-input" type="file" accept="image/*" aria-label="Upload image"/>
+            <button id="attachBtn" class="btn" title="Attach image">📎 Attach</button>
+
+            <input id="textInput" class="text-input" placeholder="Type a message... (press Enter to send)" aria-label="Message input"/>
+
+            <div class="send-wrap">
+              <button id="sendBtn" class="btn primary" aria-label="Send message">Send</button>
+            </div>
+          </div>
+          <img id="previewImg" class="img-preview" style="display:none" alt="Image preview"/>
+          <div style="margin-top:8px" class="muted">Privacy: Demo runs in your browser. Do not enter sensitive personal data.</div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Admin modal -->
+  <div id="adminModal" class="admin-modal" style="display:none" role="dialog" aria-modal="true" aria-label="Admin panel">
+    <h3>Admin • MEC AI (Demo)</h3>
+    <div style="display:flex;gap:8px;margin-bottom:8px">
+      <button id="kbExport" class="btn">Export KB</button>
+      <button id="kbImport" class="btn">Import KB</button>
+      <button id="kbReset" class="btn ghost">Reset KB</button>
+    </div>
+
+    <div style="margin-top:8px">
+      <label class="muted">Add / Edit KB entry</label>
+      <input id="kbId" placeholder="id (kb-001)" style="width:100%;padding:8px;margin-top:6px;border-radius:6px;border:1px solid #efe6dc"/>
+      <input id="kbQ" placeholder="question (short phrase or keywords)" style="width:100%;padding:8px;margin-top:6px;border-radius:6px;border:1px solid #efe6dc"/>
+      <textarea id="kbA" rows="3" placeholder="answer" style="width:100%;padding:8px;margin-top:6px;border-radius:6px;border:1px solid #efe6dc"></textarea>
+      <input id="kbTags" placeholder="tags (comma separated)" style="width:100%;padding:8px;margin-top:6px;border-radius:6px;border:1px solid #efe6dc"/>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button id="kbSave" class="btn primary">Save</button>
+        <button id="kbClear" class="btn ghost">Clear</button>
+      </div>
+    </div>
+
+    <div style="margin-top:10px">
+      <label class="muted">Knowledge base entries</label>
+      <div id="kbList" class="kb-list"></div>
+    </div>
+
+    <div style="margin-top:10px;font-size:0.85rem;color:var(--muted)">
+      Admin password: <strong>admin123</strong> (client-only demo)
+    </div>
+
+    <div style="margin-top:8px;text-align:right">
+      <button id="closeAdmin" class="btn ghost">Close</button>
+    </div>
+  </div>
+
+<script>
+/* =========================
+   MEC AI - Cleaned & Fixed Full App
+   (Preserves original features; fixes image, duplication, streaming, escaping)
+   ========================= */
+
+/* Utilities */
+function uid(p='id'){ return p + '-' + Math.random().toString(36).slice(2,9); }
+function nowISO(){ return new Date().toISOString(); }
+function normalize(s){ return (s||'').toString().toLowerCase().replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,' ').trim(); }
+function tokens(s){ return normalize(s).split(' ').filter(Boolean); }
+function stripHtml(html){ const d=document.createElement('div'); d.innerHTML=html; return d.textContent||d.innerText||''; }
+function escapeHtml(s){ if(!s) return ''; return (''+s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;'); }
+function safeEval(expr){
+  let cleaned = (expr||'').toString().replace(/[^0-9+\-*/().\s%^]/g,'').replace(/\^/g,'**').trim();
+  if(!cleaned) return null;
+  try{ const f = new Function('return ('+cleaned+')'); const v = f(); if(typeof v === 'number' && isFinite(v)) return v; } catch(e){}
+  return null;
+}
+function looksLikeCode(s){
+  if(!s) return false;
+  const codeIndicators = ['function','class','{','}','=>','console.log','import','export','if(', 'for(', '<div', ';'];
+  const low = s.toLowerCase();
+  for(const k of codeIndicators) if(low.includes(k)) return true;
+  return false;
+}
+
+/* Storage keys */
+const STORAGE = { KB: 'mec_kb_v1', CONV: 'mec_conv_v1' };
+
+/* DEFAULT KB (preserved, trimmed for readability - kept your original seed entries) */
+const DEFAULT_KB = [
+  {id:"kb-001",question:"school hours",answer:"Mays Daycare is open Monday–Friday, 7:30 AM – 5:30 PM. Half-day and aftercare options available.",tags:["hours","schedule"],last_updated:nowISO()},
+  {id:"kb-002",question:"how to enroll enroll admissions",answer:"To enroll, visit the admissions page on the MDCEC web app (https://mdcec.vercel.app/admissions), complete the form, and upload required documents.",tags:["admissions","enroll"],last_updated:nowISO()},
+  {id:"kb-003",question:"fees payment methods cost",answer:"Fees vary by program. We accept bank transfer, mobile money, and payments at the office. See the fees section on our web app for current rates.",tags:["fees","payments"],last_updated:nowISO()},
+  {id:"kb-004",question:"meal policy allergies food",answer:"We provide healthy snacks and optional lunches. Parents must report allergies during enrollment so staff can accommodate dietary needs.",tags:["meals","health"],last_updated:nowISO()},
+  {id:"kb-005",question:"contact location address phone",answer:"Visit https://mdcec.vercel.app/contact for phone numbers, email and directions to Mays Daycare.",tags:["contact","location"],last_updated:nowISO()},
+  {id:"kb-006",question:"safety emergency first aid",answer:"We maintain secure entry, staff trained in first aid, and routine safety drills. In emergencies guardians are contacted immediately.",tags:["safety","emergency"],last_updated:nowISO()},
+  {id:"kb-007",question:"daily routine schedule nap outdoor play",answer:"A typical day includes arrival, circle time, learning centers, snack, outdoor play, lunch, nap/quiet time, and afternoon activities.",tags:["routine","schedule"],last_updated:nowISO()},
+  {id:"kb-008",question:"teacher qualifications staff trained cpd",answer:"Our teachers hold early childhood qualifications and receive ongoing professional development, including child safeguarding and first aid.",tags:["teachers","staff"],last_updated:nowISO()},
+  {id:"kb-009",question:"field trips permission transport permission slip",answer:"Field trips require parental consent and supervised transport. Trip details and permission forms are shared in advance.",tags:["trips","events"],last_updated:nowISO()},
+  {id:"kb-010",question:"uniform dress code clothing",answer:"Comfortable, washable clothing is recommended. An optional uniform is used for special events; consult the parent handbook.",tags:["uniform"],last_updated:nowISO()},
+  /* ... keep the rest of your KB entries as required ... */
+];
+
+/* Load/save KB & conversation (robust) */
+function loadKB(){ try{ const raw=localStorage.getItem(STORAGE.KB); if(raw){ const p=JSON.parse(raw); if(Array.isArray(p)) return p; } }catch(e){} localStorage.setItem(STORAGE.KB, JSON.stringify(DEFAULT_KB)); return DEFAULT_KB.slice(); }
+function saveKB(kb){ localStorage.setItem(STORAGE.KB, JSON.stringify(kb)); }
+function loadConv(){ try{ return JSON.parse(localStorage.getItem(STORAGE.CONV) || '[]'); }catch(e){return [];} }
+function saveConv(conv){ localStorage.setItem(STORAGE.CONV, JSON.stringify(conv)); }
+
+/* App state */
+let KB = loadKB();
+let CONV = loadConv();
+const chatScroll = document.getElementById('chatScroll');
+const textInput = document.getElementById('textInput');
+const sendBtn = document.getElementById('sendBtn');
+const chipsContainer = document.getElementById('chipsContainer');
+const fileInput = document.getElementById('fileInput');
+const attachBtn = document.getElementById('attachBtn');
+const previewImg = document.getElementById('previewImg');
+const kbCountEl = document.getElementById('kbCount');
+const suggestToggleBtn = document.getElementById('suggestToggleBtn');
+const chipsContainerEl = document.getElementById('chipsContainer');
+let suggestionsVisible = true;
+
+/* Suggestion chips */
+const SUGGESTIONS = ["Admissions","School hours","Fees","Meals","Safety","Activities","Tell me a joke","Fun fact","I am bored","Homework help"];
+function renderChips(){
+  chipsContainerEl.innerHTML = '';
+  if(!suggestionsVisible) return;
+  SUGGESTIONS.forEach(s=>{
+    const el = document.createElement('div');
+    el.className = 'chip';
+    el.innerText = s;
+    el.tabIndex = 0;
+    el.onclick = ()=>{ textInput.value = s; sendFromInput(); };
+    chipsContainerEl.appendChild(el);
+  });
+}
+
+/* Message append + save — FIXED: skipSave prevents duplication */
+function appendMessage(role, text, meta={}, skipSave=false){
+  const row = document.createElement('div');
+  row.className = 'msg-row ' + (role==='ai' ? 'ai' : 'user');
+
+  const avatar = document.createElement('div');
+  avatar.className = 'avatar ' + (role==='ai' ? 'ai' : 'user');
+  avatar.innerText = role === 'ai' ? 'M' : 'Y';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble ' + (role==='ai' ? 'ai' : 'user');
+  bubble.setAttribute('role','article');
+
+  // Use textContent for safety
+  const content = document.createElement('div');
+  content.className = 'bubble-content';
+  content.style.whiteSpace = 'pre-wrap';
+  content.textContent = text || '';
+
+  bubble.appendChild(content);
+
+  if(meta && meta.image){
+    const img = document.createElement('img');
+    img.src = meta.image;
+    img.className = 'img-preview';
+    img.alt = 'Uploaded image';
+    bubble.appendChild(img);
+  }
+
+  const time = document.createElement('div');
+  time.className = 'time';
+  time.innerText = new Date().toLocaleTimeString();
+  bubble.appendChild(time);
+
+  if(role === 'ai'){
+    row.appendChild(avatar);
+    row.appendChild(bubble);
+  } else {
+    row.appendChild(bubble);
+    row.appendChild(avatar);
+  }
+
+  chatScroll.appendChild(row);
+  chatScroll.scrollTop = chatScroll.scrollHeight;
+
+  // Only save new messages (not when rendering saved conversation)
+  if(!skipSave){
+    CONV.push({id: uid('m'), role, text: stripHtml(text), meta, ts: nowISO()});
+    saveConv(CONV);
+  }
+}
+
+/* Clear & export */
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  if(!confirm('Clear the conversation?')) return;
+  CONV = [];
+  saveConv(CONV);
+  chatScroll.innerHTML = '';
+  pushWelcome();
+});
+document.getElementById('exportBtn').addEventListener('click', ()=>{
+  const dataStr = JSON.stringify(CONV, null, 2);
+  const blob = new Blob([dataStr], {type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `mecai-conversation-${new Date().toISOString().slice(0,10)}.json`; a.click();
+});
+
+/* Admin modal interactions (kept) */
+const adminBtn = document.getElementById('adminBtn');
+const adminModal = document.getElementById('adminModal');
+const kbList = document.getElementById('kbList');
+const kbSaveBtn = document.getElementById('kbSave');
+const kbClearBtn = document.getElementById('kbClear');
+const kbExportBtn = document.getElementById('kbExport');
+const kbImportBtn = document.getElementById('kbImport');
+const kbResetBtn = document.getElementById('kbReset');
+const closeAdminBtn = document.getElementById('closeAdmin');
+
+adminBtn.addEventListener('click', openAdminPrompt);
+document.querySelector('header').addEventListener('dblclick', openAdminPrompt);
+
+function openAdminPrompt(){
+  const pwd = prompt('Enter admin password (demo):');
+  if(pwd !== 'admin123'){ alert('Wrong password'); return; }
+  adminModal.style.display = 'block';
+  renderKBList();
+}
+closeAdminBtn.addEventListener('click', ()=>{ adminModal.style.display = 'none'; });
+
+function renderKBList(){
+  kbList.innerHTML = '';
+  KB.forEach(e=>{
+    const item = document.createElement('div');
+    item.className = 'kb-item';
+    item.innerHTML = `<strong>${escapeHtml(e.question)}</strong>
+      <div style="font-size:0.9rem;margin-top:6px">${escapeHtml(e.answer).slice(0,200)}${e.answer.length>200?'…':''}</div>
+      <div style="display:flex;gap:6px;margin-top:6px">
+        <button class="btn" data-edit="${e.id}">Edit</button>
+        <button class="btn ghost" data-del="${e.id}">Delete</button>
+      </div>
+      <div class="muted" style="margin-top:6px">id: ${e.id} • ${e.last_updated}</div>`;
+    kbList.appendChild(item);
+  });
+  bindKBControls();
+}
+function bindKBControls(){
+  kbList.querySelectorAll('[data-edit]').forEach(b=>{
+    b.onclick = (ev)=>{
+      const id = ev.currentTarget.getAttribute('data-edit');
+      const entry = KB.find(x=>x.id===id);
+      if(entry){
+        document.getElementById('kbId').value = entry.id;
+        document.getElementById('kbQ').value = entry.question;
+        document.getElementById('kbA').value = entry.answer;
+        document.getElementById('kbTags').value = (entry.tags||[]).join(', ');
+      }
+    };
+  });
+  kbList.querySelectorAll('[data-del]').forEach(b=>{
+    b.onclick = (ev)=>{
+      const id = ev.currentTarget.getAttribute('data-del');
+      if(!confirm('Delete ' + id + '?')) return;
+      KB = KB.filter(x=>x.id !== id);
+      saveKB(KB);
+      renderKBList();
+      renderKBCount();
+    };
+  });
+}
+kbSaveBtn.addEventListener('click', ()=>{
+  const id = (document.getElementById('kbId').value || '').trim() || uid('kb');
+  const q = (document.getElementById('kbQ').value || '').trim();
+  const a = (document.getElementById('kbA').value || '').trim();
+  const tags = (document.getElementById('kbTags').value || '').split(',').map(s=>s.trim()).filter(Boolean);
+  if(!q || !a){ alert('Provide question keywords and answer'); return; }
+  const entry = { id, question: q, answer: a, tags, last_updated: nowISO() };
+  const idx = KB.findIndex(x=>x.id === id);
+  if(idx >= 0) KB[idx] = entry; else KB.unshift(entry);
+  saveKB(KB);
+  renderKBList();
+  clearKBForm();
+  renderKBCount();
+  alert('Saved KB entry.');
+});
+kbClearBtn.addEventListener('click', clearKBForm);
+function clearKBForm(){ document.getElementById('kbId').value = ''; document.getElementById('kbQ').value = ''; document.getElementById('kbA').value = ''; document.getElementById('kbTags').value = ''; }
+kbExportBtn.addEventListener('click', ()=>{
+  const blob = new Blob([JSON.stringify(KB, null, 2)], {type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `mec_kb-${new Date().toISOString().slice(0,10)}.json`; a.click();
+});
+kbImportBtn.addEventListener('click', ()=>{
+  const raw = prompt('Paste KB JSON (array of entries or {entries:[]})');
+  if(!raw) return;
+  try{
+    const parsed = JSON.parse(raw);
+    if(Array.isArray(parsed)) KB = parsed;
+    else if(parsed && Array.isArray(parsed.entries)) KB = parsed.entries;
+    else throw new Error('Invalid format');
+    saveKB(KB);
+    renderKBList();
+    renderKBCount();
+    alert('Imported KB (' + KB.length + ' entries).');
+  }catch(e){ alert('Failed to import: ' + e.message); }
+});
+kbResetBtn.addEventListener('click', ()=>{
+  if(!confirm('Reset KB to default?')) return;
+  KB = DEFAULT_KB.slice();
+  saveKB(KB);
+  renderKBList();
+  renderKBCount();
+});
+
+/* Matching logic (word recognition + token overlap + substring boost) */
+function scoreEntry(query, entry){
+  const qNorm = normalize(query);
+  const qTokens = tokens(qNorm);
+  const text = normalize(entry.question + ' ' + (entry.tags || []).join(' '));
+  let score = 0;
+  if(text.includes(qNorm) && qNorm.length > 2) score += 0.5;
+  let overlap = 0;
+  qTokens.forEach(t => { if(text.split(' ').includes(t)) overlap++; });
+  const tokenScore = qTokens.length ? (overlap / qTokens.length) * 0.6 : 0;
+  score += tokenScore;
+  return Math.min(1, score);
+}
+function findBestKBMatch(query){
+  let best = {score: 0, entry: null};
+  KB.forEach(e=>{
+    const s = scoreEntry(query, e);
+    if(s > best.score){ best = {score: s, entry: e}; }
+  });
+  return best;
+}
+
+/* Impressions & social handling */
+const IMPRESSION_RESPONSES = {
+  wow: "Wow — glad you liked that! ✨",
+  amazing: "That's amazing! So happy you enjoyed it.",
+  cool: "Cool! 😊",
+  nice: "Nice! Thanks for saying that.",
+  awesome: "Awesome! 🙌",
+  lol: "😂",
+  haha: "😄",
+  nothing:"Ok. I am sure you could try asking more questions.",
+  thanks: "You're welcome — happy to help!",
+  ok:"Yeah",
+  thankyou: "You're welcome!",
+  yes:"That is nice.",
+  ty: "You're welcome!"
+};
+function respondToImpression(text){
+  if(!text) return null;
+  const w = tokens(text);
+  for(const t of w){
+    if(IMPRESSION_RESPONSES[t]) return IMPRESSION_RESPONSES[t];
+  }
+  return null;
+}
+
+/* Audience detection */
+function detectAudience(q){
+  const low = q.toLowerCase();
+  if(low.includes('parent') || low.includes('mum') || low.includes('mom') || low.includes('dad')) return 'parent';
+  if(low.includes('teacher') || low.includes('staff')) return 'teacher';
+  if(low.includes('student') || low.includes('kid') || low.includes('child')) return 'student';
+  return null;
+}
+
+/* Subject helpers */
+function trySubjectHelper(text){
+  const q = normalize(text);
+  const m = text.match(/what is ([0-9\.\s()+\-*/%^]+)/i) || text.match(/^([0-9\.\s()+\-*/%^]+)$/);
+  if(m && m[1]){ const r = safeEval(m[1]); if(r!==null) return `Answer: ${r}`; }
+  if(q.includes('fraction') || q.includes('add fractions')) return "To add fractions: make denominators the same, add numerators, then simplify. Example: 1/3 + 1/3 = 2/3.";
+  if(q.includes('photosynthesis')) return getKBAnswerByKey('photosynthesis') || "Photosynthesis is how plants use sunlight to make food.";
+  if(q.includes('what is a noun') || q.includes('noun')) return getKBAnswerByKey('what is a noun') || "A noun names a person, place, thing, or idea.";
+  if(q.includes('what is a verb') || q.includes('verb')) return getKBAnswerByKey('what is a verb') || "A verb is a word that shows action or state.";
+  return null;
+}
+
+/* KB quick lookup by keyword */
+function getKBAnswerByKey(key){
+  key = normalize(key);
+  const match = KB.find(e => normalize(e.question).includes(key) || (e.tags||[]).some(t=>normalize(t)===key));
+  return match ? match.answer : null;
+}
+
+/* High-level message handler (centralized) */
+function handleUserSend(rawText, imageData=null){
+  const text = (rawText || '').toString().trim();
+  if(!text && !imageData) return;
+  suggestionsVisible = false; renderChips();
+
+  // Do not clear preview here before we append user's message - appendMessage will manage saving and preview reset happens after sending below.
+  appendMessage('user', text || (imageData ? '[image]' : ''), imageData ? {image: imageData} : {});
+
+  // If image provided, quick response then return
+  if(imageData){
+    // Reset preview & file input now that we've added the user's message
+    previewImg.style.display = 'none';
+    previewImg.src = '';
+    fileInput.value = '';
+
+    streamReply("Thanks — I see the image. I can help you add a note or suggest an activity related to it. Would you like that?");
+    return;
+  }
+
+  // impressions
+  const imp = respondToImpression(text);
+  if(imp) return streamReply(imp);
+
+  // code detection
+  if(looksLikeCode(text)){
+    return streamReply("It looks like you shared code — I can help check for common errors, explain parts, or suggest improvements. Paste the code and ask 'What's wrong with this?'");
+  }
+
+  // greetings and casual chat
+  const qnorm = normalize(text);
+  const greetings = ["hi","hello","hey","good morning","good afternoon","good evening","yo","sup"];
+  if(greetings.includes(qnorm)) return streamReply("Hello! 👋 How can I help you today — school info, homework, activities, or something fun?");
+  if(qnorm.includes('good night') || qnorm.includes('goodnight')) return streamReply("Good night! Sleep well 🌙");
+  if(qnorm.includes('i am bored') || qnorm.includes('bored')) return streamReply("Let's pick an activity — drawing, a short quiz, or a fun fact. Which do you prefer?");
+  if(qnorm.includes('i am sad') || qnorm.includes('sad')) return streamReply("I'm sorry you're feeling sad 💙 — do you want a joke, story, or calming activity?");
+  if(qnorm.includes('thanks') || qnorm.includes('thank')) return streamReply("You're welcome — glad to help!");
+
+  // math eval quick inline
+  const mathMatch = text.match(/what is ([0-9\.\s()+\-*/%^]+)/i) || text.match(/^([0-9\.\s()+\-*/%^]+)$/);
+  if(mathMatch && mathMatch[1]){
+    const val = safeEval(mathMatch[1]);
+    if(val !== null) return streamReply(`Answer: ${val}`);
+  }
+
+  // subject helper
+  const helper = trySubjectHelper(text);
+  if(helper) return streamReply(helper);
+
+  // KB matching with scoring
+  const best = findBestKBMatch(text);
+  if(best.entry && best.score >= 0.25){ // lowered threshold slightly for better recall
+    const audience = detectAudience(text);
+    const prefix = audience === 'parent' ? "Parent info: " : audience === 'teacher' ? "For teachers: " : "";
+    return streamReply(`${prefix}${best.entry.answer}\n\nSource: ${best.entry.id}`);
+  }
+
+  // word-level scanning: find KB entries that contain any token from user message
+  const words = tokens(text);
+  const found = [];
+  KB.forEach(e=>{
+    const eTokens = tokens(e.question + ' ' + (e.tags||[]).join(' '));
+    for(const w of words){
+      if(eTokens.includes(w) && !found.includes(e)) found.push(e);
+    }
+  });
+  if(found.length){
+    const summary = found.slice(0,4).map(r=>`• ${r.answer}`).join('\n\n');
+    return streamReply(`I found some related info:\n\n${summary}\n\nFor full details visit: https://mdcec.vercel.app`);
+  }
+
+  // resource redirects
+  if(qnorm.includes('math')) return streamReply('Math resources: https://learn.khanacademy.org/khan-academy-kids/');
+  if(qnorm.includes('science')) return streamReply('Science resources: https://kids.nationalgeographic.com');
+  if(qnorm.includes('read') || qnorm.includes('story')) return streamReply('Reading resources: https://www.storylineonline.net');
+
+  // fallback
+  streamReply(`I’m not sure about that exact question. Try: 'School hours', 'How to enroll', or ask a math question like 'what is 12 * 8'. Also check the MDCEC web app: https://mdcec.vercel.app`);
+}
+
+/* Streaming reply (character reveal) — improved: creates placeholder, saves reliably */
+function streamReply(fullText){
+  // placeholder bubble appended immediately and saved so reload won't lose it
+  const placeholderId = uid('ai');
+  const row = document.createElement('div');
+  row.className = 'msg-row ai';
+  const avatar = document.createElement('div'); avatar.className = 'avatar ai'; avatar.innerText = 'M';
+  const bubble = document.createElement('div'); bubble.className = 'bubble ai';
+  const content = document.createElement('div'); content.className = 'bubble-content'; content.style.whiteSpace = 'pre-wrap';
+  bubble.appendChild(content);
+  const time = document.createElement('div'); time.className = 'time';
+  bubble.appendChild(time);
+  row.appendChild(avatar); row.appendChild(bubble);
+  chatScroll.appendChild(row);
+  chatScroll.scrollTop = chatScroll.scrollHeight;
+
+  // Save a placeholder entry now to avoid loss if page unloads mid-stream
+  CONV.push({id: placeholderId, role:'ai', text: '', meta:{streaming:true}, ts: nowISO()});
+  saveConv(CONV);
+
+  let i = 0;
+  const speed = 6 + Math.random()*8;
+  const interval = setInterval(()=>{
+    i++;
+    content.textContent = fullText.slice(0,i);
+    chatScroll.scrollTop = chatScroll.scrollHeight;
+    if(i >= fullText.length){
+      clearInterval(interval);
+      time.innerText = new Date().toLocaleTimeString();
+      // update the previously saved placeholder entry with real text
+      const idx = CONV.findIndex(m=>m.id === placeholderId);
+      if(idx >= 0){
+        CONV[idx].text = stripHtml(fullText);
+        delete CONV[idx].meta.streaming;
+        CONV[idx].ts = nowISO();
+        saveConv(CONV);
+      } else {
+        // fallback: push a new final entry
+        CONV.push({id: uid('m'), role:'ai', text: stripHtml(fullText), meta:{}, ts: nowISO()});
+        saveConv(CONV);
+      }
+    }
+  }, speed);
+}
+
+/* Image upload handling — FIXED: don't hide preview immediately, reset file input after send */
+attachBtn.addEventListener('click', ()=> fileInput.click());
+fileInput.addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev)=>{
+    const data = ev.target.result;
+    previewImg.src = data; previewImg.style.display = 'block';
+    // send immediately (image-only message)
+    handleUserSend('', data);
+    // fileInput is reset inside handleUserSend after appending message
+  };
+  reader.readAsDataURL(file);
+});
+
+/* Input handling and suggestion hide behavior */
+let typingTimer = null;
+textInput.addEventListener('input', ()=>{
+  if(textInput.value && suggestionsVisible){
+    suggestionsVisible = false;
+    renderChips();
+  }
+});
+sendBtn.addEventListener('click', ()=> sendFromInput());
+textInput.addEventListener('keydown', (e)=>{ if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendFromInput(); } });
+
+function sendFromInput(){
+  const text = textInput.value.trim();
+  textInput.value='';
+  let imgData = null;
+
+  if(previewImg.style.display !== "none" && previewImg.src){
+    imgData = previewImg.src;
+  }
+
+  if(!text && !imgData) return;
+
+  // If image present, prefer sending image as image-only message; else send text (+ image if both)
+  if(imgData && !text){
+    handleUserSend('', imgData);
+    return;
+  }
+
+  // send text (and possible preview image)
+  handleUserSend(text, imgData);
+}
+
+/* Suggest toggle button */
+suggestToggleBtn.addEventListener('click', ()=>{
+  suggestionsVisible = !suggestionsVisible;
+  renderChips();
+});
+
+/* Quick sidebar actions */
+document.getElementById('suggestHours').addEventListener('click', ()=> handleUserSend('What are your school hours?'));
+document.getElementById('suggestEnroll').addEventListener('click', ()=> handleUserSend('How do I enroll my child?'));
+document.getElementById('suggestFees').addEventListener('click', ()=> handleUserSend('What are the fees?'));
+document.getElementById('suggestMeals').addEventListener('click', ()=> handleUserSend('What is the meal policy?'));
+document.getElementById('suggestSafety').addEventListener('click', ()=> handleUserSend('What safety measures are in place?'));
+
+/* Export/import KB small buttons near composer */
+document.getElementById('exportKBBtn').addEventListener('click', ()=>{ const blob = new Blob([JSON.stringify(KB, null, 2)], {type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`mec_kb-${new Date().toISOString().slice(0,10)}.json`; a.click(); });
+document.getElementById('importKBBtn').addEventListener('click', ()=>{ const raw = prompt('Paste KB JSON (array or {entries:[]})'); if(!raw) return; try{ const parsed = JSON.parse(raw); if(Array.isArray(parsed)) KB = parsed; else if(parsed && Array.isArray(parsed.entries)) KB = parsed.entries; else throw new Error('Invalid'); saveKB(KB); alert('Imported KB'); renderKBCount(); }catch(e){ alert('Import failed: '+e.message); } });
+
+/* Load existing conversation and initial welcome (no duplication) */
+function renderSavedConv(){
+  chatScroll.innerHTML = '';
+  CONV = loadConv();
+  if(CONV && CONV.length){
+    CONV.forEach(m=> appendMessage(m.role, m.text, m.meta || {}, true));
+  } else {
+    pushWelcome();
+  }
+}
+function pushWelcome(){
+  streamReply("Hello — I'm MEC AI 👋\nI can help with school info, homework basics, simple math, code-check tips, activities, and parenting/teacher resources. Try: 'School hours', 'How to enroll', 'What is 12 * 8?', or 'Tell me a joke'.");
+}
+
+/* Matching helpers */
+function renderKBCount(){ kbCountEl.innerText = KB.length; }
+renderChips(); renderKBCount(); renderSavedConv();
+
+/* Keyboard shortcut to focus input */
+document.addEventListener('keydown', (e)=>{ if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){ e.preventDefault(); textInput.focus(); } });
+
+/* Utility: find best KB entry by token */
+function getKBByToken(token){
+  token = normalize(token);
+  return KB.find(e => normalize(e.question).includes(token) || (e.tags||[]).some(t=>normalize(t)===token));
+}
+</script>
+</body>
+</html>
