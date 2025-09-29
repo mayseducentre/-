@@ -20,8 +20,9 @@
 #navbar a.active,
 .bottom-nav a.active {
   color: orange !important;
-  }
-  
+  background:none;
+}
+
 #header .logo {
     font-size: 28px;
     line-height: 1;
