@@ -27,7 +27,7 @@ export default function Header(props){
     
         <div className="bottom-nav animate__animated animate__fadeInUp">
             <a className="fa fa-home" href="#/"><br /><small className="smaller">Home</small></a>
-            <a className="fa fa-reddit-alien" href="/mecai.html"><br/><small className="smaller">AI</small></a>
+            <a className="fa fa-reddit-alien" href="/mecai.html"><br /><small className="smaller">AI</small></a>
             <a className="fa fa-exclamation-circle" href="#/about"><br /><small className="smaller">About</small></a>
             <a className="fa fa-plane" href="#/news_updates"><br /><small className="smaller">News</small></a>
             <a className="fa fa-book" href="#/library"><br /><small className="smaller">Library</small></a>
