@@ -68,7 +68,7 @@ export default function Home(){
         <NotificationPermission /> */}
         <Blog />
         <Imgsec />
-        <MAI />
+        
         <ScrollToTop smooth className="scrolly"/>
         <Footer />
         </div>

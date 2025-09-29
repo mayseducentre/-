@@ -11,6 +11,7 @@ export default function Header(props){
                 <nav id="navbar" className="navbar animate__animated animate__fadeInRight">
                     <ul>
                         <li><a href="#/">Home</a></li>
+                        <li><a href="/mecai.html">MEC AI</a></li>
                         <li><a href="#/about">About</a></li>
                         <li><a href="#/news_updates">News and Updates</a></li>
                         <li><a href="#/library">Library</a></li>
@@ -26,6 +27,7 @@ export default function Header(props){
     
         <div className="bottom-nav animate__animated animate__fadeInUp">
             <a className="fa fa-home" href="#/"><br /><small className="smaller">Home</small></a>
+            <a className="fa-regular fa-robot" href="/mecai.html"><br/><small className="smaller">MEC AI</small></a>
             <a className="fa fa-exclamation-circle" href="#/about"><br /><small className="smaller">About</small></a>
             <a className="fa fa-plane" href="#/news_updates"><br /><small className="smaller">News</small></a>
             <a className="fa fa-book" href="#/library"><br /><small className="smaller">Library</small></a>
