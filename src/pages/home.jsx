@@ -17,7 +17,6 @@ import Skeleton from "react-loading-skeleton"
 import SecretIpPush from "../component/secret"
 import "react-loading-skeleton/dist/skeleton.css"
 import LongSwipeToAssess from "../component/shortcut";
-import MAI from "../component/mecaibtn";
 
 
 // function loadP(){
