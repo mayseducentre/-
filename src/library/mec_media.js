@@ -195,6 +195,7 @@ const [loading, setLoading]=useState(false);
      <img src={require("../img/mays/agama.jpg")} style={{width:"100%"}}/>
      <img src={require("../img/mays/akz.jpg")} style={{width:"100%"}}/>
      <img src={require("../img/mays/davis.jpg")} style={{width:"100%"}}/>
+     <img src={require("../img/ach.jpg")} style={{width:"100%"}} />
     
   </div>
   <div className="imgcolumn">
@@ -208,6 +209,7 @@ const [loading, setLoading]=useState(false);
      <img src={require("../img/mays/drone_v.jpg")} style={{width:"100%"}}/>
      <img src={require("../img/mays/lego.jpg")} style={{width:"100%"}}/>
      <img src={require("../img/mays/mich.jpg")} style={{width:"100%"}}/>
+     <img src={require("../img/gobe.jpg")} style={{width:"100%"}} />
     
   </div>
 
