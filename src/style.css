@@ -7,7 +7,7 @@
 } */
 
 #header {
-    background: lightgrey;
+    background: #faf3dd;
     transition: all 0.5s;
     z-index: 999;
     position: fixed;
@@ -70,7 +70,7 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
-        background: lightgrey;
+        background: #f0ead6;
         padding: 2px 8px;
         z-index: 9;
         flex-wrap: nowrap;
