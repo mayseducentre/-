@@ -1,744 +1,651 @@
 <!doctype html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>MEC AI — Mays Daycare Virtual Assistant</title>
+<title>mecai.html — MEC AI (full)</title>
 <style>
 :root{
-  --bg: #fffdf8;
-  --panel: #fffaf3;
-  --accent: #d4a017;
-  --accent-2: #c49a6c;
-  --ai-bubble: #fff6e6;
-  --user-bubble: #f6f5f3;
-  --muted: #6b5b4a;
-  --shadow: 0 14px 40px rgba(24,20,12,0.06);
-  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  --bg:#fffdf8; --panel:#fffaf3; --accent:#d4a017; --accent-2:#c49a6c;
+  --ai-bubble:#fff6e6; --user-bubble:#f6f5f3; --muted:#6b5b4a;
+  --shadow:0 18px 50px rgba(18,16,12,0.06);
+  --radius:12px;
+  font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
 }
+*{box-sizing:border-box}
 html,body{height:100%;margin:0;background:var(--bg);color:#241f1a}
-.app{max-width:1100px;margin:18px auto;height:calc(100vh - 36px);display:flex;flex-direction:column;border-radius:12px;box-shadow:var(--shadow);overflow:hidden;background:linear-gradient(180deg,#fff,#fffaf3)}
-header{display:flex;align-items:center;gap:12px;padding:10px 12px;border-bottom:1px solid rgba(0,0,0,0.04);background:linear-gradient(180deg,#fff,#fffaf3)}
-.logo{width:60px;height:60px;border-radius:10px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center}
-.logo img{width:58px;height:58px;object-fit:cover;border-radius:8px}
-.brand{display:flex;flex-direction:column}
+.app{max-width:1100px;margin:18px auto;height:calc(100vh - 36px);display:flex;flex-direction:column;border-radius:14px;box-shadow:var(--shadow);overflow:hidden;background:#fff}
+header{display:flex;align-items:center;padding:12px 16px;border-bottom:1px solid rgba(0,0,0,0.04);background:var(--panel)}
+.logo{width:56px;height:56px;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#fff}
+.logo img{width:100%;height:100%;object-fit:cover;border-radius:8px}
+.brand{margin-left:12px}
 .brand .title{font-size:1.15rem;font-weight:700;color:var(--accent-2)}
-.brand .subtitle{font-size:0.85rem;color:var(--muted);margin-top:3px}
-.top-actions{margin-left:auto;display:flex;gap:8px;align-items:center}
-.btn{border:1px solid rgba(0,0,0,0.06);background:#fff;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:0.9rem;color:#241f1a}
-.btn.ghost{background:transparent}
+.brand .subtitle{font-size:0.85rem;color:var(--muted)}
+.top-actions{margin-left:auto;display:flex;gap:8px}
+.btn{border:1px solid rgba(0,0,0,0.06);background:#fff;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:0.95rem;color:#241f1a}
 .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;border:0}
-
-/* layout */
 main{display:flex;flex:1;min-height:0}
-.sidebar{width:260px;border-right:1px solid #f3efe7;padding:14px;box-sizing:border-box;background:#fffaf7}
-.sidebar h4{margin:6px 0 8px 0;font-size:0.95rem;color:var(--muted)}
-.kb-stats{font-size:0.82rem;color:var(--muted);margin-bottom:10px}
-.small{font-size:0.85rem;color:var(--muted)}
 .chat-panel{flex:1;display:flex;flex-direction:column;min-width:0}
-.chat-scroll{flex:1;overflow:auto;padding:24px;display:flex;flex-direction:column;gap:12px;background:linear-gradient(180deg,#fffaf7,#fff);min-height:0;height:calc(100vh - 260px)}
-
-/* messages */
+.chat-scroll{flex:1;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:14px;background:linear-gradient(180deg,#fffaf7,#fff)}
 .msg-row{display:flex;gap:12px;align-items:flex-end;max-width:100%}
 .msg-row.ai{justify-content:flex-start}
 .msg-row.user{justify-content:flex-end}
 .avatar{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700}
 .avatar.ai{background:linear-gradient(180deg,var(--accent),var(--accent-2));color:#fff}
 .avatar.user{background:#efeae0;color:#241f1a}
-.bubble{max-width:76%;padding:12px 14px;border-radius:12px;line-height:1.45;word-break:break-word;box-shadow:0 1px 0 rgba(12,10,8,0.02);white-space:pre-wrap}
+.bubble{max-width:78%;padding:12px 14px;border-radius:12px;line-height:1.45;word-break:break-word;white-space:pre-wrap;box-shadow:0 1px 0 rgba(12,10,8,0.02)}
 .bubble.ai{background:var(--ai-bubble);border-left:4px solid var(--accent-2)}
 .bubble.user{background:var(--user-bubble);border-right:3px solid rgba(0,0,0,0.03)}
+.msg-img{max-width:420px;border-radius:10px;margin-top:8px;display:block}
 .time{font-size:0.75rem;color:var(--muted);margin-top:8px}
-
-/* composer */
-.input-area{display:flex;flex-direction:column;border-top:1px solid #f2ebe1;padding:12px;background:#fff}
-.top-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.suggestions-toggle{display:flex;gap:8px;align-items:center}
-.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
-.chip{background:#fff4e6;padding:8px 12px;border-radius:999px;font-size:0.9rem;cursor:pointer;border:1px solid rgba(12,10,8,0.03);color:#5b3f20}
+.input-area{border-top:1px solid #f2ebe1;padding:12px;background:#fff}
 .composer{display:flex;gap:8px;align-items:center}
 .text-input{flex:1;padding:12px;border-radius:12px;border:1px solid #efe6dc;background:#fff;font-size:1rem;outline:none}
-.send-wrap{display:flex;gap:8px;align-items:center}
 .file-input{display:none}
 .img-preview{max-width:220px;border-radius:10px;margin-top:8px;border:1px solid #efe6dc;display:block}
-.muted{color:var(--muted);font-size:0.85rem}
-
-/* admin modal */
-.admin-modal{position:fixed;right:20px;top:80px;width:560px;background:#fff;border-radius:12px;padding:14px;box-shadow:var(--shadow);z-index:80;border:1px solid #efe6dc}
-.admin-modal h3{margin:0 0 8px 0;color:var(--accent-2)}
-.kb-list{max-height:300px;overflow:auto;margin-top:8px;border:1px solid #f7efe0;padding:8px;border-radius:8px}
-.kb-item{padding:8px;border-radius:8px;border:1px solid rgba(2,6,23,0.03);margin-bottom:8px}
-
-/* typing indicator */
-.typing-dots{display:inline-flex;gap:5px;align-items:center;padding:6px 10px}
-.typing-dots span{width:7px;height:7px;border-radius:50%;background:var(--accent-2);opacity:0;animation:blink 1.2s infinite}
-.typing-dots span:nth-child(1){animation-delay:0}
-.typing-dots span:nth-child(2){animation-delay:0.18s}
-.typing-dots span:nth-child(3){animation-delay:0.36s}
-@keyframes blink{0%,80%,100%{opacity:0}40%{opacity:1}}
-
-/* responsive */
-@media (max-width:900px){
-  .sidebar{display:none}
-  .admin-modal{left:10px;right:10px;top:90px;width:auto}
-  .chat-scroll{padding:14px;height:calc(100vh - 290px)}
-}
+.muted{color:var(--muted);font-size:0.85rem;margin-top:8px}
+@media(max-width:820px){.logo{width:44px;height:44px}.avatar{width:36px;height:36px}.img-preview{max-width:160px}.msg-img{max-width:280px}}
 </style>
 </head>
 <body>
-  <div class="app" role="application" aria-label="MDCEC AI chat application">
-    <header>
-      <div class="logo" aria-hidden="true">
-        <img src="https://lh3.googleusercontent.com/pw/AP1GczMHCb_2yYZwv4X8WBPBJA8csz5xG0LHWCqyGXDM7FVFSmhR7bcutd4atSDMTOxeWTXqvNvPrktei0wfGl5x4Kp9s0bl3puPSYac0SySVsVn3kmHsjY" alt="MEC Logo" onerror="this.style.display='none'">
-      </div>
-      <div class="brand">
-        <div class="title">MEC AI</div>
-        <div class="subtitle">Virtual Assistant</div>
-      </div>
-      <div class="top-actions" role="toolbar" aria-label="Top actions">
-        <button id="exportBtn" class="btn">Export Chat</button>
-        <button id="resetBtn" class="btn ghost">Reset Chat</button>
-        <button id="adminBtn" class="btn">Admin</button>
-      </div>
-    </header>
+<div class="app" role="application" aria-label="MEC AI chat application">
+  <header>
+    <div class="logo" aria-hidden="true">
+      <img src="https://drive.google.com/uc?id=1VeIhTO9YeHkt7-gl8sxAiK1XNxZnr_y4" alt="MEC Logo" onerror="this.style.display='none'">
+    </div>
+    <div class="brand">
+      <div class="title">MEC AI</div>
+      <div class="subtitle">Daycare, Learning & Fun — Assistant</div>
+    </div>
+    <div class="top-actions" role="toolbar" aria-label="Top actions">
+      <button id="exportBtn" class="btn" aria-label="Export conversation">Export Chat</button>
+      <button id="resetBtn" class="btn" aria-label="Reset conversation">Reset Chat</button>
+    </div>
+  </header>
 
-    <main>
-      <aside class="sidebar" aria-label="Sidebar">
-        <h4>Quick actions</h4>
-        <div class="kb-stats">KB entries: <span id="kbCount">0</span></div>
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <button class="btn" id="suggestHours">School hours</button>
-          <button class="btn" id="suggestEnroll">How to enroll</button>
-          <button class="btn" id="suggestFees">Fees</button>
-          <button class="btn" id="suggestMeals">Meal policy</button>
-          <button class="btn" id="suggestSafety">Safety</button>
-        </div>
+  <main>
+    <section class="chat-panel" aria-label="Chat panel">
+      <div id="chatScroll" class="chat-scroll" tabindex="0" aria-live="polite" aria-atomic="false"></div>
 
-        <div style="margin-top:12px">
-          <div class="small muted">Resources</div>
-          <ul style="padding-left:18px;margin-top:6px">
-            <li><a href="https://learn.khanacademy.org/khan-academy-kids/" target="_blank">Khan Academy Kids</a></li>
-            <li><a href="https://kids.nationalgeographic.com" target="_blank">National Geographic Kids</a></li>
-            <li><a href="https://www.storylineonline.net" target="_blank">Storyline Online</a></li>
-            <li><a href="https://code.org" target="_blank">Code.org</a></li>
-          </ul>
-        </div>
-
-        <div style="margin-top:12px" class="muted">Tip: Double-click header to open Admin</div>
-      </aside>
-
-      <section class="chat-panel" aria-label="Chat panel">
-        <div id="chatScroll" class="chat-scroll" tabindex="0" aria-live="polite"></div>
-
-        <div class="input-area" role="region" aria-label="Message composer">
-          <div class="top-row">
-            <div class="suggestions-toggle">
-              <button id="suggestToggleBtn" class="btn ghost" title="Show/hide suggestions">Suggestions</button>
-              <span class="muted" style="font-size:0.88rem;margin-left:6px">Suggestions hide while typing</span>
-            </div>
-            <div style="display:flex;gap:8px;align-items:center">
-              <button id="exportKBBtn" class="btn">Export KB</button>
-              <button id="importKBBtn" class="btn">Import KB</button>
-            </div>
+      <div class="input-area" role="region" aria-label="Message composer">
+        <div class="composer" role="group" aria-label="Composer controls">
+          <input id="fileInput" class="file-input" type="file" accept="image/*" aria-label="Upload image" />
+          <button id="attachBtn" class="btn" title="Attach image" aria-label="Attach image">📎</button>
+          <input id="textInput" class="text-input" placeholder="Type a message or command (e.g. 'play number game', 'draw cat', 'solve 12+5', 'homework ...')" aria-label="Message input" />
+          <div style="display:flex;gap:8px;align-items:center">
+            <button id="sendBtn" class="btn primary" aria-label="Send message">Send</button>
           </div>
-
-          <div id="chipsContainer" class="chips" aria-hidden="false"></div>
-
-          <div class="composer" role="group" aria-label="Composer">
-            <input id="fileInput" class="file-input" type="file" accept="image/*" aria-label="Upload image"/>
-            <button id="attachBtn" class="btn" title="Attach image">📎 Attach</button>
-
-            <input id="textInput" class="text-input" placeholder="Type a message... (press Enter to send)" aria-label="Message input"/>
-
-            <div class="send-wrap">
-              <button id="sendBtn" class="btn primary" aria-label="Send message">Send</button>
-            </div>
-          </div>
-          <img id="previewImg" class="img-preview" style="display:none" alt="Image preview"/>
-          <div style="margin-top:8px" class="muted">Privacy: Demo runs in your browser. Do not enter sensitive personal data.</div>
         </div>
-      </section>
-    </main>
-  </div>
 
-  <!-- Admin modal -->
-  <div id="adminModal" class="admin-modal" style="display:none" role="dialog" aria-modal="true" aria-label="Admin panel">
-    <h3>Admin • MEC AI (Demo)</h3>
-    <div style="display:flex;gap:8px;margin-bottom:8px">
-      <button id="kbExport" class="btn">Export KB</button>
-      <button id="kbImport" class="btn">Import KB</button>
-      <button id="kbReset" class="btn ghost">Reset KB</button>
-    </div>
-
-    <div style="margin-top:8px">
-      <label class="muted">Add / Edit KB entry</label>
-      <input id="kbId" placeholder="id (kb-001)" style="width:100%;padding:8px;margin-top:6px;border-radius:6px;border:1px solid #efe6dc"/>
-      <input id="kbQ" placeholder="question (short phrase or keywords)" style="width:100%;padding:8px;margin-top:6px;border-radius:6px;border:1px solid #efe6dc"/>
-      <textarea id="kbA" rows="3" placeholder="answer" style="width:100%;padding:8px;margin-top:6px;border-radius:6px;border:1px solid #efe6dc"></textarea>
-      <input id="kbTags" placeholder="tags (comma separated)" style="width:100%;padding:8px;margin-top:6px;border-radius:6px;border:1px solid #efe6dc"/>
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <button id="kbSave" class="btn primary">Save</button>
-        <button id="kbClear" class="btn ghost">Clear</button>
+        <img id="previewImg" class="img-preview" style="display:none" alt="Image preview" />
+        <div class="muted">Privacy: This chat runs in your browser. Don’t enter sensitive personal info. But remember, MEC AI can make mistakes.</div>
       </div>
-    </div>
-
-    <div style="margin-top:10px">
-      <label class="muted">Knowledge base entries</label>
-      <div id="kbList" class="kb-list"></div>
-    </div>
-
-    <div style="margin-top:10px;font-size:0.85rem;color:var(--muted)">
-      Admin password: <strong>admin123</strong> (client-only demo)
-    </div>
-
-    <div style="margin-top:8px;text-align:right">
-      <button id="closeAdmin" class="btn ghost">Close</button>
-    </div>
-  </div>
+    </section>
+  </main>
+</div>
 
 <script>
-/* =========================
-   MEC AI - Cleaned & Fixed Full App
-   (Preserves original features; fixes image, duplication, streaming, escaping)
-   ========================= */
-
-/* Utilities */
-function uid(p='id'){ return p + '-' + Math.random().toString(36).slice(2,9); }
+/* === Utilities === */
+function uid(prefix='m'){ return prefix + '-' + Math.random().toString(36).slice(2,9); }
 function nowISO(){ return new Date().toISOString(); }
-function normalize(s){ return (s||'').toString().toLowerCase().replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,' ').trim(); }
-function tokens(s){ return normalize(s).split(' ').filter(Boolean); }
-function stripHtml(html){ const d=document.createElement('div'); d.innerHTML=html; return d.textContent||d.innerText||''; }
-function escapeHtml(s){ if(!s) return ''; return (''+s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;'); }
-function safeEval(expr){
-  let cleaned = (expr||'').toString().replace(/[^0-9+\-*/().\s%^]/g,'').replace(/\^/g,'**').trim();
-  if(!cleaned) return null;
-  try{ const f = new Function('return ('+cleaned+')'); const v = f(); if(typeof v === 'number' && isFinite(v)) return v; } catch(e){}
-  return null;
-}
-function looksLikeCode(s){
-  if(!s) return false;
-  const codeIndicators = ['function','class','{','}','=>','console.log','import','export','if(', 'for(', '<div', ';'];
-  const low = s.toLowerCase();
-  for(const k of codeIndicators) if(low.includes(k)) return true;
-  return false;
-}
+function normalize(s){ return (s||'').toString().toLowerCase().trim(); }
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 
-/* Storage keys */
-const STORAGE = { KB: 'mec_kb_v1', CONV: 'mec_conv_v1' };
+/* === Storage keys === */
+const STORAGE = { CONV: 'mecai_conv_v_final', SESSION: 'mecai_session_v_final' };
 
-/* DEFAULT KB (preserved, trimmed for readability - kept your original seed entries) */
-const DEFAULT_KB = [
-  {id:"kb-001",question:"school hours",answer:"Mays Daycare is open Monday–Friday, 7:30 AM – 5:30 PM. Half-day and aftercare options available.",tags:["hours","schedule"],last_updated:nowISO()},
-  {id:"kb-002",question:"how to enroll enroll admissions",answer:"To enroll, visit the admissions page on the MDCEC web app (https://mdcec.vercel.app/admissions), complete the form, and upload required documents.",tags:["admissions","enroll"],last_updated:nowISO()},
-  {id:"kb-003",question:"fees payment methods cost",answer:"Fees vary by program. We accept bank transfer, mobile money, and payments at the office. See the fees section on our web app for current rates.",tags:["fees","payments"],last_updated:nowISO()},
-  {id:"kb-004",question:"meal policy allergies food",answer:"We provide healthy snacks and optional lunches. Parents must report allergies during enrollment so staff can accommodate dietary needs.",tags:["meals","health"],last_updated:nowISO()},
-  {id:"kb-005",question:"contact location address phone",answer:"Visit https://mdcec.vercel.app/contact for phone numbers, email and directions to Mays Daycare.",tags:["contact","location"],last_updated:nowISO()},
-  {id:"kb-006",question:"safety emergency first aid",answer:"We maintain secure entry, staff trained in first aid, and routine safety drills. In emergencies guardians are contacted immediately.",tags:["safety","emergency"],last_updated:nowISO()},
-  {id:"kb-007",question:"daily routine schedule nap outdoor play",answer:"A typical day includes arrival, circle time, learning centers, snack, outdoor play, lunch, nap/quiet time, and afternoon activities.",tags:["routine","schedule"],last_updated:nowISO()},
-  {id:"kb-008",question:"teacher qualifications staff trained cpd",answer:"Our teachers hold early childhood qualifications and receive ongoing professional development, including child safeguarding and first aid.",tags:["teachers","staff"],last_updated:nowISO()},
-  {id:"kb-009",question:"field trips permission transport permission slip",answer:"Field trips require parental consent and supervised transport. Trip details and permission forms are shared in advance.",tags:["trips","events"],last_updated:nowISO()},
-  {id:"kb-010",question:"uniform dress code clothing",answer:"Comfortable, washable clothing is recommended. An optional uniform is used for special events; consult the parent handbook.",tags:["uniform"],last_updated:nowISO()},
-  /* ... keep the rest of your KB entries as required ... */
-];
-
-/* Load/save KB & conversation (robust) */
-function loadKB(){ try{ const raw=localStorage.getItem(STORAGE.KB); if(raw){ const p=JSON.parse(raw); if(Array.isArray(p)) return p; } }catch(e){} localStorage.setItem(STORAGE.KB, JSON.stringify(DEFAULT_KB)); return DEFAULT_KB.slice(); }
-function saveKB(kb){ localStorage.setItem(STORAGE.KB, JSON.stringify(kb)); }
-function loadConv(){ try{ return JSON.parse(localStorage.getItem(STORAGE.CONV) || '[]'); }catch(e){return [];} }
-function saveConv(conv){ localStorage.setItem(STORAGE.CONV, JSON.stringify(conv)); }
-
-/* App state */
-let KB = loadKB();
-let CONV = loadConv();
+/* === DOM refs === */
 const chatScroll = document.getElementById('chatScroll');
 const textInput = document.getElementById('textInput');
 const sendBtn = document.getElementById('sendBtn');
-const chipsContainer = document.getElementById('chipsContainer');
 const fileInput = document.getElementById('fileInput');
 const attachBtn = document.getElementById('attachBtn');
 const previewImg = document.getElementById('previewImg');
-const kbCountEl = document.getElementById('kbCount');
-const suggestToggleBtn = document.getElementById('suggestToggleBtn');
-const chipsContainerEl = document.getElementById('chipsContainer');
-let suggestionsVisible = true;
+const exportBtn = document.getElementById('exportBtn');
+const resetBtn = document.getElementById('resetBtn');
 
-/* Suggestion chips */
-const SUGGESTIONS = ["Admissions","School hours","Fees","Meals","Safety","Activities","Tell me a joke","Fun fact","I am bored","Homework help"];
-function renderChips(){
-  chipsContainerEl.innerHTML = '';
-  if(!suggestionsVisible) return;
-  SUGGESTIONS.forEach(s=>{
-    const el = document.createElement('div');
-    el.className = 'chip';
-    el.innerText = s;
-    el.tabIndex = 0;
-    el.onclick = ()=>{ textInput.value = s; sendFromInput(); };
-    chipsContainerEl.appendChild(el);
-  });
+/* === State === */
+let CONV = loadConv(); // conversation array
+let SESSION = loadSession(); // { lastTopic, games: {...} }
+
+/* === KB (110 entries, sequential ids) === */
+const KB = [
+  {id:"kb-001",question:"hello",answer:"Hello 👋! Nice to see you — how can I help today?"},
+  {id:"kb-002",question:"hi",answer:"Hi there! 😊 What would you like to chat about?"},
+  {id:"kb-003",question:"good morning",answer:"Good morning! ☀️ Hope you have a lovely day."},
+  {id:"kb-004",question:"good afternoon",answer:"Good afternoon! 🌤️ How's your day going so far?"},
+  {id:"kb-005",question:"good evening",answer:"Good evening 🌙. Time to relax and unwind."},
+  {id:"kb-006",question:"how are you",answer:"I’m doing well, thanks! Ready to help — how are you?"},
+  {id:"kb-007",question:"what's your name",answer:"I’m MEC AI — your friendly daycare & learning assistant 🤖"},
+  {id:"kb-008",question:"thank you",answer:"You’re very welcome! Always happy to help 🙌"},
+  {id:"kb-009",question:"you're welcome",answer:"Anytime! 😊"},
+  {id:"kb-010",question:"bye",answer:"Goodbye! 👋 Come back anytime."},
+  {id:"kb-011",question:"see you",answer:"See you soon! 👋"},
+  {id:"kb-012",question:"talk later",answer:"Sure — I’ll be here when you want to chat again."},
+  {id:"kb-013",question:"thanks",answer:"You're welcome — glad I could help!"},
+  {id:"kb-014",question:"ok",answer:"Okay 👍 Let me know if you need anything else."},
+  {id:"kb-015",question:"good job",answer:"Great job! Keep up the excellent work 👏"},
+  {id:"kb-016",question:"congratulations",answer:"Congratulations! 🎉 You deserve to celebrate."},
+  {id:"kb-017",question:"well done",answer:"Well done! Be proud of your effort."},
+  {id:"kb-018",question:"i like you",answer:"That’s sweet! I’m here to help and be a friendly companion 😊"},
+  {id:"kb-019",question:"be my friend",answer:"I’d be happy to chat and be a friendly assistant!"},
+  {id:"kb-020",question:"you are funny",answer:"Thanks — I like to keep things light and fun 😄"},
+  {id:"kb-021",question:"happy",answer:"That’s wonderful! 😄 Enjoy the feeling and share the joy."},
+  {id:"kb-022",question:"sad",answer:"I’m sorry you feel sad. Want a joke or a comforting proverb?"},
+  {id:"kb-023",question:"tired",answer:"Rest is important — a short break or nap can help 💤."},
+  {id:"kb-024",question:"bored",answer:"I can tell a riddle or fun fact — which would you like?"},
+  {id:"kb-025",question:"hungry",answer:"How about a healthy snack? Fruit or a sandwich usually helps 🍎."},
+  {id:"kb-026",question:"angry",answer:"Take deep breaths and try to explain what made you angry — talking helps."},
+  {id:"kb-027",question:"i'm worried",answer:"It helps to share what's worrying you — I'm here to listen."},
+  {id:"kb-028",question:"i'm excited",answer:"That’s great! Use that energy for something fun or creative 🎉."},
+  {id:"kb-029",question:"confused",answer:"Tell me what part is confusing and I’ll explain it step by step."},
+  {id:"kb-030",question:"i'm proud",answer:"You should be proud — celebrate your progress! 🎊"},
+  {id:"kb-031",question:"tell me a joke",answer:"Why did the computer get cold? It left its Windows open! 😂"},
+  {id:"kb-032",question:"tell me a riddle",answer:"Riddle: I have keys but no locks. What am I? — A piano 🎹"},
+  {id:"kb-033",question:"riddle",answer:"Riddle: What has a face and two hands but no arms or legs? — A clock ⏰"},
+  {id:"kb-034",question:"joke",answer:"Joke: What do you call an old computer? A 'byte' retired! 😄"},
+  {id:"kb-035",question:"say a proverb",answer:"Proverb: 'If you want to go fast, go alone. If you want to go far, go together.'"},
+  {id:"kb-036",question:"poem",answer:"Short poem: 'Small steps each day, light the path and show the way.'"},
+  {id:"kb-037",question:"story",answer:"I can tell a short story — would you like it funny, adventurous, or inspiring?"},
+  {id:"kb-038",question:"play a game",answer:"Try: 'play number game' or 'play riddle game' — which do you choose?"},
+  {id:"kb-039",question:"word scramble",answer:"Word scramble: I can give you a scrambled word to solve — ask me to start!"},
+  {id:"kb-040",question:"guessing game",answer:"Try 'play number game' and I'll pick a number to guess between 1 and 20."},
+  {id:"kb-041",question:"html",answer:"HTML is the skeleton of a webpage — it structures the content 📄."},
+  {id:"kb-042",question:"what is html",answer:"HTML (HyperText Markup Language) structures content on the web."},
+  {id:"kb-043",question:"css",answer:"CSS styles the webpage — think of it as clothing and colors for content 🎨."},
+  {id:"kb-044",question:"what is css",answer:"CSS (Cascading Style Sheets) controls how elements look on a page."},
+  {id:"kb-045",question:"javascript",answer:"JavaScript makes webpages interactive and dynamic 🚀."},
+  {id:"kb-046",question:"what is javascript",answer:"JavaScript is a programming language that adds behavior to websites."},
+  {id:"kb-047",question:"computer",answer:"A computer is a machine for learning, creating and solving problems 💻."},
+  {id:"kb-048",question:"internet",answer:"The internet connects people and information across the world 🌍."},
+  {id:"kb-049",question:"binary",answer:"Binary uses 0s and 1s; it’s the language computers understand."},
+  {id:"kb-050",question:"software",answer:"Software are programs that tell a computer how to do tasks."},
+  {id:"kb-051",question:"math help",answer:"Tell me the math question and I’ll help step by step — we can solve it together."},
+  {id:"kb-052",question:"science fact",answer:"Fun fact: Water expands when it freezes — that’s why ice floats! ❄️"},
+  {id:"kb-053",question:"homework",answer:"Type 'homework' followed by your question and I'll guide you through it."},
+  {id:"kb-054",question:"how do i study",answer:"Use short focused sessions, test yourself, and review regularly."},
+  {id:"kb-055",question:"explain",answer:"Tell me which topic you'd like explained and I’ll break it down simply."},
+  {id:"kb-056",question:"step by step",answer:"I can give step-by-step help — start by telling me the problem."},
+  {id:"kb-057",question:"solve",answer:"Type 'solve 12+5' or 'solve 12 * 3' and I'll show the steps."},
+  {id:"kb-058",question:"how to solve",answer:"I can show worked examples — send a question to begin."},
+  {id:"kb-059",question:"explain binary",answer:"Binary is base-2: 0 and 1. For example, decimal 2 is 10 in binary."},
+  {id:"kb-060",question:"who invented computer",answer:"Many contributed; Charles Babbage is often called the father of computing."},
+  {id:"kb-061",question:"discipline",answer:"Discipline builds good habits and shows respect to others."},
+  {id:"kb-062",question:"friendship",answer:"Friendship is caring, sharing, and supporting one another 🤝."},
+  {id:"kb-063",question:"teamwork",answer:"Teamwork helps everyone achieve more together."},
+  {id:"kb-064",question:"honesty",answer:"Honesty builds trust — tell the truth kindly."},
+  {id:"kb-065",question:"kindness",answer:"Kindness is small actions that make big differences 💖."},
+  {id:"kb-066",question:"ghana",answer:"Ghana is a West African country 🇬🇭 known for culture, cocoa, and music."},
+  {id:"kb-067",question:"capital of ghana",answer:"Accra is the capital city of Ghana — lively and coastal 🏙️."},
+  {id:"kb-068",question:"kwame nkrumah",answer:"Kwame Nkrumah was Ghana’s first president and a leader of independence."},
+  {id:"kb-069",question:"ghana independence",answer:"Ghana gained independence on March 6, 1957 — a historic day."},
+  {id:"kb-070",question:"good luck",answer:"Good luck! 🍀 Believe in yourself and try your best."},
+  {id:"kb-071",question:"encouragement",answer:"Keep going—small steps every day make big changes."},
+  {id:"kb-072",question:"motivation",answer:"Start with a tiny goal and build from there—progress matters."},
+  {id:"kb-073",question:"focus",answer:"Minimize distractions, set a timer, and work in short bursts."},
+  {id:"kb-074",question:"study tips",answer:"Use active recall: test yourself instead of rereading notes."},
+  {id:"kb-075",question:"sleep tips",answer:"Regular sleep routine and no screens before bed help a lot."},
+  {id:"kb-076",question:"healthy eating",answer:"Eat vegetables, fruits, proteins, and drink water to feel good."},
+  {id:"kb-077",question:"exercise",answer:"Short daily movement improves mood and thinking — try 10 minutes."},
+  {id:"kb-078",question:"memory",answer:"Spaced repetition (reviewing over time) helps memory best."},
+  {id:"kb-079",question:"reading tip",answer:"Summarize what you read in your own words to remember it better."},
+  {id:"kb-080",question:"celebrate",answer:"Celebrate small wins — they add up to big progress 🎉"},
+  {id:"kb-081",question:"earth",answer:"Earth is our home planet — the third from the sun with lots of life 🌍."},
+  {id:"kb-082",question:"sun",answer:"The sun is a star that gives Earth light and warmth ☀️."},
+  {id:"kb-083",question:"water",answer:"Water covers about 71% of Earth’s surface and is essential for life."},
+  {id:"kb-084",question:"plants",answer:"Plants convert sunlight into food using photosynthesis 🌱."},
+  {id:"kb-085",question:"first aid",answer:"For serious injury call for help. For small cuts, clean and cover them."},
+  {id:"kb-086",question:"mental health",answer:"Talk to someone you trust and seek help if worries get big — it's okay to ask."},
+  {id:"kb-087",question:"who are you",answer:"I’m MEC AI — built to help students and teachers with learning and fun."},
+  {id:"kb-088",question:"what can you do",answer:"I can answer questions, help with homework, play games, draw ASCII art and more."},
+  {id:"kb-089",question:"play",answer:"Try commands like 'play number game', 'play riddle game' or 'play word scramble'."},
+  {id:"kb-090",question:"help",answer:"Type 'homework' or 'solve' or 'explain topic' and I will help step-by-step."},
+  {id:"kb-091",question:"thanks a lot",answer:"You're welcome — happy to help anytime!"},
+  {id:"kb-092",question:"nice",answer:"Thanks! I'm glad you think so."},
+  {id:"kb-093",question:"tell me",answer:"Tell me what you'd like—facts, jokes, or homework help."},
+  {id:"kb-094",question:"repeat",answer:"I can repeat or summarize a topic — tell me which one."},
+  {id:"kb-095",question:"start over",answer:"You can reset the chat with the Reset Chat button."},
+  {id:"kb-096",question:"export",answer:"Use Export Chat to download the conversation as JSON."},
+  {id:"kb-097",question:"image",answer:"You can upload an image with the paperclip button — I will reply!"},
+  {id:"kb-098",question:"ascii",answer:"Try 'draw cat' or 'draw tree' to get ASCII art."},
+  {id:"kb-099",question:"draw",answer:"Type 'draw <thing>' to see ASCII art — try 'draw rocket'."},
+  {id:"kb-100",question:"end",answer:"If you're done, say 'bye' — I'll be here when you return."},
+  {id:"kb-101",question:"motivation",answer:"Start with a small goal today — momentum builds motivation."},
+  {id:"kb-102",question:"curiosity",answer:"Curiosity leads to discovery — ask 'why' and explore answers."},
+  {id:"kb-103",question:"coding tip",answer:"Build small projects and practice regularly — that's how skills grow."},
+  {id:"kb-104",question:"reading",answer:"Read a little every day and summarize what you learned in your own words."},
+  {id:"kb-105",question:"time management",answer:"Prioritize tasks, break them into pieces, and use timers to stay on track."},
+  {id:"kb-106",question:"celebrate small wins",answer:"Celebrate small wins — each one matters 🎉."},
+  {id:"kb-107",question:"ask a question",answer:"Ask anything—I'll do my best to explain simply and kindly."},
+  {id:"kb-108",question:"encourage",answer:"You're doing great—keep trying and learning."},
+  {id:"kb-109",question:"help with reading",answer:"Try reading aloud and summarizing key points after each paragraph."},
+  {id:"kb-110",question:"good afternoon class",answer:"Good afternoon class — let’s learn something new today!"},
+    {id:"kb-111",question:"administrator",answer:"Currently the administrator for MDCEC is Auntie Elsie."},
+      {id:"kb-112",question:"stupid",answer:"I dont show interest in this. Let make our conversation respectful and friendly."},
+        {id:"kb-113",question:"good afternoon class",answer:"Yeah. I mean it."},
+          {id:"kb-114",question:"hacking",answer:"Haha. Glad to know. But I can only help with educational hacking only. Please be careful if you are interested in illegal hacking because it is a crime."},
+            {id:"kb-115",question:"teach me",answer:"Well you can reword your query so that I understand better."},
+              {id:"kb-116",question:"sex",answer:"Sorry, It violates my policy."},
+                {id:"kb-117",question:"who made you",answer:"My creator made me not to disclose his name. But he is a developer."},
+                  {id:"kb-118",question:"wesley",answer:"MEC student who is currently the school and Computing lab prefect"},
+                    {id:"kb-119",question:"tornam",answer:"As for Tornam he is the assistant school prefect. He is known to be the leader of the Cadet team. Apart from that he is firm and friendly."},
+                      {id:"kb-120",question:"okay",answer:"I hear. I am ready to answer your questions"},
+               { id:"kb-121",question:"school located",answer:"The school is located at Dansoman Akoko Photos down the hill."},
+               {id:"kb-122",question:"jhs 3",answer:"JHS 3 class consists of 8 students who are really good and nice"},
+                 {id:"kb-123",question:"assessment",answer:"To access the assessment sheet for teachers, go to the home page and scroll down to the footer at the bottom. At the footer click on 'assessment'. Or you can just swipe your finger on the screen from the left to right. "},
+                 {id:"kb-124",question:"love you",answer:"Aww. I do love you too. I hope to see you physically but ...not possible."},
+                 {id:"kb-125",question:"really",answer:"Yes of course"},
+                 {id:"kb-126",question:"picture",answer:"If you do have a picture then you can share."},
+                 {id:"kb-127",question:"nothing",answer:"Not bad. You can ask more questions and I am ready to answer."},
+                 {id:"kb-128",question:"you smart",answer:"Yes. I am equiped with many features but am still learning. I think you can help me learn new things."}
+];
+
+/* === Fallbacks & image replies === */
+const FALLBACKS = [
+  "Hmm 🤔 I’m not sure about that yet.",
+  "That’s interesting! Can you ask me about school or computing?",
+  "I’ll learn about that soon 😊.",
+  "Not sure, but let’s try a riddle or a fun fact!"
+];
+const IMAGE_REPLIES = [
+  "Nice picture 📷!",
+  "That is nice. Would you need any edit?",
+  "That looks cool 😎.",
+  "Thanks for sharing 🙌.",
+  "Lovely photo — thanks for showing me!"
+];
+
+/* === ASCII art library === */
+const ASCII = {
+  cat: " /\\_/\\\n( o.o )\n > ^ <",
+  tree: "   /\\\n  /  \\\n /____\\\n   ||\n   ||",
+  house: "   /\\\n  /  \\\n /____\\\n | _  |\n ||_| |\n |____|",
+  rocket: "   /\\\n  /  \\\n /____\\\n |    |\n/|----|\\\n  /\\\n  \\/"
+};
+
+/* === Render helpers & typewriter === */
+function messageTypingSpeed(text){
+  const len = (text||'').length;
+  if(len < 30) return 14;
+  if(len < 80) return 20;
+  if(len < 200) return 28;
+  return 34;
 }
 
-/* Message append + save — FIXED: skipSave prevents duplication */
-function appendMessage(role, text, meta={}, skipSave=false){
+function typeWriterEffect(text, element, i=0, speed=20){
+  if(i === 0) element.textContent = '';
+  if(i < text.length){
+    element.textContent += text.charAt(i);
+    const jitter = Math.round(Math.random()*8 - 4);
+    setTimeout(()=> typeWriterEffect(text, element, i+1, Math.max(6, speed + jitter)), speed + jitter);
+  }
+}
+
+/* create message node; animate true for new AI replies */
+function createMessageNode(msg, animate=false){
   const row = document.createElement('div');
-  row.className = 'msg-row ' + (role==='ai' ? 'ai' : 'user');
+  row.className = 'msg-row ' + (msg.role === 'ai' ? 'ai' : 'user');
 
   const avatar = document.createElement('div');
-  avatar.className = 'avatar ' + (role==='ai' ? 'ai' : 'user');
-  avatar.innerText = role === 'ai' ? 'M' : 'Y';
+  avatar.className = 'avatar ' + (msg.role === 'ai' ? 'ai' : 'user');
+  avatar.setAttribute('aria-hidden','true');
+  avatar.innerText = msg.role === 'ai' ? 'M' : 'Y';
 
-  const bubble = document.createElement('div');
-  bubble.className = 'bubble ' + (role==='ai' ? 'ai' : 'user');
-  bubble.setAttribute('role','article');
+  const bubble = document.createElement('article');
+  bubble.className = 'bubble ' + (msg.role === 'ai' ? 'ai' : 'user');
 
-  // Use textContent for safety
   const content = document.createElement('div');
-  content.className = 'bubble-content';
   content.style.whiteSpace = 'pre-wrap';
-  content.textContent = text || '';
 
+  if(msg.role === 'ai' && animate){
+    // typewriter with speed based on length
+    typeWriterEffect(msg.text || '', content, 0, messageTypingSpeed(msg.text || ''));
+  } else {
+    content.textContent = msg.text || '';
+  }
   bubble.appendChild(content);
 
-  if(meta && meta.image){
+  if(msg.meta && msg.meta.image){
     const img = document.createElement('img');
-    img.src = meta.image;
-    img.className = 'img-preview';
-    img.alt = 'Uploaded image';
+    img.src = msg.meta.image;
+    img.alt = msg.meta.alt || 'Image';
+    img.className = 'msg-img';
     bubble.appendChild(img);
   }
 
   const time = document.createElement('div');
   time.className = 'time';
-  time.innerText = new Date().toLocaleTimeString();
+  try{ time.innerText = new Date(msg.ts || nowISO()).toLocaleTimeString(); } catch(e){ time.innerText = ''; }
   bubble.appendChild(time);
 
-  if(role === 'ai'){
-    row.appendChild(avatar);
-    row.appendChild(bubble);
-  } else {
-    row.appendChild(bubble);
-    row.appendChild(avatar);
-  }
+  if(msg.role === 'ai'){ row.appendChild(avatar); row.appendChild(bubble); }
+  else { row.appendChild(bubble); row.appendChild(avatar); }
 
-  chatScroll.appendChild(row);
+  return row;
+}
+
+function appendMessage(role, text, meta = {}, save=true, animate=false){
+  const msg = { id: uid('m'), role, text: text || '', meta: meta || {}, ts: nowISO() };
+  const node = createMessageNode(msg, animate);
+  chatScroll.appendChild(node);
   chatScroll.scrollTop = chatScroll.scrollHeight;
-
-  // Only save new messages (not when rendering saved conversation)
-  if(!skipSave){
-    CONV.push({id: uid('m'), role, text: stripHtml(text), meta, ts: nowISO()});
+  if(save){
+    CONV.push(msg);
     saveConv(CONV);
   }
 }
 
-/* Clear & export */
-document.getElementById('resetBtn').addEventListener('click', ()=>{
-  if(!confirm('Clear the conversation?')) return;
-  CONV = [];
-  saveConv(CONV);
-  chatScroll.innerHTML = '';
-  pushWelcome();
-});
-document.getElementById('exportBtn').addEventListener('click', ()=>{
-  const dataStr = JSON.stringify(CONV, null, 2);
-  const blob = new Blob([dataStr], {type:'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `mecai-conversation-${new Date().toISOString().slice(0,10)}.json`; a.click();
-});
-
-/* Admin modal interactions (kept) */
-const adminBtn = document.getElementById('adminBtn');
-const adminModal = document.getElementById('adminModal');
-const kbList = document.getElementById('kbList');
-const kbSaveBtn = document.getElementById('kbSave');
-const kbClearBtn = document.getElementById('kbClear');
-const kbExportBtn = document.getElementById('kbExport');
-const kbImportBtn = document.getElementById('kbImport');
-const kbResetBtn = document.getElementById('kbReset');
-const closeAdminBtn = document.getElementById('closeAdmin');
-
-adminBtn.addEventListener('click', openAdminPrompt);
-document.querySelector('header').addEventListener('dblclick', openAdminPrompt);
-
-function openAdminPrompt(){
-  const pwd = prompt('Enter admin password (demo):');
-  if(pwd !== 'admin123'){ alert('Wrong password'); return; }
-  adminModal.style.display = 'block';
-  renderKBList();
-}
-closeAdminBtn.addEventListener('click', ()=>{ adminModal.style.display = 'none'; });
-
-function renderKBList(){
-  kbList.innerHTML = '';
-  KB.forEach(e=>{
-    const item = document.createElement('div');
-    item.className = 'kb-item';
-    item.innerHTML = `<strong>${escapeHtml(e.question)}</strong>
-      <div style="font-size:0.9rem;margin-top:6px">${escapeHtml(e.answer).slice(0,200)}${e.answer.length>200?'…':''}</div>
-      <div style="display:flex;gap:6px;margin-top:6px">
-        <button class="btn" data-edit="${e.id}">Edit</button>
-        <button class="btn ghost" data-del="${e.id}">Delete</button>
-      </div>
-      <div class="muted" style="margin-top:6px">id: ${e.id} • ${e.last_updated}</div>`;
-    kbList.appendChild(item);
-  });
-  bindKBControls();
-}
-function bindKBControls(){
-  kbList.querySelectorAll('[data-edit]').forEach(b=>{
-    b.onclick = (ev)=>{
-      const id = ev.currentTarget.getAttribute('data-edit');
-      const entry = KB.find(x=>x.id===id);
-      if(entry){
-        document.getElementById('kbId').value = entry.id;
-        document.getElementById('kbQ').value = entry.question;
-        document.getElementById('kbA').value = entry.answer;
-        document.getElementById('kbTags').value = (entry.tags||[]).join(', ');
-      }
-    };
-  });
-  kbList.querySelectorAll('[data-del]').forEach(b=>{
-    b.onclick = (ev)=>{
-      const id = ev.currentTarget.getAttribute('data-del');
-      if(!confirm('Delete ' + id + '?')) return;
-      KB = KB.filter(x=>x.id !== id);
-      saveKB(KB);
-      renderKBList();
-      renderKBCount();
-    };
-  });
-}
-kbSaveBtn.addEventListener('click', ()=>{
-  const id = (document.getElementById('kbId').value || '').trim() || uid('kb');
-  const q = (document.getElementById('kbQ').value || '').trim();
-  const a = (document.getElementById('kbA').value || '').trim();
-  const tags = (document.getElementById('kbTags').value || '').split(',').map(s=>s.trim()).filter(Boolean);
-  if(!q || !a){ alert('Provide question keywords and answer'); return; }
-  const entry = { id, question: q, answer: a, tags, last_updated: nowISO() };
-  const idx = KB.findIndex(x=>x.id === id);
-  if(idx >= 0) KB[idx] = entry; else KB.unshift(entry);
-  saveKB(KB);
-  renderKBList();
-  clearKBForm();
-  renderKBCount();
-  alert('Saved KB entry.');
-});
-kbClearBtn.addEventListener('click', clearKBForm);
-function clearKBForm(){ document.getElementById('kbId').value = ''; document.getElementById('kbQ').value = ''; document.getElementById('kbA').value = ''; document.getElementById('kbTags').value = ''; }
-kbExportBtn.addEventListener('click', ()=>{
-  const blob = new Blob([JSON.stringify(KB, null, 2)], {type:'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `mec_kb-${new Date().toISOString().slice(0,10)}.json`; a.click();
-});
-kbImportBtn.addEventListener('click', ()=>{
-  const raw = prompt('Paste KB JSON (array of entries or {entries:[]})');
-  if(!raw) return;
+/* === Storage helpers === */
+function loadConv(){
   try{
+    const raw = localStorage.getItem(STORAGE.CONV);
+    if(!raw) return [];
     const parsed = JSON.parse(raw);
-    if(Array.isArray(parsed)) KB = parsed;
-    else if(parsed && Array.isArray(parsed.entries)) KB = parsed.entries;
-    else throw new Error('Invalid format');
-    saveKB(KB);
-    renderKBList();
-    renderKBCount();
-    alert('Imported KB (' + KB.length + ' entries).');
-  }catch(e){ alert('Failed to import: ' + e.message); }
-});
-kbResetBtn.addEventListener('click', ()=>{
-  if(!confirm('Reset KB to default?')) return;
-  KB = DEFAULT_KB.slice();
-  saveKB(KB);
-  renderKBList();
-  renderKBCount();
-});
-
-/* Matching logic (word recognition + token overlap + substring boost) */
-function scoreEntry(query, entry){
-  const qNorm = normalize(query);
-  const qTokens = tokens(qNorm);
-  const text = normalize(entry.question + ' ' + (entry.tags || []).join(' '));
-  let score = 0;
-  if(text.includes(qNorm) && qNorm.length > 2) score += 0.5;
-  let overlap = 0;
-  qTokens.forEach(t => { if(text.split(' ').includes(t)) overlap++; });
-  const tokenScore = qTokens.length ? (overlap / qTokens.length) * 0.6 : 0;
-  score += tokenScore;
-  return Math.min(1, score);
+    return Array.isArray(parsed) ? parsed : [];
+  }catch(e){ console.warn('loadConv error', e); return []; }
 }
-function findBestKBMatch(query){
-  let best = {score: 0, entry: null};
-  KB.forEach(e=>{
-    const s = scoreEntry(query, e);
-    if(s > best.score){ best = {score: s, entry: e}; }
-  });
+function saveConv(conv){
+  try{ localStorage.setItem(STORAGE.CONV, JSON.stringify(conv)); } catch(e){ console.warn('saveConv error', e); }
+}
+function loadSession(){
+  try{
+    const raw = localStorage.getItem(STORAGE.SESSION);
+    if(!raw) return { lastTopic: null, games: {} };
+    return JSON.parse(raw) || { lastTopic: null, games: {} };
+  }catch(e){ return { lastTopic:null, games:{} }; }
+}
+function saveSession(){
+  try{ localStorage.setItem(STORAGE.SESSION, JSON.stringify(SESSION)); } catch(e){ console.warn('saveSession error', e); }
+}
+
+/* === KB lookup: improved substring + prefix stripping + longest-match === */
+function findKBEntryForQuery(text){
+  if(!text) return null;
+  let q = normalize(text);
+  if(!q) return null;
+
+  // remove prefixes like "what is"
+  q = q.replace(/^(what is|who is|tell me about|explain|define|what's|what are|what's the)\s+/i, '').trim();
+  if(!q) return null;
+
+  let best = null;
+  for(const entry of KB){
+    const key = normalize(entry.question);
+    if(!key) continue;
+    if(key.length < 3) continue; // 🚫 skip too short keys
+
+    // match either whole word or contained phrase
+    const regex = new RegExp("\\b" + key.replace(/[.*+?^${}()|[\]\\]/g,"\\$&") + "\\b");
+    if(regex.test(q) || q.includes(key)){
+      if(!best) best = entry;
+      else if(key.length > normalize(best.question).length) best = entry;
+    }
+  }
   return best;
 }
 
-/* Impressions & social handling */
-const IMPRESSION_RESPONSES = {
-  wow: "Wow — glad you liked that! ✨",
-  amazing: "That's amazing! So happy you enjoyed it.",
-  cool: "Cool! 😊",
-  nice: "Nice! Thanks for saying that.",
-  awesome: "Awesome! 🙌",
-  lol: "😂",
-  haha: "😄",
-  nothing:"Ok. I am sure you could try asking more questions.",
-  thanks: "You're welcome — happy to help!",
-  ok:"Yeah",
-  thankyou: "You're welcome!",
-  yes:"That is nice.",
-  ty: "You're welcome!"
-};
-function respondToImpression(text){
+
+
+/* === Command detection (do NOT treat 'what is' as math) === */
+function isCommand(text){
   if(!text) return null;
-  const w = tokens(text);
-  for(const t of w){
-    if(IMPRESSION_RESPONSES[t]) return IMPRESSION_RESPONSES[t];
-  }
+  const t = normalize(text);
+  // math/sovle: explicit 'solve' or expressions with numbers/operators
+  if(t.startsWith('solve ') || t.startsWith('calculate ') || /-?\d+\s*[+\-*/x×÷]\s*-?\d+/.test(t)) return 'solve';
+  if(t.startsWith('play number') || t === 'play number game') return 'play-number';
+  if(t.startsWith('play riddle') || t === 'play riddle game') return 'play-riddle';
+  if(t.startsWith('draw ') || t.startsWith('ascii ')) return 'draw';
+  if(t.startsWith('homework') || t.startsWith('hw ') || t.startsWith('help with')) return 'homework';
+  if(t.startsWith('guess ') || (/^\s*-?\d+\s*$/.test(t) && SESSION.games && SESSION.games.number && SESSION.games.number.active)) return 'guess';
+  if(t === 'give up') return 'give-up';
   return null;
 }
 
-/* Audience detection */
-function detectAudience(q){
-  const low = q.toLowerCase();
-  if(low.includes('parent') || low.includes('mum') || low.includes('mom') || low.includes('dad')) return 'parent';
-  if(low.includes('teacher') || low.includes('staff')) return 'teacher';
-  if(low.includes('student') || low.includes('kid') || low.includes('child')) return 'student';
-  return null;
+/* === Games & features === */
+/* Number guessing game */
+function startNumberGame(min=1,max=20){
+  const secret = Math.floor(Math.random()*(max-min+1))+min;
+  SESSION.games.number = { active:true, secret, min, max, attempts:0 };
+  saveSession();
+  appendMessage('ai', `I picked a number between ${min} and ${max}. Try to guess it! (type a number or 'guess X')`, {}, true, true);
 }
-
-/* Subject helpers */
-function trySubjectHelper(text){
-  const q = normalize(text);
-  const m = text.match(/what is ([0-9\.\s()+\-*/%^]+)/i) || text.match(/^([0-9\.\s()+\-*/%^]+)$/);
-  if(m && m[1]){ const r = safeEval(m[1]); if(r!==null) return `Answer: ${r}`; }
-  if(q.includes('fraction') || q.includes('add fractions')) return "To add fractions: make denominators the same, add numerators, then simplify. Example: 1/3 + 1/3 = 2/3.";
-  if(q.includes('photosynthesis')) return getKBAnswerByKey('photosynthesis') || "Photosynthesis is how plants use sunlight to make food.";
-  if(q.includes('what is a noun') || q.includes('noun')) return getKBAnswerByKey('what is a noun') || "A noun names a person, place, thing, or idea.";
-  if(q.includes('what is a verb') || q.includes('verb')) return getKBAnswerByKey('what is a verb') || "A verb is a word that shows action or state.";
-  return null;
-}
-
-/* KB quick lookup by keyword */
-function getKBAnswerByKey(key){
-  key = normalize(key);
-  const match = KB.find(e => normalize(e.question).includes(key) || (e.tags||[]).some(t=>normalize(t)===key));
-  return match ? match.answer : null;
-}
-
-/* High-level message handler (centralized) */
-function handleUserSend(rawText, imageData=null){
-  const text = (rawText || '').toString().trim();
-  if(!text && !imageData) return;
-  suggestionsVisible = false; renderChips();
-
-  // Do not clear preview here before we append user's message - appendMessage will manage saving and preview reset happens after sending below.
-  appendMessage('user', text || (imageData ? '[image]' : ''), imageData ? {image: imageData} : {});
-
-  // If image provided, quick response then return
-  if(imageData){
-    // Reset preview & file input now that we've added the user's message
-    previewImg.style.display = 'none';
-    previewImg.src = '';
-    fileInput.value = '';
-
-    streamReply("Thanks — I see the image. I can help you add a note or suggest an activity related to it. Would you like that?");
-    return;
-  }
-
-  // impressions
-  const imp = respondToImpression(text);
-  if(imp) return streamReply(imp);
-
-  // code detection
-  if(looksLikeCode(text)){
-    return streamReply("It looks like you shared code — I can help check for common errors, explain parts, or suggest improvements. Paste the code and ask 'What's wrong with this?'");
-  }
-
-  // greetings and casual chat
-  const qnorm = normalize(text);
-  const greetings = ["hi","hello","hey","good morning","good afternoon","good evening","yo","sup"];
-  if(greetings.includes(qnorm)) return streamReply("Hello! 👋 How can I help you today — school info, homework, activities, or something fun?");
-  if(qnorm.includes('good night') || qnorm.includes('goodnight')) return streamReply("Good night! Sleep well 🌙");
-  if(qnorm.includes('i am bored') || qnorm.includes('bored')) return streamReply("Let's pick an activity — drawing, a short quiz, or a fun fact. Which do you prefer?");
-  if(qnorm.includes('i am sad') || qnorm.includes('sad')) return streamReply("I'm sorry you're feeling sad 💙 — do you want a joke, story, or calming activity?");
-  if(qnorm.includes('thanks') || qnorm.includes('thank')) return streamReply("You're welcome — glad to help!");
-
-  // math eval quick inline
-  const mathMatch = text.match(/what is ([0-9\.\s()+\-*/%^]+)/i) || text.match(/^([0-9\.\s()+\-*/%^]+)$/);
-  if(mathMatch && mathMatch[1]){
-    const val = safeEval(mathMatch[1]);
-    if(val !== null) return streamReply(`Answer: ${val}`);
-  }
-
-  // subject helper
-  const helper = trySubjectHelper(text);
-  if(helper) return streamReply(helper);
-
-  // KB matching with scoring
-  const best = findBestKBMatch(text);
-  if(best.entry && best.score >= 0.25){ // lowered threshold slightly for better recall
-    const audience = detectAudience(text);
-    const prefix = audience === 'parent' ? "Parent info: " : audience === 'teacher' ? "For teachers: " : "";
-    return streamReply(`${prefix}${best.entry.answer}\n\nSource: ${best.entry.id}`);
-  }
-
-  // word-level scanning: find KB entries that contain any token from user message
-  const words = tokens(text);
-  const found = [];
-  KB.forEach(e=>{
-    const eTokens = tokens(e.question + ' ' + (e.tags||[]).join(' '));
-    for(const w of words){
-      if(eTokens.includes(w) && !found.includes(e)) found.push(e);
-    }
-  });
-  if(found.length){
-    const summary = found.slice(0,4).map(r=>`• ${r.answer}`).join('\n\n');
-    return streamReply(`I found some related info:\n\n${summary}\n\nFor full details visit: https://mdcec.vercel.app`);
-  }
-
-  // resource redirects
-  if(qnorm.includes('math')) return streamReply('Math resources: https://learn.khanacademy.org/khan-academy-kids/');
-  if(qnorm.includes('science')) return streamReply('Science resources: https://kids.nationalgeographic.com');
-  if(qnorm.includes('read') || qnorm.includes('story')) return streamReply('Reading resources: https://www.storylineonline.net');
-
-  // fallback
-  streamReply(`I’m not sure about that exact question. Try: 'School hours', 'How to enroll', or ask a math question like 'what is 12 * 8'. Also check the MDCEC web app: https://mdcec.vercel.app`);
-}
-
-/* Streaming reply (character reveal) — improved: creates placeholder, saves reliably */
-function streamReply(fullText){
-  // placeholder bubble appended immediately and saved so reload won't lose it
-  const placeholderId = uid('ai');
-  const row = document.createElement('div');
-  row.className = 'msg-row ai';
-  const avatar = document.createElement('div'); avatar.className = 'avatar ai'; avatar.innerText = 'M';
-  const bubble = document.createElement('div'); bubble.className = 'bubble ai';
-  const content = document.createElement('div'); content.className = 'bubble-content'; content.style.whiteSpace = 'pre-wrap';
-  bubble.appendChild(content);
-  const time = document.createElement('div'); time.className = 'time';
-  bubble.appendChild(time);
-  row.appendChild(avatar); row.appendChild(bubble);
-  chatScroll.appendChild(row);
-  chatScroll.scrollTop = chatScroll.scrollHeight;
-
-  // Save a placeholder entry now to avoid loss if page unloads mid-stream
-  CONV.push({id: placeholderId, role:'ai', text: '', meta:{streaming:true}, ts: nowISO()});
-  saveConv(CONV);
-
-  let i = 0;
-  const speed = 6 + Math.random()*8;
-  const interval = setInterval(()=>{
-    i++;
-    content.textContent = fullText.slice(0,i);
-    chatScroll.scrollTop = chatScroll.scrollHeight;
-    if(i >= fullText.length){
-      clearInterval(interval);
-      time.innerText = new Date().toLocaleTimeString();
-      // update the previously saved placeholder entry with real text
-      const idx = CONV.findIndex(m=>m.id === placeholderId);
-      if(idx >= 0){
-        CONV[idx].text = stripHtml(fullText);
-        delete CONV[idx].meta.streaming;
-        CONV[idx].ts = nowISO();
-        saveConv(CONV);
-      } else {
-        // fallback: push a new final entry
-        CONV.push({id: uid('m'), role:'ai', text: stripHtml(fullText), meta:{}, ts: nowISO()});
-        saveConv(CONV);
-      }
-    }
-  }, speed);
-}
-
-/* Image upload handling — FIXED: don't hide preview immediately, reset file input after send */
-attachBtn.addEventListener('click', ()=> fileInput.click());
-fileInput.addEventListener('change', (e)=>{
-  const file = e.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = (ev)=>{
-    const data = ev.target.result;
-    previewImg.src = data; previewImg.style.display = 'block';
-    // send immediately (image-only message)
-    handleUserSend('', data);
-    // fileInput is reset inside handleUserSend after appending message
-  };
-  reader.readAsDataURL(file);
-});
-
-/* Input handling and suggestion hide behavior */
-let typingTimer = null;
-textInput.addEventListener('input', ()=>{
-  if(textInput.value && suggestionsVisible){
-    suggestionsVisible = false;
-    renderChips();
-  }
-});
-sendBtn.addEventListener('click', ()=> sendFromInput());
-textInput.addEventListener('keydown', (e)=>{ if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendFromInput(); } });
-
-function sendFromInput(){
-  const text = textInput.value.trim();
-  textInput.value='';
-  let imgData = null;
-
-  if(previewImg.style.display !== "none" && previewImg.src){
-    imgData = previewImg.src;
-  }
-
-  if(!text && !imgData) return;
-
-  // If image present, prefer sending image as image-only message; else send text (+ image if both)
-  if(imgData && !text){
-    handleUserSend('', imgData);
-    return;
-  }
-
-  // send text (and possible preview image)
-  handleUserSend(text, imgData);
-}
-
-/* Suggest toggle button */
-suggestToggleBtn.addEventListener('click', ()=>{
-  suggestionsVisible = !suggestionsVisible;
-  renderChips();
-});
-
-/* Quick sidebar actions */
-document.getElementById('suggestHours').addEventListener('click', ()=> handleUserSend('What are your school hours?'));
-document.getElementById('suggestEnroll').addEventListener('click', ()=> handleUserSend('How do I enroll my child?'));
-document.getElementById('suggestFees').addEventListener('click', ()=> handleUserSend('What are the fees?'));
-document.getElementById('suggestMeals').addEventListener('click', ()=> handleUserSend('What is the meal policy?'));
-document.getElementById('suggestSafety').addEventListener('click', ()=> handleUserSend('What safety measures are in place?'));
-
-/* Export/import KB small buttons near composer */
-document.getElementById('exportKBBtn').addEventListener('click', ()=>{ const blob = new Blob([JSON.stringify(KB, null, 2)], {type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`mec_kb-${new Date().toISOString().slice(0,10)}.json`; a.click(); });
-document.getElementById('importKBBtn').addEventListener('click', ()=>{ const raw = prompt('Paste KB JSON (array or {entries:[]})'); if(!raw) return; try{ const parsed = JSON.parse(raw); if(Array.isArray(parsed)) KB = parsed; else if(parsed && Array.isArray(parsed.entries)) KB = parsed.entries; else throw new Error('Invalid'); saveKB(KB); alert('Imported KB'); renderKBCount(); }catch(e){ alert('Import failed: '+e.message); } });
-
-/* Load existing conversation and initial welcome (no duplication) */
-function renderSavedConv(){
-  chatScroll.innerHTML = '';
-  CONV = loadConv();
-  if(CONV && CONV.length){
-    CONV.forEach(m=> appendMessage(m.role, m.text, m.meta || {}, true));
+function handleNumberGuess(input){
+  const g = SESSION.games.number;
+  if(!g || !g.active){ appendMessage('ai', "No active number game. Type 'play number game' to start.", {}, true, true); return; }
+  const num = parseInt(input,10);
+  if(Number.isNaN(num)){ appendMessage('ai', "Please send a number (e.g., 7).", {}, true, true); return; }
+  g.attempts = (g.attempts||0) + 1;
+  saveSession();
+  if(num === g.secret){
+    appendMessage('ai', `🎉 Correct! The number was ${g.secret}. You guessed it in ${g.attempts} attempts. Want to play again? Type 'play number game'.`, {}, true, true);
+    SESSION.games.number.active = false; saveSession();
+  } else if(num < g.secret){
+    appendMessage('ai', 'Too low — try a higher number.', {}, true, true);
   } else {
-    pushWelcome();
+    appendMessage('ai', 'Too high — try a lower number.', {}, true, true);
+  }
+}
+
+/* Riddle game */
+const RIDDLES = [
+  {q:"I have keys but open no locks. What am I?", a:"A piano or a keyboard."},
+  {q:"What has hands but cannot clap?", a:"A clock."},
+  {q:"What gets wetter as it dries?", a:"A towel."}
+];
+function startRiddle(){
+  const r = pick(RIDDLES);
+  SESSION.games.riddle = { active:true, current:r };
+  saveSession();
+  appendMessage('ai', `Riddle: ${r.q} (Type your answer)`, {}, true, true);
+}
+function checkRiddleAnswer(ans){
+  const s = SESSION.games.riddle;
+  if(!s || !s.active){ appendMessage('ai', "No active riddle. Type 'play riddle game' to start.", {}, true, true); return; }
+  const correct = normalize(s.current.a);
+  if(normalize(ans).includes(correct) || correct.includes(normalize(ans))){
+    appendMessage('ai', `Correct! ✅ Answer: ${s.current.a}`, {}, true, true);
+    SESSION.games.riddle.active = false; saveSession();
+  } else {
+    appendMessage('ai', "Not quite — try again or type 'give up' to see the answer.", {}, true, true);
+  }
+}
+
+/* ASCII draw */
+function handleDraw(command){
+  const t = normalize(command).replace(':',' ');
+  const parts = t.split(/\s+/);
+  const target = parts[1] || parts[2] || '';
+  if(!target){ appendMessage('ai', "Tell me what to draw, e.g. 'draw cat' or 'draw tree'.", {}, true, true); return; }
+  const art = ASCII[target] || null;
+  if(art){ appendMessage('ai', art, {}, true, true); }
+  else { appendMessage('ai', `I don't have ASCII art for "${target}" yet. Try: cat, tree, house, rocket.`, {}, true, true); }
+}
+
+/* Simple math solver */
+function solveExpressionRaw(expr){
+  const s = expr.replace(/×/g,'*').replace(/x\b/gi,'*').replace(/÷/g,'/');
+  const m = s.match(/(-?\d+)\s*([+\-*/])\s*(-?\d+)/);
+  if(!m) return null;
+  const a = parseInt(m[1],10);
+  const op = m[2];
+  const b = parseInt(m[3],10);
+  let result, steps = [];
+  if(op === '+'){ result = a + b; steps.push(`${a} + ${b} = ${result} (added)`); }
+  else if(op === '-'){ result = a - b; steps.push(`${a} - ${b} = ${result} (subtracted)`); }
+  else if(op === '*'){ result = a * b; steps.push(`${a} × ${b} = ${result} (multiplied)`); }
+  else if(op === '/'){
+    if(b === 0){ steps.push('Division by zero is undefined.'); result = null; }
+    else { const q = Math.floor(a/b); const r = a % b; result = a / b; steps.push(`${a} ÷ ${b} = ${q} remainder ${r}.`); }
+  }
+  return {a,op,b,result,steps};
+}
+function handleSolve(command){
+  let expr = command;
+  const t = normalize(command);
+  if(t.startsWith('solve ')) expr = command.slice(6).trim();
+  else if(t.startsWith('calculate ')) expr = command.slice(10).trim();
+  else {
+    const found = expr.match(/-?\d+\s*[+\-*/x×÷]\s*-?\d+/);
+    if(found) expr = found[0];
+  }
+  const res = solveExpressionRaw(expr);
+  if(!res){ appendMessage('ai', "I couldn't parse that expression. Try 'solve 12 + 5' or 'solve 7*8'.", {}, true, true); return; }
+  appendMessage('ai', `Let's solve: ${res.a} ${res.op} ${res.b}\n\nStep-by-step:\n- ${res.steps.join('\n- ')}\n\nAnswer: ${res.result}`, {}, true, true);
+}
+
+/* Homework helper */
+function handleHomework(command){
+  const lower = normalize(command);
+  let question = command;
+  if(lower.startsWith('homework')) question = command.slice(8).trim();
+  else if(lower.startsWith('hw ')) question = command.slice(3).trim();
+  else if(lower.startsWith('help with')) question = command.slice(9).trim();
+
+  if(!question){ appendMessage('ai', "What homework question would you like help with? e.g. 'homework what is binary'", {}, true, true); return; }
+
+  if(/-?\d+\s*[+\-*/x×÷]\s*-?\d+/.test(question) || /\bsolve\b/i.test(question)){
+    appendMessage('ai', `Homework: I'll help solve "${question}" step-by-step.`, {}, true, true);
+    handleSolve(question);
+    appendMessage('ai', "Now try a similar one and tell me your answer — I'll check it.", {}, true, true);
+    return;
+  }
+  const kb = findKBEntryForQuery(question);
+  if(kb){
+    appendMessage('ai', `Homework help — ${kb.answer}\n\nDo you want an example or a step-by-step?`, {}, true, true);
+    return;
+  }
+  appendMessage('ai', `Homework helper — rephrasing: "${question}".\nExplanation: I'll explain simply and give an example. Tell me which part to start with.`, {}, true, true);
+}
+
+/* === Image handling === */
+attachBtn.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', (e) => {
+  const f = e.target.files && e.target.files[0];
+  if(!f) return;
+  if(!f.type.startsWith('image/')) { alert('Only image files are supported for preview.'); return; }
+  const reader = new FileReader();
+  reader.onload = ev => { previewImg.src = ev.target.result; previewImg.style.display = 'block'; };
+  reader.readAsDataURL(f);
+});
+
+/* === Main send handler === */
+function handleSend(){
+  const raw = textInput.value || '';
+  const text = raw.trim();
+  const hasPreview = previewImg && previewImg.style.display !== 'none' && previewImg.src;
+  if(!text && !hasPreview) return;
+
+  // user text
+  if(text) appendMessage('user', text, {}, true, false);
+
+  // image
+  let imageSent = false;
+  if(hasPreview){
+    const data = previewImg.src;
+    appendMessage('user', '[image]', { image: data, alt: 'User uploaded image' }, true, false);
+    imageSent = true;
+    // hide preview & clear file input
+    previewImg.src = '';
+    previewImg.style.display = 'none';
+    try{ fileInput.value = ''; } catch(e){}
+  }
+
+  // update session lastTopic if text matches KB
+  if(text){
+    const maybeTopic = findKBEntryForQuery(text);
+    if(maybeTopic){ SESSION.lastTopic = maybeTopic.question; saveSession(); }
+  }
+
+  textInput.value = '';
+  textInput.focus();
+
+  // respond after a short delay
+  setTimeout(() => {
+    if(text){
+      const cmd = isCommand(text);
+      if(cmd === 'play-number'){ startNumberGame(1,20); return; }
+      if(cmd === 'guess'){ const rest = text.replace(/guess\s+/i,'').trim(); handleNumberGuess(rest); return; }
+      if(cmd === 'play-riddle'){ startRiddle(); return; }
+      if(cmd === 'draw'){ handleDraw(text); return; }
+      if(cmd === 'solve'){ handleSolve(text); return; }
+      if(cmd === 'homework'){ handleHomework(text); return; }
+      if(cmd === 'give-up'){ if(SESSION.games && SESSION.games.riddle && SESSION.games.riddle.active){ appendMessage('ai', `Answer: ${SESSION.games.riddle.current.a}`, {}, true, true); SESSION.games.riddle.active=false; saveSession(); } return; }
+      if(SESSION.games && SESSION.games.riddle && SESSION.games.riddle.active){
+        checkRiddleAnswer(text); return;
+      }
+      if(SESSION.games && SESSION.games.number && SESSION.games.number.active && /^\s*-?\d+\s*$/.test(text)){
+        handleNumberGuess(text.trim()); return;
+      }
+      // KB match
+      const kb = findKBEntryForQuery(text);
+      if(kb){ appendMessage('ai', kb.answer + pick(["", " 😊", " — hope that helps!"]), {}, true, true); }
+      else { appendMessage('ai', pick(FALLBACKS), {}, true, true); }
+    } else {
+      // no text but image sent
+      if(imageSent){ appendMessage('ai', pick(IMAGE_REPLIES), {}, true, true); }
+    }
+    // If both text and image were present, also reply to image after short delay
+    if(imageSent && text){
+      setTimeout(()=> appendMessage('ai', pick(IMAGE_REPLIES), {}, true, true), 600);
+    }
+  }, 420);
+}
+
+/* === KB match function (already defined above but exported for reuse) === */
+/* (see findKBEntryForQuery) */
+
+/* === Export & Reset === */
+exportBtn.addEventListener('click', () => {
+  const blob = new Blob([JSON.stringify(CONV, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'mecai-conversation-' + new Date().toISOString().slice(0,10) + '.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+});
+
+resetBtn.addEventListener('click', () => {
+  if(!confirm('Clear conversation and reset session?')) return;
+  CONV = [];
+  SESSION = { lastTopic: null, games: {} };
+  saveConv(CONV);
+  saveSession();
+  chatScroll.innerHTML = '';
+  pushWelcome();
+});
+
+/* === Render stored conversation on load (no animation) === */
+function renderFromStorage(){
+  chatScroll.innerHTML = '';
+  if(CONV && CONV.length){
+    CONV.forEach(m => {
+      const node = createMessageNode(m, false);
+      chatScroll.appendChild(node);
+    });
+    chatScroll.scrollTop = chatScroll.scrollHeight;
   }
 }
 function pushWelcome(){
-  streamReply("Hello — I'm MEC AI 👋\nI can help with school info, homework basics, simple math, code-check tips, activities, and parenting/teacher resources. Try: 'School hours', 'How to enroll', 'What is 12 * 8?', or 'Tell me a joke'.");
+  if(SESSION && SESSION.lastTopic){
+    appendMessage('ai', `Welcome back! Last time we talked about "${SESSION.lastTopic}". Want to continue or try something new?`, {}, true, true);
+  } else {
+    appendMessage('ai', "Hello 👋 I'm MEC AI. I can help with schoolwork, play games, draw ASCII art, solve math step-by-step, and more. Try: 'play number game', 'draw cat', 'solve 12+5', or 'homework <your question>'.", {}, true, true);
+  }
 }
 
-/* Matching helpers */
-function renderKBCount(){ kbCountEl.innerText = KB.length; }
-renderChips(); renderKBCount(); renderSavedConv();
+/* === Keyboard & events === */
+sendBtn.addEventListener('click', handleSend);
+textInput.addEventListener('keydown', (e) => { if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); handleSend(); }});
 
-/* Keyboard shortcut to focus input */
-document.addEventListener('keydown', (e)=>{ if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){ e.preventDefault(); textInput.focus(); } });
+/* === Init === */
+renderFromStorage();
+if(!CONV || !CONV.length) pushWelcome();
 
-/* Utility: find best KB entry by token */
-function getKBByToken(token){
-  token = normalize(token);
-  return KB.find(e => normalize(e.question).includes(token) || (e.tags||[]).some(t=>normalize(t)===token));
-}
+/* === Expose small debug helpers === */
+window.MECAI = { CONV, SESSION, saveConv: () => saveConv(CONV), saveSession, findKBEntryForQuery };
+
+/* === End script === */
 </script>
 </body>
 </html>
