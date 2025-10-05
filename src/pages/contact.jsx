@@ -9,7 +9,7 @@ export default function Contact(){
         <Header />
         <br/>
         
-        <Breadcrumb title="CONTACT" />
+        <Breadcrumb title="CONTACT" image="https://lh3.googleusercontent.com/pw/AP1GczP0ONd1nsm_n8SHpnNuYhDDh2WPlsNGjD14GKp4CSMLb-dqgdkDQl7fiPJ1JzCueZQj9hFZbsV-4nqjuFWzp-dVJH1l9o0cJupTt3ra2tauzFNuQHI"/>
           <div className="map">
         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3971.0122995605693!2d-0.2688714250147729!3d5.56519339441531!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfdf982bdbbf89ed%3A0xa2821cf64b470603!2sMay&#39;s%20Educational%20Centre!5e0!3m2!1sen!2sgh!4v1715443769259!5m2!1sen!2sgh" height="500" style={{border:"0"}} allowFullScreen="" aria-hidden="false" tabIndex="0"></iframe>
     </div>
