@@ -9,7 +9,7 @@ export default function Register(){
         <>
         <Header />
         <br/>
-        <Breadcrumb title="Admissions" />
+        <Breadcrumb title="Admissions" image="https://lh3.googleusercontent.com/pw/AP1GczOYEvYhhpvraIavh8lX7YxDHglyIcyuCdk4KDwQAgajvdzHN4ybIQ4QwOoARYJBladAEGJH0hA1c2_ehJSLjBBKuKb_Oi9cVuNriihbZ8OmSIGlIro"/>
 
         <br/>
         <br/>
