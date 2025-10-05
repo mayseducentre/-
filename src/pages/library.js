@@ -8,7 +8,7 @@ export default function Library(){
     return(
         <>
         <Header />
-        <Breadcrumb title="MEC Library" image="../img/mays/farm.jpg"/>
+        <Breadcrumb title="MEC Library" image="./img/mays/farm.jpg"/>
         <br/>
         <br/>
         <div style={{width:"auto"}}>
