@@ -39,7 +39,7 @@ fetch(`${path}/blog`)
     return(
         <>
         <Header />
-        <Breadcrumb title="News and Updates" />
+        <Breadcrumb title="News and Updates" image="https://lh3.googleusercontent.com/pw/AP1GczPUCocKMxC4wGVcuARVjp01biMREjUpBLF8kb06utd3X07oBJV-Avdh3tiqrcCtff9ZoFv2FDL3Cntewt5Kq6NDxapUD8XKAf8RIR-9s2EwdWKfLaw"/>
       <br/>
 <br/>
 
