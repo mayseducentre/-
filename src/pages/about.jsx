@@ -10,7 +10,7 @@ export default function Aboutp(){
     return(
         <>
         <Header />
-        <Breadcrumb title="About MEC"/>
+        <Breadcrumb title="About MEC" image="https://lh3.googleusercontent.com/pw/AP1GczPApu1-BSP7uKEwljTQj6zuAlJD5swwUdsc_SX9r_q0-SDlFC3hoPOWdGX_EQZpDRjGdEVp-xszLdNBt1UlSIdCraWZmsWMym6GxdoOtG0q9LHD0gU"/>
          <section id="about" className="about">
       <div className="container" data-aos="fade-up">
 
