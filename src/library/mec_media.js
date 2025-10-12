@@ -90,7 +90,7 @@ const [loading, setLoading]=useState(false);
 <Header />
 
 <div id="bookmain">
-  <Breadcrumb title="Library - MEC Media"/>
+  <Breadcrumb title="Library - MEC Media" image="../img/lyi.png"/>
     <br/>
     <br/>
     <br/>
@@ -192,7 +192,7 @@ const [loading, setLoading]=useState(false);
      <img src={require("../img/mays/build.jpg")} style={{width:"100%"}}/>
      <img src={require("../img/mays/jhs1.jpg")} style={{width:"100%"}}/>
      <img src={require("../img/mays/m4.jpg")} style={{width:"100%"}}/>
-     <img src={require("../img/mays/agama.jpg")} style={{width:"100%"}}/>
+     <img src={require("../img/lyi.png")} style={{width:"100%"}}/>
      <img src={require("../img/mays/akz.jpg")} style={{width:"100%"}}/>
      <img src={require("../img/mays/davis.jpg")} style={{width:"100%"}}/>
      <img src={require("../img/ach.jpg")} style={{width:"100%"}} />
