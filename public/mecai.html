@@ -85,6 +85,8 @@ main{display:flex;flex:1;min-height:0}
 </div>
 
 <script>
+  
+document.addEventListener('contextmenu', event => event.preventDefault());
 /* === Utilities === */
 function uid(prefix='m'){ return prefix + '-' + Math.random().toString(36).slice(2,9); }
 function nowISO(){ return new Date().toISOString(); }
