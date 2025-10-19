@@ -17,7 +17,7 @@ import Skeleton from "react-loading-skeleton"
 import SecretIpPush from "../component/secret"
 import "react-loading-skeleton/dist/skeleton.css"
 import LongSwipeToAssess from "../component/shortcut";
-
+import MecAIBanner from "../component/mecaibanner";
 
 // function loadP(){
 //     setTimeout(()=>{
@@ -59,6 +59,7 @@ export default function Home(){
         
         <br/>
         <Banner />
+        <MecAIBanner />
         <br/>
         <br/>
         <About />
