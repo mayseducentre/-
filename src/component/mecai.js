@@ -191,7 +191,7 @@ export default function MecAiProGroq() {
   const [allowOnline, setAllowOnline] = useState(true);
 
   // User-provided Groq key (pre-filled with the key you gave)
-  const [groqKey, setGroqKey] = useState("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");
+  const [groqKey, setGroqKey] = useState(`process.env.REACT_APP_GROQ`);
 
   // simple session storage for games (number guessing, riddles)
   const [session, setSession] = useState(() => ({ games: {} }));
