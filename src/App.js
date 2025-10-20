@@ -1,7 +1,7 @@
 import { HashRouter, Route, Routes } from "react-router-dom";
 
 import Home from "./pages/home";
-import MecAiApp from "./component/mecai"
+import MecAiPro from "./component/mecai"
 import Error from "./pages/error";
 import Register from "./pages/register";
 import Contact from "./pages/contact";
@@ -102,7 +102,7 @@ function App() {
       <Route path="/assess" element={<Assessment />} />
       <Route path="/adms" element={<AssessmentA />} />
       <Route path="/admin/note" element={<LessonNoteList />} />
-  <Route path="/ai" element={<MecAiApp />} />
+  <Route path="/ai" element={<MecAiPro />} />
        <Route path="/digital_note" element={<LessonNoteTemp />} />
        </Route>
     </Routes>
