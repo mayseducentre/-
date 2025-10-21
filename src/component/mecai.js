@@ -62,6 +62,7 @@ export default function MecAiProGroq() {
       gap: 14,
       background: "#fff",
     },
+    
     msgRow: (isAI) => ({
       display: "flex",
       gap: 12,
