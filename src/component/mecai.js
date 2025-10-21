@@ -350,7 +350,7 @@ export default function MecAiProGroq() {
         <header style={styles.header}>
           <div style={{ display: "flex", flexDirection: "column" }}>
             <div style={styles.title}>MEC AI</div>
-            <div style={styles.subtitle}>MEC Junior High — Your learning assistant</div>
+            <div style={styles.subtitle}>AI Assist</div>
           </div>
           <div style={{ marginLeft: "auto", display: "flex", gap: 8, alignItems: "center" }}>
             <button style={styles.smallBtn} onClick={() => navigator.clipboard.writeText(JSON.stringify(messages, null, 2))}>Export</button>
@@ -381,12 +381,6 @@ export default function MecAiProGroq() {
 
           <aside style={styles.rightPanel}>
             <div>
-              <div style={styles.label}>Groq API Key</div>
-              <input style={styles.inputSmall} value={groqKey} onChange={(e) => setGroqKey(e.target.value.trim())} placeholder="gsk_..." />
-              <div style={{ fontSize: 12, color: THEME.muted, marginTop: 8 }}>
-                This key is used to call Groq Cloud (Llama 3). Keep it private. For production, use a server proxy.
-              </div>
-            </div>
 
             <div>
               <div style={styles.label}>Online AI</div>
