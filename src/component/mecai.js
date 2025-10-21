@@ -303,6 +303,8 @@ export default function MecAiProGroq() {
     reader.readAsDataURL(f);
   }
 
+  function closeAs(){
+    document.getElementById("h").style.display="none";
   /* ---------------------- Groq API ---------------------- */
   async function callGroq(prompt) {
     const url = "https://api.groq.com/openai/v1/chat/completions";
@@ -379,16 +381,16 @@ export default function MecAiProGroq() {
             {preview && <img src={preview} alt="preview" style={styles.previewImg} />}
           </section>
 
-          <aside style={styles.rightPanel}>
+          <aside id="h" style={styles.rightPanel}>
             <div>
-
-            <div>
+            
               <div style={styles.label}>Online AI</div>
               <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <input type="checkbox" checked={allowOnline} onChange={(e) => setAllowOnline(e.target.checked)} />
                 <span style={{ fontSize: 13 }}>Enable Groq online calls</span>
               </label>
             </div>
+              <a onClick={closeAs}></a>
           </aside>
         </div>
       </div>
