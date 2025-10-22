@@ -1,15 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 
-export default function MecAiProAI() {
+export default function MecAiPro() {
   /* ---------------------- Theme ---------------------- */
   const THEME = {
     bg: "#f7f7f8",
     card: "#ffffff",
-    userBubble: "#dbeafe",
-    aiBubble: "#f3f4f6",
+    userBubble: "#e6f0ff",
+    aiBubble: "#f6f6f6",
     text: "#111827",
     muted: "#6b7280",
-    accent: "#2563eb",
+    accent: "#111827",
     shadow: "0 8px 30px rgba(16,24,40,0.06)",
   };
 
@@ -28,24 +28,29 @@ export default function MecAiProAI() {
     },
     container: {
       width: "100%",
-      maxWidth: 800,
+      maxWidth: 900,
       height: "90vh",
       display: "flex",
       flexDirection: "column",
-      borderRadius: 16,
+      borderRadius: 14,
       overflow: "hidden",
       background: THEME.card,
       boxShadow: THEME.shadow,
     },
     header: {
       padding: "14px 18px",
-      borderBottom: "1px solid #e5e7eb",
+      borderBottom: "1px solid #eef2f7",
       display: "flex",
       alignItems: "center",
       justifyContent: "space-between",
+      flexWrap: "wrap",
       background: "#fff",
+      gap: 10,
+      position: "sticky",
+      top: 0,
+      zIndex: 10,
     },
-    title: { fontWeight: 700, fontSize: 17 },
+    title: { fontWeight: 700, fontSize: 16 },
     subtitle: { color: THEME.muted, fontSize: 13 },
     messages: {
       flex: 1,
@@ -55,6 +60,7 @@ export default function MecAiProAI() {
       flexDirection: "column",
       gap: 14,
       background: "#fff",
+      scrollBehavior: "smooth",
     },
     msgRow: (isAI) => ({
       display: "flex",
@@ -74,7 +80,7 @@ export default function MecAiProAI() {
     }),
     time: { fontSize: 11, color: THEME.muted, marginTop: 6 },
     composer: {
-      borderTop: "1px solid #e5e7eb",
+      borderTop: "1px solid #eef2f7",
       padding: 10,
       display: "flex",
       gap: 8,
@@ -87,7 +93,7 @@ export default function MecAiProAI() {
       flex: 1,
       padding: "12px 14px",
       borderRadius: 10,
-      border: "1px solid #d1d5db",
+      border: "1px solid #e6e9ee",
       outline: "none",
       fontSize: 15,
       background: "#fff",
@@ -100,6 +106,20 @@ export default function MecAiProAI() {
       borderRadius: 10,
       cursor: "pointer",
       fontWeight: 600,
+    },
+    smallBtn: {
+      border: "1px solid #e6e9ee",
+      background: "#fff",
+      padding: "8px 10px",
+      borderRadius: 8,
+      cursor: "pointer",
+    },
+    previewImg: {
+      maxWidth: 240,
+      borderRadius: 10,
+      margin: "8px auto",
+      border: "1px solid #e6e9ee",
+      display: "block",
     },
   };
 
@@ -121,6 +141,15 @@ export default function MecAiProAI() {
     "Try asking about computing, Ghana, or teamwork.",
   ];
 
+  const SAFETY_PATTERNS = [
+    /sex|porn|nsfw|explicit/i,
+    /kill|murder|bomb|explode|shoot|suicide|self[-\s]*harm/i,
+    /password|credit card|bank account|pin/i,
+    /\bfuck\b|\bshit\b|\bbitch\b/i,
+  ];
+
+  const isUnsafe = (text) => SAFETY_PATTERNS.some((p) => p.test(text));
+
   /* ---------------------- State ---------------------- */
   const STORAGE_KEY = "mecai_chat_history";
   const [messages, setMessages] = useState(() => {
@@ -131,8 +160,10 @@ export default function MecAiProAI() {
     }
   });
   const [input, setInput] = useState("");
+  const [preview, setPreview] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const scrollRef = useRef(null);
+  const fileRef = useRef(null);
 
   /* ---------------------- Effects ---------------------- */
   useEffect(() => {
@@ -143,8 +174,8 @@ export default function MecAiProAI() {
 
   useEffect(() => {
     if (messages.length === 0) {
-      pushAI(
-        "👋 Welcome to MEC AI — your smart school assistant! I can explain computing concepts, solve simple problems, or tell you something fun. Try asking: 'What is HTML?' or 'Who is Kwame Nkrumah?'"
+      typewriter(
+        "👋 Welcome to MEC AI — your smart school assistant! I can explain computing concepts, solve problems, or compliment your uploaded pictures. Try asking: 'What is HTML?' or 'Solve 12 + 5'."
       );
     }
   }, []);
@@ -155,55 +186,101 @@ export default function MecAiProAI() {
   const nowTime = (ts) =>
     new Date(ts).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   const normalize = (s) => (s || "").toLowerCase().trim();
-  const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
-  const pushUser = (text) =>
-    setMessages((prev) => [...prev, { id: uid(), role: "user", text, ts: now() }]);
-  const pushAI = (text) =>
-    setMessages((prev) => [...prev, { id: uid(), role: "ai", text, ts: now() }]);
+  const pushMessage = (role, text) => {
+    const msg = { id: uid(), role, text, ts: now() };
+    setMessages((prev) => [...prev, msg]);
+    return msg;
+  };
 
   const findKB = (q) => {
     const t = normalize(q);
     return KB.find((e) => t.includes(normalize(e.q))) || null;
   };
 
-  /* ---------------------- Hugging Face API ---------------------- */
-  async function callHuggingFace(prompt) {
+  const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+  const solveSimple = (expr) => {
+    const s = expr.replace(/×/g, "*").replace(/÷/g, "/");
+    const m = s.match(/(-?\d+(\.\d+)?)\s*([+\-*/])\s*(-?\d+(\.\d+)?)/);
+    if (!m) return null;
+    const a = parseFloat(m[1]),
+      op = m[3],
+      b = parseFloat(m[4]);
+    if (op === "+") return `${a} + ${b} = ${a + b}`;
+    if (op === "-") return `${a} - ${b} = ${a - b}`;
+    if (op === "*") return `${a} × ${b} = ${a * b}`;
+    if (op === "/") return b === 0 ? "Division by zero is undefined." : `${a} ÷ ${b} = ${a / b}`;
+    return null;
+  };
+
+  /* ---------------------- AI API ---------------------- */
+  async function callAI(prompt) {
     try {
       const res = await fetch(
-        "https://api-inference.huggingface.co/models/tiiuae/falcon-7b-instruct",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ inputs: prompt }),
-        }
+        `https://api.popcat.xyz/ai?msg=${encodeURIComponent(prompt)}`
       );
-
       const data = await res.json();
-      if (data.error) {
-        return pick(FALLBACKS);
-      }
-      return data[0]?.generated_text || pick(FALLBACKS);
-    } catch (err) {
-      console.error(err);
-      return "⚠️ Couldn’t reach the AI service. Try again later.";
+      return data.response || pick(FALLBACKS);
+    } catch (e) {
+      console.error(e);
+      return "⚠️ Unable to connect to AI service.";
     }
   }
+
+  /* ---------------------- Typewriter ---------------------- */
+  function typewriter(text) {
+    setIsTyping(true);
+    const id = uid();
+    const msg = { id, role: "ai", text: "", ts: now() };
+    setMessages((prev) => [...prev, msg]);
+    let i = 0;
+    const interval = setInterval(() => {
+      i++;
+      setMessages((prev) =>
+        prev.map((m) => (m.id === id ? { ...m, text: text.slice(0, i) } : m))
+      );
+      if (i >= text.length) {
+        clearInterval(interval);
+        setIsTyping(false);
+      }
+    }, 20);
+  }
+
+  /* ---------------------- Image Upload ---------------------- */
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setPreview(url);
+      pushMessage("user", "📷 Uploaded a picture!");
+      setTimeout(() => {
+        typewriter("Wow! That’s a great picture — it looks vibrant and full of life! 🌟");
+      }, 700);
+    }
+  };
 
   /* ---------------------- Handle Send ---------------------- */
   async function handleSend() {
     const q = input.trim();
     if (!q) return;
     setInput("");
-    pushUser(q);
+    pushMessage("user", q);
+
+    if (isUnsafe(q)) return typewriter("⚠️ Sorry, I can’t discuss that topic.");
+
+    const math = solveSimple(q);
+    if (math) return typewriter(math);
 
     const local = findKB(q);
-    if (local) return pushAI(local.a);
+    if (local) return typewriter(local.a);
 
-    setIsTyping(true);
-    const reply = await callHuggingFace(q);
-    pushAI(reply);
-    setIsTyping(false);
+    const thinkingId = uid();
+    setMessages((prev) => [...prev, { id: thinkingId, role: "ai", text: "Thinking...", ts: now() }]);
+    const reply = await callAI(q);
+    setMessages((prev) =>
+      prev.map((m) => (m.id === thinkingId ? { ...m, text: reply } : m))
+    );
   }
 
   /* ---------------------- UI ---------------------- */
@@ -213,11 +290,19 @@ export default function MecAiProAI() {
         <header style={styles.header}>
           <div>
             <div style={styles.title}>MEC AI</div>
-            <div style={styles.subtitle}>Powered by Hugging Face</div>
+            <div style={styles.subtitle}>Frontend Only — No API Key 🚀</div>
           </div>
           <div style={{ display: "flex", gap: 8 }}>
             <button
-              style={styles.sendBtn}
+              style={styles.smallBtn}
+              onClick={() =>
+                navigator.clipboard.writeText(JSON.stringify(messages, null, 2))
+              }
+            >
+              Export
+            </button>
+            <button
+              style={styles.smallBtn}
               onClick={() => {
                 setMessages([]);
                 localStorage.removeItem(STORAGE_KEY);
@@ -228,16 +313,58 @@ export default function MecAiProAI() {
           </div>
         </header>
 
-        <div style={styles.messages} ref={scrollRef}>
-          {messages.map((m) => (
-            <div key={m.id} style={styles.msgRow(m.role === "ai")}>
-              {m.role === "ai" && (
+        <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+          <div style={styles.messages} ref={scrollRef}>
+            {messages.map((m) => (
+              <div key={m.id} style={styles.msgRow(m.role === "ai")}>
+                {m.role === "ai" && (
+                  <div
+                    style={{
+                      width: 36,
+                      height: 36,
+                      borderRadius: 8,
+                      background: "#111827",
+                      color: "#fff",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontWeight: 700,
+                    }}
+                  >
+                    M
+                  </div>
+                )}
+                <div style={styles.bubble(m.role === "ai")}>
+                  <div>{m.text}</div>
+                  <div style={styles.time}>{nowTime(m.ts)}</div>
+                </div>
+                {m.role === "user" && (
+                  <div
+                    style={{
+                      width: 36,
+                      height: 36,
+                      borderRadius: 8,
+                      background: "#e6f0ff",
+                      color: "#111827",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontWeight: 700,
+                    }}
+                  >
+                    Y
+                  </div>
+                )}
+              </div>
+            ))}
+            {isTyping && (
+              <div style={styles.msgRow(true)}>
                 <div
                   style={{
                     width: 36,
                     height: 36,
                     borderRadius: 8,
-                    background: THEME.accent,
+                    background: "#111827",
                     color: "#fff",
                     display: "flex",
                     alignItems: "center",
@@ -247,64 +374,37 @@ export default function MecAiProAI() {
                 >
                   M
                 </div>
-              )}
-              <div style={styles.bubble(m.role === "ai")}>
-                <div>{m.text}</div>
-                <div style={styles.time}>{nowTime(m.ts)}</div>
-              </div>
-              {m.role === "user" && (
-                <div
-                  style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: 8,
-                    background: THEME.userBubble,
-                    color: THEME.text,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontWeight: 700,
-                  }}
-                >
-                  Y
+                <div style={{ ...styles.bubble(true), opacity: 0.8 }}>
+                  MEC AI is typing…
                 </div>
-              )}
-            </div>
-          ))}
-
-          {isTyping && (
-            <div style={styles.msgRow(true)}>
-              <div
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: 8,
-                  background: THEME.accent,
-                  color: "#fff",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontWeight: 700,
-                }}
-              >
-                M
               </div>
-              <div style={{ ...styles.bubble(true), opacity: 0.8 }}>MEC AI is typing…</div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
 
-        <div style={styles.composer}>
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSend()}
-            placeholder="Type a message..."
-            style={styles.input}
-          />
-          <button style={styles.sendBtn} onClick={handleSend}>
-            Send
-          </button>
+          <div style={styles.composer}>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              style={{ display: "none" }}
+            />
+            <button style={styles.smallBtn} onClick={() => fileRef.current.click()}>
+              📷
+            </button>
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSend()}
+              placeholder="Type a message..."
+              style={styles.input}
+            />
+            <button style={styles.sendBtn} onClick={handleSend}>
+              Send
+            </button>
+          </div>
+
+          {preview && <img src={preview} alt="preview" style={styles.previewImg} />}
         </div>
       </div>
     </div>
