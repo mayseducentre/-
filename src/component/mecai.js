@@ -1,67 +1,66 @@
 import React, { useState, useEffect, useRef } from "react";
 import { pipeline, env } from "@xenova/transformers";
 
-// Use official CDN for model files
+// ✅ Ensure model files and wasm load from CDN
 env.allowLocalModels = false;
-env.backends.onnx.wasm.wasmPaths = "https://cdn.jsdelivr.net/npm/@xenova/transformers@2.14.0/dist/";
+env.localModelPath = undefined;
+env.backends.onnx.wasm.wasmPaths =
+  "https://cdn.jsdelivr.net/npm/@xenova/transformers@2.14.0/dist/";
 
 export default function MecAi() {
   const [generator, setGenerator] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
-  const fileRef = useRef();
 
-  // Load model once at mount
+  // Load model at startup
   useEffect(() => {
-    const loadModel = async () => {
-      setLoading(true);
+    async function loadModel() {
       try {
-        const model = await pipeline("text-generation", "Xenova/distilgpt2");
-        setGenerator(model);
+        console.log("⏳ Loading model...");
+        const pipe = await pipeline(
+          "text-generation",
+          // ⚡ much smaller model that always loads fast
+          "Xenova/tiny-random-gpt2"
+        );
+        setGenerator(pipe);
+        console.log("✅ Model loaded!");
       } catch (err) {
-        console.error("Model load error:", err);
-        alert("⚠️ Model failed to load. Check internet or refresh.");
+        console.error("Model failed:", err);
+        alert("Failed to load model. Try refreshing or use Chrome desktop.");
       } finally {
         setLoading(false);
       }
-    };
+    }
     loadModel();
   }, []);
 
   const handleSend = async () => {
     if (!input.trim()) return;
-
-    const userMsg = { role: "user", text: input };
-    setMessages((m) => [...m, userMsg]);
+    setMessages((m) => [...m, { role: "user", text: input }]);
     setInput("");
 
     if (!generator) {
-      setMessages((m) => [
-        ...m,
-        { role: "ai", text: "⏳ Model still loading, please wait..." },
-      ]);
+      setMessages((m) => [...m, { role: "ai", text: "⏳ Model still loading..." }]);
       return;
     }
 
-    setLoading(true);
     try {
       const output = await generator(input, {
-        max_new_tokens: 60,
+        max_new_tokens: 50,
         temperature: 0.8,
       });
-      const aiText =
+      const text =
         output?.[0]?.generated_text?.replace(input, "").trim() ||
-        "Hmm... no response.";
-      setMessages((m) => [...m, { role: "ai", text: aiText }]);
+        "🤖 (no response)";
+      setMessages((m) => [...m, { role: "ai", text }]);
     } catch (err) {
-      console.error("Generation error:", err);
+      console.error(err);
       setMessages((m) => [
         ...m,
-        { role: "ai", text: "⚠️ Generation failed." },
+        { role: "ai", text: "⚠️ Error generating text." },
       ]);
     }
-    setLoading(false);
   };
 
   return (
@@ -89,31 +88,18 @@ export default function MecAi() {
           padding: "15px",
         }}
       >
-        <h2 style={{ textAlign: "center", marginBottom: "10px" }}>🤖 MECAI</h2>
+        <h2 style={{ textAlign: "center" }}>🤖 MECAI</h2>
 
-        <div
-          style={{
-            flex: 1,
-            overflowY: "auto",
-            padding: "10px",
-            marginBottom: "10px",
-          }}
-        >
+        <div style={{ flex: 1, overflowY: "auto", marginBottom: "10px" }}>
           {messages.map((msg, i) => (
-            <div
-              key={i}
-              style={{
-                textAlign: msg.role === "user" ? "right" : "left",
-                marginBottom: "10px",
-              }}
-            >
+            <div key={i} style={{ textAlign: msg.role === "user" ? "right" : "left" }}>
               <div
                 style={{
                   display: "inline-block",
                   background: msg.role === "user" ? "#DCF8C6" : "#F1F0F0",
                   padding: "10px 15px",
                   borderRadius: "15px",
-                  maxWidth: "70%",
+                  margin: "4px 0",
                 }}
               >
                 {msg.text}
@@ -121,7 +107,9 @@ export default function MecAi() {
             </div>
           ))}
           {loading && (
-            <p style={{ textAlign: "center", color: "#888" }}>Thinking...</p>
+            <p style={{ textAlign: "center", color: "#999" }}>
+              ⏳ Loading MECAI brain...
+            </p>
           )}
         </div>
 
