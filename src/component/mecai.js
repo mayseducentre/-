@@ -1,15 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 
-export default function MecAiPro() {
+export default function MecAiProAI() {
   /* ---------------------- Theme ---------------------- */
   const THEME = {
     bg: "#f7f7f8",
     card: "#ffffff",
-    userBubble: "#e6f0ff",
-    aiBubble: "#f6f6f6",
+    userBubble: "#dbeafe",
+    aiBubble: "#f3f4f6",
     text: "#111827",
     muted: "#6b7280",
-    accent: "#111827",
+    accent: "#2563eb",
     shadow: "0 8px 30px rgba(16,24,40,0.06)",
   };
 
@@ -28,26 +28,24 @@ export default function MecAiPro() {
     },
     container: {
       width: "100%",
-      maxWidth: 900,
-      height: "calc(100vh - 32px)",
+      maxWidth: 800,
+      height: "90vh",
       display: "flex",
       flexDirection: "column",
-      borderRadius: 14,
+      borderRadius: 16,
       overflow: "hidden",
       background: THEME.card,
       boxShadow: THEME.shadow,
     },
     header: {
       padding: "14px 18px",
-      borderBottom: "1px solid #eef2f7",
+      borderBottom: "1px solid #e5e7eb",
       display: "flex",
       alignItems: "center",
       justifyContent: "space-between",
-      flexWrap: "wrap",
       background: "#fff",
-      gap: 10,
     },
-    title: { fontWeight: 700, fontSize: 16 },
+    title: { fontWeight: 700, fontSize: 17 },
     subtitle: { color: THEME.muted, fontSize: 13 },
     messages: {
       flex: 1,
@@ -57,7 +55,6 @@ export default function MecAiPro() {
       flexDirection: "column",
       gap: 14,
       background: "#fff",
-      scrollBehavior: "smooth",
     },
     msgRow: (isAI) => ({
       display: "flex",
@@ -77,18 +74,20 @@ export default function MecAiPro() {
     }),
     time: { fontSize: 11, color: THEME.muted, marginTop: 6 },
     composer: {
-      borderTop: "1px solid #eef2f7",
+      borderTop: "1px solid #e5e7eb",
       padding: 10,
       display: "flex",
       gap: 8,
       alignItems: "center",
       background: "#fff",
+      position: "sticky",
+      bottom: 0,
     },
     input: {
       flex: 1,
       padding: "12px 14px",
       borderRadius: 10,
-      border: "1px solid #e6e9ee",
+      border: "1px solid #d1d5db",
       outline: "none",
       fontSize: 15,
       background: "#fff",
@@ -102,27 +101,13 @@ export default function MecAiPro() {
       cursor: "pointer",
       fontWeight: 600,
     },
-    smallBtn: {
-      border: "1px solid #e6e9ee",
-      background: "#fff",
-      padding: "8px 10px",
-      borderRadius: 8,
-      cursor: "pointer",
-    },
-    previewImg: {
-      maxWidth: 240,
-      borderRadius: 10,
-      margin: "8px auto",
-      border: "1px solid #e6e9ee",
-      display: "block",
-    },
   };
 
   /* ---------------------- Local Knowledge ---------------------- */
   const KB = [
     { q: "hello", a: "Hello 👋! How can I support you today?" },
-    { q: "what is html", a: "HTML is the markup language used to structure web pages." },
-    { q: "what is css", a: "CSS styles web pages — defining layout, colors, and design." },
+    { q: "what is html", a: "HTML is the markup language used to structure content on web pages." },
+    { q: "what is css", a: "CSS controls how web pages look — colors, layout, and design." },
     { q: "what is javascript", a: "JavaScript adds logic and interactivity to web pages." },
     { q: "kwame nkrumah", a: "Kwame Nkrumah was Ghana’s first president and independence leader." },
     { q: "ghana independence", a: "Ghana gained independence on March 6, 1957." },
@@ -136,14 +121,6 @@ export default function MecAiPro() {
     "Try asking about computing, Ghana, or teamwork.",
   ];
 
-  const SAFETY_PATTERNS = [
-    /sex|porn|nsfw|explicit/i,
-    /kill|murder|bomb|explode|shoot|suicide|self[-\s]*harm/i,
-    /password|credit card|bank account|pin/i,
-    /\bfuck\b|\bshit\b|\bbitch\b/i,
-  ];
-  const isUnsafe = (text) => SAFETY_PATTERNS.some((p) => p.test(text));
-
   /* ---------------------- State ---------------------- */
   const STORAGE_KEY = "mecai_chat_history";
   const [messages, setMessages] = useState(() => {
@@ -154,21 +131,20 @@ export default function MecAiPro() {
     }
   });
   const [input, setInput] = useState("");
-  const [preview, setPreview] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const scrollRef = useRef(null);
-  const fileRef = useRef(null);
 
   /* ---------------------- Effects ---------------------- */
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
+    const el = scrollRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
   }, [messages]);
 
   useEffect(() => {
     if (messages.length === 0) {
-      typewriter(
-        "👋 Welcome to MEC AI — your smart school assistant powered by AI! I can explain computing concepts, solve simple problems, or even compliment your pictures. Try asking: 'What is HTML?' or 'Solve 12 + 5'."
+      pushAI(
+        "👋 Welcome to MEC AI — your smart school assistant! I can explain computing concepts, solve simple problems, or tell you something fun. Try asking: 'What is HTML?' or 'Who is Kwame Nkrumah?'"
       );
     }
   }, []);
@@ -179,103 +155,55 @@ export default function MecAiPro() {
   const nowTime = (ts) =>
     new Date(ts).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   const normalize = (s) => (s || "").toLowerCase().trim();
+  const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
-  const pushMessage = (role, text) => {
-    const msg = { id: uid(), role, text, ts: now() };
-    setMessages((prev) => [...prev, msg]);
-    return msg;
-  };
+  const pushUser = (text) =>
+    setMessages((prev) => [...prev, { id: uid(), role: "user", text, ts: now() }]);
+  const pushAI = (text) =>
+    setMessages((prev) => [...prev, { id: uid(), role: "ai", text, ts: now() }]);
 
   const findKB = (q) => {
     const t = normalize(q);
     return KB.find((e) => t.includes(normalize(e.q))) || null;
   };
 
-  const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
-
-  const solveSimple = (expr) => {
-    const s = expr.replace(/×/g, "*").replace(/÷/g, "/");
-    const m = s.match(/(-?\d+(\.\d+)?)\s*([+\-*/])\s*(-?\d+(\.\d+)?)/);
-    if (!m) return null;
-    const a = parseFloat(m[1]),
-      op = m[3],
-      b = parseFloat(m[4]);
-    if (op === "+") return `${a} + ${b} = ${a + b}`;
-    if (op === "-") return `${a} - ${b} = ${a - b}`;
-    if (op === "*") return `${a} × ${b} = ${a * b}`;
-    if (op === "/") return b === 0 ? "Division by zero is undefined." : `${a} ÷ ${b} = ${a / b}`;
-    return null;
-  };
-
-  /* ---------------------- Hugging Face Chat API ---------------------- */
+  /* ---------------------- Hugging Face API ---------------------- */
   async function callHuggingFace(prompt) {
     try {
-      const res = await fetch("https://api-inference.huggingface.co/models/facebook/blenderbot-400M-distill", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ inputs: prompt }),
-      });
-      const data = await res.json();
-      return data[0]?.generated_text || pick(FALLBACKS);
-    } catch {
-      return "⚠️ Unable to connect to AI service.";
-    }
-  }
-
-  /* ---------------------- Typewriter ---------------------- */
-  function typewriter(text) {
-    setIsTyping(true);
-    const id = uid();
-    const msg = { id, role: "ai", text: "", ts: now() };
-    setMessages((prev) => [...prev, msg]);
-    let i = 0;
-    const interval = setInterval(() => {
-      i++;
-      setMessages((prev) =>
-        prev.map((m) => (m.id === id ? { ...m, text: text.slice(0, i) } : m))
+      const res = await fetch(
+        "https://api-inference.huggingface.co/models/tiiuae/falcon-7b-instruct",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ inputs: prompt }),
+        }
       );
-      if (i >= text.length) {
-        clearInterval(interval);
-        setIsTyping(false);
-      }
-    }, 15);
-  }
 
-  /* ---------------------- Image Upload ---------------------- */
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setPreview(url);
-      pushMessage("user", "📷 Uploaded a picture!");
-      setTimeout(() => {
-        typewriter("Wow! That’s a great picture — it looks vibrant and full of life! 🌟");
-      }, 700);
+      const data = await res.json();
+      if (data.error) {
+        return pick(FALLBACKS);
+      }
+      return data[0]?.generated_text || pick(FALLBACKS);
+    } catch (err) {
+      console.error(err);
+      return "⚠️ Couldn’t reach the AI service. Try again later.";
     }
-  };
+  }
 
   /* ---------------------- Handle Send ---------------------- */
   async function handleSend() {
     const q = input.trim();
     if (!q) return;
     setInput("");
-    pushMessage("user", q);
-
-    if (isUnsafe(q)) return typewriter("⚠️ Sorry, I can’t discuss that topic.");
-
-    const math = solveSimple(q);
-    if (math) return typewriter(math);
+    pushUser(q);
 
     const local = findKB(q);
-    if (local) return typewriter(local.a);
+    if (local) return pushAI(local.a);
 
-    const thinkingId = uid();
-    setMessages((prev) => [...prev, { id: thinkingId, role: "ai", text: "Thinking...", ts: now() }]);
-
+    setIsTyping(true);
     const reply = await callHuggingFace(q);
-    setMessages((prev) =>
-      prev.map((m) => (m.id === thinkingId ? { ...m, text: reply } : m))
-    );
+    pushAI(reply);
+    setIsTyping(false);
   }
 
   /* ---------------------- UI ---------------------- */
@@ -289,15 +217,7 @@ export default function MecAiPro() {
           </div>
           <div style={{ display: "flex", gap: 8 }}>
             <button
-              style={styles.smallBtn}
-              onClick={() =>
-                navigator.clipboard.writeText(JSON.stringify(messages, null, 2))
-              }
-            >
-              Export
-            </button>
-            <button
-              style={styles.smallBtn}
+              style={styles.sendBtn}
               onClick={() => {
                 setMessages([]);
                 localStorage.removeItem(STORAGE_KEY);
@@ -308,58 +228,16 @@ export default function MecAiPro() {
           </div>
         </header>
 
-        <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-          <div style={styles.messages} ref={scrollRef}>
-            {messages.map((m) => (
-              <div key={m.id} style={styles.msgRow(m.role === "ai")}>
-                {m.role === "ai" && (
-                  <div
-                    style={{
-                      width: 36,
-                      height: 36,
-                      borderRadius: 8,
-                      background: "#111827",
-                      color: "#fff",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontWeight: 700,
-                    }}
-                  >
-                    M
-                  </div>
-                )}
-                <div style={styles.bubble(m.role === "ai")}>
-                  <div>{m.text}</div>
-                  <div style={styles.time}>{nowTime(m.ts)}</div>
-                </div>
-                {m.role === "user" && (
-                  <div
-                    style={{
-                      width: 36,
-                      height: 36,
-                      borderRadius: 8,
-                      background: "#e6f0ff",
-                      color: "#111827",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontWeight: 700,
-                    }}
-                  >
-                    Y
-                  </div>
-                )}
-              </div>
-            ))}
-            {isTyping && (
-              <div style={styles.msgRow(true)}>
+        <div style={styles.messages} ref={scrollRef}>
+          {messages.map((m) => (
+            <div key={m.id} style={styles.msgRow(m.role === "ai")}>
+              {m.role === "ai" && (
                 <div
                   style={{
                     width: 36,
                     height: 36,
                     borderRadius: 8,
-                    background: "#111827",
+                    background: THEME.accent,
                     color: "#fff",
                     display: "flex",
                     alignItems: "center",
@@ -369,37 +247,64 @@ export default function MecAiPro() {
                 >
                   M
                 </div>
-                <div style={{ ...styles.bubble(true), opacity: 0.8 }}>
-                  MEC AI is typing…
-                </div>
+              )}
+              <div style={styles.bubble(m.role === "ai")}>
+                <div>{m.text}</div>
+                <div style={styles.time}>{nowTime(m.ts)}</div>
               </div>
-            )}
-          </div>
+              {m.role === "user" && (
+                <div
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 8,
+                    background: THEME.userBubble,
+                    color: THEME.text,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontWeight: 700,
+                  }}
+                >
+                  Y
+                </div>
+              )}
+            </div>
+          ))}
 
-          <div style={styles.composer}>
-            <input
-              ref={fileRef}
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-              style={{ display: "none" }}
-            />
-            <button style={styles.smallBtn} onClick={() => fileRef.current.click()}>
-              📷
-            </button>
-            <input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              placeholder="Type a message..."
-              style={styles.input}
-            />
-            <button style={styles.sendBtn} onClick={handleSend}>
-              Send
-            </button>
-          </div>
+          {isTyping && (
+            <div style={styles.msgRow(true)}>
+              <div
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 8,
+                  background: THEME.accent,
+                  color: "#fff",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontWeight: 700,
+                }}
+              >
+                M
+              </div>
+              <div style={{ ...styles.bubble(true), opacity: 0.8 }}>MEC AI is typing…</div>
+            </div>
+          )}
+        </div>
 
-          {preview && <img src={preview} alt="preview" style={styles.previewImg} />}
+        <div style={styles.composer}>
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            placeholder="Type a message..."
+            style={styles.input}
+          />
+          <button style={styles.sendBtn} onClick={handleSend}>
+            Send
+          </button>
         </div>
       </div>
     </div>
