@@ -1,68 +1,73 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import { pipeline } from "@xenova/transformers";
 
 export default function MecAi() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
-  const fileInputRef = useRef();
+  const [generator, setGenerator] = useState(null);
+  const fileRef = useRef();
 
-  const HF_TEXT_MODEL = "gpt2"; // Hugging Face text model
-  const HF_IMAGE_MODEL = "nlpconnect/vit-gpt2-image-captioning";
-
-  async function fetchFromHuggingFace(model, inputs) {
-    const res = await fetch(`https://api-inference.huggingface.co/models/${model}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ inputs }),
-    });
-    return res.json();
-  }
-
-  async function fetchImageCaption(imageBase64) {
-    const res = await fetch(`https://api-inference.huggingface.co/models/${HF_IMAGE_MODEL}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ inputs: imageBase64 }),
-    });
-    const data = await res.json();
-    return data[0]?.generated_text || "Could not interpret image.";
-  }
+  // Load the model once
+  useEffect(() => {
+    const loadModel = async () => {
+      setLoading(true);
+      const model = await pipeline("text-generation", "Xenova/distilgpt2");
+      setGenerator(model);
+      setLoading(false);
+    };
+    loadModel();
+  }, []);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => setImage(reader.result);
-      reader.readAsDataURL(file);
-    }
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => setImage(reader.result);
+    reader.readAsDataURL(file);
   };
 
   const handleSend = async () => {
     if (!input && !image) return;
-    setLoading(true);
 
-    const newUserMsg = { role: "user", text: input, image };
-    setMessages((prev) => [...prev, newUserMsg]);
-
-    let aiResponse = "";
-
-    try {
-      if (image) {
-        aiResponse = await fetchImageCaption(image);
-      } else {
-        const data = await fetchFromHuggingFace(HF_TEXT_MODEL, input);
-        aiResponse =
-          data?.[0]?.generated_text?.replace(input, "").trim() ||
-          "I couldn't generate a response.";
-      }
-    } catch (e) {
-      aiResponse = "⚠️ Error reaching AI model.";
-    }
-
-    setMessages((prev) => [...prev, { role: "ai", text: aiResponse }]);
+    const userMessage = { role: "user", text: input, image };
+    setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setImage(null);
+
+    if (!generator) {
+      setMessages((prev) => [
+        ...prev,
+        { role: "ai", text: "⏳ Model still loading, please wait..." },
+      ]);
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      let prompt = input;
+      if (image) prompt = `Describe this image: ${input}`;
+
+      const result = await generator(prompt, {
+        max_new_tokens: 80,
+        temperature: 0.8,
+      });
+
+      const aiText =
+        result?.[0]?.generated_text?.replace(prompt, "").trim() ||
+        "Hmm... I couldn’t think of a response.";
+
+      setMessages((prev) => [...prev, { role: "ai", text: aiText }]);
+    } catch (err) {
+      console.error(err);
+      setMessages((prev) => [
+        ...prev,
+        { role: "ai", text: "⚠️ Something went wrong." },
+      ]);
+    }
+
     setLoading(false);
   };
 
@@ -133,7 +138,6 @@ export default function MecAi() {
               </div>
             </div>
           ))}
-
           {loading && (
             <p style={{ textAlign: "center", color: "#888" }}>Thinking...</p>
           )}
@@ -141,7 +145,7 @@ export default function MecAi() {
 
         <div style={{ display: "flex", gap: "8px" }}>
           <button
-            onClick={() => fileInputRef.current.click()}
+            onClick={() => fileRef.current.click()}
             style={{
               background: "#007AFF",
               color: "#fff",
@@ -154,7 +158,7 @@ export default function MecAi() {
             📷
           </button>
           <input
-            ref={fileInputRef}
+            ref={fileRef}
             type="file"
             accept="image/*"
             style={{ display: "none" }}
@@ -171,6 +175,7 @@ export default function MecAi() {
               borderRadius: "8px",
               border: "1px solid #ccc",
             }}
+            onKeyDown={(e) => e.key === "Enter" && handleSend()}
           />
           <button
             onClick={handleSend}
