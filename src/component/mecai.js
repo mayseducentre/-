@@ -19,7 +19,7 @@ export default function MecAi() {
     "what is drive management": "Drive management is about organizing, monitoring, and optimizing storage systems for performance and reliability.",
     "what is mecai": "MECAI is a hybrid AI assistant that combines local knowledge and Groq's intelligence for faster, smarter responses.",
     "how are you": "I'm doing great, thank you for asking! 😊 How can I help you today?",
-    "hello": "Hello there! 👋 I'm MECAI, your professional AI companion. How may I assist you?"
+    "hello": "Hello there! 👋 I'm MECAI, your professional AI companion. How may I assist you?",
   };
 
   // 🔹 Hybrid message handling
@@ -95,36 +95,38 @@ export default function MecAi() {
     <div
       style={{
         fontFamily: "'Inter', sans-serif",
-        background: "#f5f7fa",
-        height: "100vh",
+        background: "linear-gradient(180deg, #f9fafb 0%, #eceef1 100%)",
+        minHeight: "100vh",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        padding: "20px",
+        padding: "16px",
       }}
     >
       <div
         style={{
-          background: "#fff",
-          borderRadius: "16px",
+          background: "#ffffff",
+          borderRadius: "20px",
           width: "100%",
-          maxWidth: "700px",
-          height: "85vh",
-          boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
+          maxWidth: "750px",
+          height: "90vh",
           display: "flex",
           flexDirection: "column",
           overflow: "hidden",
+          boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
+          border: "1px solid #e5e7eb",
         }}
       >
         {/* Header */}
         <div
           style={{
-            background: "#111827",
+            background: "#0f172a",
             color: "#fff",
-            padding: "16px 20px",
-            textAlign: "center",
+            padding: "18px 20px",
             fontWeight: 600,
             fontSize: "18px",
+            textAlign: "center",
+            letterSpacing: "0.5px",
           }}
         >
           🤖 MECAI — Professional Hybrid AI
@@ -136,7 +138,9 @@ export default function MecAi() {
             flex: 1,
             padding: "20px",
             overflowY: "auto",
-            background: "#fafafa",
+            background: "#f8fafc",
+            display: "flex",
+            flexDirection: "column",
           }}
         >
           {messages.map((msg, i) => (
@@ -146,26 +150,30 @@ export default function MecAi() {
                 display: "flex",
                 justifyContent:
                   msg.role === "user" ? "flex-end" : "flex-start",
-                marginBottom: "12px",
+                marginBottom: "14px",
+                transition: "all 0.3s ease",
               }}
             >
               <div
                 style={{
                   background:
-                    msg.role === "user" ? "#2563eb" : "#e5e7eb",
-                  color: msg.role === "user" ? "#fff" : "#111827",
+                    msg.role === "user"
+                      ? "linear-gradient(135deg, #2563eb, #1e3a8a)"
+                      : "#e2e8f0",
+                  color: msg.role === "user" ? "#fff" : "#0f172a",
                   padding: "12px 16px",
                   borderRadius:
                     msg.role === "user"
-                      ? "16px 16px 0 16px"
-                      : "16px 16px 16px 0",
-                  maxWidth: "75%",
+                      ? "16px 16px 4px 16px"
+                      : "16px 16px 16px 4px",
+                  maxWidth: "80%",
                   fontSize: "15px",
-                  lineHeight: 1.4,
+                  lineHeight: 1.5,
                   boxShadow:
                     msg.role === "user"
-                      ? "0 2px 6px rgba(37,99,235,0.2)"
+                      ? "0 2px 8px rgba(37,99,235,0.3)"
                       : "0 2px 6px rgba(0,0,0,0.05)",
+                  wordWrap: "break-word",
                 }}
               >
                 {msg.image && (
@@ -185,7 +193,15 @@ export default function MecAi() {
           ))}
 
           {loading && (
-            <p style={{ textAlign: "center", color: "#888" }}>Thinking...</p>
+            <p
+              style={{
+                textAlign: "center",
+                color: "#94a3b8",
+                fontStyle: "italic",
+              }}
+            >
+              Thinking...
+            </p>
           )}
           <div ref={chatEndRef}></div>
         </div>
@@ -194,9 +210,10 @@ export default function MecAi() {
         <div
           style={{
             display: "flex",
-            padding: "10px 12px",
+            padding: "10px",
             borderTop: "1px solid #e5e7eb",
-            background: "#fff",
+            background: "#ffffff",
+            alignItems: "center",
           }}
         >
           <input
@@ -207,12 +224,20 @@ export default function MecAi() {
             onKeyDown={(e) => e.key === "Enter" && sendMessage()}
             style={{
               flex: 1,
-              padding: "12px",
+              padding: "12px 14px",
               borderRadius: "12px",
-              border: "1px solid #d1d5db",
+              border: "1px solid #cbd5e1",
               outline: "none",
               fontSize: "15px",
+              background: "#f9fafb",
+              transition: "0.2s",
             }}
+            onFocus={(e) =>
+              (e.target.style.border = "1px solid #2563eb")
+            }
+            onBlur={(e) =>
+              (e.target.style.border = "1px solid #cbd5e1")
+            }
           />
           <input
             type="file"
@@ -224,13 +249,20 @@ export default function MecAi() {
           <button
             onClick={() => fileRef.current.click()}
             style={{
-              background: "#f3f4f6",
+              background: "#f1f5f9",
               border: "none",
-              borderRadius: "12px",
+              borderRadius: "10px",
               padding: "10px 12px",
               marginLeft: "8px",
               cursor: "pointer",
+              transition: "0.2s",
             }}
+            onMouseOver={(e) =>
+              (e.currentTarget.style.background = "#e2e8f0")
+            }
+            onMouseOut={(e) =>
+              (e.currentTarget.style.background = "#f1f5f9")
+            }
           >
             📷
           </button>
@@ -238,14 +270,18 @@ export default function MecAi() {
             onClick={sendMessage}
             disabled={loading}
             style={{
-              background: "#2563eb",
+              background: loading
+                ? "#93c5fd"
+                : "linear-gradient(135deg, #2563eb, #1d4ed8)",
               color: "#fff",
               border: "none",
-              borderRadius: "12px",
+              borderRadius: "10px",
               padding: "10px 16px",
               marginLeft: "8px",
               cursor: "pointer",
               fontWeight: 600,
+              boxShadow: "0 2px 6px rgba(37,99,235,0.3)",
+              transition: "0.3s",
             }}
           >
             ➤
