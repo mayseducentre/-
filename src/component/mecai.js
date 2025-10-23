@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 
-export default function MecAi() {
+export default function MecAiPro() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [image, setImage] = useState(null);
@@ -8,12 +8,10 @@ export default function MecAi() {
   const fileRef = useRef(null);
   const chatEndRef = useRef(null);
 
-  // Scroll to bottom
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Local DB
   const localDB = {
     "who created you": "I was created by Paa Kwasi — a visionary developer who built MECAI using Groq AI.",
     "what is drive management": "Drive management is about organizing, monitoring, and optimizing storage systems for performance and reliability.",
@@ -22,7 +20,6 @@ export default function MecAi() {
     "hello": "Hello there! 👋 I'm MECAI, your professional AI companion. How may I assist you?",
   };
 
-  // Send message
   async function sendMessage() {
     if (!input.trim() && !image) return;
 
@@ -35,7 +32,6 @@ export default function MecAi() {
     const userInput = input.toLowerCase().trim();
     const localResponse = localDB[userInput];
 
-    // Local fetch
     if (localResponse) {
       setTimeout(() => {
         setMessages((m) => [...m, { role: "assistant", content: localResponse }]);
@@ -44,16 +40,14 @@ export default function MecAi() {
       return;
     }
 
-    // Groq fetch
     try {
       const body = {
         model: "llama-3.1-8b-instant",
         messages: [
           {
             role: "system",
-            content: `You are MECAI — a professional, friendly AI assistant built by Paa Kwasi.
-            - Be concise, confident, and clear.
-            - Use polite and human-like tone.`,
+            content: `You are MECAI — a professional, warm, and friendly AI assistant built by Paa Kwasi.
+            Use a calm, clear tone, and when possible, be helpful and polite.`,
           },
           ...messages.map((m) => ({ role: m.role, content: m.content })),
           { role: "user", content: input },
@@ -96,7 +90,7 @@ export default function MecAi() {
     <div
       style={{
         fontFamily: "'Inter', sans-serif",
-        background: "#ffffff",
+        background: "#fff9e6",
         height: "100vh",
         display: "flex",
         justifyContent: "center",
@@ -110,24 +104,25 @@ export default function MecAi() {
           height: "100vh",
           display: "flex",
           flexDirection: "column",
-          background: "#ffffff",
-          borderLeft: "1px solid #e5e7eb",
-          borderRight: "1px solid #e5e7eb",
+          background: "#fffdf7",
+          borderLeft: "1px solid #f1d48b",
+          borderRight: "1px solid #f1d48b",
         }}
       >
         {/* Header */}
         <div
           style={{
-            background: "#f9fafb",
-            color: "#111827",
+            background: "#d6a33e",
+            color: "#fffdf7",
             padding: "14px 20px",
             textAlign: "center",
             fontWeight: 600,
             fontSize: "17px",
-            borderBottom: "1px solid #e5e7eb",
+            borderBottom: "2px solid #b88523",
+            boxShadow: "0 2px 6px rgba(107,59,0,0.15)",
           }}
         >
-          🤖 MECAI — Your Hybrid AI
+          🤖 MECAI — Hybrid AI Assistant
         </div>
 
         {/* Chat Area */}
@@ -136,7 +131,7 @@ export default function MecAi() {
             flex: 1,
             padding: "20px",
             overflowY: "auto",
-            background: "#ffffff",
+            background: "#fff9e6",
           }}
         >
           {messages.map((msg, i) => (
@@ -152,8 +147,8 @@ export default function MecAi() {
               <div
                 style={{
                   background:
-                    msg.role === "user" ? "#2563eb" : "#f3f4f6",
-                  color: msg.role === "user" ? "#ffffff" : "#111827",
+                    msg.role === "user" ? "#b88523" : "#f8e5b6",
+                  color: msg.role === "user" ? "#fffdf7" : "#3e2b00",
                   padding: "12px 16px",
                   borderRadius:
                     msg.role === "user"
@@ -164,10 +159,9 @@ export default function MecAi() {
                   lineHeight: 1.5,
                   boxShadow:
                     msg.role === "user"
-                      ? "0 2px 6px rgba(37,99,235,0.25)"
-                      : "0 2px 5px rgba(0,0,0,0.05)",
+                      ? "0 3px 6px rgba(107,59,0,0.25)"
+                      : "0 3px 5px rgba(0,0,0,0.05)",
                   wordWrap: "break-word",
-                  transition: "0.3s",
                 }}
               >
                 {msg.image && (
@@ -201,7 +195,7 @@ export default function MecAi() {
                   width: "8px",
                   height: "8px",
                   borderRadius: "50%",
-                  background: "#9ca3af",
+                  background: "#b88523",
                   animation: "dotPulse 1s infinite ease-in-out",
                 }}
               ></div>
@@ -210,7 +204,7 @@ export default function MecAi() {
                   width: "8px",
                   height: "8px",
                   borderRadius: "50%",
-                  background: "#9ca3af",
+                  background: "#b88523",
                   animation: "dotPulse 1s infinite ease-in-out 0.2s",
                 }}
               ></div>
@@ -219,12 +213,11 @@ export default function MecAi() {
                   width: "8px",
                   height: "8px",
                   borderRadius: "50%",
-                  background: "#9ca3af",
+                  background: "#b88523",
                   animation: "dotPulse 1s infinite ease-in-out 0.4s",
                 }}
               ></div>
 
-              {/* Inline CSS animation */}
               <style>
                 {`
                   @keyframes dotPulse {
@@ -244,8 +237,8 @@ export default function MecAi() {
             display: "flex",
             alignItems: "center",
             padding: "10px",
-            borderTop: "1px solid #e5e7eb",
-            background: "#f9fafb",
+            borderTop: "2px solid #f1d48b",
+            background: "#fdf5dd",
           }}
         >
           <input
@@ -258,10 +251,11 @@ export default function MecAi() {
               flex: 1,
               padding: "12px 14px",
               borderRadius: "10px",
-              border: "1px solid #d1d5db",
-              background: "#ffffff",
+              border: "1px solid #e8c873",
+              background: "#fffdf7",
               outline: "none",
               fontSize: "15px",
+              color: "#3e2b00",
             }}
           />
           <input
@@ -274,8 +268,8 @@ export default function MecAi() {
           <button
             onClick={() => fileRef.current.click()}
             style={{
-              background: "#ffffff",
-              border: "1px solid #e5e7eb",
+              background: "#fffdf7",
+              border: "1px solid #e8c873",
               borderRadius: "10px",
               padding: "10px 12px",
               marginLeft: "8px",
@@ -289,8 +283,8 @@ export default function MecAi() {
             onClick={sendMessage}
             disabled={loading}
             style={{
-              background: loading ? "#93c5fd" : "#2563eb",
-              color: "#fff",
+              background: loading ? "#e8c873" : "#b88523",
+              color: "#fffdf7",
               border: "none",
               borderRadius: "10px",
               padding: "10px 16px",
