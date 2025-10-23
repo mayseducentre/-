@@ -112,7 +112,7 @@ const MecAIBanner = () => {
           <div style={styles.modal}>
             <div style={{ position: "relative" }}>
               <img
-                src="https://lh3.googleusercontent.com/pw/AP1GczNermM-f3HxJvCB44F3AmU131KhZi9RnwZ5jY7fG_vMz1BwGlW4fv5WgXghGkbtjwzKToC9gxuUeSx5SiojyaK0osv_jxJ0A74GsfoK21G1F_P2Aww"
+                src=""
                 alt="MEC AI Banner"
                 style={styles.banner}
               />
