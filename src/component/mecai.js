@@ -46,7 +46,7 @@ export default function MecAi() {
         messages: [
           {
             role: "system",
-            content: `You are MEC AI — a professional, warm, and friendly AI assistant created by Amzi for Mays DayCare and Edu Centre.
+            content: `You are MEC AI created by Amzi a developer — a professional, warm, and friendly AI assistant for Mays DayCare and Edu Centre.
             Use a calm, clear tone, and when possible, be helpful and polite.`,
           },
           ...messages.map((m) => ({ role: m.role, content: m.content })),
