@@ -128,7 +128,7 @@ const MecAIBanner = () => {
               </p>
               <button
                 style={styles.learnBtn}
-                onClick={() => document.location.href="/mecai.html"}
+                onClick={() => document.location.href="#/ai"}
               >
                 Explore
               </button>
