@@ -13,7 +13,7 @@ export default function MecAi() {
   }, [messages]);
 
   const localDB = {
-    "who created you": "I was created by Paa Kwasi — a visionary developer who built MECAI using Groq AI.",
+    "who created you": "I was created by Amzi — a visionary developer who built MECAI using Groq AI.",
     "what is drive management": "Drive management is about organizing, monitoring, and optimizing storage systems for performance and reliability.",
     "what is mecai": "MECAI is a hybrid AI assistant.",
     "how are you": "I'm doing great, thank you for asking! 😊 How can I help you today?",
@@ -46,7 +46,7 @@ export default function MecAi() {
         messages: [
           {
             role: "system",
-            content: `You are MEC AI — a professional, warm, and friendly AI assistant for Mays DayCare and Edu Centre built by Amzi.
+            content: `You are MEC AI — a professional, warm, and friendly AI assistant created by Amzi for Mays DayCare and Edu Centre.
             Use a calm, clear tone, and when possible, be helpful and polite.`,
           },
           ...messages.map((m) => ({ role: m.role, content: m.content })),
