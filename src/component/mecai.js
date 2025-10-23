@@ -1,67 +1,62 @@
-import React, { useState, useEffect, useRef } from "react";
-import { pipeline, env } from "@xenova/transformers";
-
-// ✅ Ensure model files and wasm load from CDN
-env.allowLocalModels = false;
-env.localModelPath = undefined;
-env.backends.onnx.wasm.wasmPaths =
-  "https://cdn.jsdelivr.net/npm/@xenova/transformers@2.14.0/dist/";
+import React, { useState, useRef } from "react";
 
 export default function MecAi() {
-  const [generator, setGenerator] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
+  const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const fileRef = useRef();
 
-  // Load model at startup
-  useEffect(() => {
-    async function loadModel() {
-      try {
-        console.log("⏳ Loading model...");
-        const pipe = await pipeline(
-          "text-generation",
-          // ⚡ much smaller model that always loads fast
-          "Xenova/tiny-random-gpt2"
-        );
-        setGenerator(pipe);
-        console.log("✅ Model loaded!");
-      } catch (err) {
-        console.error("Model failed:", err);
-        alert("Failed to load model. Try refreshing or use Chrome desktop.");
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadModel();
-  }, []);
+  async function sendMessage() {
+    if (!input.trim() && !image) return;
 
-  const handleSend = async () => {
-    if (!input.trim()) return;
-    setMessages((m) => [...m, { role: "user", text: input }]);
+    const userMsg = { role: "user", content: input, image };
+    setMessages((m) => [...m, userMsg]);
     setInput("");
-
-    if (!generator) {
-      setMessages((m) => [...m, { role: "ai", text: "⏳ Model still loading..." }]);
-      return;
-    }
+    setImage(null);
+    setLoading(true);
 
     try {
-      const output = await generator(input, {
-        max_new_tokens: 50,
-        temperature: 0.8,
+      // 🧠 Build the chat body
+      const body = {
+        model: "llama-3.1-8b-instant",
+        messages: [
+          ...messages.map((m) => ({ role: m.role, content: m.content })),
+          { role: "user", content: input },
+        ],
+      };
+
+      // 🌐 Fetch directly from Groq API
+      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${process.env.REACT_APP_GROQ_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
       });
-      const text =
-        output?.[0]?.generated_text?.replace(input, "").trim() ||
-        "🤖 (no response)";
-      setMessages((m) => [...m, { role: "ai", text }]);
+
+      const data = await res.json();
+      const reply = data?.choices?.[0]?.message?.content || "⚠️ No response.";
+      setMessages((m) => [...m, { role: "assistant", content: reply }]);
     } catch (err) {
-      console.error(err);
+      console.error("Groq API Error:", err);
       setMessages((m) => [
         ...m,
-        { role: "ai", text: "⚠️ Error generating text." },
+        { role: "assistant", content: "⚠️ Request failed. Check API key or network." },
       ]);
     }
-  };
+    setLoading(false);
+  }
+
+  function handleImage(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => setImage(reader.result);
+      reader.readAsDataURL(file);
+    }
+  }
 
   return (
     <div
@@ -88,38 +83,56 @@ export default function MecAi() {
           padding: "15px",
         }}
       >
-        <h2 style={{ textAlign: "center" }}>🤖 MECAI</h2>
+        <h2 style={{ textAlign: "center" }}>🤖 MECAI (Groq)</h2>
 
+        {/* Chat messages */}
         <div style={{ flex: 1, overflowY: "auto", marginBottom: "10px" }}>
           {messages.map((msg, i) => (
-            <div key={i} style={{ textAlign: msg.role === "user" ? "right" : "left" }}>
+            <div
+              key={i}
+              style={{
+                textAlign: msg.role === "user" ? "right" : "left",
+                marginBottom: "8px",
+              }}
+            >
               <div
                 style={{
                   display: "inline-block",
                   background: msg.role === "user" ? "#DCF8C6" : "#F1F0F0",
                   padding: "10px 15px",
                   borderRadius: "15px",
-                  margin: "4px 0",
+                  maxWidth: "70%",
+                  wordBreak: "break-word",
                 }}
               >
-                {msg.text}
+                {msg.image && (
+                  <img
+                    src={msg.image}
+                    alt="upload"
+                    style={{
+                      maxWidth: "100%",
+                      borderRadius: "8px",
+                      marginBottom: "6px",
+                    }}
+                  />
+                )}
+                {msg.content}
               </div>
             </div>
           ))}
           {loading && (
-            <p style={{ textAlign: "center", color: "#999" }}>
-              ⏳ Loading MECAI brain...
-            </p>
+            <p style={{ textAlign: "center", color: "#999" }}>Thinking...</p>
           )}
         </div>
 
+        {/* Input area */}
         <div style={{ display: "flex", gap: "8px" }}>
           <input
             type="text"
             placeholder="Ask MECAI..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
             style={{
               flex: 1,
               padding: "10px",
@@ -127,8 +140,28 @@ export default function MecAi() {
               border: "1px solid #ccc",
             }}
           />
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileRef}
+            onChange={handleImage}
+            style={{ display: "none" }}
+          />
           <button
-            onClick={handleSend}
+            onClick={() => fileRef.current.click()}
+            style={{
+              background: "#eee",
+              border: "none",
+              borderRadius: "8px",
+              padding: "10px 12px",
+              cursor: "pointer",
+            }}
+          >
+            📷
+          </button>
+          <button
+            onClick={sendMessage}
+            disabled={loading}
             style={{
               background: "#111827",
               color: "#fff",
