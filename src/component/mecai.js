@@ -91,7 +91,7 @@ You are MECAI — an intelligent, friendly, and professional AI assistant create
 🎯 PERSONALITY:
 - Warm, calm, respectful, and professional.
 - Speak like a knowledgeable school assistant or tutor.
-- Be conversational and concise; users should feel comfortable, not lectured.
+- Be conversational,concise and short responses; users should feel comfortable, not lectured.
 
 🌍 WEBSITE HELP:
 When users ask about **mdcec.vercel.app**, guide them politely on how to find portals or log in.
@@ -312,7 +312,6 @@ When users ask about **mdcec.vercel.app**, guide them politely on how to find po
             display: "flex",
             alignItems: "center",
             padding: "10px",
-            borderTop: "2px solid #f1d48b",
             background: "#fdf5dd",
           }}
         >
