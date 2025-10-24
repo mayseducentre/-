@@ -24,8 +24,9 @@ export default function MecAi() {
   const localDB = {
     "who created you": "I was built by AA — the developer for Mays DayCare & Edu Centre.",
     "what is mecai": "I’m MECAI, the assistant for Mays DayCare — simple, friendly, and quick.",
-    "webapp": "Visit [https://mdcec.vercel.app](https://mdcec.vercel.app) for everything about Mays DayCare.",
-    "where can i find the assessment portal": "Go to mdcec.vercel.app → click 'Student Portal' → then 'Assessments'.",
+    webapp: "Visit [https://mdcec.vercel.app](https://mdcec.vercel.app) for everything about Mays DayCare.",
+    "where can i find the assessment portal":
+      "Go to mdcec.vercel.app → click 'Student Portal' → then 'Assessments'.",
     "where is mays daycare": "Mays DayCare and Edu Centre is in Accra, Ghana.",
     "how are you": "Feeling great 😄 How about you?",
     hello: "Hi there 👋 What can I do for you?",
@@ -205,18 +206,40 @@ Rules:
         background: "#fff9e6",
       }}
     >
-      {/* Header */}
+      {/* Header with Clear Chat */}
       <div
         style={{
           background: "#b88523",
           color: "#fffdf7",
-          textAlign: "center",
-          padding: "16px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "12px 16px",
           fontWeight: "600",
           fontSize: "18px",
         }}
       >
-        🤖 MECAI
+        <span>🤖 MECAI</span>
+        <button
+          onClick={() => {
+            if (window.confirm("Clear all chat history?")) {
+              setMessages([]);
+              localStorage.removeItem("mecai_chat");
+            }
+          }}
+          style={{
+            background: "#fffdf7",
+            color: "#b88523",
+            border: "none",
+            borderRadius: "8px",
+            padding: "6px 10px",
+            fontSize: "14px",
+            cursor: "pointer",
+            fontWeight: "600",
+          }}
+        >
+          Clear Chat
+        </button>
       </div>
 
       {/* Chat Area */}
