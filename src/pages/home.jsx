@@ -18,6 +18,7 @@ import SecretIpPush from "../component/secret"
 import "react-loading-skeleton/dist/skeleton.css"
 import LongSwipeToAssess from "../component/shortcut";
 import MecAIBanner from "../component/mecaibanner";
+import InstallPromo from "../component/installpromo";
 
 // function loadP(){
 //     setTimeout(()=>{
@@ -63,6 +64,7 @@ export default function Home(){
         <br/>
         <br/>
         <About />
+        <InstallPromo />
         <Category />
         {/* <Noties />
         <NotificationPermission /> */}
