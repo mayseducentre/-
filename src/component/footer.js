@@ -63,6 +63,7 @@ export default function Footer(){
               <li><i className="fa fa-chevron-right"></i><a onClick={Aconfig}>Assessment Sheet</a></li>
               <li><i className="fa fa-chevron-right"></i><a onClick={getaccess}>AAS</a></li>
               <li><i className="fa fa-chevron-right"></i><a href="#/digital_note">Digital Note</a></li>
+              <li><i className="fa fa-chevron-right"></i> <a href="#/ins_guide">Install MEC webapp</a></li>
               <li><i className="fa fa-chevron-right"></i><a onClick={openGen} target="_blank" rel="noopener noreferrer">Exam Gen</a></li>
             </ul>
           </div>
@@ -73,10 +74,8 @@ export default function Footer(){
               <li><i className="fa fa-chevron-right"></i> <a href="#">Sports</a></li>
               <li><i className="fa fa-chevron-right"></i> <a href="#">Clubs</a></li>
               <li><i className="fa fa-chevron-right"></i> <a href="#">Arts</a></li>
-              <li><i className="fa fa-chevron-right"></i> <a href="#">Programming</a></li>
-              <li><i className="fa fa-chevron-right"></i> <a href="#">Install MEC webapp</a></li>
-              <li><i className="fa fa-chevron-right"></i> <a href="#">Reading</a></li>
-            </ul>
+              <li><i className="fa fa-chevron-right"></i> <a href="#">Programming</a></li>              <li><i className="fa fa-chevron-right"></i> <a href="#">Reading</a></li>
+          </ul>
           </div>
 
           
