@@ -74,6 +74,7 @@ export default function Footer(){
               <li><i className="fa fa-chevron-right"></i> <a href="#">Clubs</a></li>
               <li><i className="fa fa-chevron-right"></i> <a href="#">Arts</a></li>
               <li><i className="fa fa-chevron-right"></i> <a href="#">Programming</a></li>
+              <li><i className="fa fa-chevron-right"></i> <a href="#">Install MEC webapp</a></li>
               <li><i className="fa fa-chevron-right"></i> <a href="#">Reading</a></li>
             </ul>
           </div>
