@@ -54,6 +54,9 @@ export default function InsGuide(){
             Firefox and other modern browsers offer a similar installation option, though it might be labeled differently (like "Save to desktop")
             </p>
             </div>
+
+                <br/>
+                <a href="https://drive.google.com/file/d/1tVRy5u816IYH_hGuD80Wbj-1HYc0975h/view?usp=drivesdk">Download Base APK </a>
         <Footer />
         </>
     )
