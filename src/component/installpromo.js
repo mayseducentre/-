@@ -21,7 +21,7 @@ export default function InstallPromo() {
       }}
     >
       <div
-        onClick={() => navigate("/ins-guide")}
+        onClick={() => navigate("#/ins_guide")}
         style={{
           opacity: visible ? 1 : 0,
           transform: visible ? "translateY(0)" : "translateY(30px)",
