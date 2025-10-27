@@ -8,10 +8,13 @@ export default function MecAi() {
   const [input, setInput] = useState("");
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showPaywall, setShowPaywall] = useState(false);
   const fileRef = useRef(null);
   const chatEndRef = useRef(null);
 
-  /* -------------------- Scroll and Local Save -------------------- */
+  const FREE_LIMIT = 50;
+
+  /* -------------------- Scroll and Save -------------------- */
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
     localStorage.setItem("mecai_chat", JSON.stringify(messages));
@@ -37,6 +40,17 @@ export default function MecAi() {
   /* -------------------- Message Sending -------------------- */
   async function sendMessage() {
     if (!input.trim() && !image) return;
+
+    // 🔹 Check request limit
+    let usageCount = parseInt(localStorage.getItem("mecai_requests") || "0", 10);
+    if (usageCount >= FREE_LIMIT) {
+      setShowPaywall(true);
+      return;
+    }
+
+    // Increment usage count
+    usageCount += 1;
+    localStorage.setItem("mecai_requests", usageCount.toString());
 
     const userMsg = { role: "user", content: input, image };
     setMessages((m) => [...m, userMsg]);
@@ -91,7 +105,7 @@ You are MECAI — an intelligent, friendly, and professional AI assistant create
 🎯 PERSONALITY:
 - Warm, calm, respectful, and professional.
 - Speak like a knowledgeable school assistant or tutor.
-- Be conversational,concise and short responses; users should feel comfortable, not lectured.
+- Be conversational, concise and short responses; users should feel comfortable, not lectured.
 
 🌍 WEBSITE HELP:
 When users ask about **mdcec.vercel.app**, guide them politely on how to find portals or log in.
@@ -135,10 +149,11 @@ When users ask about **mdcec.vercel.app**, guide them politely on how to find po
     }
   }
 
-  /* -------------------- Clear Chat -------------------- */
-  function clearChat() {
-    localStorage.removeItem("mecai_chat");
-    setMessages([]);
+  /* -------------------- Reset Limit -------------------- */
+  function resetUsage() {
+    localStorage.removeItem("mecai_requests");
+    setShowPaywall(false);
+    alert("✅ Your limit has been reset. Thank you for your support!");
   }
 
   /* -------------------- UI -------------------- */
@@ -163,6 +178,7 @@ When users ask about **mdcec.vercel.app**, guide them politely on how to find po
           background: "#fffdf7",
           borderLeft: "1px solid #f1d48b",
           borderRight: "1px solid #f1d48b",
+          position: "relative",
         }}
       >
         {/* Header */}
@@ -176,30 +192,14 @@ When users ask about **mdcec.vercel.app**, guide them politely on how to find po
             fontSize: "17px",
             borderBottom: "2px solid #b88523",
             boxShadow: "0 2px 6px rgba(107,59,0,0.15)",
-            position: "relative",
           }}
         >
           🤖 MEC AI
-          {messages.length > 0 && (
-            <button
-              onClick={clearChat}
-              style={{
-                position: "absolute",
-                right: "10px",
-                top: "8px",
-                background: "#fffdf7",
-                color: "#b88523",
-                border: "none",
-                borderRadius: "8px",
-                padding: "6px 10px",
-                cursor: "pointer",
-                fontSize: "13px",
-                fontWeight: 600,
-              }}
-            >
-              Clear
-            </button>
-          )}
+          <div style={{ fontSize: "12px", opacity: 0.9 }}>
+            {FREE_LIMIT -
+              parseInt(localStorage.getItem("mecai_requests") || "0", 10)}{" "}
+            free messages left
+          </div>
         </div>
 
         {/* Chat Area */}
@@ -209,7 +209,6 @@ When users ask about **mdcec.vercel.app**, guide them politely on how to find po
             padding: "20px",
             overflowY: "auto",
             background: "#fff9e6",
-            position: "relative",
           }}
         >
           {messages.length === 0 && !loading && (
@@ -313,6 +312,7 @@ When users ask about **mdcec.vercel.app**, guide them politely on how to find po
             alignItems: "center",
             padding: "10px",
             background: "#fdf5dd",
+            borderTop: "2px solid #f1d48b",
           }}
         >
           <input
@@ -370,6 +370,72 @@ When users ask about **mdcec.vercel.app**, guide them politely on how to find po
             ➤
           </button>
         </div>
+
+        {/* 💳 Paywall Modal */}
+        {showPaywall && (
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              background: "rgba(0,0,0,0.5)",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 1000,
+            }}
+          >
+            <div
+              style={{
+                background: "#fffdf7",
+                padding: "30px 25px",
+                borderRadius: "14px",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+                textAlign: "center",
+                maxWidth: "320px",
+              }}
+            >
+              <h3 style={{ color: "#b88523", marginBottom: "10px" }}>
+                You've reached your free limit
+              </h3>
+              <p style={{ color: "#3e2b00", fontSize: "14px", marginBottom: "20px" }}>
+                You’ve used your 50 free messages. Please upgrade to continue chatting with MECAI.
+              </p>
+              <button
+                onClick={() => window.open("https://yourpaymentlink.com", "_blank")}
+                style={{
+                  background: "#b88523",
+                  color: "#fffdf7",
+                  border: "none",
+                  borderRadius: "10px",
+                  padding: "10px 20px",
+                  marginBottom: "10px",
+                  cursor: "pointer",
+                  fontWeight: 600,
+                }}
+              >
+                💳 Pay to Continue
+              </button>
+              <br />
+              <button
+                onClick={resetUsage}
+                style={{
+                  background: "#fffdf7",
+                  border: "1px solid #b88523",
+                  borderRadius: "10px",
+                  padding: "8px 16px",
+                  cursor: "pointer",
+                  color: "#b88523",
+                  fontWeight: 500,
+                }}
+              >
+                I’ve Paid – Reset Limit
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
