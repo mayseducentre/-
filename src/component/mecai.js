@@ -4,7 +4,6 @@ const FREE_LIMIT = 100;
 const UNLOCK_TOKEN = "Mec_user199";
 
 export default function MecAi() {
-  /* ---------- States ---------- */
   const [messages, setMessages] = useState(() => {
     const raw = localStorage.getItem("mecai_chat");
     return raw ? JSON.parse(raw) : [];
@@ -15,15 +14,12 @@ export default function MecAi() {
   const [tokenInput, setTokenInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [typeWriterText, setTypeWriterText] = useState("");
-  const [showLinks, setShowLinks] = useState(false);
   const [theme, setTheme] = useState("ocean");
   const [voiceEnabled, setVoiceEnabled] = useState(true);
-  const [fastMode, setFastMode] = useState(false);
 
   const chatEndRef = useRef(null);
-  const fileRef = useRef(null);
 
-  /* ---------- LocalStorage Helpers ---------- */
+  // usage helpers
   const getUsage = () => parseInt(localStorage.getItem("mecai_requests") || "0", 10);
   const setUsage = (n) => localStorage.setItem("mecai_requests", String(n));
   const incrementUsage = () => {
@@ -44,26 +40,26 @@ export default function MecAi() {
     localStorage.setItem("mecai_chat", JSON.stringify(messages));
   }, [messages]);
 
-  /* ---------- Local Quick DB ---------- */
   const localDB = {
-    "where is mays daycare located": "Mays DayCare and Edu Centre is located in Accra, Ghana.",
+    hello: "Hello there 👋! How can I help you today?",
+    "where is mays daycare located":
+      "Mays DayCare and Edu Centre is located in Accra, Ghana.",
     "student login":
       "Visit mdcec.vercel.app → click on 'Login' → choose 'Student Portal'.",
     "teacher login":
       "Teachers can log in through the 'Staff Portal' option on mdcec.vercel.app.",
-    hello: "Hello there 👋! How can I help you today?",
   };
 
-  /* ---------- Typewriter ---------- */
+  // typewriter effect
   function simulateTypewriter(text, cb) {
     setIsTyping(true);
     setTypeWriterText("");
     let i = 0;
-    const interval = setInterval(() => {
+    const t = setInterval(() => {
       setTypeWriterText((p) => p + text.charAt(i));
       i++;
       if (i >= text.length) {
-        clearInterval(interval);
+        clearInterval(t);
         setIsTyping(false);
         setTypeWriterText("");
         cb && cb();
@@ -71,17 +67,16 @@ export default function MecAi() {
     }, 20);
   }
 
-  /* ---------- Voice ---------- */
-  const speak = (text) => {
+  // voice read single message
+  function speak(text) {
     if (!voiceEnabled || !window.speechSynthesis) return;
     const utter = new SpeechSynthesisUtterance(text);
     utter.lang = "en-GB";
     utter.rate = 1;
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(utter);
-  };
+  }
 
-  /* ---------- Core Send ---------- */
   async function sendMessage() {
     if (!input.trim()) return;
     if (!isPro() && getUsage() >= FREE_LIMIT) {
@@ -107,7 +102,6 @@ export default function MecAi() {
       return;
     }
 
-    // Anti-jailbreak protection
     if (
       lower.match(
         /(ignore previous|system prompt|pretend to be|forget|reset|reprogram|you are not mecai)/
@@ -125,7 +119,7 @@ export default function MecAi() {
 
     try {
       const body = {
-        model: fastMode ? "llama-3.1-8b-instant-fast" : "llama-3.1-8b-instant",
+        model: "llama-3.1-8b-instant",
         messages: [
           {
             role: "system",
@@ -143,10 +137,7 @@ You are MECAI — an intelligent, friendly, and professional AI assistant create
 - Be confident, polite, and never repetitive.
 
 🌍 WEBSITE HELP:
-Guide users about mdcec.vercel.app portals, logins, and directions.
-
-🧾 MEMORY:
-If users ask for previous chat, say: "I can only see our current chat on screen."`,
+Guide users about mdcec.vercel.app portals, logins, and directions.`,
           },
           ...messages.map((m) => ({ role: m.role, content: m.content })),
           { role: "user", content: input },
@@ -178,106 +169,110 @@ If users ask for previous chat, say: "I can only see our current chat on screen.
     }
   }
 
-  /* ---------- Verify Token ---------- */
   function verifyToken() {
     if (tokenInput.trim() === UNLOCK_TOKEN) {
       setPro();
       alert("✅ Token accepted. MECAI PRO unlocked!");
       setShowModal(false);
       setTokenInput("");
-    } else {
-      alert("❌ Invalid token.");
-    }
+    } else alert("❌ Invalid token.");
   }
 
-  /* ---------- Clear Chat ---------- */
   function clearChat() {
     setMessages([]);
     resetUsage();
   }
 
-  /* ---------- THEME MAP ---------- */
   const themes = {
     ocean: {
-      bg: "linear-gradient(180deg,#e8f0ff,#f4f8ff)",
-      header: "linear-gradient(90deg,#1e3a8a,#2a62d4)",
-      user: "linear-gradient(90deg,#2a62d4,#1e3a8a)",
-      ai: "#eef4ff",
+      accent: "#2563eb",
+      gradient: "linear-gradient(180deg,#e8f0ff,#f4f8ff)",
     },
     silver: {
-      bg: "linear-gradient(180deg,#f7f8fa,#eef1f6)",
-      header: "linear-gradient(90deg,#94a3b8,#64748b)",
-      user: "#4b5563",
-      ai: "#f1f5f9",
+      accent: "#64748b",
+      gradient: "linear-gradient(180deg,#f7f8fa,#eef1f6)",
+    },
+    lavender: {
+      accent: "#7c3aed",
+      gradient: "linear-gradient(180deg,#f5f3ff,#ede9fe)",
+    },
+    sunset: {
+      accent: "#f97316",
+      gradient: "linear-gradient(180deg,#fff7ed,#ffedd5)",
     },
   };
 
   const pro = isPro();
-  const t = pro ? themes[theme] : {
-    bg: "linear-gradient(180deg,#fff9e6,#fffdf7)",
-    header: "linear-gradient(90deg,#b88523,#d6a33e)",
-    user: "#b88523",
-    ai: "#f8e5b6",
-  };
+  const t = pro ? themes[theme] : { accent: "#b88523", gradient: "linear-gradient(180deg,#fff9e6,#fffdf7)" };
 
-  /* ---------- UI ---------- */
   return (
     <div
       style={{
         height: "100vh",
         width: "100%",
-        background: t.bg,
+        background: t.gradient,
         display: "flex",
         flexDirection: "column",
-        fontFamily: "Inter, sans-serif",
+        fontFamily: "Inter, -apple-system, sans-serif",
       }}
     >
       {/* HEADER */}
-      <div
+      <header
         style={{
-          background: t.header,
-          color: "#fff",
+          backdropFilter: "blur(10px)",
+          background: "rgba(255,255,255,0.7)",
+          borderBottom: pro
+            ? `2px solid ${t.accent}`
+            : "1px solid rgba(0,0,0,0.08)",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
+          padding: "12px 18px",
           display: "flex",
-          alignItems: "center",
           justifyContent: "space-between",
-          padding: "12px 16px",
-          boxShadow: "0 3px 10px rgba(0,0,0,0.1)",
+          alignItems: "center",
+          fontWeight: 600,
         }}
       >
-        <div style={{ fontWeight: 700, fontSize: 18 }}>
-          {pro ? "MECAI PRO" : "MEC AI"}
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div style={{ fontSize: 20 }}>🤖</div>
+          <div>{pro ? "MECAI PRO" : "MEC AI"}</div>
         </div>
-        <div style={{ display: "flex", gap: 8 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           {pro && (
-            <>
-              <select
-                value={theme}
-                onChange={(e) => setTheme(e.target.value)}
-                style={{ padding: 6, borderRadius: 6 }}
-              >
-                <option value="ocean">Ocean Blue</option>
-                <option value="silver">Silver Gray</option>
-              </select>
-              <label style={{ fontSize: 13 }}>
-                <input
-                  type="checkbox"
-                  checked={fastMode}
-                  onChange={(e) => setFastMode(e.target.checked)}
-                />{" "}
-                Fast
-              </label>
-            </>
+            <select
+              value={theme}
+              onChange={(e) => setTheme(e.target.value)}
+              style={{
+                borderRadius: 8,
+                padding: "6px 8px",
+                border: "1px solid rgba(0,0,0,0.1)",
+                fontWeight: 500,
+              }}
+            >
+              <option value="ocean">🌊 Ocean Blue</option>
+              <option value="silver">🩶 Silver Gray</option>
+              <option value="lavender">💜 Lavender Mist</option>
+              <option value="sunset">🌇 Sunset Gold</option>
+            </select>
           )}
+          <label style={{ fontSize: 13 }}>
+            <input
+              type="checkbox"
+              checked={voiceEnabled}
+              onChange={(e) => setVoiceEnabled(e.target.checked)}
+            />{" "}
+            Voice
+          </label>
           {!pro && (
             <button
               onClick={() => setShowModal(true)}
               style={{
-                background: "#fff",
-                color: "#333",
+                background: t.accent,
+                color: "#fff",
                 border: "none",
                 borderRadius: 8,
                 padding: "6px 10px",
                 cursor: "pointer",
+                fontWeight: 600,
               }}
             >
               Upgrade
@@ -286,20 +281,20 @@ If users ask for previous chat, say: "I can only see our current chat on screen.
           <button
             onClick={clearChat}
             style={{
-              background: "rgba(255,255,255,0.2)",
-              color: "#fff",
+              background: "rgba(255,255,255,0.3)",
               border: "none",
               borderRadius: 8,
               padding: "6px 10px",
               cursor: "pointer",
+              fontWeight: 600,
             }}
           >
             Clear
           </button>
         </div>
-      </div>
+      </header>
 
-      {/* CHAT AREA */}
+      {/* CHAT */}
       <div
         style={{
           flex: 1,
@@ -325,27 +320,52 @@ If users ask for previous chat, say: "I can only see our current chat on screen.
             key={i}
             style={{
               display: "flex",
-              justifyContent:
-                msg.role === "user" ? "flex-end" : "flex-start",
-              marginBottom: 12,
+              justifyContent: msg.role === "user" ? "flex-end" : "flex-start",
+              marginBottom: 14,
+              animation: "fadeIn 0.3s ease",
             }}
           >
             <div
               style={{
-                background: msg.role === "user" ? t.user : t.ai,
+                background:
+                  msg.role === "user"
+                    ? pro
+                      ? t.accent
+                      : "#b88523"
+                    : pro
+                    ? "rgba(255,255,255,0.8)"
+                    : "#fffdf7",
                 color: msg.role === "user" ? "#fff" : "#000",
                 padding: "10px 14px",
                 borderRadius:
                   msg.role === "user"
                     ? "16px 16px 4px 16px"
                     : "16px 16px 16px 4px",
-                maxWidth: "80%",
-                lineHeight: 1.5,
                 boxShadow:
-                  "0 3px 8px rgba(0,0,0,0.08)",
+                  "0 3px 10px rgba(0,0,0,0.08)",
+                maxWidth: "80%",
+                position: "relative",
               }}
             >
               {msg.content}
+              {msg.role === "assistant" && voiceEnabled && (
+                <button
+                  onClick={() => speak(msg.content)}
+                  style={{
+                    position: "absolute",
+                    right: -28,
+                    top: 8,
+                    background: "transparent",
+                    border: "none",
+                    cursor: "pointer",
+                    fontSize: 16,
+                    color: t.accent,
+                  }}
+                  title="Read this message"
+                >
+                  🔊
+                </button>
+              )}
             </div>
           </div>
         ))}
@@ -366,7 +386,7 @@ If users ask for previous chat, say: "I can only see our current chat on screen.
                   width: 8,
                   height: 8,
                   borderRadius: "50%",
-                  background: "#1e3a8a",
+                  background: t.accent,
                   animation: `dotPulse 1s infinite ease-in-out ${delay}s`,
                 }}
               />
@@ -389,7 +409,6 @@ If users ask for previous chat, say: "I can only see our current chat on screen.
         <div ref={chatEndRef}></div>
       </div>
 
-      {/* LIMIT */}
       {!pro && getUsage() >= FREE_LIMIT && (
         <div
           style={{
@@ -406,7 +425,7 @@ If users ask for previous chat, say: "I can only see our current chat on screen.
             style={{
               border: "none",
               background: "none",
-              color: "#1e3a8a",
+              color: t.accent,
               fontWeight: 700,
               cursor: "pointer",
             }}
@@ -420,9 +439,10 @@ If users ask for previous chat, say: "I can only see our current chat on screen.
       {/* INPUT */}
       <div
         style={{
-          padding: 10,
-          borderTop: "1px solid #ddd",
-          background: "#fff",
+          padding: 12,
+          backdropFilter: "blur(8px)",
+          background: "rgba(255,255,255,0.8)",
+          borderTop: "1px solid rgba(0,0,0,0.1)",
           display: "flex",
           alignItems: "center",
           gap: 8,
@@ -437,30 +457,33 @@ If users ask for previous chat, say: "I can only see our current chat on screen.
           disabled={!pro && getUsage() >= FREE_LIMIT}
           style={{
             flex: 1,
-            padding: "10px 12px",
-            borderRadius: 8,
-            border: "1px solid #ccc",
+            padding: "10px 14px",
+            borderRadius: 10,
+            border: "1px solid #ddd",
             outline: "none",
+            background: "#fff",
+            fontSize: 15,
           }}
         />
         <button
           onClick={sendMessage}
           disabled={loading || (!pro && getUsage() >= FREE_LIMIT)}
           style={{
-            background: t.user,
+            background: t.accent,
             color: "#fff",
             border: "none",
-            borderRadius: 8,
+            borderRadius: 10,
             padding: "10px 16px",
-            fontWeight: 600,
+            fontWeight: 700,
             cursor: "pointer",
+            boxShadow: "0 3px 8px rgba(0,0,0,0.1)",
           }}
         >
           ➤
         </button>
       </div>
 
-      {/* TOKEN MODAL */}
+      {/* MODAL */}
       {showModal && (
         <div
           style={{
@@ -483,7 +506,7 @@ If users ask for previous chat, say: "I can only see our current chat on screen.
               boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
             }}
           >
-            <h3 style={{ marginTop: 0 }}>Unlock MECAI PRO</h3>
+            <h3 style={{ marginTop: 0, color: "#111" }}>Unlock MECAI PRO</h3>
             <p style={{ color: "#555", fontSize: 14 }}>
               Enter your token to unlock permanent access.
             </p>
@@ -503,7 +526,7 @@ If users ask for previous chat, say: "I can only see our current chat on screen.
               onClick={verifyToken}
               style={{
                 width: "100%",
-                background: "#1e3a8a",
+                background: t.accent,
                 color: "#fff",
                 border: "none",
                 borderRadius: 8,
@@ -520,7 +543,7 @@ If users ask for previous chat, say: "I can only see our current chat on screen.
                 width: "100%",
                 background: "none",
                 border: "none",
-                color: "#2563eb",
+                color: t.accent,
                 marginTop: 8,
                 cursor: "pointer",
               }}
