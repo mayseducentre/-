@@ -1,21 +1,21 @@
 import React, { useState, useRef, useEffect } from "react";
 
 /**
- * MecAi (PRO-ready) component
+ * MecAi.js
  *
- * Changes requested:
- * - Keeps original system message exactly as in your original file.
- * - Free usage: 100 messages total (not per day). Once user exceeds 100, paywall appears.
- * - After paying and entering a valid token (which you issue), user is upgraded to MECAI PRO permanently.
- * - MECAI PRO has an "elegant blue & silver" UI theme, PRO badge, and unlimited usage.
- * - Pay button opens phone app to: 0549548274
- * - Admin can add tokens via hidden admin UI (click "v1" five times).
- * - Clear chat button clears local storage chat.
+ * - 100 free messages total (tracked in localStorage as "mecai_requests")
+ * - When limit exceeded, modal asks for unlock token
+ * - If token matches UNLOCK_TOKEN, user becomes MECAI PRO permanently (stored as "mecai_pro")
+ * - PRO theme = elegant blue & silver
+ * - Clear Chat clears stored messages and resets message count (but does not revoke PRO)
  *
- * Notes:
- * - Token issuance / verification is frontend-only here: add tokens via console or the admin UI.
- * - For production, move token issuance/verification to a backend.
+ * NOTE: Replace UNLOCK_TOKEN with your chosen token (e.g., "Mec_user199") before distributing,
+ * or keep this one and change later.
  */
+
+const UNLOCK_TOKEN = "ASSIST-PRO-8F3D"; // <- change this to your token (e.g., "Mec_user199")
+const FREE_LIMIT = 100;
+const MOMO_NUMBER = "0549548274"; // used for display only (no payment enforced)
 
 export default function MecAi() {
   const [messages, setMessages] = useState(() => {
@@ -25,7 +25,7 @@ export default function MecAi() {
   const [input, setInput] = useState("");
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [showPaywall, setShowPaywall] = useState(false);
+  const [showUnlockModal, setShowUnlockModal] = useState(false);
   const [tokenInput, setTokenInput] = useState("");
   const [adminClicks, setAdminClicks] = useState(0);
   const [showAdmin, setShowAdmin] = useState(false);
@@ -34,43 +34,39 @@ export default function MecAi() {
   const fileRef = useRef(null);
   const chatEndRef = useRef(null);
 
-  const FREE_LIMIT = 100; // changed from 50 to 100 and not daily — cumulative until exceeded
-  const MOMO_NUMBER = "0549548274";
-
-  /* -------------------- Helpers -------------------- */
-  function getUsageCount() {
+  // usage helpers
+  function getUsage() {
     return parseInt(localStorage.getItem("mecai_requests") || "0", 10);
   }
-
-  function setUsageCount(n) {
+  function setUsage(n) {
     localStorage.setItem("mecai_requests", String(n));
   }
-
   function incrementUsage() {
-    const c = getUsageCount() + 1;
-    setUsageCount(c);
-    return c;
+    const n = getUsage() + 1;
+    setUsage(n);
+    return n;
   }
 
+  // PRO helpers
   function isPro() {
     return localStorage.getItem("mecai_pro") === "true";
   }
-
   function setPro(flag = true) {
-    localStorage.setItem("mecai_pro", flag ? "true" : "false");
-    if (flag) localStorage.setItem("mecai_pro_date", new Date().toISOString());
-    else {
+    if (flag) {
+      localStorage.setItem("mecai_pro", "true");
+      localStorage.setItem("mecai_pro_date", new Date().toISOString());
+    } else {
+      localStorage.removeItem("mecai_pro");
       localStorage.removeItem("mecai_pro_date");
     }
   }
 
-  /* -------------------- Scroll & Persist -------------------- */
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
     localStorage.setItem("mecai_chat", JSON.stringify(messages));
   }, [messages]);
 
-  /* -------------------- Local DB (unchanged prompts) -------------------- */
+  /* ---------------- Local quick DB (unchanged) ---------------- */
   const localDB = {
     "where is mays daycare located":
       "Mays DayCare and Edu Centre is located in Accra, Ghana.",
@@ -87,67 +83,20 @@ export default function MecAi() {
     hello: "Hello there! 👋 How may I assist you today?",
   };
 
-  /* -------------------- Token storage helpers -------------------- */
-  function getValidTokens() {
-    try {
-      const raw = localStorage.getItem("mecai_valid_tokens");
-      return raw ? JSON.parse(raw) : [];
-    } catch {
-      return [];
-    }
-  }
-
-  function removeUsedToken(token) {
-    try {
-      const tokens = getValidTokens().filter((t) => t !== token);
-      localStorage.setItem("mecai_valid_tokens", JSON.stringify(tokens));
-    } catch {}
-  }
-
-  function verifyTokenAndMakePro(tokenStr) {
-    const tokens = getValidTokens();
-    if (!tokenStr || tokenStr.trim() === "") {
-      alert("Please enter the token you received.");
-      return false;
-    }
-    const normalized = tokenStr.trim();
-    if (tokens.includes(normalized)) {
-      // Upgrade to PRO permanently
-      setPro(true);
-      // Optionally remove token so it can't be reused
-      removeUsedToken(normalized);
-      setShowPaywall(false);
-      setTokenInput("");
-      alert("✅ Token verified. Your account has been upgraded to MECAI PRO. Thank you!");
-      return true;
-    } else {
-      alert("❌ Invalid token. Please check the code and try again.");
-      return false;
-    }
-  }
-
-  function addTokenAdmin(newToken) {
-    if (!newToken || newToken.trim() === "") return;
-    const tokens = getValidTokens();
-    tokens.push(newToken.trim());
-    localStorage.setItem("mecai_valid_tokens", JSON.stringify(tokens));
-    alert(`Token added: ${newToken}`);
-  }
-
-  /* -------------------- Send message -------------------- */
+  /* ---------------- Send Message ---------------- */
   async function sendMessage() {
+    // Basic guard
     if (!input.trim() && !image) return;
 
-    // If user is PRO, no usage counting and no paywall
+    // If not PRO, check usage
     if (!isPro()) {
-      const current = incrementUsage();
-      if (current > FREE_LIMIT) {
-        // usage exceeded — show paywall and do not send this message
-        setShowPaywall(true);
-        // revert the increment because we didn't actually send the message
-        setUsageCount(current - 1);
-        return;
+      const current = getUsage();
+      if (current >= FREE_LIMIT) {
+        setShowUnlockModal(true);
+        return; // block until token entered
       }
+      // increment usage now (we count this attempt)
+      incrementUsage();
     }
 
     const userMsg = { role: "user", content: input, image };
@@ -156,19 +105,19 @@ export default function MecAi() {
     setImage(null);
     setLoading(true);
 
-    const userInput = input.toLowerCase().trim();
+    const userInput = (input || "").toLowerCase().trim();
 
-    // Local quick replies
+    // local quick replies
     const localResponse = localDB[userInput];
     if (localResponse) {
       setTimeout(() => {
         setMessages((m) => [...m, { role: "assistant", content: localResponse }]);
         setLoading(false);
-      }, 600);
+      }, 500);
       return;
     }
 
-    // Anti-jailbreak (preserve original behavior)
+    // anti-jailbreak (preserved)
     if (
       userInput.match(
         /(ignore previous|system prompt|pretend to be|forget|reset|reprogram|you are not mecai)/
@@ -186,8 +135,8 @@ export default function MecAi() {
       return;
     }
 
+    // call GROQ API (same as original)
     try {
-      // Preserve original system message exactly
       const body = {
         model: "llama-3.1-8b-instant",
         messages: [
@@ -208,7 +157,7 @@ You are MECAI — an intelligent, friendly, and professional AI assistant create
 
 🌍 WEBSITE HELP:
 When users ask about **mdcec.vercel.app**, guide them politely on how to find portals or log in.
-            `,
+          `,
           },
           ...messages.map((m) => ({ role: m.role, content: m.content })),
           { role: "user", content: input },
@@ -238,43 +187,94 @@ When users ask about **mdcec.vercel.app**, guide them politely on how to find po
     }
   }
 
-  /* -------------------- Image handler -------------------- */
+  /* ---------------- Image Handler ---------------- */
   function handleImage(e) {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => setImage(reader.result);
-      reader.readAsDataURL(file);
-    }
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => setImage(reader.result);
+    reader.readAsDataURL(file);
   }
 
-  /* -------------------- Clear chat (local storage) -------------------- */
+  /* ---------------- Clear Chat (resets count too) ---------------- */
   function clearChat() {
     localStorage.removeItem("mecai_chat");
+    localStorage.removeItem("mecai_requests");
     setMessages([]);
+    setUsage(0);
+    // do not change PRO status
   }
 
-  /* -------------------- Admin reveal -------------------- */
+  /* ---------------- Token verify ---------------- */
+  function verifyToken() {
+    const entered = (tokenInput || "").trim();
+    if (entered === "") {
+      alert("Enter the unlock token.");
+      return;
+    }
+    // Check against UNLOCK_TOKEN first
+    if (entered === UNLOCK_TOKEN) {
+      setPro(true);
+      // reset usage so they can continue immediately
+      setUsage(0);
+      setShowUnlockModal(false);
+      setTokenInput("");
+      alert("✅ Token valid — MECAI PRO unlocked permanently.");
+      return;
+    }
+
+    // Also allow tokens present in shared list (optional)
+    // If you want to support a list of issued tokens, you can store them in localStorage as 'mecai_valid_tokens'
+    const listRaw = localStorage.getItem("mecai_valid_tokens");
+    if (listRaw) {
+      try {
+        const list = JSON.parse(listRaw);
+        if (Array.isArray(list) && list.includes(entered)) {
+          // make pro and remove token so it can't be reused
+          setPro(true);
+          const newList = list.filter((t) => t !== entered);
+          localStorage.setItem("mecai_valid_tokens", JSON.stringify(newList));
+          setUsage(0);
+          setShowUnlockModal(false);
+          setTokenInput("");
+          alert("✅ Token verified. MECAI PRO unlocked permanently.");
+          return;
+        }
+      } catch {}
+    }
+
+    alert("❌ Invalid token. Please check the code and try again.");
+  }
+
+  /* ---------------- Admin add token UI (hidden) ---------------- */
   useEffect(() => {
     if (adminClicks >= 5) setShowAdmin(true);
   }, [adminClicks]);
 
-  /* -------------------- UI theme selection -------------------- */
+  function addTokenAdmin(newToken) {
+    if (!newToken || !newToken.trim()) return alert("Enter token");
+    const raw = localStorage.getItem("mecai_valid_tokens");
+    const arr = raw ? JSON.parse(raw) : [];
+    arr.push(newToken.trim());
+    localStorage.setItem("mecai_valid_tokens", JSON.stringify(arr));
+    setAdminTokenValue("");
+    alert("Token added to shared list.");
+  }
+
+  /* ---------------- Theme selection ---------------- */
   const pro = isPro();
-  // Elegant blue & silver for PRO
   const THEME = pro
     ? {
         bg: "#eaf2ff",
         card: "#f6f9ff",
-        header: "#143a8a", // deep elegant blue
-        accent: "#9fb4d9", // silver-blue accent
-        userBubble: "#1e3a8a", // user bubble dark blue
-        aiBubble: "#dbe9ff", // assistant bubble light
+        header: "#143a8a",
+        accent: "#9fb4d9",
+        userBubble: "#1e3a8a",
+        aiBubble: "#dbe9ff",
         textOnHeader: "#ffffff",
         text: "#0b1726",
       }
     : {
-        // original warm theme for free users (kept similar to original)
         bg: "#fff9e6",
         card: "#fffdf7",
         header: "#d6a33e",
@@ -285,7 +285,7 @@ When users ask about **mdcec.vercel.app**, guide them politely on how to find po
         text: "#3e2b00",
       };
 
-  const usageCount = getUsageCount();
+  const usageCount = getUsage();
   const usageLeft = Math.max(0, FREE_LIMIT - usageCount);
 
   return (
@@ -373,7 +373,7 @@ When users ask about **mdcec.vercel.app**, guide them politely on how to find po
           </div>
         </div>
 
-        {/* Chat area */}
+        {/* Chat Area */}
         <div
           style={{
             flex: 1,
@@ -471,7 +471,7 @@ When users ask about **mdcec.vercel.app**, guide them politely on how to find po
           <div ref={chatEndRef}></div>
         </div>
 
-        {/* Input bar */}
+        {/* Input Bar */}
         <div
           style={{
             display: "flex",
@@ -537,8 +537,8 @@ When users ask about **mdcec.vercel.app**, guide them politely on how to find po
           </button>
         </div>
 
-        {/* Paywall Modal (shown when usage exceeded and user is not PRO) */}
-        {showPaywall && !pro && (
+        {/* Unlock Modal */}
+        {showUnlockModal && !pro && (
           <div
             style={{
               position: "absolute",
@@ -556,119 +556,74 @@ When users ask about **mdcec.vercel.app**, guide them politely on how to find po
             <div
               style={{
                 background: "#ffffff",
-                padding: "26px 22px",
-                borderRadius: "14px",
-                boxShadow: "0 6px 20px rgba(0,0,0,0.18)",
+                padding: "24px 20px",
+                borderRadius: "12px",
+                boxShadow: "0 6px 18px rgba(0,0,0,0.18)",
                 textAlign: "center",
-                maxWidth: "380px",
+                width: 360,
               }}
             >
-              <h3 style={{ color: "#143a8a", marginBottom: "8px" }}>You've reached your free limit</h3>
-              <p style={{ color: "#0b1726", fontSize: "14px", marginBottom: "10px" }}>
-                You’ve used your {FREE_LIMIT} free messages.
+              <h3 style={{ color: "#143a8a", marginBottom: 8 }}>Unlock MECAI PRO</h3>
+              <p style={{ color: "#0b1726", marginBottom: 10 }}>
+                You have used your {FREE_LIMIT} free messages. To unlock MECAI PRO, enter your unlock token below.
               </p>
+              <input
+                type="text"
+                placeholder="Enter unlock token"
+                value={tokenInput}
+                onChange={(e) => setTokenInput(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: 10,
+                  borderRadius: 8,
+                  border: "1px solid #d1d7e0",
+                  marginBottom: 10,
+                }}
+              />
 
-              <p style={{ color: "#0b1726", fontSize: "14px", marginBottom: "14px" }}>
-                To unlock <strong>MECAI PRO</strong> (permanent upgrade) send ₵1 via MoMo to:
-                <br />
-                <b style={{ color: "#143a8a" }}>{MOMO_NUMBER} (MECAI)</b>
-              </p>
-
-              <div style={{ display: "flex", gap: 10, justifyContent: "center", marginBottom: 12 }}>
-                <a
-                  href={`tel:${MOMO_NUMBER}`}
+              <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
+                <button
+                  onClick={verifyToken}
                   style={{
-                    textDecoration: "none",
                     background: "#143a8a",
                     color: "#fff",
-                    padding: "10px 12px",
-                    borderRadius: "10px",
+                    border: "none",
+                    padding: "10px 14px",
+                    borderRadius: 8,
                     fontWeight: 700,
-                    display: "inline-block",
+                    cursor: "pointer",
                   }}
                 >
-                  📞 Open Phone
-                </a>
+                  🔓 Verify Token
+                </button>
 
                 <button
                   onClick={() => {
-                    // focus token input
-                    const el = document.getElementById("mecai-token-input");
-                    if (el) el.focus();
+                    setShowUnlockModal(false);
+                    setTokenInput("");
                   }}
                   style={{
                     background: "#fff",
-                    border: "1px solid #143a8a",
+                    border: "1px solid #d1d7e0",
+                    padding: "10px 14px",
+                    borderRadius: 8,
                     color: "#143a8a",
-                    padding: "10px 12px",
-                    borderRadius: "10px",
-                    cursor: "pointer",
                     fontWeight: 700,
+                    cursor: "pointer",
                   }}
                 >
-                  I have paid
+                  Close
                 </button>
               </div>
 
-              <div style={{ marginTop: 6 }}>
-                <input
-                  id="mecai-token-input"
-                  type="text"
-                  placeholder="Enter unlock code"
-                  value={tokenInput}
-                  onChange={(e) => setTokenInput(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "10px",
-                    border: "1px solid #d1d7e0",
-                    borderRadius: "8px",
-                    marginBottom: "8px",
-                  }}
-                />
-                <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
-                  <button
-                    onClick={() => verifyTokenAndMakePro(tokenInput)}
-                    style={{
-                      background: "#143a8a",
-                      color: "#fff",
-                      border: "none",
-                      padding: "10px 14px",
-                      borderRadius: "8px",
-                      cursor: "pointer",
-                      fontWeight: 700,
-                    }}
-                  >
-                    🔓 Verify Token
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      setShowPaywall(false);
-                      setTokenInput("");
-                    }}
-                    style={{
-                      background: "#fff",
-                      border: "1px solid #d1d7e0",
-                      padding: "10px 14px",
-                      borderRadius: "8px",
-                      color: "#143a8a",
-                      cursor: "pointer",
-                      fontWeight: 700,
-                    }}
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-
-              <p style={{ fontSize: "12px", color: "#6b7280", marginTop: 12 }}>
-                After you pay ₵1 to {MOMO_NUMBER}, I will send you a code (SMS/WhatsApp) to unlock MECAI PRO.
+              <p style={{ fontSize: 12, color: "#6b7280", marginTop: 10 }}>
+                If you do not have a token, contact the admin to receive one.
               </p>
             </div>
           </div>
         )}
 
-        {/* Version text (click 5x to reveal admin UI) */}
+        {/* version text (click 5x to show admin token adder) */}
         <div
           onClick={() => setAdminClicks((c) => c + 1)}
           style={{
@@ -680,7 +635,7 @@ When users ask about **mdcec.vercel.app**, guide them politely on how to find po
             opacity: 0.95,
             cursor: "pointer",
             userSelect: "none",
-            padding: "4px",
+            padding: 4,
           }}
         >
           v1
@@ -707,13 +662,13 @@ When users ask about **mdcec.vercel.app**, guide them politely on how to find po
             </div>
             <input
               type="text"
-              placeholder="Token (e.g. MECAI-ABC123)"
+              placeholder="Token (e.g. MEC-user-001)"
               value={adminTokenValue}
               onChange={(e) => setAdminTokenValue(e.target.value)}
               style={{
                 width: "100%",
-                padding: "8px",
-                borderRadius: "6px",
+                padding: 8,
+                borderRadius: 6,
                 border: `1px solid ${THEME.accent}`,
                 marginBottom: 8,
               }}
@@ -721,17 +676,16 @@ When users ask about **mdcec.vercel.app**, guide them politely on how to find po
             <div style={{ display: "flex", gap: 8 }}>
               <button
                 onClick={() => {
-                  if (adminTokenValue.trim() === "") return alert("Enter token value");
+                  if (!adminTokenValue.trim()) return alert("Enter token value");
                   addTokenAdmin(adminTokenValue.trim());
-                  setAdminTokenValue("");
                 }}
                 style={{
                   flex: 1,
                   background: pro ? "#143a8a" : "#b88523",
                   color: "#fff",
                   border: "none",
-                  padding: "8px",
-                  borderRadius: "6px",
+                  padding: 8,
+                  borderRadius: 6,
                   cursor: "pointer",
                   fontWeight: 700,
                 }}
@@ -746,8 +700,8 @@ When users ask about **mdcec.vercel.app**, guide them politely on how to find po
                 style={{
                   background: "#fff",
                   border: `1px solid ${THEME.accent}`,
-                  padding: "8px",
-                  borderRadius: "6px",
+                  padding: 8,
+                  borderRadius: 6,
                   color: pro ? "#143a8a" : "#b88523",
                   cursor: "pointer",
                   fontWeight: 700,
@@ -756,11 +710,10 @@ When users ask about **mdcec.vercel.app**, guide them politely on how to find po
                 Close
               </button>
             </div>
-
             <div style={{ marginTop: 8, fontSize: 11, color: "#6b7280" }}>
               Tip: you can also add tokens via console:
               <pre style={{ background: "#f7f9fc", padding: 6, borderRadius: 4, marginTop: 6 }}>
-                localStorage.setItem('mecai_valid_tokens', JSON.stringify(['MECAI-123','MECAI-456']));
+                localStorage.setItem('mecai_valid_tokens', JSON.stringify(['Mec_user199']))
               </pre>
             </div>
           </div>
