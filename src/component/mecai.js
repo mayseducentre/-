@@ -1,30 +1,34 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 /**
- * MecAi.js
+ * MecAi (Modern Glass UI) - Single File Component
  *
- * - 100 free messages total (tracked in localStorage as "mecai_requests")
- * - When limit exceeded, modal asks for unlock token
- * - If token matches UNLOCK_TOKEN, user becomes MECAI PRO permanently (stored as "mecai_pro")
- * - PRO theme = elegant blue & silver
- * - Clear Chat clears stored messages and resets message count (but does not revoke PRO)
+ * Behavior:
+ * - 100 free messages total (localStorage: 'mecai_requests')
+ * - After 100, show unlock modal (token entry). Token: 'Mec_user199'
+ * - If token valid → set 'mecai_pro' = true (permanent), switch to PRO theme
+ * - Upgrade button available anytime
+ * - Clear chat resets messages + usage count (does not revoke PRO)
+ * - Hidden admin UI (click v1 five times) to add tokens to shared list (localStorage 'mecai_valid_tokens')
  *
- * NOTE: Replace UNLOCK_TOKEN with your chosen token (e.g., "Mec_user199") before distributing,
- * or keep this one and change later.
+ * Note: Change process.env.REACT_APP_GROQ_API_KEY in your environment for API access.
  */
 
-const UNLOCK_TOKEN = "ASSIST-PRO-8F3D"; // <- change this to your token (e.g., "Mec_user199")
 const FREE_LIMIT = 100;
-const MOMO_NUMBER = "0549548274"; // used for display only (no payment enforced)
+const UNLOCK_TOKEN = "Mec_user199"; // <- official token you provided
+const MOMO_NUMBER = "0549548274";
 
 export default function MecAi() {
+  // Chat state
   const [messages, setMessages] = useState(() => {
-    const saved = localStorage.getItem("mecai_chat");
-    return saved ? JSON.parse(saved) : [];
+    const raw = localStorage.getItem("mecai_chat");
+    return raw ? JSON.parse(raw) : [];
   });
   const [input, setInput] = useState("");
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  // Usage + pro + UI
   const [showUnlockModal, setShowUnlockModal] = useState(false);
   const [tokenInput, setTokenInput] = useState("");
   const [adminClicks, setAdminClicks] = useState(0);
@@ -34,24 +38,20 @@ export default function MecAi() {
   const fileRef = useRef(null);
   const chatEndRef = useRef(null);
 
-  // usage helpers
-  function getUsage() {
-    return parseInt(localStorage.getItem("mecai_requests") || "0", 10);
-  }
-  function setUsage(n) {
-    localStorage.setItem("mecai_requests", String(n));
-  }
-  function incrementUsage() {
+  // Helpers for usage and pro status
+  const getUsage = () => parseInt(localStorage.getItem("mecai_requests") || "0", 10);
+  const setUsage = (n) => localStorage.setItem("mecai_requests", String(n));
+  const incrementUsage = () => {
     const n = getUsage() + 1;
     setUsage(n);
     return n;
-  }
+  };
+  const resetUsage = () => {
+    localStorage.setItem("mecai_requests", "0");
+  };
 
-  // PRO helpers
-  function isPro() {
-    return localStorage.getItem("mecai_pro") === "true";
-  }
-  function setPro(flag = true) {
+  const isPro = () => localStorage.getItem("mecai_pro") === "true";
+  const setPro = (flag = true) => {
     if (flag) {
       localStorage.setItem("mecai_pro", "true");
       localStorage.setItem("mecai_pro_date", new Date().toISOString());
@@ -59,14 +59,15 @@ export default function MecAi() {
       localStorage.removeItem("mecai_pro");
       localStorage.removeItem("mecai_pro_date");
     }
-  }
+  };
 
+  // Persist chat to localStorage
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
     localStorage.setItem("mecai_chat", JSON.stringify(messages));
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  /* ---------------- Local quick DB (unchanged) ---------------- */
+  // Local quick DB (unchanged system answers)
   const localDB = {
     "where is mays daycare located":
       "Mays DayCare and Edu Centre is located in Accra, Ghana.",
@@ -78,24 +79,91 @@ export default function MecAi() {
       "Teachers can log in through the 'Staff Portal' option on mdcec.vercel.app.",
     "school contact":
       "You can contact Mays DayCare via the 'Contact Us' section on mdcec.vercel.app or by emailing info@maysdaycare.edu.gh.",
-    "how are you":
-      "I'm doing great, thank you for asking! 😊 How can I help you today?",
+    "how are you": "I'm doing great, thank you for asking! 😊 How can I help you today?",
     hello: "Hello there! 👋 How may I assist you today?",
   };
 
-  /* ---------------- Send Message ---------------- */
+  // Add image handler
+  function handleImage(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => setImage(reader.result);
+    reader.readAsDataURL(file);
+  }
+
+  // Clear chat (reset messages and usage; keep PRO)
+  function clearChat() {
+    localStorage.removeItem("mecai_chat");
+    setMessages([]);
+    resetUsage();
+  }
+
+  // Admin tokens list helpers (optional shared tokens)
+  function getValidTokens() {
+    try {
+      const raw = localStorage.getItem("mecai_valid_tokens");
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  }
+  function addTokenAdmin(newToken) {
+    if (!newToken || !newToken.trim()) return alert("Enter token");
+    const list = getValidTokens();
+    list.push(newToken.trim());
+    localStorage.setItem("mecai_valid_tokens", JSON.stringify(list));
+    setAdminTokenValue("");
+    alert("Token saved to shared list.");
+  }
+  function consumeSharedToken(token) {
+    try {
+      const list = getValidTokens().filter((t) => t !== token);
+      localStorage.setItem("mecai_valid_tokens", JSON.stringify(list));
+    } catch {}
+  }
+
+  // Verify token and make PRO
+  function verifyToken() {
+    const entered = (tokenInput || "").trim();
+    if (!entered) {
+      alert("Please enter the unlock token.");
+      return;
+    }
+    if (entered === UNLOCK_TOKEN) {
+      setPro(true);
+      resetUsage();
+      setShowUnlockModal(false);
+      setTokenInput("");
+      alert("✅ Token accepted — MECAI PRO unlocked permanently.");
+      return;
+    }
+    // check shared tokens
+    const shared = getValidTokens();
+    if (Array.isArray(shared) && shared.includes(entered)) {
+      setPro(true);
+      consumeSharedToken(entered);
+      resetUsage();
+      setShowUnlockModal(false);
+      setTokenInput("");
+      alert("✅ Token accepted — MECAI PRO unlocked permanently.");
+      return;
+    }
+    alert("❌ Invalid token. Please check and try again.");
+  }
+
+  // Send message — preserves original system prompt, anti-jailbreak, local responses, and GROQ call
   async function sendMessage() {
-    // Basic guard
     if (!input.trim() && !image) return;
 
-    // If not PRO, check usage
+    // If not PRO, block when over limit
     if (!isPro()) {
       const current = getUsage();
       if (current >= FREE_LIMIT) {
         setShowUnlockModal(true);
-        return; // block until token entered
+        return;
       }
-      // increment usage now (we count this attempt)
+      // increment use
       incrementUsage();
     }
 
@@ -107,7 +175,7 @@ export default function MecAi() {
 
     const userInput = (input || "").toLowerCase().trim();
 
-    // local quick replies
+    // local quick reply
     const localResponse = localDB[userInput];
     if (localResponse) {
       setTimeout(() => {
@@ -117,7 +185,7 @@ export default function MecAi() {
       return;
     }
 
-    // anti-jailbreak (preserved)
+    // anti-jailbreak check (unchanged)
     if (
       userInput.match(
         /(ignore previous|system prompt|pretend to be|forget|reset|reprogram|you are not mecai)/
@@ -135,7 +203,7 @@ export default function MecAi() {
       return;
     }
 
-    // call GROQ API (same as original)
+    // call GROQ API (preserve original system message exactly)
     try {
       const body = {
         model: "llama-3.1-8b-instant",
@@ -187,538 +255,595 @@ When users ask about **mdcec.vercel.app**, guide them politely on how to find po
     }
   }
 
-  /* ---------------- Image Handler ---------------- */
-  function handleImage(e) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => setImage(reader.result);
-    reader.readAsDataURL(file);
-  }
-
-  /* ---------------- Clear Chat (resets count too) ---------------- */
-  function clearChat() {
-    localStorage.removeItem("mecai_chat");
-    localStorage.removeItem("mecai_requests");
-    setMessages([]);
-    setUsage(0);
-    // do not change PRO status
-  }
-
-  /* ---------------- Token verify ---------------- */
-  function verifyToken() {
-    const entered = (tokenInput || "").trim();
-    if (entered === "") {
-      alert("Enter the unlock token.");
-      return;
-    }
-    // Check against UNLOCK_TOKEN first
-    if (entered === UNLOCK_TOKEN) {
-      setPro(true);
-      // reset usage so they can continue immediately
-      setUsage(0);
-      setShowUnlockModal(false);
-      setTokenInput("");
-      alert("✅ Token valid — MECAI PRO unlocked permanently.");
-      return;
-    }
-
-    // Also allow tokens present in shared list (optional)
-    // If you want to support a list of issued tokens, you can store them in localStorage as 'mecai_valid_tokens'
-    const listRaw = localStorage.getItem("mecai_valid_tokens");
-    if (listRaw) {
-      try {
-        const list = JSON.parse(listRaw);
-        if (Array.isArray(list) && list.includes(entered)) {
-          // make pro and remove token so it can't be reused
-          setPro(true);
-          const newList = list.filter((t) => t !== entered);
-          localStorage.setItem("mecai_valid_tokens", JSON.stringify(newList));
-          setUsage(0);
-          setShowUnlockModal(false);
-          setTokenInput("");
-          alert("✅ Token verified. MECAI PRO unlocked permanently.");
-          return;
-        }
-      } catch {}
-    }
-
-    alert("❌ Invalid token. Please check the code and try again.");
-  }
-
-  /* ---------------- Admin add token UI (hidden) ---------------- */
+  // admin reveal
   useEffect(() => {
     if (adminClicks >= 5) setShowAdmin(true);
   }, [adminClicks]);
 
-  function addTokenAdmin(newToken) {
-    if (!newToken || !newToken.trim()) return alert("Enter token");
-    const raw = localStorage.getItem("mecai_valid_tokens");
-    const arr = raw ? JSON.parse(raw) : [];
-    arr.push(newToken.trim());
-    localStorage.setItem("mecai_valid_tokens", JSON.stringify(arr));
-    setAdminTokenValue("");
-    alert("Token added to shared list.");
-  }
-
-  /* ---------------- Theme selection ---------------- */
+  // Theme (glass/pro look for PRO, warm original for free)
   const pro = isPro();
   const THEME = pro
     ? {
-        bg: "#eaf2ff",
-        card: "#f6f9ff",
-        header: "#143a8a",
-        accent: "#9fb4d9",
-        userBubble: "#1e3a8a",
-        aiBubble: "#dbe9ff",
-        textOnHeader: "#ffffff",
-        text: "#0b1726",
+        bg: "linear-gradient(180deg,#eef6ff 0%, #eaf2ff 100%)",
+        card: "rgba(255,255,255,0.66)",
+        header: "linear-gradient(90deg,#0f3b8a,#1b63b3)",
+        accent: "#7fa7db",
+        userBubble: "linear-gradient(180deg,#2551a8,#1e3a8a)",
+        aiBubble: "rgba(219,233,255,0.9)",
+        textHeader: "#fff",
+        text: "#072034",
       }
     : {
-        bg: "#fff9e6",
-        card: "#fffdf7",
-        header: "#d6a33e",
+        bg: "linear-gradient(180deg,#fffdf7 0%, #fff9e6 100%)",
+        card: "rgba(255,255,255,0.9)",
+        header: "linear-gradient(90deg,#d6a33e,#b88523)",
         accent: "#f1d48b",
         userBubble: "#b88523",
         aiBubble: "#f8e5b6",
-        textOnHeader: "#fffdf7",
+        textHeader: "#fffdf7",
         text: "#3e2b00",
       };
 
+  // small helpers for styling
   const usageCount = getUsage();
   const usageLeft = Math.max(0, FREE_LIMIT - usageCount);
 
+  // Render
   return (
     <div
       style={{
-        fontFamily: "'Inter', sans-serif",
+        minHeight: "100vh",
+        fontFamily: "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial",
         background: THEME.bg,
-        height: "100vh",
         display: "flex",
-        justifyContent: "center",
         alignItems: "center",
+        justifyContent: "center",
+        padding: 20,
       }}
     >
       <div
         style={{
           width: "100%",
-          maxWidth: "880px",
-          height: "100vh",
-          display: "flex",
-          flexDirection: "column",
-          background: THEME.card,
-          borderLeft: `1px solid ${THEME.accent}`,
-          borderRight: `1px solid ${THEME.accent}`,
-          position: "relative",
+          maxWidth: 980,
+          height: "90vh",
+          display: "grid",
+          gridTemplateColumns: "1fr 380px",
+          gap: 18,
+          alignItems: "stretch",
         }}
       >
-        {/* Header */}
+        {/* Left: Chat area */}
         <div
           style={{
-            background: THEME.header,
-            color: THEME.textOnHeader,
-            padding: "14px 20px",
-            textAlign: "center",
-            fontWeight: 700,
-            fontSize: "18px",
-            borderBottom: `2px solid ${THEME.accent}`,
-            boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
-            position: "relative",
+            borderRadius: 16,
+            padding: 16,
+            background: THEME.card,
+            boxShadow: "0 8px 30px rgba(12,18,30,0.12)",
+            backdropFilter: "blur(8px) saturate(120%)",
             display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 12,
+            flexDirection: "column",
+            overflow: "hidden",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div style={{ fontSize: 20 }}>{pro ? "🤖 MECAI PRO" : "🤖 MEC AI"}</div>
-            {pro && (
+          {/* Header */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 12,
+              marginBottom: 12,
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               <div
                 style={{
-                  background: THEME.accent,
-                  color: THEME.textOnHeader,
-                  padding: "6px 10px",
-                  borderRadius: 14,
-                  fontSize: 12,
+                  width: 46,
+                  height: 46,
+                  borderRadius: 12,
+                  background: pro ? "#ffffff33" : "#fff8ee",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxShadow: "inset 0 -4px 10px rgba(255,255,255,0.35)",
                   fontWeight: 700,
+                  color: pro ? "#0b3b7a" : "#b56913",
+                  fontSize: 20,
                 }}
               >
-                PRO
+                🤖
               </div>
-            )}
-          </div>
+              <div>
+                <div style={{ fontWeight: 800, fontSize: 18, color: pro ? "#072034" : "#3e2b00" }}>
+                  {pro ? "MECAI PRO" : "MEC AI"}
+                </div>
+                <div style={{ fontSize: 12, color: "#6b7280" }}>
+                  {pro ? "Premium access — unlimited" : `${usageLeft} free messages left`}
+                </div>
+              </div>
+            </div>
 
-          <div style={{ position: "absolute", right: 12, top: 12 }}>
-            {messages.length > 0 && (
+            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+              {!pro && (
+                <button
+                  onClick={() => setShowUnlockModal(true)}
+                  style={{
+                    background: "linear-gradient(90deg,#143a8a,#1b63b3)",
+                    color: "#fff",
+                    border: "none",
+                    padding: "8px 12px",
+                    borderRadius: 10,
+                    fontWeight: 700,
+                    cursor: "pointer",
+                    boxShadow: "0 6px 18px rgba(20,58,138,0.18)",
+                    transition: "transform .12s ease",
+                  }}
+                >
+                  Upgrade PRO
+                </button>
+              )}
+
               <button
                 onClick={clearChat}
                 style={{
-                  background: THEME.card,
-                  color: THEME.header,
-                  border: "none",
-                  borderRadius: "8px",
-                  padding: "6px 10px",
-                  cursor: "pointer",
-                  fontSize: "13px",
+                  background: "transparent",
+                  border: "1px solid rgba(0,0,0,0.06)",
+                  padding: "8px 10px",
+                  borderRadius: 10,
+                  color: pro ? "#072034" : "#3e2b00",
                   fontWeight: 700,
+                  cursor: "pointer",
                 }}
               >
                 Clear
               </button>
-            )}
+            </div>
           </div>
 
-          <div style={{ position: "absolute", left: 12, top: 12, fontSize: 12, color: THEME.textOnHeader }}>
-            {pro ? "Unlimited access" : `${usageLeft} free messages left`}
-          </div>
-        </div>
-
-        {/* Chat Area */}
-        <div
-          style={{
-            flex: 1,
-            padding: "20px",
-            overflowY: "auto",
-            background: THEME.bg,
-            position: "relative",
-          }}
-        >
-          {messages.length === 0 && !loading && (
-            <div
-              style={{
-                textAlign: "center",
-                color: THEME.text,
-                fontWeight: 700,
-                fontSize: "20px",
-                marginTop: "30%",
-              }}
-            >
-              <b>How can I help you today?</b>
-            </div>
-          )}
-
-          {messages.map((msg, i) => (
-            <div
-              key={i}
-              style={{
-                display: "flex",
-                justifyContent: msg.role === "user" ? "flex-end" : "flex-start",
-                marginBottom: "14px",
-              }}
-            >
-              <div
-                style={{
-                  background: msg.role === "user" ? THEME.userBubble : THEME.aiBubble,
-                  color: msg.role === "user" ? THEME.textOnHeader : THEME.text,
-                  padding: "12px 16px",
-                  borderRadius: msg.role === "user" ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
-                  maxWidth: "80%",
-                  fontSize: "15px",
-                  lineHeight: 1.5,
-                  boxShadow: msg.role === "user" ? "0 3px 6px rgba(0,0,0,0.12)" : "0 3px 5px rgba(0,0,0,0.03)",
-                  wordWrap: "break-word",
-                }}
-              >
-                {msg.image && (
-                  <img
-                    src={msg.image}
-                    alt="upload"
-                    style={{
-                      width: "100%",
-                      borderRadius: "10px",
-                      marginBottom: "8px",
-                    }}
-                  />
-                )}
-                {msg.content}
-              </div>
-            </div>
-          ))}
-
-          {loading && (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-                padding: "4px 0",
-                marginLeft: "10px",
-              }}
-            >
-              {[0, 0.2, 0.4].map((delay, i) => (
-                <div
-                  key={i}
-                  style={{
-                    width: "8px",
-                    height: "8px",
-                    borderRadius: "50%",
-                    background: pro ? THEME.userBubble : THEME.userBubble,
-                    animation: `dotPulse 1s infinite ease-in-out ${delay}s`,
-                  }}
-                />
-              ))}
-              <style>
-                {`
-                  @keyframes dotPulse {
-                    0%, 80%, 100% { transform: scale(0); opacity: 0.4; }
-                    40% { transform: scale(1); opacity: 1; }
-                  }
-                `}
-              </style>
-            </div>
-          )}
-
-          <div ref={chatEndRef}></div>
-        </div>
-
-        {/* Input Bar */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            padding: "10px",
-            background: THEME.card,
-            borderTop: `2px solid ${THEME.accent}`,
-          }}
-        >
-          <input
-            type="text"
-            placeholder="Message MECAI..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-            style={{
-              flex: 1,
-              padding: "12px 14px",
-              borderRadius: "10px",
-              border: `1px solid ${THEME.accent}`,
-              background: THEME.card,
-              outline: "none",
-              fontSize: "15px",
-              color: THEME.text,
-            }}
-          />
-          <input
-            type="file"
-            accept="image/*"
-            ref={fileRef}
-            onChange={handleImage}
-            style={{ display: "none" }}
-          />
-          <button
-            onClick={() => fileRef.current.click()}
-            style={{
-              background: THEME.card,
-              border: `1px solid ${THEME.accent}`,
-              borderRadius: "10px",
-              padding: "10px 12px",
-              marginLeft: "8px",
-              cursor: "pointer",
-              fontSize: "18px",
-            }}
-          >
-            📷
-          </button>
-          <button
-            onClick={sendMessage}
-            disabled={loading}
-            style={{
-              background: loading ? THEME.accent : THEME.userBubble,
-              color: THEME.textOnHeader,
-              border: "none",
-              borderRadius: "10px",
-              padding: "10px 16px",
-              marginLeft: "8px",
-              cursor: "pointer",
-              fontWeight: 700,
-            }}
-          >
-            ➤
-          </button>
-        </div>
-
-        {/* Unlock Modal */}
-        {showUnlockModal && !pro && (
+          {/* Messages scroll area */}
           <div
             style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              background: "rgba(0,0,0,0.45)",
+              flex: 1,
+              overflowY: "auto",
+              padding: "6px 8px",
+              borderRadius: 12,
+            }}
+          >
+            {messages.length === 0 && (
+              <div
+                style={{
+                  height: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#6b7280",
+                  fontWeight: 700,
+                }}
+              >
+                <div style={{ textAlign: "center" }}>
+                  <div style={{ fontSize: 20, marginBottom: 8 }}>How can I help you today?</div>
+                  <div style={{ fontSize: 13, color: "#9aa3ad" }}>Ask about the school, portals, or schedules.</div>
+                </div>
+              </div>
+            )}
+
+            {messages.map((msg, idx) => {
+              const isUser = msg.role === "user";
+              return (
+                <div
+                  key={idx}
+                  style={{
+                    display: "flex",
+                    justifyContent: isUser ? "flex-end" : "flex-start",
+                    marginBottom: 12,
+                    paddingLeft: isUser ? 40 : 0,
+                    paddingRight: isUser ? 0 : 40,
+                  }}
+                >
+                  <div
+                    style={{
+                      maxWidth: "78%",
+                      padding: "12px 16px",
+                      borderRadius: 14,
+                      background: isUser ? (pro ? "linear-gradient(180deg,#2b59b8,#1e3a8a)" : THEME.userBubble) : THEME.aiBubble,
+                      color: isUser ? "#fff" : THEME.text,
+                      boxShadow: isUser ? "0 8px 20px rgba(20,58,138,0.12)" : "0 6px 18px rgba(0,0,0,0.04)",
+                      lineHeight: 1.45,
+                      fontSize: 15,
+                      wordBreak: "break-word",
+                    }}
+                  >
+                    {msg.image && (
+                      <img
+                        src={msg.image}
+                        alt="upload"
+                        style={{ width: "100%", borderRadius: 10, marginBottom: 8 }}
+                      />
+                    )}
+                    <div style={{ whiteSpace: "pre-wrap" }}>{msg.content}</div>
+                  </div>
+                </div>
+              );
+            })}
+            <div ref={chatEndRef} />
+          </div>
+
+          {/* Input bar */}
+          <div
+            style={{
               display: "flex",
-              justifyContent: "center",
+              gap: 10,
               alignItems: "center",
-              zIndex: 999,
+              paddingTop: 12,
             }}
           >
             <div
               style={{
-                background: "#ffffff",
-                padding: "24px 20px",
-                borderRadius: "12px",
-                boxShadow: "0 6px 18px rgba(0,0,0,0.18)",
-                textAlign: "center",
-                width: 360,
+                flex: 1,
+                display: "flex",
+                gap: 10,
+                alignItems: "center",
+                background: "rgba(255,255,255,0.6)",
+                padding: "10px",
+                borderRadius: 14,
+                boxShadow: "0 6px 18px rgba(0,0,0,0.04)",
+                alignItems: "center",
               }}
             >
-              <h3 style={{ color: "#143a8a", marginBottom: 8 }}>Unlock MECAI PRO</h3>
-              <p style={{ color: "#0b1726", marginBottom: 10 }}>
-                You have used your {FREE_LIMIT} free messages. To unlock MECAI PRO, enter your unlock token below.
-              </p>
               <input
-                type="text"
-                placeholder="Enter unlock token"
-                value={tokenInput}
-                onChange={(e) => setTokenInput(e.target.value)}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                placeholder="Message MECAI..."
                 style={{
-                  width: "100%",
-                  padding: 10,
-                  borderRadius: 8,
-                  border: "1px solid #d1d7e0",
-                  marginBottom: 10,
+                  flex: 1,
+                  border: "none",
+                  outline: "none",
+                  background: "transparent",
+                  fontSize: 15,
+                  color: THEME.text,
                 }}
               />
+              <input
+                type="file"
+                accept="image/*"
+                ref={fileRef}
+                onChange={handleImage}
+                style={{ display: "none" }}
+              />
+              <button
+                onClick={() => fileRef.current.click()}
+                title="Upload image"
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: 18,
+                }}
+              >
+                📷
+              </button>
+            </div>
 
-              <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
+            <button
+              onClick={sendMessage}
+              disabled={loading}
+              style={{
+                width: 56,
+                height: 56,
+                borderRadius: 14,
+                border: "none",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: pro ? "linear-gradient(90deg,#143a8a,#1b63b3)" : "linear-gradient(90deg,#d6a33e,#b88523)",
+                color: "#fff",
+                fontSize: 20,
+                boxShadow: "0 12px 30px rgba(16,24,40,0.12)",
+              }}
+            >
+              ➤
+            </button>
+          </div>
+        </div>
+
+        {/* Right: Info / PRO panel */}
+        <div
+          style={{
+            borderRadius: 16,
+            padding: 18,
+            background: "linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.45))",
+            boxShadow: "0 8px 30px rgba(12,18,30,0.08)",
+            backdropFilter: "blur(8px) saturate(120%)",
+            display: "flex",
+            flexDirection: "column",
+            gap: 12,
+            height: "100%",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div
+              style={{
+                width: 56,
+                height: 56,
+                borderRadius: 12,
+                background: pro ? "#ffffff60" : "#fff8ee",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 26,
+              }}
+            >
+              🤖
+            </div>
+            <div>
+              <div style={{ fontWeight: 800, fontSize: 16, color: THEME.text }}>
+                {pro ? "MECAI PRO" : "MecAi — Free"}
+              </div>
+              <div style={{ fontSize: 13, color: "#6b7280" }}>
+                {pro ? "Thank you for supporting MECAI!" : "100 free messages. Upgrade for unlimited."}
+              </div>
+            </div>
+          </div>
+
+          <div style={{ fontSize: 13, color: "#334155" }}>
+            <strong>What's included</strong>
+            <ul style={{ marginTop: 8, paddingLeft: 18 }}>
+              <li>Conversational help about the school</li>
+              <li>Portal & login guidance</li>
+              <li>{pro ? "Unlimited messages, premium theme" : "100 messages total"}</li>
+            </ul>
+          </div>
+
+          {!pro && (
+            <div style={{ marginTop: "auto" }}>
+              <div style={{ fontSize: 13, color: "#334155", marginBottom: 8 }}>Got a token?</div>
+              <div style={{ display: "flex", gap: 8 }}>
+                <input
+                  value={tokenInput}
+                  onChange={(e) => setTokenInput(e.target.value)}
+                  placeholder="Enter unlock token"
+                  style={{
+                    flex: 1,
+                    padding: 10,
+                    borderRadius: 10,
+                    border: "1px solid #e6eef9",
+                    outline: "none",
+                  }}
+                />
                 <button
                   onClick={verifyToken}
                   style={{
-                    background: "#143a8a",
+                    background: "linear-gradient(90deg,#143a8a,#1b63b3)",
                     color: "#fff",
                     border: "none",
-                    padding: "10px 14px",
-                    borderRadius: 8,
+                    padding: "10px 12px",
+                    borderRadius: 10,
                     fontWeight: 700,
                     cursor: "pointer",
                   }}
                 >
-                  🔓 Verify Token
-                </button>
-
-                <button
-                  onClick={() => {
-                    setShowUnlockModal(false);
-                    setTokenInput("");
-                  }}
-                  style={{
-                    background: "#fff",
-                    border: "1px solid #d1d7e0",
-                    padding: "10px 14px",
-                    borderRadius: 8,
-                    color: "#143a8a",
-                    fontWeight: 700,
-                    cursor: "pointer",
-                  }}
-                >
-                  Close
+                  Verify
                 </button>
               </div>
 
-              <p style={{ fontSize: 12, color: "#6b7280", marginTop: 10 }}>
-                If you do not have a token, contact the admin to receive one.
-              </p>
+              <div style={{ marginTop: 12, fontSize: 12, color: "#6b7280" }}>
+                If you don't have a token, contact the admin. (No payment required in this UI.)
+              </div>
+
+              <div style={{ marginTop: 14 }}>
+                <button
+                  onClick={() => setShowUnlockModal(true)}
+                  style={{
+                    width: "100%",
+                    background: "linear-gradient(90deg,#0f3b8a,#1b63b3)",
+                    color: "#fff",
+                    border: "none",
+                    padding: "10px 12px",
+                    borderRadius: 10,
+                    fontWeight: 800,
+                    cursor: "pointer",
+                    boxShadow: "0 10px 24px rgba(16,24,40,0.08)",
+                  }}
+                >
+                  Open Unlock Modal
+                </button>
+              </div>
+            </div>
+          )}
+
+          {pro && (
+            <div style={{ marginTop: "auto" }}>
+              <div style={{ fontSize: 13, color: "#334155", marginBottom: 8 }}>Pro perks</div>
+              <div style={{ fontSize: 13, color: "#334155" }}>
+                • Unlimited messages<br />• Premium look and feel<br />• Priority replies
+              </div>
+            </div>
+          )}
+
+          <div style={{ fontSize: 11, color: "#94a3b8", marginTop: 10 }}>
+            <div>Contact / Admin: {MOMO_NUMBER}</div>
+            <div style={{ marginTop: 6 }}>
+              <small>Version v1 • click bottom-right to reveal admin token tool</small>
             </div>
           </div>
-        )}
+        </div>
+      </div>
 
-        {/* version text (click 5x to show admin token adder) */}
+      {/* Unlock modal (same as right-panel entry) */}
+      {showUnlockModal && !pro && (
         <div
-          onClick={() => setAdminClicks((c) => c + 1)}
+          onClick={() => setShowUnlockModal(false)}
           style={{
-            position: "absolute",
-            right: 10,
-            bottom: 8,
-            fontSize: 11,
-            color: pro ? "#143a8a" : "#b88523",
-            opacity: 0.95,
-            cursor: "pointer",
-            userSelect: "none",
-            padding: 4,
+            position: "fixed",
+            inset: 0,
+            background: "rgba(2,6,23,0.45)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1200,
           }}
         >
-          v1
-        </div>
-
-        {/* Admin UI */}
-        {showAdmin && (
           <div
+            onClick={(e) => e.stopPropagation()}
             style={{
-              position: "absolute",
-              right: 10,
-              bottom: 36,
-              background: THEME.card,
-              border: `1px solid ${THEME.accent}`,
-              padding: 12,
-              borderRadius: 8,
-              boxShadow: "0 6px 18px rgba(0,0,0,0.12)",
-              zIndex: 1200,
-              width: 280,
+              width: 420,
+              background: "rgba(255,255,255,0.98)",
+              borderRadius: 12,
+              padding: 18,
+              boxShadow: "0 18px 50px rgba(2,6,23,0.32)",
             }}
           >
-            <div style={{ fontSize: 13, fontWeight: 800, color: pro ? "#143a8a" : "#b88523", marginBottom: 8 }}>
-              Admin: Add Token
+            <div style={{ fontWeight: 800, fontSize: 18, color: "#072034", marginBottom: 6 }}>
+              Unlock MECAI PRO
             </div>
+            <div style={{ fontSize: 13, color: "#475569", marginBottom: 12 }}>
+              You have used your {FREE_LIMIT} free messages. Enter your unlock token to upgrade to MECAI PRO (permanent).
+            </div>
+
             <input
-              type="text"
-              placeholder="Token (e.g. MEC-user-001)"
-              value={adminTokenValue}
-              onChange={(e) => setAdminTokenValue(e.target.value)}
+              value={tokenInput}
+              onChange={(e) => setTokenInput(e.target.value)}
+              placeholder="Enter unlock token"
               style={{
                 width: "100%",
-                padding: 8,
-                borderRadius: 6,
-                border: `1px solid ${THEME.accent}`,
-                marginBottom: 8,
+                padding: 12,
+                borderRadius: 10,
+                border: "1px solid #e6eef9",
+                marginBottom: 12,
+                outline: "none",
+                fontSize: 15,
               }}
             />
-            <div style={{ display: "flex", gap: 8 }}>
+
+            <div style={{ display: "flex", gap: 10 }}>
+              <button
+                onClick={() => verifyToken()}
+                style={{
+                  flex: 1,
+                  background: "linear-gradient(90deg,#143a8a,#1b63b3)",
+                  color: "#fff",
+                  border: "none",
+                  padding: "10px 12px",
+                  borderRadius: 10,
+                  fontWeight: 800,
+                  cursor: "pointer",
+                }}
+              >
+                🔓 Verify Token
+              </button>
+
               <button
                 onClick={() => {
-                  if (!adminTokenValue.trim()) return alert("Enter token value");
-                  addTokenAdmin(adminTokenValue.trim());
+                  setShowUnlockModal(false);
+                  setTokenInput("");
                 }}
                 style={{
                   flex: 1,
-                  background: pro ? "#143a8a" : "#b88523",
-                  color: "#fff",
-                  border: "none",
-                  padding: 8,
-                  borderRadius: 6,
-                  cursor: "pointer",
-                  fontWeight: 700,
-                }}
-              >
-                Add
-              </button>
-              <button
-                onClick={() => {
-                  setShowAdmin(false);
-                  setAdminClicks(0);
-                }}
-                style={{
                   background: "#fff",
-                  border: `1px solid ${THEME.accent}`,
-                  padding: 8,
-                  borderRadius: 6,
-                  color: pro ? "#143a8a" : "#b88523",
-                  cursor: "pointer",
+                  border: "1px solid #e6eef9",
+                  padding: "10px 12px",
+                  borderRadius: 10,
                   fontWeight: 700,
+                  cursor: "pointer",
                 }}
               >
-                Close
+                Cancel
               </button>
             </div>
-            <div style={{ marginTop: 8, fontSize: 11, color: "#6b7280" }}>
-              Tip: you can also add tokens via console:
-              <pre style={{ background: "#f7f9fc", padding: 6, borderRadius: 4, marginTop: 6 }}>
-                localStorage.setItem('mecai_valid_tokens', JSON.stringify(['Mec_user199']))
-              </pre>
+
+            <div style={{ marginTop: 12, fontSize: 12, color: "#6b7280" }}>
+              If you do not have a token, contact the admin to receive one.
             </div>
           </div>
-        )}
+        </div>
+      )}
+
+      {/* version text (click 5x to reveal admin UI) */}
+      <div
+        onClick={() => setAdminClicks((c) => c + 1)}
+        style={{
+          position: "fixed",
+          right: 12,
+          bottom: 8,
+          fontSize: 11,
+          color: pro ? "#143a8a" : "#b88523",
+          opacity: 0.95,
+          cursor: "pointer",
+          userSelect: "none",
+          padding: 6,
+          zIndex: 1400,
+        }}
+      >
+        v1
       </div>
+
+      {/* Admin panel */}
+      {showAdmin && (
+        <div
+          style={{
+            position: "fixed",
+            right: 12,
+            bottom: 44,
+            width: 320,
+            background: "rgba(255,255,255,0.98)",
+            borderRadius: 10,
+            padding: 12,
+            boxShadow: "0 12px 36px rgba(2,6,23,0.16)",
+            zIndex: 1500,
+          }}
+        >
+          <div style={{ fontWeight: 800, color: "#334155", marginBottom: 8 }}>Admin — add token</div>
+          <input
+            value={adminTokenValue}
+            onChange={(e) => setAdminTokenValue(e.target.value)}
+            placeholder="New token (e.g. Mec_user199)"
+            style={{ width: "100%", padding: 10, borderRadius: 8, border: "1px solid #e6eef9", marginBottom: 8 }}
+          />
+          <div style={{ display: "flex", gap: 8 }}>
+            <button
+              onClick={() => addTokenAdmin(adminTokenValue)}
+              style={{
+                flex: 1,
+                background: "linear-gradient(90deg,#143a8a,#1b63b3)",
+                color: "#fff",
+                border: "none",
+                padding: 10,
+                borderRadius: 8,
+                fontWeight: 800,
+                cursor: "pointer",
+              }}
+            >
+              Add
+            </button>
+            <button
+              onClick={() => {
+                setShowAdmin(false);
+                setAdminClicks(0);
+              }}
+              style={{
+                flex: 1,
+                background: "#fff",
+                border: "1px solid #e6eef9",
+                padding: 10,
+                borderRadius: 8,
+                fontWeight: 700,
+                cursor: "pointer",
+              }}
+            >
+              Close
+            </button>
+          </div>
+
+          <div style={{ marginTop: 8, fontSize: 12, color: "#6b7280" }}>
+            Tip: to add tokens for multiple users via console:
+            <pre style={{ background: "#f8fafc", padding: 8, borderRadius: 6, marginTop: 8 }}>
+localStorage.setItem('mecai_valid_tokens', JSON.stringify(['Mec_user199', 'PRO-001']))
+            </pre>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
