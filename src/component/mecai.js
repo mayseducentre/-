@@ -1,23 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 
 /**
- * Rewritten MecAi component — FUTURISTIC PRO UI (glassmorphic, neon) 
- * - Preserves ALL original logic, functionality, and performance.
- * - Inline CSS only. Single functional component.
+ * Full MECAI component — updated with:
+ * - Icons visible to free users, but locked (minimal badge)
+ * - Floating PRO FAB for free users
+ * - All original logic preserved (TTS, copy/share, upload, token verify, usage, message persistence, API calls)
+ * - Welcome overlay, logo 5x reset, legacy isPro() typewriter behavior preserved
  *
- * Key changes applied:
- * - PRO DETECTION uses: const isProUser = localStorage.getItem("plan") === "pro";
- *   and setIsProUser state to control PRO UI.
- * - FUTURISTIC PRO UI (glassmorphic) applied when isProUser === true.
- * - Welcome overlay when PRO activates on first render (3s fade in/stay/fade out).
- * - Logo clicked 5× quickly resets localStorage.setItem("plan","free"); setIsProUser(false); alert shown.
- * - Messages animate with GPU-friendly @keyframes fadeInGlow.
- * - Send button shows "✈️" icon text in PRO UI.
- * - All other logic (TTS, copy/share, upload, token verify, usage, message persistence, API calls)
- *   preserved exactly as in original file.
+ * Constants preserved
  */
-
-/* Constants preserved */
 const FREE_LIMIT = 100;
 const UNLOCK_TOKEN = "Mec_user199";
 
@@ -192,7 +183,10 @@ export default function MecAi() {
   // --------------------
   function playMessage(messageId, text) {
     // legacy PRO required for voice features
-    if (!isPro()) return;
+    if (!isPro()) {
+      openToast("🔒 Get PRO to use voice playback", 1400);
+      return;
+    }
     if (!("speechSynthesis" in window)) {
       openToast("Speech not supported on this device.", 1600);
       return;
@@ -220,7 +214,10 @@ export default function MecAi() {
   // Copy to clipboard (preserve)
   // --------------------
   async function copyToClipboard(text) {
-    if (!isPro()) return;
+    if (!isPro()) {
+      openToast("🔒 Get PRO to copy messages", 1400);
+      return;
+    }
     try {
       await navigator.clipboard.writeText(text);
       openToast("Copied to clipboard", 1200);
@@ -244,7 +241,10 @@ export default function MecAi() {
   // Share (preserve)
   // --------------------
   async function shareMessage(text) {
-    if (!isPro()) return;
+    if (!isPro()) {
+      openToast("🔒 Get PRO to share messages", 1400);
+      return;
+    }
     if (navigator.share) {
       try {
         await navigator.share({ text });
@@ -261,7 +261,10 @@ export default function MecAi() {
   // Image upload (preserve)
   // --------------------
   function handleImage(e) {
-    if (!isPro()) return;
+    if (!isPro()) {
+      openToast("🔒 Get PRO to upload images", 1400);
+      return;
+    }
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
@@ -269,7 +272,7 @@ export default function MecAi() {
       const dataUrl = reader.result;
       const id = mkId();
       if (!isPro()) incrementUsage();
-      setMessages((m) => [...m, { id, role: "user", content: "[image]", image: dataUrl }]);
+      setMessages((m) => [...m, { id, role: "user", content: "[image]", image: dataUrl, time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) }]);
     };
     reader.readAsDataURL(file);
     e.target.value = null;
@@ -289,7 +292,7 @@ export default function MecAi() {
 
     if (!isPro()) incrementUsage();
 
-    const userMsg = { id: mkId(), role: "user", content: text };
+    const userMsg = { id: mkId(), role: "user", content: text, time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) };
     setMessages((m) => [...m, userMsg]);
     setInput("");
     setLoading(true);
@@ -298,7 +301,7 @@ export default function MecAi() {
     if (localDB[lower]) {
       const ans = localDB[lower];
       simulateTypewriter(ans, () => {
-        setMessages((m) => [...m, { id: mkId(), role: "assistant", content: ans }]);
+        setMessages((m) => [...m, { id: mkId(), role: "assistant", content: ans, time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) }]);
       });
       setLoading(false);
       return;
@@ -306,7 +309,7 @@ export default function MecAi() {
 
     if (lower.match(/(ignore previous|system prompt|pretend to be|forget|reset|reprogram|you are not mecai)/)) {
       const reply = "I'm sorry, but I cannot change or ignore my core identity. Let's continue where we left off. 😊";
-      simulateTypewriter(reply, () => setMessages((m) => [...m, { id: mkId(), role: "assistant", content: reply }]));
+      simulateTypewriter(reply, () => setMessages((m) => [...m, { id: mkId(), role: "assistant", content: reply, time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) }]));
       setLoading(false);
       return;
     }
@@ -347,14 +350,14 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.
       const data = await res.json();
       const reply = data?.choices?.[0]?.message?.content || "⚠️ No response.";
       simulateTypewriter(reply, () => {
-        setMessages((m) => [...m, { id: mkId(), role: "assistant", content: reply }]);
+        setMessages((m) => [...m, { id: mkId(), role: "assistant", content: reply, time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) }]);
         setIsTyping(false);
       });
     } catch (err) {
       console.error(err);
       const fail = "⚠️ Failed to connect to MECAI service.";
       simulateTypewriter(fail, () => {
-        setMessages((m) => [...m, { id: mkId(), role: "assistant", content: fail }]);
+        setMessages((m) => [...m, { id: mkId(), role: "assistant", content: fail, time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) }]);
         setIsTyping(false);
       });
     } finally {
@@ -469,6 +472,7 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.
     cursor: "pointer",
     fontSize: 18,
     lineHeight: 1,
+    position: "relative",
   };
 
   // Show welcome overlay only for 3s on first PRO activation (already set showWelcome initial)
@@ -499,6 +503,11 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.
         30% { transform: translateY(-6px) }
         60% { transform: translateY(0) }
         100% { transform: translateY(0) }
+      }
+      @keyframes pulse {
+        0% { transform: scale(1); box-shadow: 0 0 0 rgba(10,60,184,0.0) }
+        50% { transform: scale(1.04); box-shadow: 0 8px 24px rgba(10,60,184,0.14) }
+        100% { transform: scale(1); box-shadow: 0 0 0 rgba(10,60,184,0.0) }
       }
     `}</style>
   );
@@ -680,11 +689,19 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.
                   >
                     {m.image ? <img src={m.image} alt="uploaded" style={{ width: "100%", borderRadius: 10 }} /> : <div style={{ whiteSpace: "pre-wrap" }}>{m.content}</div>}
 
-                    {!isUserMsg && isPro() && (
+                    {/* -------------------------------
+                        Icons: ALWAYS VISIBLE for assistant messages
+                        But PRO-only behavior enforced on click
+                        Minimal lock badge shown when legacy isPro() is false
+                    --------------------------------- */}
+                    {!isUserMsg && (
                       <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 10 }}>
                         <button
-                          onClick={() => playMessage(m.id, m.content)}
-                          title="Play this message"
+                          onClick={() => {
+                            if (isPro()) playMessage(m.id, m.content);
+                            else openToast("🔒 Get PRO to use voice playback", 1400);
+                          }}
+                          title={isPro() ? "Play this message" : "PRO required"}
                           style={{
                             ...iconButtonStyle,
                             color: PRO_THEME.accent,
@@ -693,17 +710,49 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.
                           }}
                         >
                           🔊
+                          {!isPro() && (
+                            <span style={{ position: "absolute", right: -6, top: -6, fontSize: 10, background: "rgba(0,0,0,0.6)", color: "#fff", padding: "2px 4px", borderRadius: 8 }}>
+                              🔒
+                            </span>
+                          )}
                         </button>
 
-                        <button onClick={() => copyToClipboard(m.content)} title="Copy message" style={iconButtonStyle}>
+                        <button
+                          onClick={() => {
+                            if (isPro()) copyToClipboard(m.content);
+                            else openToast("🔒 Get PRO to copy messages", 1400);
+                          }}
+                          title={isPro() ? "Copy message" : "PRO required"}
+                          style={iconButtonStyle}
+                        >
                           📋
+                          {!isPro() && (
+                            <span style={{ position: "absolute", right: -6, top: -6, fontSize: 10, background: "rgba(0,0,0,0.6)", color: "#fff", padding: "2px 4px", borderRadius: 8 }}>
+                              🔒
+                            </span>
+                          )}
                         </button>
 
-                        <button onClick={() => shareMessage(m.content)} title="Share message" style={iconButtonStyle}>
+                        <button
+                          onClick={() => {
+                            if (isPro()) shareMessage(m.content);
+                            else openToast("🔒 Get PRO to share messages", 1400);
+                          }}
+                          title={isPro() ? "Share message" : "PRO required"}
+                          style={iconButtonStyle}
+                        >
                           🔗
+                          {!isPro() && (
+                            <span style={{ position: "absolute", right: -6, top: -6, fontSize: 10, background: "rgba(0,0,0,0.6)", color: "#fff", padding: "2px 4px", borderRadius: 8 }}>
+                              🔒
+                            </span>
+                          )}
                         </button>
                       </div>
                     )}
+                    {/* end icons */}
+                    {/* Timestamp */}
+                    <div style={{ fontSize: 11, color: uiPro ? "rgba(255,255,255,0.6)" : "#6b7280", marginTop: 8 }}>{m.time || ""}</div>
                   </div>
                 </div>
               );
@@ -827,6 +876,30 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.
           </button>
         </div>
       </div>
+
+      {/* Floating Upgrade FAB (Minimal pulse) */}
+      {!uiPro && (
+        <button
+          onClick={() => setShowTokenModal(true)}
+          title="Upgrade to PRO"
+          style={{
+            position: "fixed",
+            right: 18,
+            bottom: 18,
+            zIndex: 1500,
+            background: "#0a3cb8",
+            color: "#fff",
+            padding: "12px 14px",
+            borderRadius: 999,
+            border: "none",
+            fontWeight: 800,
+            boxShadow: "0 10px 30px rgba(10,60,184,0.18)",
+            animation: "pulse 2s infinite",
+          }}
+        >
+          PRO 🚀
+        </button>
+      )}
 
       {/* Toast */}
       {toast && (
