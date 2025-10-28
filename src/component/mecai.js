@@ -10,7 +10,7 @@ import React, { useEffect, useRef, useState } from "react";
  *
  * Constants preserved
  */
-const FREE_LIMIT = 100;
+const FREE_LIMIT = 10;
 const UNLOCK_TOKEN = "Mec_user199";
 
 export default function MecAi() {
