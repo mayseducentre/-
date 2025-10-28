@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 
 /**
- * Full MECAI component — updated with:
- * - Icons visible to free users, but locked (minimal badge)
- * - Floating PRO FAB for free users
- * - All original logic preserved (TTS, copy/share, upload, token verify, usage, message persistence, API calls)
- * - Welcome overlay, logo 5x reset, legacy isPro() typewriter behavior preserved
+ * Full MecAi component — merged & complete:
+ * - All original features preserved (TTS, copy/share, upload, token verify, usage, persistence, Groq API call)
+ * - PRO UI theme + responsive PRO FAB
+ * - PRO welcome overlay with animated bot/text (first-time activation)
+ * - Icons always visible; locked for free users with minimal badge
+ * - Typewriter behavior preserved (tied to legacy isPro() flag)
  *
  * Constants preserved
  */
@@ -30,20 +31,16 @@ export default function MecAi() {
   const [playingId, setPlayingId] = useState(null);
 
   // --------------------
-  // PRO detection (instruction 1)
-  // Use localStorage key "plan" === "pro" to enable PRO UI.
-  // Keep other legacy "mecai_pro" based features intact by preserving isPro() helper.
+  // PRO detection
+  // - uiPro driven by localStorage "plan" === "pro"
+  // - legacy isPro() uses localStorage "mecai_pro"
   // --------------------
   const [isProUser, setIsProUser] = useState(() => localStorage.getItem("plan") === "pro");
-
-  // keep legacy internal PRO flag check used by other logic (preserved)
   const isPro = () => localStorage.getItem("mecai_pro") === "true";
-
-  // UI PRO flag must follow the exact instruction: use isProUser for UI.
   const uiPro = isProUser;
 
   // --------------------
-  // Other preserved UI + flow state
+  // UI + flow state
   // --------------------
   const [logoClicks, setLogoClicks] = useState(0);
   const [showTokenModal, setShowTokenModal] = useState(false);
@@ -51,12 +48,12 @@ export default function MecAi() {
   const [toast, setToast] = useState(null);
   const [confirmModal, setConfirmModal] = useState(null);
 
-  // welcome overlay state for PRO (instruction 3)
+  // Show welcome overlay when PRO first activated (store flag to avoid repeat)
   const [showWelcome, setShowWelcome] = useState(() => {
     try {
-      // Show welcome overlay if plan === 'pro' and we haven't recorded a shown flag
       if (localStorage.getItem("plan") === "pro" && !localStorage.getItem("mecai_pro_welcomed")) {
-        localStorage.setItem("mecai_pro_welcomed", "true");
+        // Do not set permanent flag here because we want overlay until it times out;
+        // but record so subsequent mounts don't show if already displayed
         return true;
       }
     } catch {}
@@ -85,7 +82,7 @@ export default function MecAi() {
   const resetUsage = () => localStorage.setItem("mecai_requests", "0");
 
   const enableProLegacy = () => {
-    // preserve legacy enabling flow (mecai_pro) used by other features
+    // preserve legacy enabling flow (mecai_pro)
     localStorage.setItem("mecai_pro", "true");
     localStorage.setItem("mecai_pro_date", new Date().toISOString());
     resetUsage();
@@ -379,9 +376,16 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.
       enableProLegacy();
       localStorage.setItem("plan", "pro"); // ensure UI detection uses required key
       setIsProUser(true);
+      // record welcomed flag to avoid re-showing in future
+      try { localStorage.setItem("mecai_pro_welcomed", "true"); } catch {}
       setShowTokenModal(false);
       setTokenInput("");
       openToast("✅ MECAI PRO enabled on this device.", 1400);
+      // show welcome overlay briefly
+      setShowWelcome(true);
+      setTimeout(() => {
+        setShowWelcome(false);
+      }, 3200);
     } else {
       openToast("❌ Invalid token.", 1400);
     }
@@ -453,9 +457,7 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.
   const usageLeft = Math.max(0, FREE_LIMIT - getUsage());
 
   // --------------------
-  // PRO theme (glassmorphic neon) per instruction 2
-  // - Use radial-gradient(circle at 20% 20%, #0a0a0a, #000)
-  // - Inline styles only
+  // PRO theme (glassmorphic neon)
   // --------------------
   const PRO_THEME = {
     bg: "radial-gradient(circle at 20% 20%, #0a0a0a, #000)",
@@ -475,16 +477,20 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.
     position: "relative",
   };
 
-  // Show welcome overlay only for 3s on first PRO activation (already set showWelcome initial)
+  // Show welcome overlay only for 3.2s on first PRO activation
   useEffect(() => {
     if (showWelcome) {
-      const t = setTimeout(() => setShowWelcome(false), 3000);
+      // mark welcomed so subsequent mounts don't repeat in same device
+      try {
+        localStorage.setItem("mecai_pro_welcomed", "true");
+      } catch {}
+      const t = setTimeout(() => setShowWelcome(false), 3200);
       return () => clearTimeout(t);
     }
   }, [showWelcome]);
 
   // --------------------
-  // Inline keyframes (fadeOut & fadeInGlow) and lightweight animations
+  // Inline keyframes + animations
   // --------------------
   const styleTag = (
     <style>{`
@@ -509,11 +515,22 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.
         50% { transform: scale(1.04); box-shadow: 0 8px 24px rgba(10,60,184,0.14) }
         100% { transform: scale(1); box-shadow: 0 0 0 rgba(10,60,184,0.0) }
       }
+      @keyframes botFloat {
+        0% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0); }
+      }
+      @keyframes proWelcomeFade {
+        0% { opacity: 0; transform: scale(.9); }
+        20% { opacity: 1; transform: scale(1); }
+        80% { opacity: 1; transform: scale(1.03); }
+        100% { opacity: 0; transform: scale(.98); }
+      }
     `}</style>
   );
 
   // --------------------
-  // Render (single component)
+  // Render
   // --------------------
   return (
     <div
@@ -602,7 +619,7 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.
         </div>
       </header>
 
-      {/* Welcome overlay (instruction 3) */}
+      {/* Welcome overlay (animated) */}
       {uiPro && showWelcome && (
         <div
           style={{
@@ -611,28 +628,36 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            background: "rgba(0,0,0,0.6)",
+            zIndex: 5000,
+            animation: "proWelcomeFade 3.2s forwards",
+            backdropFilter: "blur(10px)",
+            WebkitBackdropFilter: "blur(10px)",
             pointerEvents: "none",
-            zIndex: 2000,
           }}
         >
-          <div
-            style={{
-              padding: "26px 36px",
-              borderRadius: 14,
-              background: "linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))",
-              boxShadow: "0 8px 40px rgba(0,0,0,0.6)",
-              textAlign: "center",
-              color: "#dff8ff",
-              fontWeight: 800,
-              fontSize: 20,
-              transform: "translateZ(0)",
-              animation: "fadeOut 3s linear forwards",
-              backdropFilter: "blur(6px)",
-              WebkitBackdropFilter: "blur(6px)",
-            }}
-            aria-hidden
-          >
-            <div style={{ textShadow: "0 4px 28px rgba(25,182,255,0.24)" }}>Welcome to PRO Mode</div>
+          <div style={{ textAlign: "center" }}>
+            <div
+              style={{
+                fontSize: 72,
+                animation: "botFloat 1.6s infinite ease-in-out",
+                marginBottom: 10,
+                transform: "translateZ(0)",
+              }}
+            >
+              🤖
+            </div>
+            <div
+              style={{
+                fontSize: 28,
+                fontWeight: 900,
+                color: "#dff8ff",
+                textShadow: "0 0 14px rgba(25,182,255,0.36)",
+              }}
+            >
+              Welcome to PRO Mode
+            </div>
+            <div style={{ marginTop: 6, color: "#b8ebff", fontSize: 15 }}>You’ve unlocked premium features 🎉</div>
           </div>
         </div>
       )}
@@ -689,11 +714,7 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.
                   >
                     {m.image ? <img src={m.image} alt="uploaded" style={{ width: "100%", borderRadius: 10 }} /> : <div style={{ whiteSpace: "pre-wrap" }}>{m.content}</div>}
 
-                    {/* -------------------------------
-                        Icons: ALWAYS VISIBLE for assistant messages
-                        But PRO-only behavior enforced on click
-                        Minimal lock badge shown when legacy isPro() is false
-                    --------------------------------- */}
+                    {/* Icons visible to all; clicks are PRO gated */}
                     {!isUserMsg && (
                       <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 10 }}>
                         <button
@@ -750,7 +771,6 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.
                         </button>
                       </div>
                     )}
-                    {/* end icons */}
                     {/* Timestamp */}
                     <div style={{ fontSize: 11, color: uiPro ? "rgba(255,255,255,0.6)" : "#6b7280", marginTop: 8 }}>{m.time || ""}</div>
                   </div>
@@ -786,7 +806,7 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.
         </div>
       </main>
 
-      {/* Floating translucent input bar (instruction 2) */}
+      {/* Floating translucent input bar */}
       <div
         style={{
           position: "sticky",
@@ -841,7 +861,7 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.
               }}
             />
 
-            {/* image + mic only for legacy PRO (preserve) */}
+            {/* image + mic only for legacy PRO */}
             {isPro() && (
               <>
                 <input ref={fileRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handleImage} />
@@ -855,7 +875,7 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.
             )}
           </label>
 
-          {/* Send button: show icon ✈️ when uiPro (instruction 2) */}
+          {/* Send button: show icon ✈️ when uiPro */}
           <button
             onClick={sendMessage}
             disabled={loading || (!isPro() && getUsage() >= FREE_LIMIT)}
@@ -877,15 +897,15 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.
         </div>
       </div>
 
-      {/* Floating Upgrade FAB (Minimal pulse) */}
+      {/* Responsive Floating Upgrade FAB */}
       {!uiPro && (
         <button
           onClick={() => setShowTokenModal(true)}
           title="Upgrade to PRO"
           style={{
             position: "fixed",
-            right: 18,
-            bottom: 18,
+            right: "max(12px, 3vw)",
+            bottom: "max(12px, 3vh)",
             zIndex: 1500,
             background: "#0a3cb8",
             color: "#fff",
@@ -893,8 +913,11 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.
             borderRadius: 999,
             border: "none",
             fontWeight: 800,
+            fontSize: "clamp(14px, 4vw, 18px)",
             boxShadow: "0 10px 30px rgba(10,60,184,0.18)",
             animation: "pulse 2s infinite",
+            minWidth: 64,
+            minHeight: 48,
           }}
         >
           PRO 🚀
@@ -908,7 +931,7 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.
         </div>
       )}
 
-      {/* Token modal (preserve) */}
+      {/* Token modal */}
       {showTokenModal && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1200 }}>
           <div style={{ width: "92%", maxWidth: 420, background: uiPro ? "#06121a" : "#fff", borderRadius: 12, padding: 18, boxShadow: "0 20px 60px rgba(2,6,23,0.32)", color: uiPro ? "#dff8ff" : "#072034" }}>
