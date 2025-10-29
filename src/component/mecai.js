@@ -3,26 +3,27 @@ import React, { useEffect, useRef, useState } from "react";
 /**
  * Full MecAi component — merged & complete
  *
- * Changes applied per request:
- * - Free users have a strict 50-message limit (FREE_LIMIT = 50)
- * - Pro users have unlimited messages
- * - Removed bottom floating PRO FAB (upgrade UI moved to header Upgrade button)
- * - Welcome overlay for PRO kept
- * - Removed AI message "fade" animation and replaced with a simple typewriter effect
- * - Typewriter now runs for assistant replies (not gated only to legacy mecai_pro)
+ * Behaviors included:
+ *  - FREE_LIMIT = 50 (strict for free users)
+ *  - PRO unlock via token (UNLOCK_TOKEN)
+ *  - Upgrade button in header (no bottom FAB)
+ *  - Welcome overlay for PRO
+ *  - Typewriter effect for assistant replies
+ *  - Voice, copy, share, upload: only visible/usable for PRO users
+ *  - Local persistence: messages + usage + pro flags
+ *  - Logo 5× quick reset to FREE
+ *  - Clear chat, confirm modal, toast
  *
  * Notes:
- * - There are two "pro" checks in the app:
- *   - uiPro: localStorage "plan" === "pro" (drives UI/theme)
- *   - isPro(): legacy key localStorage "mecai_pro" === "true"
- *   We consider the user "pro" if either is true for permissions.
+ *  - "Effective PRO" is true when either localStorage.plan === "pro" (uiPro)
+ *    OR localStorage.mecai_pro === "true" (legacy).
  */
 
-const FREE_LIMIT = 50; // strict free user count as requested
+const FREE_LIMIT = 50;
 const UNLOCK_TOKEN = "Mec_user199";
 
 export default function MecAi() {
-  // -------------------- // Core state (preserve original) // --------------------
+  // ---------------- Core state ----------------
   const [messages, setMessages] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem("mecai_chat") || "[]");
@@ -36,22 +37,23 @@ export default function MecAi() {
   const [isTyping, setIsTyping] = useState(false);
   const [playingId, setPlayingId] = useState(null);
 
-  // -------------------- // PRO detection
-  // uiPro driven by localStorage "plan" === "pro"
-  // legacy isPro() uses localStorage "mecai_pro"
-  // --------------------
+  // UI/pro detection
   const [isProUser, setIsProUser] = useState(() => localStorage.getItem("plan") === "pro");
   const isPro = () => localStorage.getItem("mecai_pro") === "true";
   const uiPro = isProUser;
+  // combined effective pro check function
+  function isEffectivelyPro() {
+    return uiPro || isPro();
+  }
 
-  // -------------------- // UI + flow state // --------------------
+  // UI state
   const [logoClicks, setLogoClicks] = useState(0);
   const [showTokenModal, setShowTokenModal] = useState(false);
   const [tokenInput, setTokenInput] = useState("");
   const [toast, setToast] = useState(null);
   const [confirmModal, setConfirmModal] = useState(null);
 
-  // Show welcome overlay when PRO first activated (store flag to avoid repeat)
+  // Welcome overlay flag (show when pro first activated and not previously welcomed)
   const [showWelcome, setShowWelcome] = useState(() => {
     try {
       if ((localStorage.getItem("plan") === "pro" || localStorage.getItem("mecai_pro") === "true") && !localStorage.getItem("mecai_pro_welcomed")) {
@@ -61,14 +63,14 @@ export default function MecAi() {
     return false;
   });
 
-  // -------------------- // Refs & timers // --------------------
+  // ---------------- Refs & timers ----------------
   const fileRef = useRef(null);
   const chatEndRef = useRef(null);
   const toastTimerRef = useRef(null);
   const logoResetTimerRef = useRef(null);
   const typeIntervalRef = useRef(null);
 
-  // -------------------- // localStorage helpers (preserve) // --------------------
+  // ---------------- localStorage helpers ----------------
   const getUsage = () => parseInt(localStorage.getItem("mecai_requests") || "0", 10);
   const setUsage = (n) => localStorage.setItem("mecai_requests", String(n));
   const incrementUsage = () => {
@@ -79,22 +81,22 @@ export default function MecAi() {
   const resetUsage = () => localStorage.setItem("mecai_requests", "0");
 
   const enableProLegacy = () => {
-    // preserve legacy enabling flow (mecai_pro)
+    // legacy flag
     localStorage.setItem("mecai_pro", "true");
     localStorage.setItem("mecai_pro_date", new Date().toISOString());
     resetUsage();
   };
 
-  // -------------------- // Persist chat and scroll (preserve) // --------------------
+  // ---------------- persistence and auto scroll ----------------
   useEffect(() => {
     try {
       localStorage.setItem("mecai_chat", JSON.stringify(messages));
     } catch {}
-    // requestAnimationFrame friendly scroll
+    // smooth scroll to bottom
     requestAnimationFrame(() => chatEndRef.current?.scrollIntoView({ behavior: "smooth" }));
   }, [messages]);
 
-  // -------------------- // Toast utilities (preserve) // --------------------
+  // ---------------- toast utilities ----------------
   function openToast(message, autoClose = 1400) {
     clearTimeout(toastTimerRef.current);
     setToast({ message, autoClose });
@@ -108,7 +110,7 @@ export default function MecAi() {
   }
   useEffect(() => () => clearTimeout(toastTimerRef.current), []);
 
-  // -------------------- // Confirm modal helper (preserve) // --------------------
+  // ---------------- confirm modal helper ----------------
   function openConfirm({ title = "Confirm", body = "", confirmLabel = "Yes", cancelLabel = "Cancel", onConfirm, onCancel }) {
     setConfirmModal({ title, body, confirmLabel, cancelLabel, onConfirm, onCancel });
   }
@@ -116,7 +118,7 @@ export default function MecAi() {
     setConfirmModal(null);
   }
 
-  // -------------------- // Local quick DB (preserve) // --------------------
+  // ---------------- local quick DB ----------------
   const localDB = {
     "where is mays daycare located": "Mays DayCare and Edu Centre is located in Accra, Ghana.",
     "student login": "Visit mdcec.vercel.app → click 'Login' → choose 'Student Portal'.",
@@ -124,15 +126,13 @@ export default function MecAi() {
     hello: "Hello 👋! How can I help you today?",
   };
 
-  // -------------------- // Id generator (preserve) // --------------------
+  // ---------------- id generator ----------------
   const mkId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 
-  // -------------------- // Typewriter (updated)
-  // Simple typewriter effect for assistant replies (runs for all users)
-  // Replaced previous "fade" behavior and legacy gating
-  // --------------------
+  // ---------------- typewriter ----------------
+  // Simple typewriter for assistant replies (runs for all users)
   function simulateTypewriter(text, onComplete) {
-    // ensure any previous interval is cleared
+    // clear previous interval if any
     if (typeIntervalRef.current) {
       clearInterval(typeIntervalRef.current);
       typeIntervalRef.current = null;
@@ -147,9 +147,8 @@ export default function MecAi() {
         clearInterval(typeIntervalRef.current);
         typeIntervalRef.current = null;
         setIsTyping(false);
-        const finalText = text;
         setTypePreview("");
-        onComplete && onComplete(finalText);
+        onComplete && onComplete(text);
       }
     }, 18);
     return () => {
@@ -168,11 +167,7 @@ export default function MecAi() {
     };
   }, []);
 
-  // -------------------- // Speech playback (preserve but gate by combined pro check) // --------------------
-  function isEffectivelyPro() {
-    return uiPro || isPro();
-  }
-
+  // ---------------- speech playback ----------------
   function playMessage(messageId, text) {
     if (!isEffectivelyPro()) {
       openToast("🔒 Get PRO to use voice playback", 1400);
@@ -201,7 +196,7 @@ export default function MecAi() {
     window.speechSynthesis.speak(utter);
   }
 
-  // -------------------- // Copy to clipboard (preserve but pro gated) // --------------------
+  // ---------------- copy to clipboard ----------------
   async function copyToClipboard(text) {
     if (!isEffectivelyPro()) {
       openToast("🔒 Get PRO to copy messages", 1400);
@@ -226,7 +221,7 @@ export default function MecAi() {
     }
   }
 
-  // -------------------- // Share (preserve but pro gated) // --------------------
+  // ---------------- share ----------------
   async function shareMessage(text) {
     if (!isEffectivelyPro()) {
       openToast("🔒 Get PRO to share messages", 1400);
@@ -244,7 +239,7 @@ export default function MecAi() {
     }
   }
 
-  // -------------------- // Image upload (preserve but pro gated) // --------------------
+  // ---------------- image upload ----------------
   function handleImage(e) {
     if (!isEffectivelyPro()) {
       openToast("🔒 Get PRO to upload images", 1400);
@@ -256,7 +251,7 @@ export default function MecAi() {
     reader.onload = () => {
       const dataUrl = reader.result;
       const id = mkId();
-      if (!isEffectivelyPro()) incrementUsage();
+      // note: uploading is pro-only so usage is not incremented here
       setMessages((m) => [
         ...m,
         {
@@ -272,18 +267,18 @@ export default function MecAi() {
     e.target.value = null;
   }
 
-  // -------------------- // Send message core (preserve, updated gating for pro) // --------------------
+  // ---------------- send message core ----------------
   async function sendMessage() {
     const text = (input || "").trim();
     if (!text) return;
 
-    // strictly check both pro signals: uiPro (plan) and legacy isPro()
-    if (!uiPro && !isPro() && getUsage() >= FREE_LIMIT) {
+    // strict free-limit enforcement
+    if (!isEffectivelyPro() && getUsage() >= FREE_LIMIT) {
       setShowTokenModal(true);
       return;
     }
 
-    if (!uiPro && !isPro()) incrementUsage();
+    if (!isEffectivelyPro()) incrementUsage();
 
     const userMsg = {
       id: mkId(),
@@ -297,16 +292,16 @@ export default function MecAi() {
 
     const lower = text.toLowerCase().trim();
 
-    // localDB quick answers
+    // quick local answers
     if (localDB[lower]) {
       const ans = localDB[lower];
-      simulateTypewriter(ans, (finalText) => {
+      simulateTypewriter(ans, () => {
         setMessages((m) => [
           ...m,
           {
             id: mkId(),
             role: "assistant",
-            content: finalText,
+            content: ans,
             time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
           },
         ]);
@@ -315,16 +310,16 @@ export default function MecAi() {
       return;
     }
 
-    // disallowed system override attempts
+    // guard against system prompt override requests
     if (lower.match(/(ignore previous|system prompt|pretend to be|forget|reset|reprogram|you are not mecai)/)) {
       const reply = "I'm sorry, but I cannot change or ignore my core identity. Let's continue where we left off. 😊";
-      simulateTypewriter(reply, (finalText) =>
+      simulateTypewriter(reply, () =>
         setMessages((m) => [
           ...m,
           {
             id: mkId(),
             role: "assistant",
-            content: finalText,
+            content: reply,
             time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
           },
         ])
@@ -333,7 +328,7 @@ export default function MecAi() {
       return;
     }
 
-    // Build payload for Groq API (preserve style)
+    // Build payload (preserve style)
     const payload = {
       model: "llama-3.1-8b-instant",
       messages: [
@@ -350,14 +345,13 @@ Personality:
 
 If asked about mdcec.vercel.app guide users to portals/logins naturally.`,
         },
-        // include prior messages to provide context
         ...messages.map((m) => ({ role: m.role, content: m.content })),
         { role: "user", content: text },
       ],
     };
 
     try {
-      // show typing for remote call only after reply is obtained (we'll show typewriter for final reply)
+      setIsTyping(true);
       const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -382,7 +376,7 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.`,
     } catch (err) {
       console.error(err);
       const fail = "⚠️ Failed to connect to MECAI service.";
-      simulateTypewriter(fail, (finalText) =>
+      simulateTypewriter(fail, (finalText) => {
         setMessages((m) => [
           ...m,
           {
@@ -391,14 +385,14 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.`,
             content: finalText,
             time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
           },
-        ])
-      );
+        ]);
+      });
     } finally {
       setLoading(false);
     }
   }
 
-  // -------------------- // Token verify flow (preserve) // --------------------
+  // ---------------- token verify flow ----------------
   function verifyToken() {
     const t = (tokenInput || "").trim();
     if (!t) {
@@ -406,7 +400,7 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.`,
       return;
     }
     if (t === UNLOCK_TOKEN) {
-      // Preserve legacy enabling plus set plan to pro for UI per instruction.
+      // legacy enabling + UI plan
       enableProLegacy();
       localStorage.setItem("plan", "pro");
       setIsProUser(true);
@@ -426,7 +420,7 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.`,
     }
   }
 
-  // -------------------- // Clear chat (preserve) // --------------------
+  // ---------------- clear chat ----------------
   function clearChat() {
     openConfirm({
       title: "Clear chat",
@@ -443,14 +437,13 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.`,
     });
   }
 
-  // -------------------- // Logo 5× quick reset to FREE (instruction 4) // --------------------
+  // ---------------- logo 5x quick reset to FREE ----------------
   useEffect(() => {
     if (logoClicks >= 5) {
       try {
         localStorage.setItem("plan", "free");
       } catch {}
       setIsProUser(false);
-      // Show alert exactly as requested
       try {
         alert("PRO mode has been reset to Free.");
       } catch {
@@ -477,10 +470,9 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.`,
     });
   }
 
-  // -------------------- // UI helpers (preserve) // --------------------
+  // ---------------- UI helpers ----------------
   const usageLeft = Math.max(0, FREE_LIMIT - getUsage());
 
-  // -------------------- // PRO theme (glassmorphic neon) // --------------------
   const PRO_THEME = {
     bg: "radial-gradient(circle at 20% 20%, #0a0a0a, #000)",
     accent: "#19b6ff",
@@ -499,7 +491,7 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.`,
     position: "relative",
   };
 
-  // Show welcome overlay only for 3.2s on first PRO activation
+  // show welcome overlay once
   useEffect(() => {
     if (showWelcome) {
       try {
@@ -510,7 +502,7 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.`,
     }
   }, [showWelcome]);
 
-  // -------------------- // Inline keyframes + animations (kept minimal) // --------------------
+  // keyframes
   const styleTag = (
     <style>
       {`
@@ -524,11 +516,6 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.`,
           50% { transform: translateY(-6px); }
           100% { transform: translateY(0); }
         }
-        @keyframes pulse {
-          0% { transform: scale(1); }
-          50% { transform: scale(1.03); }
-          100% { transform: scale(1); }
-        }
         @keyframes bounceIcon {
           0% { transform: translateY(0); }
           50% { transform: translateY(-4px); }
@@ -538,15 +525,15 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.`,
     </style>
   );
 
-  // -------------------- // Render // --------------------
+  // ---------------- Render ----------------
   return (
     <div
       style={{
         height: "100vh",
         display: "flex",
         flexDirection: "column",
-        background: uiPro ? PRO_THEME.bg : "#fff9e6",
-        color: uiPro ? "#dbeafe" : "#072034",
+        background: isEffectivelyPro() ? PRO_THEME.bg : "#fff9e6",
+        color: isEffectivelyPro() ? "#dbeafe" : "#072034",
         fontFamily: "Inter, -apple-system, system-ui, sans-serif",
         WebkitFontSmoothing: "antialiased",
         MozOsxFontSmoothing: "grayscale",
@@ -561,10 +548,10 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.`,
           alignItems: "center",
           justifyContent: "space-between",
           padding: "12px 16px",
-          background: uiPro ? "linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))" : "rgba(255,255,255,0.75)",
-          borderBottom: uiPro ? "1px solid rgba(255,255,255,0.06)" : "1px solid rgba(0,0,0,0.06)",
-          backdropFilter: uiPro ? "blur(8px) saturate(120%)" : "none",
-          WebkitBackdropFilter: uiPro ? "blur(8px) saturate(120%)" : "none",
+          background: isEffectivelyPro() ? "linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))" : "rgba(255,255,255,0.75)",
+          borderBottom: isEffectivelyPro() ? "1px solid rgba(255,255,255,0.06)" : "1px solid rgba(0,0,0,0.06)",
+          backdropFilter: isEffectivelyPro() ? "blur(8px) saturate(120%)" : "none",
+          WebkitBackdropFilter: isEffectivelyPro() ? "blur(8px) saturate(120%)" : "none",
           userSelect: "none",
           transition: "background .28s ease, border-color .28s ease",
         }}
@@ -579,32 +566,36 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.`,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              background: uiPro ? "linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02))" : "rgba(255,255,255,0.6)",
-              boxShadow: uiPro ? "inset 0 -6px 12px rgba(0,0,0,0.4)" : "inset 0 -6px 10px rgba(255,255,255,0.6)",
+              background: isEffectivelyPro() ? "linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02))" : "rgba(255,255,255,0.6)",
+              boxShadow: isEffectivelyPro() ? "inset 0 -6px 12px rgba(0,0,0,0.4)" : "inset 0 -6px 10px rgba(255,255,255,0.6)",
             }}
           >
-            <span style={{ fontSize: 20 }}>{uiPro ? "🤖" : "🤖"}</span>
+            <span style={{ fontSize: 20 }}>🤖</span>
           </div>
           <div>
-            <div style={{ fontWeight: 700, fontSize: 16, color: uiPro ? "#e6f6ff" : "#072034" }}>{uiPro ? "MECAI PRO" : "MEC AI"}</div>
-            <div style={{ fontSize: 12, color: uiPro ? "#9bdcff" : "#6b7280" }}>{uiPro ? "Premium access — PRO UI active" : `${usageLeft} free messages left`}</div>
+            <div style={{ fontWeight: 700, fontSize: 16, color: isEffectivelyPro() ? "#e6f6ff" : "#072034" }}>
+              {isEffectivelyPro() ? "MECAI PRO" : "MEC AI"}
+            </div>
+            <div style={{ fontSize: 12, color: isEffectivelyPro() ? "#9bdcff" : "#6b7280" }}>
+              {isEffectivelyPro() ? "Premium access — PRO UI active" : `${usageLeft} free messages left`}
+            </div>
           </div>
         </div>
 
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          {/* Show upgrade button in header when user is not pro (either uiPro or legacy) */}
+          {/* Upgrade button in header (visible for free users) */}
           {!isEffectivelyPro() && (
             <button
               onClick={() => setShowTokenModal(true)}
               style={{
-                background: uiPro ? "transparent" : "#0f3b7a",
-                color: uiPro ? PRO_THEME.accent : "#fff",
-                border: uiPro ? `1px solid ${PRO_THEME.accent}` : "none",
+                background: isEffectivelyPro() ? "transparent" : "#0f3b7a",
+                color: isEffectivelyPro() ? PRO_THEME.accent : "#fff",
+                border: isEffectivelyPro() ? `1px solid ${PRO_THEME.accent}` : "none",
                 padding: "8px 12px",
                 borderRadius: 10,
                 fontWeight: 700,
                 cursor: "pointer",
-                backdropFilter: uiPro ? "blur(4px)" : "none",
+                backdropFilter: isEffectivelyPro() ? "blur(4px)" : "none",
               }}
             >
               Upgrade
@@ -615,7 +606,7 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.`,
             onClick={clearChat}
             style={{
               background: "transparent",
-              border: uiPro ? "1px solid rgba(255,255,255,0.06)" : "1px solid rgba(0,0,0,0.06)",
+              border: isEffectivelyPro() ? "1px solid rgba(255,255,255,0.06)" : "1px solid rgba(0,0,0,0.06)",
               padding: "8px 10px",
               borderRadius: 10,
               cursor: "pointer",
@@ -627,7 +618,7 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.`,
       </header>
 
       {/* Welcome overlay (animated) */}
-      {uiPro && showWelcome && (
+      {isEffectivelyPro() && showWelcome && (
         <div
           style={{
             position: "fixed",
@@ -637,33 +628,14 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.`,
             justifyContent: "center",
             background: "rgba(0,0,0,0.6)",
             zIndex: 5000,
-            animation: "proWelcomeFade 3.2s forwards",
             backdropFilter: "blur(10px)",
             WebkitBackdropFilter: "blur(10px)",
             pointerEvents: "none",
           }}
         >
           <div style={{ textAlign: "center" }}>
-            <div
-              style={{
-                fontSize: 72,
-                animation: "botFloat 1.6s infinite ease-in-out",
-                marginBottom: 10,
-                transform: "translateZ(0)",
-              }}
-            >
-              🤖
-            </div>
-            <div
-              style={{
-                fontSize: 28,
-                fontWeight: 900,
-                color: "#dff8ff",
-                textShadow: "0 0 14px rgba(25,182,255,0.36)",
-              }}
-            >
-              Welcome to PRO Mode
-            </div>
+            <div style={{ fontSize: 72, animation: "botFloat 1.6s infinite ease-in-out", marginBottom: 10 }}>🤖</div>
+            <div style={{ fontSize: 28, fontWeight: 900, color: "#dff8ff", textShadow: "0 0 14px rgba(25,182,255,0.36)" }}>Welcome to PRO Mode</div>
             <div style={{ marginTop: 6, color: "#b8ebff", fontSize: 15 }}>You’ve unlocked premium features 🎉</div>
           </div>
         </div>
@@ -674,20 +646,20 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.`,
         <div style={{ width: "100%", maxWidth: 880, display: "flex", flexDirection: "column", gap: 12 }}>
           <div
             style={{
-              background: uiPro ? "linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))" : "rgba(255,255,255,0.8)",
+              background: isEffectivelyPro() ? "linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))" : "rgba(255,255,255,0.8)",
               borderRadius: 14,
               padding: 18,
               minHeight: 320,
-              boxShadow: uiPro ? "0 8px 40px rgba(0,0,0,0.6)" : "0 8px 30px rgba(8,12,20,0.06)",
-              backdropFilter: uiPro ? "blur(8px) saturate(120%)" : "none",
-              WebkitBackdropFilter: uiPro ? "blur(8px) saturate(120%)" : "none",
-              border: uiPro ? "1px solid rgba(255,255,255,0.04)" : "none",
+              boxShadow: isEffectivelyPro() ? "0 8px 40px rgba(0,0,0,0.6)" : "0 8px 30px rgba(8,12,20,0.06)",
+              backdropFilter: isEffectivelyPro() ? "blur(8px) saturate(120%)" : "none",
+              WebkitBackdropFilter: isEffectivelyPro() ? "blur(8px) saturate(120%)" : "none",
+              border: isEffectivelyPro() ? "1px solid rgba(255,255,255,0.04)" : "none",
             }}
           >
             {messages.length === 0 && (
-              <div style={{ textAlign: "center", marginTop: 60, color: uiPro ? "rgba(255,255,255,0.7)" : "#6b7280" }}>
+              <div style={{ textAlign: "center", marginTop: 60, color: isEffectivelyPro() ? "rgba(255,255,255,0.7)" : "#6b7280" }}>
                 <div style={{ fontSize: 20, fontWeight: 700 }}>How can I help you today?</div>
-                <div style={{ marginTop: 6, fontSize: 13 }}>{uiPro ? "Ask about the school, portals, or schedules." : "Ask about the school, portals, or schedules."}</div>
+                <div style={{ marginTop: 6, fontSize: 13 }}>{isEffectivelyPro() ? "Ask about the school, portals, or schedules." : "Ask about the school, portals, or schedules."}</div>
               </div>
             )}
 
@@ -708,9 +680,9 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.`,
                       maxWidth: "78%",
                       padding: "12px 14px",
                       borderRadius: 14,
-                      background: isUserMsg ? (uiPro ? PRO_THEME.userBubble : "#b88523") : uiPro ? PRO_THEME.assistantBubble : "#fffdf7",
-                      color: isUserMsg ? "#fff" : uiPro ? "#e6f6ff" : "#072034",
-                      boxShadow: isUserMsg ? (uiPro ? "0 6px 18px rgba(5,30,80,0.24)" : "0 10px 30px rgba(20,40,80,0.12)") : (uiPro ? "0 6px 18px rgba(2,6,23,0.12)" : "0 8px 24px rgba(2,6,23,0.04)"),
+                      background: isUserMsg ? (isEffectivelyPro() ? PRO_THEME.userBubble : "#b88523") : isEffectivelyPro() ? PRO_THEME.assistantBubble : "#fffdf7",
+                      color: isUserMsg ? "#fff" : isEffectivelyPro() ? "#e6f6ff" : "#072034",
+                      boxShadow: isUserMsg ? (isEffectivelyPro() ? "0 6px 18px rgba(5,30,80,0.24)" : "0 10px 30px rgba(20,40,80,0.12)") : (isEffectivelyPro() ? "0 6px 18px rgba(2,6,23,0.12)" : "0 8px 24px rgba(2,6,23,0.04)"),
                       position: "relative",
                       wordBreak: "break-word",
                       fontSize: 15,
@@ -720,15 +692,12 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.`,
                   >
                     {m.image ? <img src={m.image} alt="uploaded" style={{ width: "100%", borderRadius: 10 }} /> : <div style={{ whiteSpace: "pre-wrap" }}>{m.content}</div>}
 
-                    {/* Icons visible to all; clicks are PRO gated */}
-                    {!isUserMsg && (
+                    {/* PRO-only icons: voice, copy, share. fully hidden for free users */}
+                    {!isUserMsg && isEffectivelyPro() && (
                       <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 10 }}>
                         <button
-                          onClick={() => {
-                            if (isEffectivelyPro()) playMessage(m.id, m.content);
-                            else openToast("🔒 Get PRO to use voice playback", 1400);
-                          }}
-                          title={isEffectivelyPro() ? "Play this message" : "PRO required"}
+                          onClick={() => playMessage(m.id, m.content)}
+                          title="Play this message"
                           style={{
                             ...iconButtonStyle,
                             color: PRO_THEME.accent,
@@ -737,55 +706,34 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.`,
                           }}
                         >
                           🔊
-                          {!isEffectivelyPro() && (
-                            <span style={{ position: "absolute", right: -6, top: -6, fontSize: 10, background: "rgba(0,0,0,0.6)", color: "#fff", padding: "2px 4px", borderRadius: 8 }}>
-                              🔒
-                            </span>
-                          )}
                         </button>
 
                         <button
-                          onClick={() => {
-                            if (isEffectivelyPro()) copyToClipboard(m.content);
-                            else openToast("🔒 Get PRO to copy messages", 1400);
-                          }}
-                          title={isEffectivelyPro() ? "Copy message" : "PRO required"}
+                          onClick={() => copyToClipboard(m.content)}
+                          title="Copy message"
                           style={iconButtonStyle}
                         >
                           📋
-                          {!isEffectivelyPro() && (
-                            <span style={{ position: "absolute", right: -6, top: -6, fontSize: 10, background: "rgba(0,0,0,0.6)", color: "#fff", padding: "2px 4px", borderRadius: 8 }}>
-                              🔒
-                            </span>
-                          )}
                         </button>
 
                         <button
-                          onClick={() => {
-                            if (isEffectivelyPro()) shareMessage(m.content);
-                            else openToast("🔒 Get PRO to share messages", 1400);
-                          }}
-                          title={isEffectivelyPro() ? "Share message" : "PRO required"}
+                          onClick={() => shareMessage(m.content)}
+                          title="Share message"
                           style={iconButtonStyle}
                         >
                           🔗
-                          {!isEffectivelyPro() && (
-                            <span style={{ position: "absolute", right: -6, top: -6, fontSize: 10, background: "rgba(0,0,0,0.6)", color: "#fff", padding: "2px 4px", borderRadius: 8 }}>
-                              🔒
-                            </span>
-                          )}
                         </button>
                       </div>
                     )}
 
                     {/* Timestamp */}
-                    <div style={{ fontSize: 11, color: uiPro ? "rgba(255,255,255,0.6)" : "#6b7280", marginTop: 8 }}>{m.time || ""}</div>
+                    <div style={{ fontSize: 11, color: isEffectivelyPro() ? "rgba(255,255,255,0.6)" : "#6b7280", marginTop: 8 }}>{m.time || ""}</div>
                   </div>
                 </div>
               );
             })}
 
-            {/* typing indicator (updated: show simple typewriter preview for assistant replies) */}
+            {/* typing indicator (simple type preview) */}
             {(loading || isTyping) && (
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 6 }}>
                 <div style={{ display: "flex", gap: 6 }}>
@@ -793,7 +741,7 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.`,
                   <div style={{ width: 9, height: 9, borderRadius: 9, background: PRO_THEME.accent, animation: "dotPulse 1s infinite ease-in-out .12s" }} />
                   <div style={{ width: 9, height: 9, borderRadius: 9, background: PRO_THEME.accent, animation: "dotPulse 1s infinite ease-in-out .24s" }} />
                 </div>
-                {isTyping && <div style={{ color: uiPro ? "rgba(255,255,255,0.7)" : "#6b7280", fontStyle: "italic" }}>{typePreview}</div>}
+                {isTyping && <div style={{ color: isEffectivelyPro() ? "rgba(255,255,255,0.7)" : "#6b7280", fontStyle: "italic" }}>{typePreview}</div>}
               </div>
             )}
 
@@ -804,7 +752,7 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.`,
           {!isEffectivelyPro() && getUsage() >= FREE_LIMIT && (
             <div style={{ textAlign: "center", background: "#fff4e6", padding: 12, borderRadius: 10, color: "#b85a00", fontWeight: 700 }}>
               ⚠️ Limit reached —{" "}
-              <button onClick={() => setShowTokenModal(true)} style={{ background: "none", border: "none", color: uiPro ? PRO_THEME.accent : "#0f3b7a", cursor: "pointer", fontWeight: 800 }}>
+              <button onClick={() => setShowTokenModal(true)} style={{ background: "none", border: "none", color: isEffectivelyPro() ? PRO_THEME.accent : "#0f3b7a", cursor: "pointer", fontWeight: 800 }}>
                 Enter Token
               </button>{" "}
               to unlock PRO.
@@ -813,16 +761,8 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.`,
         </div>
       </main>
 
-      {/* Floating translucent input bar */}
-      <div
-        style={{
-          position: "sticky",
-          bottom: 12,
-          display: "flex",
-          justifyContent: "center",
-          pointerEvents: "none",
-        }}
-      >
+      {/* Input bar */}
+      <div style={{ position: "sticky", bottom: 12, display: "flex", justifyContent: "center", pointerEvents: "none" }}>
         <div
           style={{
             width: "100%",
@@ -833,61 +773,39 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.`,
             alignItems: "center",
             pointerEvents: "auto",
             padding: "12px",
-            background: uiPro ? "linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))" : "rgba(255,255,255,0.98)",
+            background: isEffectivelyPro() ? "linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))" : "rgba(255,255,255,0.98)",
             borderRadius: 14,
-            boxShadow: uiPro ? "0 10px 40px rgba(0,0,0,0.6)" : "0 6px 18px rgba(2,6,23,0.04)",
-            backdropFilter: uiPro ? "blur(8px) saturate(120%)" : "none",
-            WebkitBackdropFilter: uiPro ? "blur(8px) saturate(120%)" : "none",
-            border: uiPro ? "1px solid rgba(255,255,255,0.04)" : "1px solid rgba(0,0,0,0.04)",
+            boxShadow: isEffectivelyPro() ? "0 10px 40px rgba(0,0,0,0.6)" : "0 6px 18px rgba(2,6,23,0.04)",
+            backdropFilter: isEffectivelyPro() ? "blur(8px) saturate(120%)" : "none",
+            WebkitBackdropFilter: isEffectivelyPro() ? "blur(8px) saturate(120%)" : "none",
+            border: isEffectivelyPro() ? "1px solid rgba(255,255,255,0.04)" : "1px solid rgba(0,0,0,0.04)",
           }}
         >
-          <label
-            style={{
-              display: "flex",
-              flex: 1,
-              gap: 8,
-              alignItems: "center",
-              background: uiPro ? "rgba(255,255,255,0.02)" : "#fff",
-              padding: "8px 10px",
-              borderRadius: 12,
-            }}
-          >
+          <label style={{ display: "flex", flex: 1, gap: 8, alignItems: "center", background: isEffectivelyPro() ? "rgba(255,255,255,0.02)" : "#fff", padding: "8px 10px", borderRadius: 12 }}>
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && sendMessage()}
               placeholder={!isEffectivelyPro() && getUsage() >= FREE_LIMIT ? "Limit reached — enter token to continue" : "Message MECAI..."}
               disabled={!isEffectivelyPro() && getUsage() >= FREE_LIMIT}
-              style={{
-                flex: 1,
-                border: "none",
-                outline: "none",
-                fontSize: 15,
-                background: "transparent",
-                color: uiPro ? "#e6f6ff" : "#072034",
-              }}
+              style={{ flex: 1, border: "none", outline: "none", fontSize: 15, background: "transparent", color: isEffectivelyPro() ? "#e6f6ff" : "#072034" }}
             />
 
-            {/* image + mic only for pro users */}
+            {/* Upload + mic: only visible for PRO (fully hidden for free users) */}
             {isEffectivelyPro() && (
               <>
                 <input ref={fileRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handleImage} />
-                <button onClick={() => fileRef.current && fileRef.current.click()} style={iconButtonStyle} title="Upload image">
-                  📷
-                </button>
-                <button onClick={() => openToast("Voice recording coming soon", 1200)} style={iconButtonStyle} title="Mic">
-                  🎤
-                </button>
+                <button onClick={() => fileRef.current && fileRef.current.click()} style={iconButtonStyle} title="Upload image">📷</button>
+                <button onClick={() => openToast("Voice recording coming soon", 1200)} style={iconButtonStyle} title="Mic">🎤</button>
               </>
             )}
           </label>
 
-          {/* Send button: show icon ✈️ when uiPro */}
           <button
             onClick={sendMessage}
             disabled={loading || (!isEffectivelyPro() && getUsage() >= FREE_LIMIT)}
             style={{
-              background: uiPro ? "linear-gradient(90deg,#0b6aff,#0a3cb8)" : "#0f3b7a",
+              background: isEffectivelyPro() ? "linear-gradient(90deg,#0b6aff,#0a3cb8)" : "#0f3b7a",
               color: "#fff",
               border: "none",
               padding: "12px 16px",
@@ -899,14 +817,14 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.`,
             }}
             title="Send message"
           >
-            {uiPro ? "✈️" : "Send"}
+            {isEffectivelyPro() ? "✈️" : "Send"}
           </button>
         </div>
       </div>
 
       {/* Toast */}
       {toast && (
-        <div style={{ position: "fixed", left: "50%", transform: "translateX(-50%)", bottom: 90, background: uiPro ? "rgba(7,18,30,0.95)" : "#111", color: "#fff", padding: "8px 12px", borderRadius: 10, zIndex: 1400 }}>
+        <div style={{ position: "fixed", left: "50%", transform: "translateX(-50%)", bottom: 90, background: isEffectivelyPro() ? "rgba(7,18,30,0.95)" : "#111", color: "#fff", padding: "8px 12px", borderRadius: 10, zIndex: 1400 }}>
           {toast.message || toast}
         </div>
       )}
@@ -914,46 +832,28 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.`,
       {/* Token modal */}
       {showTokenModal && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1200 }}>
-          <div style={{ width: "92%", maxWidth: 420, background: uiPro ? "#06121a" : "#fff", borderRadius: 12, padding: 18, boxShadow: "0 20px 60px rgba(2,6,23,0.32)", color: uiPro ? "#dff8ff" : "#072034" }}>
+          <div style={{ width: "92%", maxWidth: 420, background: isEffectivelyPro() ? "#06121a" : "#fff", borderRadius: 12, padding: 18, boxShadow: "0 20px 60px rgba(2,6,23,0.32)", color: isEffectivelyPro() ? "#dff8ff" : "#072034" }}>
             <h3 style={{ marginTop: 0 }}>Unlock MECAI PRO</h3>
-            <p style={{ color: uiPro ? "rgba(255,255,255,0.7)" : "#475569", marginBottom: 12 }}>Enter your unlock token to upgrade permanently on this device.</p>
+            <p style={{ color: isEffectivelyPro() ? "rgba(255,255,255,0.7)" : "#475569", marginBottom: 12 }}>Enter your unlock token to upgrade permanently on this device.</p>
             <input value={tokenInput} onChange={(e) => setTokenInput(e.target.value)} placeholder="Enter token" style={{ width: "100%", padding: 10, borderRadius: 8, border: "1px solid #e6eef9", marginBottom: 12 }} />
             <div style={{ display: "flex", gap: 10 }}>
-              <button onClick={verifyToken} style={{ flex: 1, background: PRO_THEME.accent, color: "#000", border: "none", padding: 10, borderRadius: 8, fontWeight: 800 }}>
-                Verify
-              </button>
-              <button onClick={() => setShowTokenModal(false)} style={{ flex: 1, background: "#fff", border: "1px solid #e6eef9", padding: 10, borderRadius: 8 }}>
-                Cancel
-              </button>
+              <button onClick={verifyToken} style={{ flex: 1, background: PRO_THEME.accent, color: "#000", border: "none", padding: 10, borderRadius: 8, fontWeight: 800 }}>Verify</button>
+              <button onClick={() => setShowTokenModal(false)} style={{ flex: 1, background: "#fff", border: "1px solid #e6eef9", padding: 10, borderRadius: 8 }}>Cancel</button>
             </div>
             <div style={{ marginTop: 10, fontSize: 12, color: "#6b7280" }}>If you don't have a token, contact the admin.</div>
           </div>
         </div>
       )}
 
-      {/* Confirm Modal (preserve) */}
+      {/* Confirm Modal */}
       {confirmModal && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1300 }}>
-          <div style={{ width: "92%", maxWidth: 420, background: uiPro ? "#07121a" : "#fff", borderRadius: 12, padding: 18, color: uiPro ? "#dff8ff" : "#072034" }}>
+          <div style={{ width: "92%", maxWidth: 420, background: isEffectivelyPro() ? "#07121a" : "#fff", borderRadius: 12, padding: 18, color: isEffectivelyPro() ? "#dff8ff" : "#072034" }}>
             <h3 style={{ marginTop: 0 }}>{confirmModal.title}</h3>
-            <p style={{ color: uiPro ? "rgba(255,255,255,0.7)" : "#475569", marginBottom: 12 }}>{confirmModal.body}</p>
+            <p style={{ color: isEffectivelyPro() ? "rgba(255,255,255,0.7)" : "#475569", marginBottom: 12 }}>{confirmModal.body}</p>
             <div style={{ display: "flex", gap: 10 }}>
-              <button
-                onClick={() => {
-                  confirmModal.onConfirm && confirmModal.onConfirm();
-                }}
-                style={{ flex: 1, background: PRO_THEME.accent, color: "#000", border: "none", padding: 10, borderRadius: 8, fontWeight: 800 }}
-              >
-                {confirmModal.confirmLabel || "Yes"}
-              </button>
-              <button
-                onClick={() => {
-                  confirmModal.onCancel && confirmModal.onCancel();
-                }}
-                style={{ flex: 1, background: "#fff", border: "1px solid #e6eef9", padding: 10, borderRadius: 8 }}
-              >
-                {confirmModal.cancelLabel || "Cancel"}
-              </button>
+              <button onClick={() => { confirmModal.onConfirm && confirmModal.onConfirm(); }} style={{ flex: 1, background: PRO_THEME.accent, color: "#000", border: "none", padding: 10, borderRadius: 8, fontWeight: 800 }}>{confirmModal.confirmLabel || "Yes"}</button>
+              <button onClick={() => { confirmModal.onCancel && confirmModal.onCancel(); }} style={{ flex: 1, background: "#fff", border: "1px solid #e6eef9", padding: 10, borderRadius: 8 }}>{confirmModal.cancelLabel || "Cancel"}</button>
             </div>
           </div>
         </div>
@@ -961,5 +861,3 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.`,
     </div>
   );
 }
-
-/* End of component */
