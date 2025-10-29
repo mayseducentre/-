@@ -610,6 +610,7 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.`,
               padding: "8px 10px",
               borderRadius: 10,
               cursor: "pointer",
+              color: "orange"
             }}
           >
             Clear
