@@ -57,11 +57,13 @@ export default function Library(){
             </Link>
         </div>
         <div className="col-lg-4">
+    <Link to="/upload_file" className="nounderline" >
             <div className=" list">
                 <img src={require("../img/drive.png")} className="list-img align-items-center" alt="image" />
                 <br/>
                 <a style={{fontWeight:"700",fontSize:"15px"}}>&emsp;&emsp;&emsp;MEC Drive</a>
             </div>
+    </Link>
         </div>
 
 
@@ -70,7 +72,7 @@ export default function Library(){
             <div className=" list">
                 <img src={require("../img/web.jpg")} className="list-img align-items-center" alt="image" />
                 <br/>
-                <a style={{fontWeight:"700",fontSize:"15px"}}>&emsp;&emsp;&emsp;Websites</a>
+                <a style={{fontWeight:"700",fontSize:"15px",paddingLeft:"20px"}}>&emsp;&emsp;&emsp;Websites</a>
             </div>
             </Link>
         </div>
