@@ -16,7 +16,7 @@ export default function Header(props) {
 
                                                         return (
                                                             <>
-                                                                  <header id="header" className="fixed-top d-flex align-items-center">
+                                                                  <header id="header" className="fixed-top d-flex align-items-center nounderline">
                                                                           <div className="container d-flex align-items-center justify-content-between">
                                                                                     <a href="#/" className="logo">
                                                                                                 <img
