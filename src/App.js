@@ -28,7 +28,7 @@ import ProjectView from "./component/portal_component/projectview.js"
 import Assessment from "./component/portal_component/assessment.js";
 import AssessmentA from "./component/portal_component/assessment admin.js";
 import LessonNoteTemp from "./component/portal_component/note_temp.js";
-import UploadAccess from "./component/uplaodmedia";
+import UploadAccess from "./component/uploadmedia";
 
 
 window.addEventListener("keyup", (e)=>{
