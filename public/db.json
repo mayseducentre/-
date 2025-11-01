@@ -1,0 +1,390 @@
+{
+  "library": [
+    {
+      "id": "lib",
+      "name": "all ",
+      "dictionary": [
+        {
+          "name": "Dictionary.com",
+          "url": "https://www.dictionary.com",
+          "description": "A comprehensive online dictoionary"
+        },
+        {
+          "name": "Merriam - Webster",
+          "url": "https://www.merriam-webster.com",
+          "description": "An American online dictoionary"
+        },
+        {
+          "name": "Oxford Learners Dictionary",
+          "url": "https://www.oxfordlearnersdictionaries.com",
+          "description": "An online dictoionary"
+        },
+        {
+          "name": "Cambridge Dictionary",
+          "url": "https://www.dictionary.cambridge.org",
+          "description": "An American online dictoionary"
+        }
+      ],
+      "storybooks": [
+        {
+          "name": "Online Story Book",
+          "url": "https://storylineonline.net/",
+          "description": "Story for all"
+        },
+        {
+          "name": "Story Books",
+          "url": "https://www.storybooks.app/bedtime-stories/benny-and-the-blooming-biotastic-adventure-mPLREBHbEy",
+          "description": "Stories"
+        },
+        {
+          "name": "The Lion King",
+          "url": "https://www.storybooks.app/bedtime-stories/the-lion-king-lesson-OnxVuYxddD",
+          "description": "Stories"
+        },
+        {
+          "name": "The Beautiful Ones are not yet Born",
+          "url": "https://researchkings.com.ng/2023/05/12/summary-of-ayi-kwei-armahs-the-beautyful-ones-are-not-yet-born/",
+          "description": "Story"
+        },
+        {
+          "name": "Game plan",
+          "url": "https://www.ebonystory.com/short-story/game-plan-by-francis-agamah",
+          "description": "Plan"
+        },
+        {
+          "id": "5",
+          "name": "Tarzan of the apes",
+          "url": "https://www.planetebook.com/tarzan-of-the-apes/#google_vignette",
+          "description": "."
+        }
+      ],
+      "featuredbooks": [
+        {
+          "name": "Astronautics ",
+          "url": "https://reader.bookfusion.com/books/2239760-aeronautics-and-astronautics-1915-1960?type=pdf",
+          "description": "Astronauts "
+        },
+        {
+          "id": "lib6949141",
+          "name": "Math way",
+          "url": "https://www.mathway.com",
+          "description": "."
+        },
+        {
+          "id": "lib7502918",
+          "name": "Deep learning",
+          "url": "https://books.google.com.gh/books?id=omivDQAAQBAJ&printsec=frontcover&dq=educational+books+free+url&hl=en&newbks=1&newbks_redir=0&source=gb_mobile_search&sa=X&ved=2ahUKEwjPrv2Mk66JAxXJU0EAHVvCH1AQ6AF6BAgFEAM#v=onepage&q&f=false",
+          "description": "."
+        },
+        {
+          "id": "lib5261711",
+          "name": "Keyboard shortcuts",
+          "url": "https://ada.nv.gov/uploadedFiles/adanewnvgov/content/Training/KeyboardShortcuts.pdf",
+          "description": "."
+        }
+      ],
+      "featuredwebsites": [
+        {
+          "name": "ALECOM",
+          "url": "https://al-ecommerce.github.io/-/",
+          "description": "Buy and Sell online"
+        },
+        {
+          "name": "Code Editor",
+          "url": "https://amzi-kwasi.github.io/code_editor",
+          "description": "Code editor"
+        },
+        {
+          "name": "Mecathon game",
+          "url": "https://myplatformhost.github.io/racing-game",
+          "description": "."
+        },
+        {
+          "id": "6",
+          "name": "WAEC Results Checker",
+          "url": "https://eresults.waecgh.org/?_gl=1*187ocdw*_ga*MjI0OTkwNDk4LjE3MjY0MTQxNTM.*_ga_9SVLSMH7ZZ*MTcyNjQxNDE1My4xLjAuMTcyNjQxNDE1My4wLjAuMA..",
+          "description": "."
+        },
+        {
+          "id": "0",
+          "name": "PhotoMath",
+          "url": "https://www.photomath.com",
+          "description": "."
+        },
+        {
+          "id": "0",
+          "name": "National Geographic",
+          "url": "https://www.nationalgeographic.com/",
+          "description": "."
+        },
+        {
+          "id": "1",
+          "name": "Academic earth",
+          "url": "https://www.academicearth.org/",
+          "description": "."
+        },
+        {
+          "id": "lib7646864",
+          "name": "MIT App Inventor",
+          "url": "https://appinventor.mit.edu/",
+          "description": "."
+        },
+        {
+          "id": "lib671977",
+          "name": "Learn python",
+          "url": "https://www.learnpython.org/",
+          "description": "."
+        },
+        {
+          "id": "lib671597",
+          "name": "GES",
+          "url": "https://ges.gov.gh/",
+          "description": "."
+        },
+        {
+          "id": "lib6715977",
+          "name": "Learn c++",
+          "url": "https://www.codecademy.com/learn/learn-c-plus-plus",
+          "description": "."
+        },
+        {
+          "id": "lib1637145",
+          "name": "Typescript",
+          "url": "https://amzi-kwasi.github.io/typescript/",
+          "description": "."
+        }
+      ],
+      "mecmedia": [
+        {
+          "id": "lib4554862",
+          "name": ".",
+          "url": "https://lh3.googleusercontent.com/p/AF1QipPoZJ53mDJlcm6O36pOp9olY_G9cBtrjq8IpMaj=s680-w680-h510",
+          "description": "."
+        },
+        {
+          "id": "lib4554862",
+          "name": ".",
+          "url": "https://lh3.googleusercontent.com/p/AF1QipONkAbrQTo3KSdjxKlIuikN-JHjpW3M68lEEkf4=s680-w680-h510",
+          "description": "."
+        },
+        {
+          "id": "lib71852224",
+          "name": ".",
+          "url": "https://lh3.googleusercontent.com/pw/AP1GczPvA3dy9BhSRhQY9sQvJDvE-Fen9qeymFcVbQkcV54z60KUQS97JnAxozbGLG0hArMM03P9GPqzRMwcfscaCcx6HGN5wALrcDqd1ObJbjMHSQD4qdU",
+          "description": "."
+        },
+        {
+          "id": "lib90058460",
+          "name": "6th March",
+          "url": "https://lh3.googleusercontent.com/pw/AP1GczOWWNPtAFFtucIJh3L2T3s3Rn0a5hVeEZrwQeDB19fNHtCwPgL4x5Pgg5D-dFwXQADZvRi6GphRfpcrKUOvPLv18GZ-TQzoYWgdIy181i7MKh6KL0g",
+          "description": "."
+        },
+        {
+          "id": "lib14338449",
+          "name": ".",
+          "url": "https://lh3.googleusercontent.com/pw/AP1GczMNJC4eslydtH5LZISlg7lt967KSuE3KTrFJEJBOnod1la9ygFwPs9FZZAXWD-fGOKgUcpsngxZIHZcnQZzWZ9avAfEpcd1VjNQ8y_tp3TWRr8QHZs",
+          "description": "."
+        },
+        {
+          "id": "lib14338449",
+          "name": ".",
+          "url": "https://lh3.googleusercontent.com/pw/AP1GczONL-ibrZyAPtjnRsWzYXPzbkBm5G0c_OMm5XhYoJrC4WSeJCj0chP8dbxnCA5yURz-IE0uk7p7o9lAQwErFAgkkiKg1-CUIsSbuyxERHMunyDESuk",
+          "description": "."
+        },
+        {
+          "id": "lib14338449",
+          "name": ".",
+          "url": "https://lh3.googleusercontent.com/pw/AP1GczNzeu0Cu4uJVn_VkiindaWUiPWx37mM4cXYjqTtlMt9gn7UHihP-4Otm4RqSkJKsbRURf2Nr5HST3_UyvEIL2-JwF2HQLSCuj3Y__3qGWMoZADgpVs",
+          "description": "."
+        }
+      ],
+      "featuredvideos": [
+        {
+          "name": "Homemade Drone",
+          "url": "https://www.youtube.com/embed/SCvKoaTcjyQ",
+          "description": "Make a drone"
+        },
+        {
+          "name": "The Blind Side",
+          "url": "https://www.youtube.com/embed/gvqj_Tk_kuM",
+          "description": "Side"
+        },
+        {
+          "name": "Learning French",
+          "url": "https://www.youtube.com/embed/LoFPX7XKPuk",
+          "description": "French "
+        },
+        {
+          "name": "Probability- Math",
+          "url": "https://www.youtube.com/embed/KzfWUEJjG18",
+          "description": "Math"
+        },
+        {
+          "name": "Science experiment",
+          "url": "https://www.youtube.com/embed/eiKNcRAyAEE",
+          "description": "Science"
+        },
+        {
+          "name": "Science experiment ",
+          "url": "https://www.youtube.com/embed/_ZizKQqHNgI",
+          "description": "Science "
+        },
+        {
+          "name": "Typing Skills",
+          "url": "https://www.youtube.com/embed/8Ic2L7ZyFC8",
+          "description": "Skills"
+        },
+        {
+          "id": "5",
+          "name": "Mathematics-Statistics",
+          "url": "https://youtube.com/embed/iFEM47hlFpKf1V2D",
+          "description": "."
+        },
+        {
+          "id": "5",
+          "name": "Generations of computer",
+          "url": "https://www.youtube.com/embed/MAmdbGkLVdQ",
+          "description": "."
+        },
+        {
+          "id": "5",
+          "name": "Digestive system",
+          "url": "https://www.youtube.com/embed/_T_vmcLyTzI",
+          "description": "."
+        },
+        {
+          "id": "5",
+          "name": "Solar system",
+          "url": "https://www.youtube.com/embed/libKVRa01L8",
+          "description": "."
+        },
+        {
+          "id": "5",
+          "name": "Animals Kingdom",
+          "url": "https://www.youtube.com/embed/FKBCmhCCvfI",
+          "description": "."
+        },
+        {
+          "id": "5",
+          "name": "PJ masks",
+          "url": "https://www.youtube.com/embed/HcbZ44XdkNo",
+          "description": "."
+        },
+        {
+          "id": "5",
+          "name": "Sherriff's fishing adventure ",
+          "url": "https://www.youtube.com/embed/eopLEoJgIUI",
+          "description": "."
+        },
+        {
+          "id": "5",
+          "name": "Components of the motherboard ",
+          "url": "https://www.youtube.com/embed/PyT8jsdYcwM",
+          "description": "."
+        },
+        {
+          "id": "1",
+          "name": "Introduction to Quantum Computing",
+          "url": "https://www.youtube.com/embed/S52rxZG-zi0",
+          "description": "."
+        },
+        {
+          "id": "1",
+          "name": "Microsoft Word",
+          "url": "https://www.youtube.com/embed/2MCmnr2L50o",
+          "description": "."
+        },
+        {
+          "id": "1",
+          "name": "Microsoft PowerPoint",
+          "url": "https://www.youtube.com/embed/KqgyvGxISxk",
+          "description": "."
+        },
+        {
+          "id": "3",
+          "name": "Stem Education ",
+          "url": "https://www.youtube.com/embed/bh2f28Wh83Q",
+          "description": "."
+        },
+        {
+          "id": "3",
+          "name": "File management ",
+          "url": "https://www.youtube.com/embed/k-EID5_2D9U",
+          "description": "."
+        },
+        {
+          "id": "9",
+          "name": "Math Statistics ",
+          "url": "https://www.youtube.com/embed/hQ7Z2NC8ODY",
+          "description": "."
+        },
+        {
+          "id": "2",
+          "name": "Basic calculation on MS excel",
+          "url": "https://www.youtube.com/embed/rpCaVZCURZQ",
+          "description": "."
+        },
+        {
+          "id": "lib7647475",
+          "name": "Why you need a Network Attached Storage(NAS)",
+          "url": "https://www.youtube.com/embed/imH01FvTssc",
+          "description": "."
+        },
+        {
+          "id": "lib671597",
+          "name": "Health and safety using ICT tools",
+          "url": "https://www.youtube.com/embed/2M_wfcN-j8I",
+          "description": "."
+        },
+        {
+          "id": "lib6715977",
+          "name": "Art (Painting)",
+          "url": "https://www.youtube.com/embed/NBo9usBTpNc",
+          "description": "."
+        },
+        {
+          "id": "lib67977",
+          "name": "Device drivers",
+          "url": "https://www.youtube.com/embed/WsTFT6_zsEA",
+          "description": "."
+        },
+        {
+          "id": "lib615977",
+          "name": "Information hacking techniques",
+          "url": "https://www.youtube.com/embed/eG1pdw_TOYE",
+          "description": "."
+        },
+        {
+          "id": "lib67159787",
+          "name": "Data security",
+          "url": "https://www.youtube.com/embed/N8xEgSe5RwE",
+          "description": "."
+        },
+        {
+          "id": "lib67157",
+          "name": "Baby boss best scenes",
+          "url": "https://www.youtube.com/embed/YU6sRWdzEMc",
+          "description": "."
+        },
+        {
+          "id": "lib671597907",
+          "name": "Two letter words (Kids)",
+          "url": "https://www.youtube.com/embed/SOg7qBlAJTw",
+          "description": "."
+        },
+        {
+          "id": "lib62311069",
+          "name": "Evaluating Safety Risk Reduction",
+          "url": "https://www.youtube.com/embed/Toszh8BP6PA",
+          "description": "."
+        },
+        {
+          "id": "lib62311069",
+          "name": "Cyber Security awareness",
+          "url": "https://www.youtube.com/embed/oSB0gEmPtiA",
+          "description": "Cyber"
+        }
+      ]
+    }
+  ]
+}
