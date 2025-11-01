@@ -12,7 +12,8 @@ import React, { useEffect, useRef, useState } from "react";
  *  - Voice, copy, share, upload: only visible/usable for PRO users
  *  - Local persistence: messages + usage + pro flags
  *  - Logo 5× quick reset to FREE
- *  - Clear chat, confirm modal, toast
+ *  - Clear chat (does NOT reset usage)
+ *  - Confirm modal, toast
  *
  * Notes:
  *  - "Effective PRO" is true when either localStorage.plan === "pro" (uiPro)
@@ -429,7 +430,7 @@ If asked about mdcec.vercel.app guide users to portals/logins naturally.`,
       cancelLabel: "Cancel",
       onConfirm: () => {
         setMessages([]);
-        resetUsage();
+        // <-- removed resetUsage() here to prevent users from cheating by clearing messages
         closeConfirm();
         openToast("Chat cleared", 1200);
       },
