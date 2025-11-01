@@ -5,105 +5,131 @@ import Header from "../component/header";
 import Breadcrumb from "../component/breadcrumb";
 import { useEffect, useState } from "react";
 
+function ScrollContainer(event) {
+  event.preventDefault();
+  const scroll1 = document.getElementById("scroll1");
+  const scroll2 = document.getElementById("scroll2");
 
-   
-var path=process.env.REACT_APP_LIBRARY_API;
-function ScrollContainer(event){
-    var scroll1=document.getElementById("scroll1");
-    var scroll2=document.getElementById("scroll2");
-
-    event.preventDefault()
-    if(event.deltaY > 0){
-        scroll1.scrollLeft += 100;
-        scroll2.scrollLeft += 100;
-       }
-       else{
-        scroll1.scrollLeft -=100;
-        scroll2.scrollLeft -=100;
-       }
-       
+  if (event.deltaY > 0) {
+    scroll1.scrollLeft += 100;
+    scroll2.scrollLeft += 100;
+  } else {
+    scroll1.scrollLeft -= 100;
+    scroll2.scrollLeft -= 100;
+  }
 }
 
 function LibraryVideos() {
-  const [videos, setVideos]=useState([]);
-     
-  const [loading, setLoading]=useState(false);
-  
-         
-  
-       useEffect(()=>{
-  
-        fetch(`${path}/library`)
-        .then(res => res.json())
-        .then(data => {
-          if(data.length > 0){
-            setVideos(data[0].featuredvideos)
-            setLoading(true)
-          }
-        })
-        .catch(err => console.log("Error fetching data", err))
-      }, [])
-  
-    return (
-        <>
-  <Breadcrumb title="Library - Videos"/>
-<Header />
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <div>
-        <h5 style={{color:"black",textTransform:"none",marginLeft:"20px"}}>Featured Videos</h5>
-        
-<center>{loading ? <a></a> : <a><div className="loadery"></div></a>}</center>
-<div className="scroll-container" id="scroll1" onWheel={ScrollContainer}>
-    
-    <div className="scroll-item">
-        <video src="https://drive.google.com/file/d/1YL5_2bMGsPw5aH9CV9EV-DoWuE0wvVRW/view?usp=drivesdk" controls></video>
-      <textarea readOnly>Welcome to May's Edu Centre</textarea>
-    </div>
+  const [videos, setVideos] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-    <div className="scroll-item">
-    <iframe  src="https://www.youtube.com/embed/dxECczwpirE?si=Q5HT5DoTbrJFWK9Q" title="May's Educational Centre Graduation" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
-    <textarea readOnly>MEC Graduation 2020</textarea>
-    </div>  
-    
-{videos.map(video => (
- <div className="scroll-item">
-    <iframe src={video.url}  title="May's Educational Centre" frameBorder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
-<textarea value={video.name} readOnly></textarea>
-    </div>
-))} 
+  useEffect(() => {
+    // Load video data from local JSON instead of API
+    fetch("/db.json")
+      .then((res) => res.json())
+      .then((data) => {
+        const libraryData = data.library?.[0];
+        if (libraryData) {
+          setVideos(libraryData.featuredvideos || []);
+          setLoading(true);
+        }
+      })
+      .catch((err) => console.error("Error loading local JSON:", err));
+  }, []);
 
-</div>
-</div>
+  return (
+    <>
+      <Header />
+      <Breadcrumb title="Library - Videos" />
 
+      <br />
+      <br />
+      <br />
+      <br />
 
-<div>
-        <h5 style={{color:"black",textTransform:"none",marginLeft:"20px"}}>Songs</h5>
-        
-<center>{loading ? <a></a> : <a><div className="loadery"></div></a>}</center>
-<div className="scroll-container" id="scroll2" onWheel={ScrollContainer}>
-    <div className="scroll-item">
-        <video poster={require(`../img/${process.env.REACT_APP_LOGO}`)}></video>
-      <textarea readOnly></textarea>
-    </div>
-    
-</div>
-</div>
+      {/* ===== Featured Videos Section ===== */}
+      <div>
+        <h5
+          style={{
+            color: "black",
+            textTransform: "none",
+            marginLeft: "20px",
+          }}
+        >
+          Featured Videos
+        </h5>
 
+        <center>
+          {loading ? <a></a> : <a><div className="loadery"></div></a>}
+        </center>
 
-<ScrollToTop smooth className="scrolly"/>
-       
-<Footer />
+        <div className="scroll-container" id="scroll1" onWheel={ScrollContainer}>
+          {/* Local static intro videos */}
+          <div className="scroll-item">
+            <video
+              src="https://drive.google.com/file/d/1YL5_2bMGsPw5aH9CV9EV-DoWuE0wvVRW/view?usp=drivesdk"
+              controls
+            ></video>
+            <textarea readOnly>Welcome to May's Edu Centre</textarea>
+          </div>
 
-      </>
-    )
-  };
+          <div className="scroll-item">
+            <iframe
+              src="https://www.youtube.com/embed/dxECczwpirE?si=Q5HT5DoTbrJFWK9Q"
+              title="May's Educational Centre Graduation"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            ></iframe>
+            <textarea readOnly>MEC Graduation 2020</textarea>
+          </div>
 
+          {/* Dynamic videos from db.json */}
+          {videos.map((video, i) => (
+            <div className="scroll-item" key={i}>
+              <iframe
+                src={video.url}
+                title={video.name}
+                frameBorder="0"
+                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+              ></iframe>
+              <textarea value={video.name} readOnly></textarea>
+            </div>
+          ))}
+        </div>
+      </div>
 
-  
+      {/* ===== Songs Section ===== */}
+      <div>
+        <h5
+          style={{
+            color: "black",
+            textTransform: "none",
+            marginLeft: "20px",
+          }}
+        >
+          Songs
+        </h5>
 
-  export default LibraryVideos;
+        <center>
+          {loading ? <a></a> : <a><div className="loadery"></div></a>}
+        </center>
 
- 
+        <div className="scroll-container" id="scroll2" onWheel={ScrollContainer}>
+          <div className="scroll-item">
+            <video poster={require(`../img/${process.env.REACT_APP_LOGO}`)}></video>
+            <textarea readOnly></textarea>
+          </div>
+        </div>
+      </div>
+
+      <ScrollToTop smooth className="scrolly" />
+      <Footer />
+    </>
+  );
+}
+
+export default LibraryVideos;
