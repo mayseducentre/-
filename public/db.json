@@ -25,6 +25,7 @@
           "description": "An American online dictoionary"
         }
       ],
+
       "storybooks": [
         {
           "name": "Online Story Book",
@@ -386,5 +387,14 @@
         }
       ]
     }
-  ]
+  ],
+ "blog": [
+    {
+      "news_heading": "MEC Students Excel in STEM Challenge",
+      "news_category": "Education",
+      "news_content": "Our students won first place in the national STEM challenge...",
+      "date": "Nov 1, 2025",
+      "news_img": "https://example.com/mec-stem.jpg"
+    }
+  ] 
 }
