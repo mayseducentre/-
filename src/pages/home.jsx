@@ -55,7 +55,7 @@ export default function Home(){
 
             </div>
            <div id="mainc" style={{display:"none"}}> 
-        <Header navtext="Home"/>
+        <Header />
         <LongSwipeToAssess />
         
         <br/>
