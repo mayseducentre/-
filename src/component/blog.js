@@ -38,7 +38,7 @@ export default function Blog() {
     <>
     <h3>News and Updates</h3>
     <br/>
-    <br/>
+    
     <section
       id="blog-slideshow"
       style={{
