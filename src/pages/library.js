@@ -21,7 +21,7 @@ export default function Library(){
             <div className=" list">
                 <img src={require("../img/book.jpg")} className="list-img align-items-center" alt="image" />
                 <br/>
-                <a style={{fontWeight:"700",fontSize:"15px"}}>&emsp;&emsp;&emsp;Books</a>
+                <a style={{fontWeight:"700",fontSize:"15px",paddingLeft:"20px"}}>&emsp;&emsp;&emsp;Books</a>
             </div>
         </Link>
         </div>
@@ -32,7 +32,7 @@ export default function Library(){
             <div className=" list">
                 <img src={require("../img/vid.jpg")} className="list-img align-items-center" alt="image" />
                 <br/>
-                <a style={{fontWeight:"700",fontSize:"15px"}}>&emsp;&emsp;&emsp;Videos</a>
+                <a style={{fontWeight:"700",fontSize:"15px",paddingLeft:"20px"}}>&emsp;&emsp;&emsp;Videos</a>
             </div>
             </Link>
         </div>
@@ -43,7 +43,7 @@ export default function Library(){
             <div className=" list">
                 <img src={require("../img/media.png")} className="list-img align-items-center" alt="i" />
                 <br/>
-                <a style={{fontWeight:"700",fontSize:"15px"}}>&emsp;&emsp;&emsp;MEC Media</a>
+                <a style={{fontWeight:"700",fontSize:"15px",paddingLeft:"20px"}}>&emsp;&emsp;&emsp;MEC Media</a>
             </div>
             </Link>
         </div>
@@ -52,7 +52,7 @@ export default function Library(){
             <div className=" list">
                 <img src={require("../img/vr.jpg")} className="list-img align-items-center" alt="i" />
                 <br/>
-                <a style={{fontWeight:"700",fontSize:"15px"}}>&emsp;&emsp;&emsp;MEC VR Tour</a>
+                <a style={{fontWeight:"700",fontSize:"15px",paddingLeft:"20px"}}>&emsp;&emsp;&emsp;MEC VR Tour</a>
             </div>
             </Link>
         </div>
@@ -61,7 +61,7 @@ export default function Library(){
             <div className=" list">
                 <img src={require("../img/drive.png")} className="list-img align-items-center" alt="image" />
                 <br/>
-                <a style={{fontWeight:"700",fontSize:"15px"}}>&emsp;&emsp;&emsp;MEC Drive</a>
+                <a style={{fontWeight:"700",fontSize:"15px",paddingLeft:"20px"}}>&emsp;&emsp;&emsp;MEC Drive</a>
             </div>
     </Link>
         </div>
@@ -83,7 +83,7 @@ export default function Library(){
             <div className=" list">
                 <img src={require("../img/stu.jpg")} className="list-img align-items-center" alt="image" />
                 <br/>
-                <a style={{fontWeight:"700",fontSize:"15px"}}>&emsp;&emsp;&emsp;Students Projects</a>
+                <a style={{fontWeight:"700",fontSize:"15px",paddingLeft:"20px"}}>&emsp;&emsp;&emsp;Students Projects</a>
             </div>
             </Link>
         </div>
