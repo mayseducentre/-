@@ -35,6 +35,10 @@ export default function Blog() {
   }
 
   return (
+    <>
+    <h3>News and Updates</h3>
+    <br/>
+    <br/>
     <section
       id="blog-slideshow"
       style={{
@@ -154,5 +158,6 @@ export default function Blog() {
         ))}
       </div>
     </section>
+              </>
   );
 }
