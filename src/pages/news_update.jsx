@@ -85,7 +85,7 @@ export default function News() {
                   <p className="post-category">{blogger.news_category}</p>
 
                   <h2 className="title">
-                    <a href="#/">{blogger.news_heading}</a>
+                    <a>{blogger.news_heading}</a>
                   </h2>
                   <p>Find out ...</p>
 
