@@ -45,25 +45,25 @@ const Assessment = () => {
   // Link store — you can add more
   const sheetLinks = {
     "Computing_JHS 3":
-      "https://docs.google.com/spreadsheets/d/1KnOXdHiGWrb7lSb-vdr-JlEgLof3ozaZ9LhvGANp9rU/edit",
+      "/edit",
     "Ga_JHS 3":
-      "https://docs.google.com/spreadsheets/d/114HGIe6nWfyyG9FZTCJGR6qnYTDehps1SUOd0_VCK3A/edit",
+      "/edit",
     "Creative Art_JHS 3":
-      "https://docs.google.com/spreadsheets/d/1qs8NYTKahDwZRukWgfhm_qm7Pnslp7mjPfr9_ofZMWQ/edit",
+      "/edit",
     "Math_JHS 3":
-      "https://docs.google.com/spreadsheets/d/1-fo9pTkZjp4GK1btMtoiTZtfVGyHoepkHeh-Xzfhl2I/edit",
+      /edit",
     "Science_JHS 3":
-      "https://docs.google.com/spreadsheets/d/1CNeMx5O9ihY3UFhHo_yoGW4w5ibKU4096UV8DMim3eA/edit",
+      "/edit",
     "French_JHS 3":
-      "https://docs.google.com/spreadsheets/d/1lqe4yunqzLQne9kUs-ZARuIbRCephnZTYDQQE6zhBj4/edit",
+      "/edit",
     "Social_JHS 3":
-      "https://docs.google.com/spreadsheets/d/17ks9aqNWt5LkWqCjr3ii222KPTnZNYAnpBmOD7LNfm4/edit",
+      "/edit",
     "English_JHS 3":
-      "https://docs.google.com/spreadsheets/d/1apHen2nErC-Q7WsHQaf_iVSrYD_vM2hZqavzE88IYzg/edit",
+      "/edit",
     "Career Tech_JHS 3":
-      "https://docs.google.com/spreadsheets/d/1-pHtDu5ip2NxeLiHc1tER4_6A8eKXtPSjHTxQ46BBS8/edit",
+      "https://docs.google.com/spreadsheets/d/1BdtOA0ncuZ8FZfcOdZ_jdYZsv0joALAzzJrtnzqFGNQ/edit?usp=drivesdk/edit",
     "RME_JHS 3":
-      "https://docs.google.com/spreadsheets/d/1ealUCnjxIa22_8IRJRgo4kdAiWDLCOHaGezVytyNBmc/edit",
+      "/edit",
     "Computing_JHS 1":
       "https://docs.google.com/spreadsheets/d/1KnOXdHiGWrb7lSb-vdr-JlEgLof3ozaZ9LhvGANp9rU/edit",
     "Ga_JHS 1":
