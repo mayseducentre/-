@@ -324,7 +324,7 @@ const Assessment = () => {
 
   return (
     <>
-      <Breadcrumb title="Assessment" />
+      <Breadcrumb title="Assessment" image="https://lh3.googleusercontent.com/pw/AP1GczN8cldYGzvjtGr1XZBRZNMDfOfRobaZyekFh7cPZ3ZNHU5tDIjW-OMHoVUgUqw_2F7L44AlDdyBr0j-FJcw-14A04NYy9NSz6P_xVKOpXfHGXEBk4A"/>
       <Header />
       <br />
       <a href="#/ins_guide">Download MEC App</a>
