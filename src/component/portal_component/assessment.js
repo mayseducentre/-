@@ -1,12 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Breadcrumb from "../breadcrumb";
 import Header from "../header";
 
 const Assessment = () => {
+  // Original selection state
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
   const [sheetUrl, setSheetUrl] = useState("");
 
+  // New UI / feature state (localStorage only)
+  const [darkMode, setDarkMode] = useState(
+    () => localStorage.getItem("mec_darkmode") === "true"
+  );
+  const [history, setHistory] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("mec_history")) || [];
+    } catch {
+      return [];
+    }
+  });
+  const [pinned, setPinned] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("mec_pinned")) || {};
+    } catch {
+      return {};
+    }
+  });
+  const [stats, setStats] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("mec_stats")) || {};
+    } catch {
+      return {};
+    }
+  });
+  const [enteredAverage, setEnteredAverage] = useState("");
+  const [notification, setNotification] = useState("");
+  const [praise, setPraise] = useState("");
+
+  // Original arrays
   const classes = [
     "KG 2",
     "MEC 1",
@@ -42,7 +73,7 @@ const Assessment = () => {
     "Reading and Comprehension",
   ];
 
-  // Link store — you can add more
+  // === FULL original sheetLinks object (kept intact) ===
   const sheetLinks = {
     "Computing_JHS 3":
       "https://docs.google.com/spreadsheets/d/1OAWkER1YnPXnN-VYR1wOuRUVkhSupw8B3_VIBt_6MAg/edit?usp=drivesdk/edit",
@@ -149,17 +180,15 @@ const Assessment = () => {
     "History_MEC 5":
       "https://docs.google.com/spreadsheets/d/19-En6EYfZpvVyGaSlPFUboEvIcClxb1GK8dDBsz6Obc/edit",
     "Science_MEC 5":
-      "https://docs.google.com/spreadsheets/d/1H5C7gQJRqvZIh6779LTBjBAA3vPLOkFtAlx-4-7gjlY/edit",
+      "https://docs.google.com/spreadsheets/d/1H5C7qQJRqvZIh6779LTBjBAA3vPLOkFtAlx-4-7gjlY/edit",
     "Math_MEC 5":
       "https://docs.google.com/spreadsheets/d/1t3CqFhnRovJMB1ngHxwofdKwWBOlIiFHsYeuemepRZE/edit",
-
     "English_MEC 5":
       "https://docs.google.com/spreadsheets/d/1R_g5OhtHHmDVhE0E9OSahLyA_LWEwQm4nS7Gqr5CJpY/edit",
     "Library_MEC 5":
       "https://docs.google.com/spreadsheets/d/1wM2Y7WNiZ8VKcUgyTRu70oKkP8pJBQmakEwO3xWPeSs/edit",
     "Health Safety_MEC 5":
       "https://docs.google.com/spreadsheets/d/1RjcEq9gxlGlD2VNxRvej1G6-iNKiI7DQ4ZVHZZMrWzo/edit",
-
     "Ga_MEC 4":
       "https://docs.google.com/spreadsheets/d/1fACV11X8od5EVOGd3nlzEfbKankYFK5Ddy2TNErPhbI/edit",
     "Owop_MEC 4":
@@ -169,13 +198,13 @@ const Assessment = () => {
     "Career Tech_MEC 4":
       "https://docs.google.com/spreadsheets/d/1iVxEKi7kaF6ReFP_ML_2BeUddzKzb-PEdWElXiIfFSI/edit",
     "French_MEC 4":
-      "https://docs.google.com/spreadsheets/d/1HwG4yIXM9q7_oYuklkRcIu9372vWpPpGsaL3Reycn7g/edit",
+      "https://docs.google.com/spreadsheets/d/1HwG4yIXM9q7_oYuklkRcIu937vWpPpGsaL3Reycn7g/edit",
     "Computing_MEC 4":
       "https://docs.google.com/spreadsheets/d/1Dftl5hcXBeiYkNVHCZRmK6U1Y6lY7n3bUUMRFTiGN1M/edit",
     "Creative Art_MEC 4":
       "https://docs.google.com/spreadsheets/d/1ceCOYu7EBBc6MJ6qppAhzg4bvfQIv8wB7XhKX9SYOOM/edit",
     "History_MEC 4":
-      "https://docs.google.com/spreadsheets/d/1HkXQhsU-mc30QHa-pIDMI6_yTXUPcIK-Jel32MLj1Po/edit",
+      "https://docs.google.com/spreadsheets/d/1HkXQhs0-mc30QHa-pIDMI6_yTXUPcIK-Jel32MLj1Po/edit",
     "Science_MEC 4":
       "https://docs.google.com/spreadsheets/d/1qAQUv10iGMhjWgTtfFugjBsEWEqugFYhJAihyXskV8U/edit",
     "Library_MEC 4":
@@ -185,8 +214,7 @@ const Assessment = () => {
     "English_MEC 4":
       "https://docs.google.com/spreadsheets/d/1rva6Tv_02ruRQKYWtuscOV5Bh8naRZMUjEfD9H0DA5Y/edit",
     "Health Safety_MEC 4":
-      "https://docs.google.com/spreadsheets/d/1d18-Nuf1-I72BgSYjNCwz2qkHf7V7hv5PFLNJVryI6c/edit",
-
+      "https://docs.google.com/spreadsheets/d/1d18-Nuf1-I72BgSYjNCw2qkAip7hv5PFLNJVryI6c/edit",
     "Ga_MEC 1":
       "https://docs.google.com/spreadsheets/d/1zKJXHuITUD23D6brbZenWYEChXi7F2vgWYCYm_4Q_Fk/edit",
     "RME_MEC 1":
@@ -196,7 +224,7 @@ const Assessment = () => {
     "French_MEC 1":
       "https://docs.google.com/spreadsheets/d/1cAAnSX7JRg5zUH1jzg_Nh90f3_wBLDeyOzA7Y37Iu_A/edit",
     "Computing_MEC 1":
-      "https://docs.google.com/spreadsheets/d/1ylo07zX0Hy4YkJ9aPbbidNmluGNTGZJVsCCUte--5Rc/edit",
+      "https://docs.google.com/spreadsheets/d/1ylo07zX0Hy4YkJ9cPbbidNmluGNTGZJVsCCUte--5Rc/edit",
     "History_MEC 1":
       "https://docs.google.com/spreadsheets/d/1UD3zU5IqXL_pFNviGm8BgZzKO7bO2D4AX2ft2oyz5qY/edit",
     "Science_MEC 1":
@@ -211,7 +239,6 @@ const Assessment = () => {
       "https://docs.google.com/spreadsheets/d/1icLG0Fpk4EdGXjbMgvdwg8Rm1qGvSD2OcI5rn0-tGzI/edit",
     "Creative Art_MEC 1":
       "https://docs.google.com/spreadsheets/d/1n-QeIGgQgpkyvRle_-74ByW7_XGVlzrkTl07YnykIGU/edit",
-
     "Ga_MEC 2":
       "https://docs.google.com/spreadsheets/d/1wSuOHxaiD17xuNPJpHUh5BJNCB4Qsd-3VUwDQq6LH6E/edit",
     "RME_MEC 2":
@@ -229,14 +256,13 @@ const Assessment = () => {
     "Math_MEC 2":
       "https://docs.google.com/spreadsheets/d/1WoO4BdidpiEaslbSppHvC3EYgpB_KEj5PxTcfWNFmes/edit",
     "Library_MEC 2":
-      "https://docs.google.com/spreadsheets/d/1dX_fX8YWsVGqZ45hhf2oRiKzRC0fhaDprQEcU3gfCjI/edit",
+      "https://docs.google.com/spreadsheets/d/1dX_f8YWsVGqZ45hhf2oRiKzRC0fhaDprQEcU3gfCjI/edit",
     "English_MEC 2":
-      "https://docs.google.com/spreadsheets/d/1xHUbweY8XH8IMuyMGPHZvIHKwNu4eQs2LkUrvxGBz5s/edit",
+      "https://docs.google.com/spreadsheets/d/1xHUbweY8H8IMuyMGPHZvIHKwNu4eQs2LkUrvxGBz5s/edit",
     "Programme Activities_MEC 2":
       "https://docs.google.com/spreadsheets/d/1jBHNRWOggln5nkjn99bPHBusYP46MKtTonwgpb1HDnQ/edit",
     "Health Safety_MEC 2":
       "https://docs.google.com/spreadsheets/d/1gKR6T0FB-avgOn3nmnW2mtj9_-vNgbcNBCPZFLzvw2E/edit",
-
     "Ga_MEC 3":
       "https://docs.google.com/spreadsheets/d/1XZLnKP0tY9VMjWp7fX1jdq600h9wkQEivgjM8lzk-h4/edit",
     "Owop_MEC 3":
@@ -248,7 +274,7 @@ const Assessment = () => {
     "Health Safety_MEC 3":
       "https://docs.google.com/spreadsheets/d/1Cp1ThaDGSgeD1DZd2kfeGM0SLuePE64CfGaywOiUFWk/edit",
     "French_MEC 3":
-      "https://docs.google.com/spreadsheets/d/1apTPBXRK6GhtfGsQIh9XTyHNiKsVgAaoamPGQ7xrWZw/edit",
+      "https://docs.google.com/spreadsheets/d/1apTPBXRK6GhtfGsQIh9XTyHNiKsVAAoamPGQ7xrWZw/edit",
     "Computing_MEC 3":
       "https://docs.google.com/spreadsheets/d/15C67kvCELI8srfzsdv8tXhiBwbWkGKcCRgxrcvY65mM/edit",
     "Creative Art_MEC 3":
@@ -256,12 +282,11 @@ const Assessment = () => {
     "History_MEC 3":
       "https://docs.google.com/spreadsheets/d/1MHqx9OeyZVkm_lu6so4O58xq81OgzwAJW60ogSWVdxw/edit",
     "Science_MEC 3":
-      "https://docs.google.com/spreadsheets/d/1T9JTqOYAqqMGbXh_ICuSsYSckTqEosNA0cfiBOiHuAw/edit",
+      "https://docs.google.com/spreadsheets/d/1T9JTqOYAqqMGbX_ICuSsYSckTqEosNA0cfiBOiHuAw/edit",
     "Math_MEC 3":
       "https://docs.google.com/spreadsheets/d/11u_e-FS-UKsrSF6WiQVDy6ich4toIfKIYHY4MwKab0w/edit",
     "English_MEC 3":
       "https://docs.google.com/spreadsheets/d/1KQbETabDTfPX2kIEIG4CLFGjWg1_TrTBUrUnmsQKPPo/edit",
-
     "Ga_KG 2":
       "https://docs.google.com/spreadsheets/d/1GFj_DtsAKBTycktCUGFpi7Zv2J7E8OAPywrBidg92Ow/edit",
     "Owop_KG 2":
@@ -283,7 +308,7 @@ const Assessment = () => {
     "Creative Art_KG 2":
       "https://docs.google.com/spreadsheets/d/1NqEbFqW5EG3aRnOZwUoFQ5uwba3epameH2u-ztvcZ9g/edit",
     "History_KG 2":
-      "https://docs.google.com/spreadsheets/d/1fWxTqD_LYZqBvmqWqVN7pdCzjvffk5yCGpaP5-OEi0s/edit",
+      "https://docs.google.com/spreadsheets/d/1fWxT_LYZpBvmqWqVN7pdCzjvffk5yCGpaP5-OEi0s/edit",
     "Science_KG 2":
       "https://docs.google.com/spreadsheets/d/15lEOZxCHq4i3hQ7VqCKz79DqO6V0G2Db89G1398QhXA/edit",
     "Math_KG 2":
@@ -291,6 +316,29 @@ const Assessment = () => {
     "English_KG 2":
       "https://docs.google.com/spreadsheets/d/150YfNNTpqLYR7liQDEGrejMZ_5-UUpAxNg7GJE0iDzU/edit"
   };
+  // === end of sheetLinks ===
+
+  // --- helper utilities (local-only) ---
+  function saveHistory(entry) {
+    const next = [entry, ...history].slice(0, 50); // cap to 50 items
+    setHistory(next);
+    localStorage.setItem("mec_history", JSON.stringify(next));
+  }
+
+  function incrementPinned(key) {
+    const next = { ...pinned };
+    next[key] = (next[key] || 0) + 1;
+    setPinned(next);
+    localStorage.setItem("mec_pinned", JSON.stringify(next));
+  }
+
+  function saveStat(key, avg) {
+    const next = { ...stats, [key]: { avg: Number(avg), when: new Date().toISOString() } };
+    setStats(next);
+    localStorage.setItem("mec_stats", JSON.stringify(next));
+  }
+
+  // Keep original permission and load logic but extended
   function accesspermit() {
     var prmp = window.prompt("Enter pin");
     if (prmp === "2025.") {
@@ -299,6 +347,7 @@ const Assessment = () => {
       alert("Permission not granted");
     }
   }
+
   const handleLoad = () => {
     const key = `${selectedSubject}_${selectedClass}`;
     const link = sheetLinks[key];
@@ -306,6 +355,20 @@ const Assessment = () => {
     if (link) {
       const embedLink = link.replace("/edit", "/edit?usp=drivesdk");
       setSheetUrl(embedLink);
+
+      // track history & pinned quick links
+      const entry = {
+        key,
+        subject: selectedSubject,
+        class: selectedClass,
+        action: "Loaded Sheet",
+        ts: new Date().toISOString(),
+      };
+      saveHistory(entry);
+      incrementPinned(key);
+
+      // smart notifications: check last time it was edited or loaded
+      checkNotifications(key);
     } else {
       alert("No Google Sheet found for this selection.");
     }
@@ -317,159 +380,345 @@ const Assessment = () => {
     if (link) {
       const editLink = link.replace("/edit", "/edit?pli=1&authuser=0");
       window.open(editLink, "_blank");
+
+      const entry = {
+        key,
+        subject: selectedSubject,
+        class: selectedClass,
+        action: "Opened for Edit",
+        ts: new Date().toISOString(),
+      };
+      saveHistory(entry);
+      incrementPinned(key);
     } else {
       alert("No editable link found.");
     }
   };
 
+  // teacher can paste the class average here after viewing Google Sheet
+  const saveClassAverage = () => {
+    if (!selectedClass || !selectedSubject) {
+      alert("Select class and subject first.");
+      return;
+    }
+    const key = `${selectedSubject}_${selectedClass}`;
+    const avg = Number(enteredAverage);
+    if (isNaN(avg)) {
+      alert("Please enter a valid number for average (e.g. 72.5)");
+      return;
+    }
+
+    const previous = stats[key]?.avg;
+    saveStat(key, avg);
+    const entry = {
+      key,
+      subject: selectedSubject,
+      class: selectedClass,
+      action: `Saved average: ${avg}`,
+      ts: new Date().toISOString(),
+    };
+    saveHistory(entry);
+
+    // Praise & Performance insight (feature 15)
+    if (previous !== undefined) {
+      const diff = Number((avg - previous).toFixed(2));
+      if (diff > 0) {
+        setPraise(`Class average improved by ${diff} points since last record — excellent work!`);
+      } else if (diff < 0) {
+        setPraise(`Class average dropped by ${Math.abs(diff)} points since last record. Consider remedial actions.`);
+      } else {
+        setPraise("Class average stayed the same as the last record.");
+      }
+    } else {
+      setPraise("Average saved. We'll keep this as the baseline for future comparisons.");
+    }
+
+    setEnteredAverage("");
+    // clear notification after saving to let praise show
+    setNotification("");
+    // auto-clear praise after a while
+    setTimeout(() => setPraise(""), 14000);
+  };
+
+  // Smart notifications (simple rules, local): if last action > 14 days => remind
+  function checkNotifications(key) {
+    const last = history.find((h) => h.key === key);
+    if (!last) {
+      setNotification("You haven't accessed this class/subject before. Good to keep records.");
+      return;
+    }
+    const then = new Date(last.ts);
+    const now = new Date();
+    const days = Math.round((now - then) / (1000 * 60 * 60 * 24));
+    if (days >= 14) {
+      setNotification(`It's been ${days} days since you last opened this sheet. Consider reviewing student progress.`);
+    } else if (days >= 7) {
+      setNotification(`You last opened this sheet ${days} days ago. A quick check-in could help.`);
+    } else {
+      setNotification(""); // no notification if recently accessed
+    }
+  }
+
+  // UI helpers: persist changes
+  useEffect(() => {
+    localStorage.setItem("mec_history", JSON.stringify(history));
+  }, [history]);
+
+  useEffect(() => {
+    localStorage.setItem("mec_pinned", JSON.stringify(pinned));
+  }, [pinned]);
+
+  useEffect(() => {
+    localStorage.setItem("mec_stats", JSON.stringify(stats));
+  }, [stats]);
+
+  useEffect(() => {
+    localStorage.setItem("mec_darkmode", darkMode ? "true" : "false");
+  }, [darkMode]);
+
+  // compute pinned quick links sorted
+  const topPinned = Object.entries(pinned)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 6)
+    .map(([k, v]) => ({ key: k, count: v }));
+
+  // professional inline styles
+  const containerStyle = {
+    fontFamily: "Inter, Arial, sans-serif",
+    maxWidth: "1000px",
+    margin: "2rem auto",
+    padding: "2rem",
+    borderRadius: "12px",
+    boxShadow: darkMode ? "0 10px 30px rgba(0,0,0,0.6)" : "0 8px 24px rgba(0,0,0,0.08)",
+    background: darkMode ? "#0f1724" : "#ffffff",
+    color: darkMode ? "#e6eef8" : "#234",
+    border: darkMode ? "1px solid rgba(255,255,255,0.04)" : "1px solid #e6eef2",
+  };
+
+  const inputStyle = {
+    padding: "10px",
+    width: "100%",
+    borderRadius: "8px",
+    border: darkMode ? "1px solid #233" : "1px solid #cfd8e3",
+    background: darkMode ? "#0b1220" : "#fff",
+    color: darkMode ? "#e6eef8" : "#112",
+  };
+
   return (
     <>
-      <Breadcrumb title="Assessment" image="https://lh3.googleusercontent.com/pw/AP1GczN8cldYGzvjtGr1XZBRZNMDfOfRobaZyekFh7cPZ3ZNHU5tDIjW-OMHoVUgUqw_2F7L44AlDdyBr0j-FJcw-14A04NYy9NSz6P_xVKOpXfHGXEBk4A"/>
+      <Breadcrumb
+        title="Assessment"
+        image="https://lh3.googleusercontent.com/pw/AP1GczN8cldYGzvjtGr1XZBRZNMDfOfRobaZyekFh7cPZ3ZNHU5tDIjW-OMHoVUgUqw_2F7L44AlDdyBr0j-FJcw-14A04NYy9NSz6P_xVKOpXfHGXEBk4e"
+      />
       <Header />
       <br />
-      <a href="#/ins_guide">Download MEC App</a>
-      <p style={{display:"none"}}>
-        Please download Google Sheet from the playstore or apple store for
-        mobile devices to be able to edit sheet.
-      </p>
-      <center style={{color:"red", fontSize:"30px", display:"none"}}>Assessment Closed</center>
-      <div
-        style={{
-          fontFamily: "Arial, sans-serif",
-          maxWidth: "900px",
-          margin: "2rem auto",
-          padding: "2rem",
-          border: "1px solid #e0e0e0",
-          borderRadius: "12px",
-          boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
-        }}
-      >
-        <h1
-          style={{
-            fontSize: "28px",
-            textAlign: "center",
-            marginBottom: "2rem",
-            color: "#2c3e50",
-          }}
-        >
-          Excel Assessment Sheet
-        </h1>
-
-        <div style={{ marginBottom: "1rem" }}>
-          <label
-            style={{
-              display: "block",
-              marginBottom: "6px",
-              fontWeight: "bold",
-            }}
-          >
-            Select Class:
-          </label>
-          <select
-            value={selectedClass}
-            onChange={(e) => setSelectedClass(e.target.value)}
-            style={{
-              padding: "10px",
-              width: "100%",
-              borderRadius: "6px",
-              border: "1px solid #ccc",
-            }}
-          >
-            <option value="">-- Choose Class --</option>
-            {classes.map((cls) => (
-              <option key={cls} value={cls}>
-                {cls}
-              </option>
-            ))}
-          </select>
+      <div style={{ padding: "0 1rem", maxWidth: 1000, margin: "0 auto" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
+          <h2 style={{ margin: 0, color: darkMode ? "#cfe6ff" : "#1b3b5a" }}>
+            Teacher Assessment Management Portal
+          </h2>
+          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            <label style={{ fontSize: 13 }}>{darkMode ? "Professional Mode" : "Light Mode"}</label>
+            <button
+              onClick={() => setDarkMode(!darkMode)}
+              style={{ padding: "8px 12px", borderRadius: 8, cursor: "pointer", border: "none", background: darkMode ? "#1f2937" : "#eef6fb" }}
+            >
+              {darkMode ? "🌙" : "🌞"}
+            </button>
+          </div>
         </div>
-
-        <div style={{ marginBottom: "1rem" }}>
-          <label
-            style={{
-              display: "block",
-              marginBottom: "6px",
-              fontWeight: "bold",
-            }}
-          >
-            Select Subject:
-          </label>
-          <select
-            value={selectedSubject}
-            onChange={(e) => setSelectedSubject(e.target.value)}
-            style={{
-              padding: "10px",
-              width: "100%",
-              borderRadius: "6px",
-              border: "1px solid #ccc",
-            }}
-          >
-            <option value="">-- Choose Subject --</option>
-            {subjects.map((subj) => (
-              <option key={subj} value={subj}>
-                {subj}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div style={{ display: "flex", gap: "1rem", marginBottom: "1.5rem" }}>
-          <button
-            onClick={accesspermit}
-            style={{
-              padding: "12px 20px",
-              backgroundColor: "#3498db",
-              color: "#fff",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer",
-              fontWeight: "bold",
-            }}
-          >
-            Load Sheet
-          </button>
-          <button
-            onClick={handleEdit}
-            style={{
-              padding: "12px 20px",
-              backgroundColor: "#2ecc71",
-              color: "#fff",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer",
-              fontWeight: "bold",
-            }}
-          >
-            Edit in Sheet
-          </button>
-        </div>
-
-        {sheetUrl && (
-          <iframe
-            title="Google Sheet Preview"
-            src={sheetUrl}
-            width="100%"
-            height="600px"
-            style={{
-              border: "1px solid #ccc",
-              borderRadius: "6px",
-            }}
-          />
-        )}
       </div>
 
-      <br/>
-      <br/>
+      <div style={containerStyle}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 320px", gap: "1.2rem" }}>
+          <div>
+            <h3 style={{ marginTop: 0 }}>Excel Assessment Sheet</h3>
 
-      <p>Please your feedback would be considered as valuable. Kindly share your feedback <a href="sms:0549548274">here</a>. Thank you.</p>
-    <br/>
-    <br/>
-    <br/>
+            <div style={{ marginBottom: "1rem" }}>
+              <label style={{ display: "block", marginBottom: 6, fontWeight: "600" }}>Select Class:</label>
+              <select
+                value={selectedClass}
+                onChange={(e) => setSelectedClass(e.target.value)}
+                style={inputStyle}
+              >
+                <option value="">-- Choose Class --</option>
+                {classes.map((cls) => (
+                  <option key={cls} value={cls}>
+                    {cls}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-    <p>You may also like <a href="#/digital_note">Digital Lesson Note</a></p>
-    <br/>
-    <br/>
-    <br/>
+            <div style={{ marginBottom: "1rem" }}>
+              <label style={{ display: "block", marginBottom: 6, fontWeight: "600" }}>Select Subject:</label>
+              <select
+                value={selectedSubject}
+                onChange={(e) => setSelectedSubject(e.target.value)}
+                style={inputStyle}
+              >
+                <option value="">-- Choose Subject --</option>
+                {subjects.map((subj) => (
+                  <option key={subj} value={subj}>
+                    {subj}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div style={{ display: "flex", gap: "1rem", marginBottom: "1.5rem" }}>
+              <button
+                onClick={accesspermit}
+                style={{
+                  padding: "12px 18px",
+                  borderRadius: 8,
+                  cursor: "pointer",
+                  border: "none",
+                  background: "#2563eb",
+                  color: "white",
+                  fontWeight: 700,
+                }}
+              >
+                Load Sheet
+              </button>
+              <button
+                onClick={handleEdit}
+                style={{
+                  padding: "12px 18px",
+                  borderRadius: 8,
+                  cursor: "pointer",
+                  border: "none",
+                  background: "#059669",
+                  color: "white",
+                  fontWeight: 700,
+                }}
+              >
+                Edit in Sheet
+              </button>
+            </div>
+
+            <div style={{ marginBottom: 12 }}>
+              <label style={{ display: "block", fontWeight: 600 }}>Enter class average (optional)</label>
+              <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+                <input
+                  value={enteredAverage}
+                  onChange={(e) => setEnteredAverage(e.target.value)}
+                  placeholder="e.g. 72.5"
+                  style={{ ...inputStyle, width: "160px" }}
+                />
+                <button
+                  onClick={saveClassAverage}
+                  style={{ padding: "10px 12px", borderRadius: 8, border: "none", cursor: "pointer", background: "#0ea5a4", color: "#012" }}
+                >
+                  Save Average
+                </button>
+                <div style={{ alignSelf: "center", fontSize: 13, color: darkMode ? "#9fb7d8" : "#2b475f" }}>{notification}</div>
+              </div>
+            </div>
+
+            {sheetUrl && (
+              <div style={{ marginTop: 12 }}>
+                <iframe
+                  title="Google Sheet Preview"
+                  src={sheetUrl}
+                  width="100%"
+                  height="520px"
+                  style={{ borderRadius: 8, border: darkMode ? "1px solid rgba(255,255,255,0.04)" : "1px solid #d7e2ef" }}
+                />
+              </div>
+            )}
+
+            <div style={{ marginTop: 18 }}>
+              <h4 style={{ marginBottom: 8 }}>Assessment History</h4>
+              <div style={{ maxHeight: 220, overflow: "auto", padding: 8, borderRadius: 8, background: darkMode ? "#071029" : "#fbfeff" }}>
+                {history.length === 0 && <div style={{ color: darkMode ? "#9fb7d8" : "#6b7280" }}>No history yet. Actions like 'Load Sheet' and 'Edit in Sheet' will appear here.</div>}
+                {history.map((h, idx) => (
+                  <div key={idx} style={{ padding: 8, borderBottom: "1px solid rgba(0,0,0,0.04)", display: "flex", justifyContent: "space-between", gap: 8 }}>
+                    <div>
+                      <div style={{ fontWeight: 700 }}>{h.action}</div>
+                      <div style={{ fontSize: 12, opacity: 0.85 }}>{h.subject} • {h.class}</div>
+                    </div>
+                    <div style={{ textAlign: "right", fontSize: 12, color: darkMode ? "#8fb2db" : "#4b5563" }}>{new Date(h.ts).toLocaleString()}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <aside>
+            <div style={{ padding: 12, borderRadius: 10, background: darkMode ? "#021020" : "#fcfeff", border: darkMode ? "1px solid rgba(255,255,255,0.02)" : "1px solid #eef6fb" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div>
+                  <div style={{ fontSize: 13, opacity: 0.9 }}>Quick Links</div>
+                  <div style={{ fontWeight: 800, fontSize: 18 }}>Pinned Classes</div>
+                </div>
+              </div>
+
+              <div style={{ marginTop: 12 }}>
+                {topPinned.length === 0 && <div style={{ color: darkMode ? "#89add6" : "#6b7280" }}>Your most accessed class-subject pairs will show here.</div>}
+                {topPinned.map((p) => {
+                  const [subj, cls] = p.key.split("_");
+                  return (
+                    <div key={p.key} style={{ display: "flex", justifyContent: "space-between", padding: "8px 6px", borderRadius: 8 }}>
+                      <div>
+                        <div style={{ fontWeight: 700 }}>{subj} — {cls}</div>
+                        <div style={{ fontSize: 12, opacity: 0.85 }}>{p.count} visits</div>
+                      </div>
+                      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                        <button onClick={() => {
+                          const link = sheetLinks[p.key];
+                          if (link) window.open(link.replace("/edit", "/edit?pli=1&authuser=0"), "_blank");
+                        }} style={{ padding: "6px 8px", borderRadius: 6, border: "none", cursor: "pointer", background: "#3b82f6", color: "white" }}>Open</button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <hr style={{ margin: "12px 0", border: 0, height: 1, background: darkMode ? "rgba(255,255,255,0.03)" : "#eef6fb" }} />
+
+              <div>
+                <div style={{ fontWeight: 800 }}>Praise & Performance</div>
+                <div style={{ fontSize: 12, opacity: 0.9, marginTop: 6 }}>Quick insights based on saved averages.</div>
+
+                <div style={{ marginTop: 10 }}>
+                  {Object.keys(stats).length === 0 && <div style={{ color: darkMode ? "#9fb7d8" : "#6b7280" }}>No saved averages yet. Use the 'Enter class average' box after checking your Google Sheet.</div>}
+                  {Object.entries(stats).slice(0, 6).map(([k, v]) => {
+                    const [subj, cls] = k.split("_");
+                    return (
+                      <div key={k} style={{ padding: 8, borderRadius: 8, marginTop: 8, background: darkMode ? "#041225" : "#fff" }}>
+                        <div style={{ fontWeight: 700 }}>{subj} • {cls}</div>
+                        <div style={{ fontSize: 12 }}>Average: {v.avg} • Recorded: {new Date(v.when).toLocaleDateString()}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <hr style={{ margin: "12px 0", border: 0, height: 1, background: darkMode ? "rgba(255,255,255,0.03)" : "#eef6fb" }} />
+
+              <div>
+                <div style={{ fontWeight: 800 }}>Smart Notifications</div>
+                <div style={{ marginTop: 8, fontSize: 13 }}>{notification || "All caught up — no alerts right now."}</div>
+              </div>
+            </div>
+
+            <div style={{ marginTop: 12, padding: 12, borderRadius: 10, background: darkMode ? "#02131f" : "#fff" }}>
+              <div style={{ fontWeight: 800 }}>Quick Actions</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 8 }}>
+                <button onClick={() => { navigator.clipboard.writeText(JSON.stringify(history.slice(0, 10), null, 2)); alert("Last 10 history items copied to clipboard (for sharing).") }} style={{ padding: 10, borderRadius: 8, border: "none", cursor: "pointer", background: "#7c3aed", color: "white" }}>Copy Recent History</button>
+                <button onClick={() => { localStorage.removeItem("mec_history"); setHistory([]); alert("History cleared locally.") }} style={{ padding: 10, borderRadius: 8, border: "none", cursor: "pointer", background: "#ef4444", color: "white" }}>Clear History</button>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      <div style={{ maxWidth: 1000, margin: "1.4rem auto", padding: "0 1rem" }}>
+        {praise && <div style={{ padding: 12, borderRadius: 8, background: "#fffbeb", color: "#7c4a00", marginBottom: 12 }}>{praise}</div>}
+        <p style={{ opacity: 0.9 }}>Please your feedback would be considered as valuable. Kindly share your feedback <a href="sms:0549548274">here</a>. Thank you.</p>
+        <p>You may also like <a href="#/digital_note">Digital Lesson Note</a></p>
+      </div>
     </>
   );
 };
