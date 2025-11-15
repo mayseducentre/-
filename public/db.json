@@ -389,6 +389,12 @@
     }
   ],
  "blog": [
+   { "news_heading": "The Student Projects Section: Where Creativity Comes Alive!", 
+     "news_category": "WEB APP", 
+     "news_content": "One of the most exciting parts of our library page is the Student Projects section — a space bursting with ideas, creativity, and talent! This section proudly showcases the amazing work our learners create across different subjects and skill levels.\n\nFrom beautiful posters and digital artworks to smart tech projects and hands-on models, the page highlights just how imaginative and innovative our students can be. Each project tells a story, celebrates effort, and inspires others to think boldly and try new things.\n\nWhether you're a student looking for inspiration, a teacher searching for classroom ideas, or a parent eager to see what learners can achieve, this section never disappoints. It’s fresh, colourful, and constantly growing — proof that learning at our school goes far beyond the classroom.\n\nDive in and explore the creativity! ✨📚🚀.", 
+"date": "Nov 15, 2025", 
+"news_img": "https://lh3.googleusercontent.com/pw/AP1GczNHLiJY0SC4dfN3INslyTM-2LeBO-QgIl9Yz4rAlRBqfGHCI3dIJAnTfWIDXqMJ2ybxIQ9ReGnQ4BYH9tMukxvAYRIiIcj2Ob2dRDR6bWp3DrMR_20" 
+},
   {
       "news_heading": "MEC Students in Action: Food Practicals at Mays Educational Centre",
       "news_category": "Education",
