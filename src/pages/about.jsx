@@ -25,7 +25,7 @@ export default function Aboutp() {
     hero: {
       width: "100%",
       padding: "56px 20px",
-      background: "linear-gradient(135deg,#2463f0 0%,#6ea0ff 100%)",
+      background: "linear-gradient(135deg,#2463f0 0%,#ff7a00 100%)",
       color: "white",
       borderBottomLeftRadius: 28,
       borderBottomRightRadius: 28,
@@ -131,7 +131,7 @@ export default function Aboutp() {
 
     // CTA
     cta: {
-      background: "linear-gradient(90deg,#2463f0,#6ea0ff)",
+      background: "linear-gradient(90deg,#2463f0,#ff7a00)",
       color: "white",
       padding: "28px",
       borderRadius: 14,
