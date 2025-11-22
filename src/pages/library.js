@@ -147,6 +147,17 @@ export default function Library() {
           </div>
         </Link>
 
+<Link to="/vr_lab" style={{ textDecoration: "none" }}>
+          <div
+            style={itemStyle}
+            onMouseEnter={(e) => handleHover(e, true)}
+            onMouseLeave={(e) => handleHover(e, false)}
+          >
+            <img src={require("../img/drive.png")} alt="VL" style={imgStyle} />
+            <span style={titleStyle}>Virtual Lab</span>
+          </div>
+        </Link>
+
         {/* Assessment */}
         <Link to="/assign" style={{ textDecoration: "none" }}>
           <div
