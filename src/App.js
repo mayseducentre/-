@@ -29,7 +29,7 @@ import Assessment from "./component/portal_component/assessment.js";
 import AssessmentA from "./component/portal_component/assessment admin.js";
 import LessonNoteTemp from "./component/portal_component/note_temp.js";
 import UploadAccess from "./component/uploadmedia";
-import Assignment from "./component/assignment";
+import MSWordProAssignment from "./component/portal_component/assignment";
 
 window.addEventListener("keyup", (e)=>{
   if(e.ctrlKey && e.altKey && e.key === "a"){
@@ -105,7 +105,7 @@ function App() {
       <Route path="/admin/note" element={<LessonNoteList />} />
   <Route path="/ai" element={<MecAi />} />
        <Route path="/digital_note" element={<LessonNoteTemp />} />
-       <Route path="/assign" element={<Assignment />} />
+       <Route path="/assign" element={<MSWordProAssignment />} />
   <Route path="/upload_file" element={<UploadAccess />} />
        </Route>
     </Routes>
