@@ -88,7 +88,16 @@ export default function Library(){
             </Link>
         </div>
 
-        
+   <div className="col-lg-4">
+            <Link to="/assign" className="nounderline">
+            <div className=" list">
+                <img src={require("../img/stu.jpg")} className="list-img align-items-center" alt="image" />
+                <br/>
+                <a style={{fontWeight:"700",fontSize:"15px",paddingLeft:"20px"}}>&emsp;&emsp;&emsp;Assessment</a>
+            </div>
+            </Link>
+        </div>
+       
 
     </div>
 
