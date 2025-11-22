@@ -2,11 +2,10 @@
 import React, { useState, useRef, useEffect } from "react";
 
 /**
- * VirtualLabs - All-in-one single-file React component
- * - Fully responsive and modern UI
+ * VirtualLabs - All-in-one React component
+ * - Fully responsive, modern UI
  * - Physics, Chemistry, Biology, ICT labs
- * - Drag & drop support on PC and mobile
- * - Inline CSS only
+ * - Enhanced ICT lab: free-floating devices & visual connections
  */
 
 export default function VirtualLabs() {
@@ -65,11 +64,6 @@ export default function VirtualLabs() {
     cursor: "pointer",
   };
 
-  const labCardHoverStyle = {
-    transform: "translateY(-5px)",
-    boxShadow: "0 8px 20px rgba(0,0,0,0.2)",
-  };
-
   const tagStyle = {
     display: "inline-block",
     background: "#e0e0e0",
@@ -119,10 +113,6 @@ export default function VirtualLabs() {
     transition: "transform 0.2s",
   };
 
-  const buttonHoverStyle = {
-    transform: "scale(1.05)",
-  };
-
   // --------------------------- Lab Data ---------------------------
   const labs = [
     {
@@ -151,7 +141,7 @@ export default function VirtualLabs() {
     },
   ];
 
-  // --------------------------- Physics Lab State ---------------------------
+  // --------------------------- Physics Lab ---------------------------
   const [physicsWorkspace, setPhysicsWorkspace] = useState([]);
   const [dragItem, setDragItem] = useState(null);
   const physicsItems = [
@@ -159,51 +149,16 @@ export default function VirtualLabs() {
     { name: "Bulb 💡", type: "bulb" },
     { name: "Wire 〰️", type: "wire" },
   ];
-
-  // --------------------------- Chemistry Lab State ---------------------------
-  const [chemWorkspace, setChemWorkspace] = useState([]);
-  const chemItems = [
-    { name: "Acid (HCl) 🧴", type: "acid" },
-    { name: "Base (NaOH) 🧪", type: "base" },
-    { name: "Indicator 🧷", type: "indicator" },
-    { name: "Metal (Zn) 🔩", type: "metal" },
-  ];
-  const [chemObservation, setChemObservation] = useState("Beaker is empty");
-
-  // --------------------------- Biology Lab State ---------------------------
-  const [bioWorkspace, setBioWorkspace] = useState([]);
-  const bioItems = [
-    { name: "Nucleus 🟣", type: "nucleus" },
-    { name: "Mitochondrion 🟠", type: "mitochondrion" },
-    { name: "Chloroplast 🟢", type: "chloroplast" },
-  ];
-  const [bioMessage, setBioMessage] = useState("");
-
-  // --------------------------- ICT Lab State ---------------------------
-  const [ictWorkspace, setIctWorkspace] = useState([]);
-  const ictItems = [
-    { name: "PC 🖥️", type: "pc" },
-    { name: "Router 📡", type: "router" },
-    { name: "Switch 🔀", type: "switch" },
-  ];
-  const [connections, setConnections] = useState([]);
-  const [selectedDevice, setSelectedDevice] = useState(null);
-
-  // --------------------------- Drag & Drop Handlers ---------------------------
-  const handleDragStart = (item) => setDragItem(item);
-
   const handleDrop = (workspaceSetter, workspaceState, item) => {
+    if (!item) return;
     const newItem = { ...item, id: Date.now() + Math.random() };
     workspaceSetter([...workspaceState, newItem]);
     setDragItem(null);
   };
-
   const handleTouchDrag = (item, workspaceSetter, workspaceState) => {
     const newItem = { ...item, id: Date.now() + Math.random() };
     workspaceSetter([...workspaceState, newItem]);
   };
-
-  // --------------------------- Physics Lab Functions ---------------------------
   const testCircuit = () => {
     const types = physicsWorkspace.map((i) => i.type);
     if (types.includes("battery") && types.includes("bulb") && types.includes("wire")) {
@@ -212,10 +167,17 @@ export default function VirtualLabs() {
       alert("⚠️ Circuit incomplete");
     }
   };
-
   const clearPhysics = () => setPhysicsWorkspace([]);
 
-  // --------------------------- Chemistry Lab Functions ---------------------------
+  // --------------------------- Chemistry Lab ---------------------------
+  const [chemWorkspace, setChemWorkspace] = useState([]);
+  const chemItems = [
+    { name: "Acid (HCl) 🧴", type: "acid" },
+    { name: "Base (NaOH) 🧪", type: "base" },
+    { name: "Indicator 🧷", type: "indicator" },
+    { name: "Metal (Zn) 🔩", type: "metal" },
+  ];
+  const [chemObservation, setChemObservation] = useState("Beaker is empty");
   useEffect(() => {
     const types = chemWorkspace.map((i) => i.type);
     if (types.length === 0) setChemObservation("Beaker is empty");
@@ -224,13 +186,19 @@ export default function VirtualLabs() {
     else if (types.includes("acid") && types.includes("metal")) setChemObservation("Fizzing observed!");
     else setChemObservation("No observable reaction yet.");
   }, [chemWorkspace]);
-
   const clearChem = () => {
     setChemWorkspace([]);
     setChemObservation("Beaker is empty");
   };
 
-  // --------------------------- Biology Lab Functions ---------------------------
+  // --------------------------- Biology Lab ---------------------------
+  const [bioWorkspace, setBioWorkspace] = useState([]);
+  const bioItems = [
+    { name: "Nucleus 🟣", type: "nucleus" },
+    { name: "Mitochondrion 🟠", type: "mitochondrion" },
+    { name: "Chloroplast 🟢", type: "chloroplast" },
+  ];
+  const [bioMessage, setBioMessage] = useState("");
   const checkBio = () => {
     const types = bioWorkspace.map((i) => i.type);
     if (types.includes("nucleus") && types.includes("mitochondrion") && types.includes("chloroplast")) {
@@ -244,13 +212,50 @@ export default function VirtualLabs() {
     setBioMessage("");
   };
 
-  // --------------------------- ICT Lab Functions ---------------------------
+  // --------------------------- ICT Lab Enhanced ---------------------------
+  const [ictWorkspace, setIctWorkspace] = useState([]);
+  const ictItems = [
+    { name: "PC 🖥️", type: "pc" },
+    { name: "Router 📡", type: "router" },
+    { name: "Switch 🔀", type: "switch" },
+  ];
+  const [connections, setConnections] = useState([]);
+  const [selectedDevice, setSelectedDevice] = useState(null);
+
+  const workspaceRef = useRef(null);
+
+  const handleDeviceDrag = (e, device) => {
+    e.preventDefault();
+    const workspaceRect = workspaceRef.current.getBoundingClientRect();
+    const x = e.clientX - workspaceRect.left - 50;
+    const y = e.clientY - workspaceRect.top - 20;
+    setIctWorkspace((prev) =>
+      prev.map((d) => (d.id === device.id ? { ...d, x, y } : d))
+    );
+  };
+
+  const handleDeviceTouch = (e, device) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const workspaceRect = workspaceRef.current.getBoundingClientRect();
+    const x = touch.clientX - workspaceRect.left - 50;
+    const y = touch.clientY - workspaceRect.top - 20;
+    setIctWorkspace((prev) =>
+      prev.map((d) => (d.id === device.id ? { ...d, x, y } : d))
+    );
+  };
+
+  const addIctDevice = (item) => {
+    const newDevice = { ...item, id: Date.now() + Math.random(), x: 20, y: 20 };
+    setIctWorkspace([...ictWorkspace, newDevice]);
+  };
+
   const selectDevice = (device) => {
     if (!selectedDevice) {
       setSelectedDevice(device);
     } else {
       if (selectedDevice.id !== device.id) {
-        setConnections([...connections, { from: selectedDevice.name, to: device.name }]);
+        setConnections([...connections, { from: selectedDevice.id, to: device.id }]);
       }
       setSelectedDevice(null);
     }
@@ -276,7 +281,7 @@ export default function VirtualLabs() {
             key={item.type}
             style={toolboxItemStyle}
             draggable
-            onDragStart={() => handleDragStart(item)}
+            onDragStart={() => setDragItem(item)}
             onTouchStart={() => handleTouchDrag(item, setPhysicsWorkspace, physicsWorkspace)}
           >
             {item.name}
@@ -310,7 +315,7 @@ export default function VirtualLabs() {
             key={item.type}
             style={toolboxItemStyle}
             draggable
-            onDragStart={() => handleDragStart(item)}
+            onDragStart={() => setDragItem(item)}
             onTouchStart={() => handleTouchDrag(item, setChemWorkspace, chemWorkspace)}
           >
             {item.name}
@@ -341,7 +346,7 @@ export default function VirtualLabs() {
             key={item.type}
             style={toolboxItemStyle}
             draggable
-            onDragStart={() => handleDragStart(item)}
+            onDragStart={() => setDragItem(item)}
             onTouchStart={() => handleTouchDrag(item, setBioWorkspace, bioWorkspace)}
           >
             {item.name}
@@ -372,42 +377,53 @@ export default function VirtualLabs() {
           <div
             key={item.type}
             style={toolboxItemStyle}
-            draggable
-            onDragStart={() => handleDragStart(item)}
-            onTouchStart={() => handleTouchDrag(item, setIctWorkspace, ictWorkspace)}
+            onClick={() => addIctDevice(item)}
           >
             {item.name}
           </div>
         ))}
       </div>
       <div
-        style={{ ...workspaceStyle, minHeight: "300px" }}
-        onDragOver={(e) => e.preventDefault()}
-        onDrop={() => handleDrop(setIctWorkspace, ictWorkspace, dragItem)}
+        style={{ ...workspaceStyle, minHeight: "400px" }}
+        ref={workspaceRef}
       >
-        {ictWorkspace.map((item) => (
+        <svg style={{ position: "absolute", width: "100%", height: "100%", pointerEvents: "none" }}>
+          {connections.map((c, idx) => {
+            const from = ictWorkspace.find((d) => d.id === c.from);
+            const to = ictWorkspace.find((d) => d.id === c.to);
+            if (!from || !to) return null;
+            return <line key={idx} x1={from.x+50} y1={from.y+20} x2={to.x+50} y2={to.y+20} stroke="blue" strokeWidth="2" />;
+          })}
+        </svg>
+        {ictWorkspace.map((device) => (
           <div
-            key={item.id}
-            style={{ margin: "5px", cursor: "pointer" }}
-            onClick={() => selectDevice(item)}
+            key={device.id}
+            style={{
+              position: "absolute",
+              left: device.x,
+              top: device.y,
+              cursor: "grab",
+              padding: "10px",
+              background: "#fff",
+              borderRadius: "10px",
+              boxShadow: "0 2px 5px rgba(0,0,0,0.3)",
+              userSelect: "none",
+            }}
+            draggable
+            onDrag={(e) => handleDeviceDrag(e, device)}
+            onClick={() => selectDevice(device)}
+            onTouchMove={(e) => handleDeviceTouch(e, device)}
           >
-            {item.name} <span style={{ cursor: "pointer", color: "red" }} onClick={() => removeDevice(item.id)}>❌</span>
+            {device.name} <span style={{ color: "red", cursor: "pointer" }} onClick={() => removeDevice(device.id)}>❌</span>
           </div>
         ))}
       </div>
       <div>
         <button style={buttonStyle} onClick={clearIct}>Clear All</button>
       </div>
-      <div>
-        <p><strong>Connections:</strong></p>
-        <ul>
-          {connections.map((c, idx) => <li key={idx}>{c.from} → {c.to}</li>)}
-        </ul>
-      </div>
     </div>
   );
 
-  // --------------------------- Main Render ---------------------------
   return (
     <div style={containerStyle}>
       <header style={headerStyle}>
