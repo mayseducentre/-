@@ -30,6 +30,8 @@ import AssessmentA from "./component/portal_component/assessment admin.js";
 import LessonNoteTemp from "./component/portal_component/note_temp.js";
 import UploadAccess from "./component/uploadmedia";
 import WordLearningApp from "./component/portal_component/assignment";
+import VirtualLabs from "./component/vrlab";
+
 
 window.addEventListener("keyup", (e)=>{
   if(e.ctrlKey && e.altKey && e.key === "a"){
@@ -107,6 +109,7 @@ function App() {
        <Route path="/digital_note" element={<LessonNoteTemp />} />
        <Route path="/assign" element={<WordLearningApp />} />
   <Route path="/upload_file" element={<UploadAccess />} />
+ <Route path="/vr_lab" element={<VirtualLabs />} />
        </Route>
     </Routes>
     </HashRouter>
