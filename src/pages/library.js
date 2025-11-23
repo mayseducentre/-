@@ -153,7 +153,7 @@ export default function Library() {
             onMouseEnter={(e) => handleHover(e, true)}
             onMouseLeave={(e) => handleHover(e, false)}
           >
-            <img src={require("../img/drive.png")} alt="VL" style={imgStyle} />
+            <img src={require("../img/vr-lab2.jpg")} alt="VL" style={imgStyle} />
             <span style={titleStyle}>Virtual Lab</span>
           </div>
         </Link>
