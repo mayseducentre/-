@@ -6,7 +6,7 @@ export default function InsGuide() {
   return (
     <>
       <Header />
-      <Breadcrumb title="Installation Guide" />
+      <Breadcrumb title="Install MEC App" />
 
       <div
         style={{
