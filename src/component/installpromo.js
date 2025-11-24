@@ -21,7 +21,7 @@ export default function InstallPromo() {
       }}
     >
       <div
-        onClick={() => navigate("#/ins_guide")}
+        onClick={() => navigate("/ins_guide")}
         style={{
           opacity: visible ? 1 : 0,
           transform: visible ? "translateY(0)" : "translateY(30px)",
@@ -89,7 +89,7 @@ export default function InstallPromo() {
             maxWidth: "260px",
           }}
         >
-          View Installation Guide →
+         Install the webapp →
         </button>
 
         {/* Animated glowing background */}
