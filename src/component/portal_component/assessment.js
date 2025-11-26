@@ -584,7 +584,7 @@ export default function Assessment() {
       <style>{styleTag}</style>
       <Breadcrumb
         title="Assessment"
-        image="https://lh3.googleusercontent.com/pw/AP1GczN8cldYGzvjtGr1XZBRZNMDfOfRobaZyekFh7cPZ3ZNHU5tDIjW-OMHoVUgUqw_2F7L44AlDdyBr0j-FJcw-14A04NYy9NSz6P_xVKOpXfHGXEBk4e"
+        image="https://lh3.googleusercontent.com/pw/AP1GczMwG1XcntnevAvGkmEm56QCW7jHRMy12WGJ9YdG_Q-TmI4D8rdHwKcBNNqx2WFdQOJYhZPzsZOlZoTqDdhw5HNYO19MAoO8mhyh2PFuTyJxAmLuSc"
       />
       <Header />
       <div className="mec-wrap">
