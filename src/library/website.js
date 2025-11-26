@@ -49,7 +49,7 @@ function LibraryWebsites() {
       <Header />
 
       <div id="bookmain">
-        <Breadcrumb title="Library - Online Resources" />
+        <Breadcrumb title="Library - Digital Resources" />
         <br />
         <br />
         <br />
