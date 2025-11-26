@@ -601,7 +601,7 @@ export default function Assessment() {
 
               <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
                 <div style={{ fontSize: 12, opacity: 0.7, display:"none"}}>Session PIN</div>
-                <div style={{ fontWeight: 800, marginTop: 6, color: hasSessionAccess() ? "green" : "#7a7a7a", fontSize: 13 }}>
+                <div style={{ fontWeight: 800, display:"none",marginTop: 6, color: hasSessionAccess() ? "green" : "#7a7a7a", fontSize: 13 }}>
                   {hasSessionAccess() ? "Unlocked for session" : "Locked (reload to reset)"}
                 </div>
               </div>
