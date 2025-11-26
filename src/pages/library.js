@@ -95,7 +95,7 @@ export default function Library() {
             onMouseLeave={(e) => handleHover(e, false)}
           >
             <img src={require("../img/media.png")} alt="MEC Media" style={imgStyle} />
-            <span style={titleStyle}>MEC Media</span>
+            <span style={titleStyle}>Media Hub</span>
           </div>
         </Link>
 
