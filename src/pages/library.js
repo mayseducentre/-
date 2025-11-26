@@ -159,7 +159,7 @@ export default function Library() {
         </Link>
 
 
-<Link to="/vr_lab" style={{ textDecoration: "none" }}>
+<Link to="/creative_stu" style={{ textDecoration: "none" }}>
           <div
             style={itemStyle}
             onMouseEnter={(e) => handleHover(e, true)}
