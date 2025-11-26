@@ -131,7 +131,7 @@ export default function Library() {
             onMouseLeave={(e) => handleHover(e, false)}
           >
             <img src={require("../img/web.jpg")} alt="Websites" style={imgStyle} />
-            <span style={titleStyle}>Online Resources</span>
+            <span style={titleStyle}>Digital Resources</span>
           </div>
         </Link>
 
