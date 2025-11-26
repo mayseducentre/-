@@ -90,7 +90,7 @@ const [loading, setLoading]=useState(false);
 <Header />
 
 <div id="bookmain">
-  <Breadcrumb title="Library - MEC Media" image="../img/lyi.png"/>
+  <Breadcrumb title="Library - Media Hub" image="../img/lyi.png"/>
     <br/>
     <br/>
     <br/>
