@@ -223,7 +223,7 @@ const sheetLinks = {
   "History_MEC 3":
     "https://docs.google.com/spreadsheets/d/1MHqx9OeyZVkm_lu6so4O58xq81OgzwAJW60ogSWVdxw/edit",
   "Science_MEC 3":
-    "https://docs.google.com/spreadsheets/d/1T9JTqQYAqqMGbX_ICuSsYSckTqEosNA0cfiBOiHuAw/edit",
+    "https://docs.google.com/spreadsheets/d/1T9JTqOYAqqMGbXh_ICuSsYSckTqEosNA0cfiBOiHuAw/edit",
   "Math_MEC 3":
     "https://docs.google.com/spreadsheets/d/11u_e-FS-UKsrSF6WiQVDy6ich4toIfKIYHY4MwKab0w/edit",
   "English_MEC 3":
