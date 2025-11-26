@@ -1,29 +1,30 @@
-// Assessment.upgraded.js
+// Assessment.upgraded.optionB.js
 import React, { useEffect, useMemo, useState } from "react";
 import Breadcrumb from "../breadcrumb";
 import Header from "../header";
 
 /**
- * Assessment.upgraded.js
- * Upgraded PRO UI (single-file) — orange themed
- * - Preserves all original sheetLinks (kept intact from user's upload).
- * - Load Sheet PIN: stored in sessionStorage so user types it once per page session.
- * - All features preserved: Load, Edit, Quick Links, History, Notifications, Dark mode.
+ * Assessment.upgraded.optionB.js
  *
- * To change:
- * - PIN: modify PIN_CODE constant below.
- * - Primary color: modify PRIMARY_COLOR constant below.
+ * - Dark mode (Option B): when component mounts it will set the document body
+ *   colors according to darkMode. When the component unmounts (leaving the page),
+ *   it restores the application's background to white and text color to a dark tint.
+ *
+ * - PIN: requested once per page load. Stored in sessionStorage ("mec_access_granted").
+ *   No UI text or button shows PIN status. The PIN is lost on reload (sessionStorage).
+ *
+ * - All original sheetLinks preserved.
+ *
+ * CONFIG:
+ * - PIN_CODE: change PIN here.
+ * - PRIMARY_COLOR: change theme orange here.
  */
 
-/* ============================
-   CONFIG
-   ============================ */
-const PIN_CODE = "2025."; // change here if needed
-const PRIMARY_COLOR = "#ff6a00"; // your orange primary (change if needed)
+const PIN_CODE = "2025."; // change if needed
+const PRIMARY_COLOR = "#ff6a00"; // orange primary
 
 /* ============================
-   FULL sheetLinks (original preserved)
-   (same as file you uploaded) — kept intact for compatibility.
+   sheetLinks (preserved from original upload)
    ============================ */
 const sheetLinks = {
   "Computing_JHS 3":
@@ -261,7 +262,7 @@ const sheetLinks = {
   "History_KG 2":
     "https://docs.google.com/spreadsheets/d/1fWxT_LYZpBvmqWqVNx5pdCzjvffk5yCGpaP5-OEi0s/edit",
   "Science_KG 2":
-    "https://docs.google.com/spreadsheets/d/15lEOZxCHq4i3hQ7VqCKz79DqO6V0G2Db89G1398QhXA/edit",
+    "https://docs.google.com/spreadsheets/d/15lEOZxCHq4i3Q7VqCKz79DqO6V0G2Db89G1398QhXA/edit",
   "Math_KG 2":
     "https://docs.google.com/spreadsheets/d/1_30LJ_EkkHMhMzSg3cfm4__Fd09umiCIMOjIFJaTuRo/edit",
   "English_KG 2":
@@ -271,15 +272,14 @@ const sheetLinks = {
 /* ============================
    Component
    ============================ */
-
 export default function Assessment() {
-  // original selection
+  // selection
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
   const [sheetUrl, setSheetUrl] = useState("");
 
-  // UI & local state
-  const [activeTab, setActiveTab] = useState("assessment"); // "assessment" | "quick" | "history" | "notifications"
+  // UI state
+  const [activeTab, setActiveTab] = useState("assessment"); // assessment | quick | history | notifications
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem("mec_darkmode") === "true");
   const [history, setHistory] = useState(() => {
     try {
@@ -298,7 +298,7 @@ export default function Assessment() {
   const [notificationMsg, setNotificationMsg] = useState("");
   const [praiseMsg, setPraiseMsg] = useState("");
 
-  // classes & subjects (same as original)
+  // classes & subjects
   const classes = useMemo(
     () => ["KG 2", "MEC 1", "MEC 2", "MEC 3", "MEC 4", "MEC 5", "MEC 6", "JHS 1", "JHS 2", "JHS 3"],
     []
@@ -312,11 +312,9 @@ export default function Assessment() {
     []
   );
 
-  // persist dark mode & body styles
+  // persist dark mode locally (component remembers preference)
   useEffect(() => {
     localStorage.setItem("mec_darkmode", darkMode ? "true" : "false");
-    document.body.style.background = darkMode ? "#071025" : "#fbfbfd";
-    document.body.style.color = darkMode ? "#eaf3ff" : "#14303d";
   }, [darkMode]);
 
   // persist history & pinned
@@ -326,6 +324,29 @@ export default function Assessment() {
   useEffect(() => {
     localStorage.setItem("mec_pinned", JSON.stringify(pinned));
   }, [pinned]);
+
+  // on mount/unmount: manage body styles so dark mode affects only while component mounted (Option B).
+  useEffect(() => {
+    // apply current mode to body while component is mounted
+    const applyBody = () => {
+      if (darkMode) {
+        document.body.style.background = "#071025";
+        document.body.style.color = "#eaf3ff";
+      } else {
+        document.body.style.background = "#ffffff";
+        document.body.style.color = "#14303d";
+      }
+    };
+
+    applyBody();
+
+    // when component unmounts restore webapp default (white + dark text)
+    return () => {
+      document.body.style.background = "#ffffff";
+      document.body.style.color = "#14303d";
+    };
+    // We intentionally only depend on darkMode so toggles update body while mounted.
+  }, [darkMode]);
 
   // helper: add history entry
   function addHistory(subject, cls, action) {
@@ -397,14 +418,11 @@ export default function Assessment() {
   function grantSessionAccess() {
     sessionStorage.setItem("mec_access_granted", "true");
   }
-  function clearSessionAccess() {
-    sessionStorage.removeItem("mec_access_granted");
-  }
 
   // Access permission: if session has access, call load directly; else prompt once and store.
   function accessPermitThenLoad() {
     if (hasSessionAccess()) {
-      handleLoad(); // already allowed for this session
+      handleLoad();
       return;
     }
     const prmp = window.prompt("Enter PIN to load sheets");
@@ -492,7 +510,7 @@ export default function Assessment() {
     setPinned({});
   }
 
-  // small nav button component
+  // TabButton small component
   const TabButton = ({ id, label }) => (
     <button
       className={`tab-btn ${activeTab === id ? "active" : ""}`}
@@ -507,7 +525,7 @@ export default function Assessment() {
     </button>
   );
 
-  // CSS (keeps single-file)
+  // CSS
   const styleTag = `
     :root {
       --accent: ${PRIMARY_COLOR};
@@ -573,8 +591,10 @@ export default function Assessment() {
         <div className={`glass ${!darkMode ? "glass-light" : ""} fade-in`}>
           <div className="header-row" style={{ padding: 14 }}>
             <div>
-              <div style={{ fontSize: 20, fontWeight: 900, color: `var(--accent-600)` }}>Teacher Assessment</div>
-             
+              <div style={{ fontSize: 20, fontWeight: 900, color: `var(--accent-600)` }}>Teacher Assessment — PRO</div>
+              <div className="small" style={{ marginTop: 6, opacity: 0.9 }}>
+                Clean, focused & orange-themed — fast access to your Google Sheets.
+              </div>
             </div>
 
             <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
@@ -589,22 +609,9 @@ export default function Assessment() {
                   >
                     {darkMode ? "Light" : "Dark"}
                   </button>
-                  <button style={{display:"none"}}
-                    className="btn-ghost"
-                    onClick={() => { clearSessionAccess(); alert("Session PIN cleared — you'll be asked to enter PIN again on reload."); }}
-                    title="Clear session PIN"
-                  >
-                    Clear Session PIN
-                  </button>
                 </div>
               </div>
 
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-                <div style={{ fontSize: 12, opacity: 0.7, display:"none"}}>Session PIN</div>
-                <div style={{ fontWeight: 800, display:"none",marginTop: 6, color: hasSessionAccess() ? "green" : "#7a7a7a", fontSize: 13 }}>
-                  {hasSessionAccess() ? "Unlocked for session" : "Locked (reload to reset)"}
-                </div>
-              </div>
             </div>
           </div>
 
