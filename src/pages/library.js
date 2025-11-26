@@ -131,7 +131,7 @@ export default function Library() {
             onMouseLeave={(e) => handleHover(e, false)}
           >
             <img src={require("../img/web.jpg")} alt="Websites" style={imgStyle} />
-            <span style={titleStyle}>Websites</span>
+            <span style={titleStyle}>Online Resources</span>
           </div>
         </Link>
 
@@ -158,17 +158,7 @@ export default function Library() {
           </div>
         </Link>
 
-        {/* Assessment */}
-        <Link to="/assign" style={{ textDecoration: "none" }}>
-          <div
-            style={itemStyle}
-            onMouseEnter={(e) => handleHover(e, true)}
-            onMouseLeave={(e) => handleHover(e, false)}
-          >
-            <img src={require("../img/stu.jpg")} alt="Assessment" style={imgStyle} />
-            <span style={titleStyle}>Assessment</span>
-          </div>
-        </Link>
+       
 
       </div>
 
