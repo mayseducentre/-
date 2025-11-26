@@ -573,10 +573,8 @@ export default function Assessment() {
         <div className={`glass ${!darkMode ? "glass-light" : ""} fade-in`}>
           <div className="header-row" style={{ padding: 14 }}>
             <div>
-              <div style={{ fontSize: 20, fontWeight: 900, color: `var(--accent-600)` }}>Teacher Assessment — PRO</div>
-              <div className="small" style={{ marginTop: 6, opacity: 0.9 }}>
-                Clean, focused & orange-themed — fast access to your Google Sheets.
-              </div>
+              <div style={{ fontSize: 20, fontWeight: 900, color: `var(--accent-600)` }}>Teacher Assessment</div>
+             
             </div>
 
             <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
@@ -591,7 +589,7 @@ export default function Assessment() {
                   >
                     {darkMode ? "Light" : "Dark"}
                   </button>
-                  <button
+                  <button style={{display:"none"}}
                     className="btn-ghost"
                     onClick={() => { clearSessionAccess(); alert("Session PIN cleared — you'll be asked to enter PIN again on reload."); }}
                     title="Clear session PIN"
