@@ -582,10 +582,7 @@ export default function Assessment() {
   return (
     <>
       <style>{styleTag}</style>
-      <Breadcrumb
-        title="Assessment"
-        image="https://lh3.googleusercontent.com/pw/AP1GczMwG1XcntnevAvGkmEm56QCW7jHRMy12WGJ9YdG_Q-TmI4D8rdHwKcBNNqx2WFdQOJYhZPzsZOlZoTqDdhw5HNYO19MAoO8mhyh2PFuTyJxAmLuSc"
-      />
+      <Breadcrumb title="Assessment" image="https://lh3.googleusercontent.com/pw/AP1GczMwG1XcntnevAvGkmEm56QCW7jHRMy12WGJ9YdG_Qg-TmI4D8rdHwKcBNNqx2WFdQOJYhZPzsZOlZoTqDdhw5HNYO19MAoO8mhyh2PFuTyJxAmLuSc"/>
       <Header />
       <div className="mec-wrap">
         <div className={`glass ${!darkMode ? "glass-light" : ""} fade-in`}>
