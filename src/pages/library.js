@@ -143,7 +143,7 @@ export default function Library() {
             onMouseLeave={(e) => handleHover(e, false)}
           >
             <img src={require("../img/stu.jpg")} alt="Projects" style={imgStyle} />
-            <span style={titleStyle}>Students Projects</span>
+            <span style={titleStyle}>Students Showcase</span>
           </div>
         </Link>
 
