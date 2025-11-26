@@ -132,7 +132,7 @@ const sheetLinks = {
   "History_MEC 5":
     "https://docs.google.com/spreadsheets/d/19-En6EYfZpvVyGaSlPFUboEvIcClxb1GK8dDBsz6Obc/edit",
   "Science_MEC 5":
-    "https://docs.google.com/spreadsheets/d/1H5C7qQJRqvZIh6779LTBjBAA3vPLOkFtAlx-4-7gjlY/edit",
+    "https://docs.google.com/spreadsheets/d/1H5C7gQJRqvZIh6779LTBjBAA3vPLOkFtAlx-4-7gjlY/edit",
   "Math_MEC 5":
     "https://docs.google.com/spreadsheets/d/1t3CqFhnRovJMB1ngHxwofdKwWBOlIiFHsYeuemepRZE/edit",
   "English_MEC 5":
