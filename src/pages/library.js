@@ -107,7 +107,7 @@ export default function Library() {
             onMouseLeave={(e) => handleHover(e, false)}
           >
             <img src={require("../img/vr.jpg")} alt="VR Tour" style={imgStyle} />
-            <span style={titleStyle}>MEC VR Tour</span>
+            <span style={titleStyle}>Immersive Learning</span>
           </div>
         </Link>
 
