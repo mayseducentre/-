@@ -6,14 +6,10 @@ import Header from "../header";
 /**
  * Assessment.upgraded.optionB.js
  *
- * - Dark mode (Option B): when component mounts it will set the document body
- *   colors according to darkMode. When the component unmounts (leaving the page),
- *   it restores the application's background to white and text color to a dark tint.
- *
+ * - Dark mode (Option B)
  * - PIN: requested once per page load. Stored in sessionStorage ("mec_access_granted").
- *   No UI text or button shows PIN status. The PIN is lost on reload (sessionStorage).
- *
  * - All original sheetLinks preserved.
+ * - New: open-in-app-if-installed logic for Google Sheets. Falls back to browser editing view.
  *
  * CONFIG:
  * - PIN_CODE: change PIN here.
@@ -446,7 +442,8 @@ export default function Assessment() {
       alert("No Google Sheet found for this selection.");
       return;
     }
-    const embedLink = link.replace("/edit", "/edit?usp=drivesdk");
+    // ensure embed-friendly params
+    const embedLink = link.includes("?") ? link.replace("/edit", "/edit?usp=drivesdk") : link.replace("/edit", "/edit?usp=drivesdk");
     setSheetUrl(embedLink);
 
     addHistory(selectedSubject, selectedClass, "Loaded Sheet");
@@ -455,7 +452,77 @@ export default function Assessment() {
     setActiveTab("assessment");
   }
 
-  // Edit in Google Sheet (open new window)
+  /**
+   * openInAppOrWeb
+   *
+   * Attempts to open Google Sheets native app when available.
+   * - On Android Chrome we use an intent: URI with S.browser_fallback_url to open the web fallback if app not present.
+   * - On other browsers / platforms we open the browser edit link (iOS Safari will open the app via universal link if the app is associated).
+   *
+   * This function keeps the original link parameters for editing and adds compatibility params (pli, authuser).
+   */
+  function openInAppOrWeb(rawLink) {
+    // prepare the web edit link
+    const webEdit = rawLink.includes("/edit")
+      ? rawLink.replace("/edit", "/edit?pli=1&authuser=0")
+      : rawLink + (rawLink.includes("?") ? "&pli=1&authuser=0" : "?pli=1&authuser=0");
+
+    // detect Android (simple UA check) and Chrome supporting intent scheme
+    const ua = navigator.userAgent || navigator.vendor || window.opera;
+    const isAndroid = /Android/i.test(ua);
+    const isChrome = /Chrome\/\d+/i.test(ua) && !/Edge\/\d+/i.test(ua);
+
+    if (isAndroid && isChrome) {
+      // Build an intent: URI that asks Chrome to open the app package if present,
+      // otherwise use browser_fallback_url to open the web link.
+      const fallback = encodeURIComponent(webEdit);
+      // Note: using package com.google.android.apps.docs because Google Docs package handles sheets editing.
+      const intentUrl = `intent://docs.google.com/spreadsheets/d/${extractFileIdFromUrl(rawLink)}/edit?pli=1#Intent;package=com.google.android.apps.docs;scheme=https;S.browser_fallback_url=${fallback};end`;
+
+      // Using location.href to navigate to intent: will open app if installed or fallback.
+      // Also set a safety timer to open web fallback if the intent does not succeed for some reason.
+      let opened = false;
+      const openFallback = () => {
+        if (!opened) {
+          opened = true;
+          window.open(webEdit, "_blank");
+        }
+      };
+
+      // Attempt to navigate to intent URL
+      try {
+        window.location.href = intentUrl;
+      } catch (e) {
+        // If navigation fails, open fallback
+        openFallback();
+      }
+
+      // In case some browsers swallow the intent without redirecting, fallback after 1.5s
+      setTimeout(openFallback, 1500);
+      return;
+    }
+
+    // Non-Android Chrome: open web link directly (iOS will typically hand off to app if universal link set up)
+    window.open(webEdit, "_blank");
+  }
+
+  // Helper to extract file ID from a Google Sheets link
+  function extractFileIdFromUrl(url) {
+    try {
+      // typical pattern: /d/FILE_ID/
+      const m = url.match(/\/d\/([a-zA-Z0-9-_]+)(?:\/|$)/);
+      if (m && m[1]) return m[1];
+      // fallback: attempt query param 'id='
+      const qp = new URL(url).searchParams.get("id");
+      if (qp) return qp;
+    } catch (e) {
+      // ignore
+    }
+    // last resort: return entire url encoded (intent won't work but fallback exists)
+    return encodeURIComponent(url);
+  }
+
+  // Edit in Google Sheet (open app if installed else browser)
   function handleEdit() {
     if (!selectedSubject || !selectedClass) {
       alert("Select Subject and Class first.");
@@ -467,8 +534,8 @@ export default function Assessment() {
       alert("No editable link found.");
       return;
     }
-    const editLink = link.replace("/edit", "/edit?pli=1&authuser=0");
-    window.open(editLink, "_blank");
+
+    openInAppOrWeb(link);
 
     addHistory(selectedSubject, selectedClass, "Opened for Edit");
     bumpPinned(key);
@@ -487,8 +554,8 @@ export default function Assessment() {
   function openQuickLink(key) {
     const link = sheetLinks[key];
     if (!link) return alert("Sheet link missing.");
-    const editLink = link.replace("/edit", "/edit?pli=1&authuser=0");
-    window.open(editLink, "_blank");
+    openInAppOrWeb(link);
+
     const [sub, cls] = key.split("_");
     addHistory(sub, cls, "Quick Link Opened");
     bumpPinned(key);
@@ -589,7 +656,6 @@ export default function Assessment() {
           <div className="header-row" style={{ padding: 14 }}>
             <div>
               <div style={{ fontSize: 20, fontWeight: 900, color: `var(--accent-600)` }}>Teacher Assessment</div>
-              
             </div>
 
             <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
