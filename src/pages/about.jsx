@@ -25,7 +25,7 @@ export default function Aboutp() {
     hero: {
       width: "100%",
       padding: "56px 20px",
-      background: "linear-gradient(135deg,#2463f0 0%,#ff7a00 100%)",
+      background: "linear-gradient(135deg,#1a1a1a 0%,#ff7a00 100%)",
       color: "white",
       borderBottomLeftRadius: 28,
       borderBottomRightRadius: 28,
@@ -131,7 +131,7 @@ export default function Aboutp() {
 
     // CTA
     cta: {
-      background: "linear-gradient(90deg,#2463f0,#ff7a00)",
+      background: "linear-gradient(90deg,#ff7a00,#1a1a1a)",
       color: "white",
       padding: "28px",
       borderRadius: 14,
@@ -161,7 +161,7 @@ export default function Aboutp() {
   const counters = [
     { label: "Students", value: "200+" },
     { label: "Discipline", value: "100%" },
-    { label: "Staff", value: "20" },
+    { label: "Staff", value: "20+" },
     { label: "Awards", value: "5" },
   ];
 
