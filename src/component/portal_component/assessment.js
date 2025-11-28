@@ -176,7 +176,7 @@ const sheetLinks = {
   "French_MEC 1":
     "https://docs.google.com/spreadsheets/d/1cAAnSX7JRg5zUH1jzg_Nh90f3_wBLDeyOzA7Y37Iu_A/edit",
   "Computing_MEC 1":
-    "https://docs.google.com/spreadsheets/d/1ylo07zX0Hy4YkJ9cPbbidNmluGNTGZJVsCCUte--5Rc/edit",
+  "https://docs.google.com/spreadsheets/d/1ylo07zX0Hy4YkJ9aPbbidNmluGNTGZJVsCCUte--5Rc/edit",
   "History_MEC 1":
     "https://docs.google.com/spreadsheets/d/1UD3zU5IqXL_pFNviGm8BgZzKO7bO2D4AX2ft2oyz5qY/edit",
   "Science_MEC 1":
