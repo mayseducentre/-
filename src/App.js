@@ -32,7 +32,7 @@ import UploadAccess from "./component/uploadmedia";
 import WordLearningApp from "./component/portal_component/assignment";
 import VirtualLabs from "./component/vrlab";
 import CreativeStudio from "./library/creative_stu";
-import AssignmentHub from "./component/assignment";
+import AssignmentHub from "./component/portal_component/assignment";
 
 
 
