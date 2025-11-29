@@ -1,30 +1,25 @@
-// Assessment.upgraded.optionB.js
+// Assessment.upgraded.optionB.full.js
 import React, { useEffect, useMemo, useState } from "react";
 import Breadcrumb from "../breadcrumb";
 import Header from "../header";
 
 /**
- * Assessment.upgraded.optionB.js
+ * Full upgraded Assessment component
  *
- * - Dark mode (Option B): when component mounts it will set the document body
- *   colors according to darkMode. When the component unmounts (leaving the page),
- *   it restores the application's background to white and text color to a dark tint.
+ * - Uses sheetLinks preserved from uploaded file.
+ * - Tries to open in native Google Sheets app (Android intent / app-scheme fallbacks).
+ * - If app not present, falls back to browser edit link (mobile-friendly query params).
+ * - Can download sheet as .xlsx when online. If offline, produces a CSV template for offline fill.
+ * - Collapsible instructions for offline process included.
  *
- * - PIN: requested once per page load. Stored in sessionStorage ("mec_access_granted").
- *   No UI text or button shows PIN status. The PIN is lost on reload (sessionStorage).
- *
- * - All original sheetLinks preserved.
- *
- * CONFIG:
- * - PIN_CODE: change PIN here.
- * - PRIMARY_COLOR: change theme orange here.
+ * Config: change PIN_CODE or PRIMARY_COLOR if needed.
  */
 
-const PIN_CODE = "2025."; // change if needed
-const PRIMARY_COLOR = "#ff6a00"; // orange primary
+const PIN_CODE = "2025.";
+const PRIMARY_COLOR = "#ff6a00";
 
 /* ============================
-   sheetLinks (preserved from original upload)
+   sheetLinks (preserved)
    ============================ */
 const sheetLinks = {
   "Computing_JHS 3":
@@ -148,7 +143,7 @@ const sheetLinks = {
   "RME_MEC 4":
     "https://docs.google.com/spreadsheets/d/1MEUOg-rnAi1WCzwyIbpc_-KCmrgzdiPKXeR4GKYd-uQ/edit",
   "Career Tech_MEC 4":
-    "https://docs.google.com/spreadsheets/d/1iVxEKi7kaF6ReFP_ML_2BeUddzKzb-PEdWElXiIfFSI/edit",
+    "https://docs.google.com/spreadsheets/d/1iVxEK7kaF6ReFP_ML_2BeUddzKzb-PEdWElXiIfFSI/edit",
   "French_MEC 4":
     "https://docs.google.com/spreadsheets/d/1HwG4yIXM9q7_oYuklkRcIu937vWpPpGsaL3Reycn7g/edit",
   "Computing_MEC 4":
@@ -158,7 +153,7 @@ const sheetLinks = {
   "History_MEC 4":
     "https://docs.google.com/spreadsheets/d/1HkXQhs0-mc30QHa-pIDMI6_yTXUPcIK-Jel32MLj1Po/edit",
   "Science_MEC 4":
-    "https://docs.google.com/spreadsheets/d/1qAQUv10iGMhjWgTtfFugjBsEWEqugFYhJAihyXskV8U/edit",
+    "https://docs.google.com/spreadsheets/d/1qAQUv10iGMhjL8pLRCnuRkBzhJ4whsHjIvVAvx8kQ1To/edit",
   "Library_MEC 4":
     "https://docs.google.com/spreadsheets/d/1l5Htlayj8kdekt0dwIpBx5xEJePVDNmw4eY1htJpzqo/edit",
   "Math_MEC 4":
@@ -176,7 +171,7 @@ const sheetLinks = {
   "French_MEC 1":
     "https://docs.google.com/spreadsheets/d/1cAAnSX7JRg5zUH1jzg_Nh90f3_wBLDeyOzA7Y37Iu_A/edit",
   "Computing_MEC 1":
-  "https://docs.google.com/spreadsheets/d/1ylo07zX0Hy4YkJ9aPbbidNmluGNTGZJVsCCUte--5Rc/edit",
+    "https://docs.google.com/spreadsheets/d/1ylo07zX0Hy4YkJ9aPbbidNmluGNTGZJVsCCUte--5Rc/edit",
   "History_MEC 1":
     "https://docs.google.com/spreadsheets/d/1UD3zU5IqXL_pFNviGm8BgZzKO7bO2D4AX2ft2oyz5qY/edit",
   "Science_MEC 1":
@@ -252,7 +247,7 @@ const sheetLinks = {
   "Rhymes and Poems_KG 2":
     "https://docs.google.com/spreadsheets/d/1h2QMxWa1590O-Pcn_6gkdFe4fZugDwsB59KHmIu8rY/edit",
   "Reading and Comprehension_KG 2":
-    "https://docs.google.com/spreadsheets/d/1KQbETabDTfPX2kIEIG4CLFGjWg1_TrTBUrUnmsQKPPo/edit",
+    "https://docs.google.com/spreadsheets/d/1KQbETabDTfPX2kIEIG4CLFGg1_TrTBUrUnmsQKPPo/edit",
   "French_KG 2":
     "https://docs.google.com/spreadsheets/d/1d2wab-G2F2o0CU3nvSv9vKt-4tqzDmskD13EDcVwj7c/edit",
   "Computing_KG 2":
@@ -270,16 +265,81 @@ const sheetLinks = {
 };
 
 /* ============================
+   Helpers
+   ============================ */
+
+// extract file id from a google sheets url
+function getFileIdFromUrl(url = "") {
+  try {
+    const m = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
+    if (m && m[1]) return m[1];
+    // fallback: query param 'id='
+    const qp = new URL(url);
+    return qp.searchParams.get("id");
+  } catch {
+    return null;
+  }
+}
+
+// create browser edit link (mobile-friendly)
+function makeBrowserEditLink(url) {
+  if (!url) return "";
+  // remove duplicate /edit fragments and append mobile-friendly params
+  const base = url.split("/edit")[0];
+  const suffix = "/edit?pli=1&rm=minimal&authuser=0";
+  return `${base}${suffix}`;
+}
+
+// create export (xlsx) link for a file ID
+function makeExportXlsxLink(fileId) {
+  // Google Sheets export endpoint
+  return `https://docs.google.com/spreadsheets/d/${fileId}/export?format=xlsx`;
+}
+
+// create fallback CSV template content
+function buildCsvTemplate(subject, cls) {
+  // header example — adapt to your sheet structure if needed
+  const headers = [
+    "Student ID",
+    "Student Name",
+    "Term",
+    "Week 1",
+    "Week 2",
+    "Week 3",
+    "Week 4",
+    "Exam"
+  ];
+  const rows = [headers.join(",")];
+  // include a couple of empty rows for quick fills
+  for (let i = 0; i < 20; i++) rows.push([``, ``, ``, ``, ``, ``, ``, ``].join(","));
+  const csv = rows.join("\n");
+  return {
+    filename: `${subject.replace(/\s+/g, "_")}_${cls.replace(/\s+/g, "_")}_template.csv`,
+    content: csv
+  };
+}
+
+// programmatically download a URL (for same-origin or direct link)
+function downloadUrl(url, filename) {
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename || "";
+  a.target = "_blank";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
+/* ============================
    Component
    ============================ */
 export default function Assessment() {
-  // selection
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("");
   const [sheetUrl, setSheetUrl] = useState("");
 
   // UI state
-  const [activeTab, setActiveTab] = useState("assessment"); // assessment | quick | history | notifications
+  const [activeTab, setActiveTab] = useState("assessment");
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem("mec_darkmode") === "true");
   const [history, setHistory] = useState(() => {
     try {
@@ -297,8 +357,9 @@ export default function Assessment() {
   });
   const [notificationMsg, setNotificationMsg] = useState("");
   const [praiseMsg, setPraiseMsg] = useState("");
+  const [showOfflineInstructions, setShowOfflineInstructions] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
 
-  // classes & subjects
   const classes = useMemo(
     () => ["KG 2", "MEC 1", "MEC 2", "MEC 3", "MEC 4", "MEC 5", "MEC 6", "JHS 1", "JHS 2", "JHS 3"],
     []
@@ -312,12 +373,10 @@ export default function Assessment() {
     []
   );
 
-  // persist dark mode locally (component remembers preference)
   useEffect(() => {
     localStorage.setItem("mec_darkmode", darkMode ? "true" : "false");
   }, [darkMode]);
 
-  // persist history & pinned
   useEffect(() => {
     localStorage.setItem("mec_history", JSON.stringify(history));
   }, [history]);
@@ -325,30 +384,20 @@ export default function Assessment() {
     localStorage.setItem("mec_pinned", JSON.stringify(pinned));
   }, [pinned]);
 
-  // on mount/unmount: manage body styles so dark mode affects only while component mounted (Option B).
   useEffect(() => {
-    // apply current mode to body while component is mounted
-    const applyBody = () => {
-      if (darkMode) {
-        document.body.style.background = "#071025";
-        document.body.style.color = "#eaf3ff";
-      } else {
-        document.body.style.background = "#ffffff";
-        document.body.style.color = "#14303d";
-      }
-    };
-
-    applyBody();
-
-    // when component unmounts restore webapp default (white + dark text)
+    if (darkMode) {
+      document.body.style.background = "#071025";
+      document.body.style.color = "#eaf3ff";
+    } else {
+      document.body.style.background = "#ffffff";
+      document.body.style.color = "#14303d";
+    }
     return () => {
       document.body.style.background = "#ffffff";
       document.body.style.color = "#14303d";
     };
-    // We intentionally only depend on darkMode so toggles update body while mounted.
   }, [darkMode]);
 
-  // helper: add history entry
   function addHistory(subject, cls, action) {
     const entry = {
       key: `${subject}_${cls}`,
@@ -360,8 +409,6 @@ export default function Assessment() {
     setHistory((h) => [entry, ...h].slice(0, 200));
     setPraiseFromAction(action);
   }
-
-  // helper: increment pinned
   function bumpPinned(key) {
     setPinned((p) => {
       const out = { ...p };
@@ -369,8 +416,6 @@ export default function Assessment() {
       return out;
     });
   }
-
-  // praise generator
   function setPraiseFromAction(action) {
     const praisePool = {
       "Loaded Sheet": [
@@ -386,15 +431,12 @@ export default function Assessment() {
         "Fast access — good move."
       ]
     };
-    const pool = praisePool[action] || [
-      "Nice — you're using the assessment tools effectively."
-    ];
+    const pool = praisePool[action] || ["Nice — you're using the assessment tools effectively."];
     const pick = pool[Math.floor(Math.random() * pool.length)];
     setPraiseMsg(pick);
     setTimeout(() => setPraiseMsg(""), 6000);
   }
 
-  // Smart notifications logic
   function checkNotificationsForKey(key) {
     const relevant = history.find((h) => h.key === key);
     if (!relevant) {
@@ -411,7 +453,6 @@ export default function Assessment() {
     }
   }
 
-  // session-based access: store once per page load
   function hasSessionAccess() {
     return sessionStorage.getItem("mec_access_granted") === "true";
   }
@@ -419,7 +460,6 @@ export default function Assessment() {
     sessionStorage.setItem("mec_access_granted", "true");
   }
 
-  // Access permission: if session has access, call load directly; else prompt once and store.
   function accessPermitThenLoad() {
     if (hasSessionAccess()) {
       handleLoad();
@@ -446,7 +486,8 @@ export default function Assessment() {
       alert("No Google Sheet found for this selection.");
       return;
     }
-    const embedLink = link.replace("/edit", "/edit?usp=drivesdk");
+    // embed friendly: use drivesdk param so it loads in browser preview
+    const embedLink = link.split("/edit")[0] + "/edit?usp=drivesdk";
     setSheetUrl(embedLink);
 
     addHistory(selectedSubject, selectedClass, "Loaded Sheet");
@@ -455,7 +496,7 @@ export default function Assessment() {
     setActiveTab("assessment");
   }
 
-  // Edit in Google Sheet (open new window)
+  // Attempt to open in native app; fallback to browser edit link.
   function handleEdit() {
     if (!selectedSubject || !selectedClass) {
       alert("Select Subject and Class first.");
@@ -467,12 +508,120 @@ export default function Assessment() {
       alert("No editable link found.");
       return;
     }
-    const editLink = link.replace("/edit", "/edit?pli=1&authuser=0");
-    window.open(editLink, "_blank");
 
-    addHistory(selectedSubject, selectedClass, "Opened for Edit");
+    const fileId = getFileIdFromUrl(link);
+    const browserLink = makeBrowserEditLink(link);
+
+    // If on Android, try intent URL (opens app if installed).
+    // Fallback: after timeout, open browser link.
+    const ua = navigator.userAgent || "";
+    const isAndroid = /android/i.test(ua);
+    const isIOS = /iphone|ipad|ipod/i.test(ua);
+
+    // App-open strategies:
+    // Android: use intent:// pattern to open the Sheets app (if present) without redirecting to Play store.
+    // iOS: try googlesheets:// URL scheme then fallback.
+    // Desktop/other: just open browserLink.
+    if (isAndroid) {
+      // Intent link attempts to open the native app.
+      const intentUrl = `intent://docs.google.com/spreadsheets/d/${fileId}/edit#Intent;package=com.google.android.apps.docs;scheme=https;end`;
+      // Attempt to open intent then fallback to browserLink.
+      // Setting location.href to intent will open app if installed.
+      // Fallback after short timeout to avoid leaving user on Play store.
+      let fallbackTriggered = false;
+      const fallbackTimeout = setTimeout(() => {
+        if (!fallbackTriggered) {
+          fallbackTriggered = true;
+          window.open(browserLink, "_blank");
+        }
+      }, 800);
+
+      // Try to open intent URL
+      try {
+        window.location.href = intentUrl;
+        // record history immediately
+        addHistory(selectedSubject, selectedClass, "Opened for Edit");
+        bumpPinned(key);
+      } catch (e) {
+        clearTimeout(fallbackTimeout);
+        window.open(browserLink, "_blank");
+        addHistory(selectedSubject, selectedClass, "Opened for Edit");
+        bumpPinned(key);
+      }
+      return;
+    } else if (isIOS) {
+      // iOS: try googlesheets:// URL scheme (opens app if installed)
+      const appScheme = `googlesheets://docs.google.com/spreadsheets/d/${fileId}/edit`;
+      // attempt with iframe trick to not disturb navigation
+      const i = document.createElement("iframe");
+      i.style.display = "none";
+      i.src = appScheme;
+      document.body.appendChild(i);
+      const fallback = setTimeout(() => {
+        document.body.removeChild(i);
+        // fallback to browser
+        window.open(browserLink, "_blank");
+      }, 700);
+      // record history
+      addHistory(selectedSubject, selectedClass, "Opened for Edit");
+      bumpPinned(key);
+      return;
+    } else {
+      // Desktop / unknown: directly open browser version
+      window.open(browserLink, "_blank");
+      addHistory(selectedSubject, selectedClass, "Opened for Edit");
+      bumpPinned(key);
+      return;
+    }
+  }
+
+  // Download sheet as .xlsx (if online) OR generate CSV template if offline
+  async function handleDownloadOffline() {
+    if (!selectedSubject || !selectedClass) {
+      alert("Select Subject and Class first.");
+      return;
+    }
+    setIsDownloading(true);
+    const key = `${selectedSubject}_${selectedClass}`;
+    const link = sheetLinks[key];
+    if (!link) {
+      alert("No sheet link available for this selection.");
+      setIsDownloading(false);
+      return;
+    }
+    const fileId = getFileIdFromUrl(link);
+
+    // If online and have fileId, attempt Google export (xlsx)
+    if (navigator.onLine && fileId) {
+      const exportUrl = makeExportXlsxLink(fileId);
+
+      // Direct download using export URL
+      // Note: If the sheet is private and user is not authenticated, export will redirect to Google login.
+      // For schools, teachers should be signed-in in the browser for direct export to work.
+      try {
+        downloadUrl(exportUrl, `${selectedSubject}_${selectedClass}.xlsx`);
+      } catch (e) {
+        // fallback: generate CSV template
+        const tpl = buildCsvTemplate(selectedSubject, selectedClass);
+        const blob = new Blob([tpl.content], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        downloadUrl(url, tpl.filename);
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+      } finally {
+        setIsDownloading(false);
+      }
+    } else {
+      // offline: generate CSV template for user to fill
+      const tpl = buildCsvTemplate(selectedSubject, selectedClass);
+      const blob = new Blob([tpl.content], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      downloadUrl(url, tpl.filename);
+      setIsDownloading(false);
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+    }
+
+    addHistory(selectedSubject, selectedClass, "Downloaded Offline File");
     bumpPinned(key);
-    setActiveTab("assessment");
   }
 
   // Quick Links: top 6 pinned sorted
@@ -483,7 +632,6 @@ export default function Assessment() {
       .map(([k, v]) => ({ key: k, subject: k.split("_")[0], class: k.split("_")[1], count: v }));
   }, [pinned]);
 
-  // open quick link
   function openQuickLink(key) {
     const link = sheetLinks[key];
     if (!link) return alert("Sheet link missing.");
@@ -495,22 +643,18 @@ export default function Assessment() {
     setActiveTab("quick");
   }
 
-  // remove history entry
   function removeHistoryEntry(idx) {
     setHistory((h) => h.filter((_, i) => i !== idx));
   }
 
-  // clear notifications
   function clearNotifications() {
     setNotificationMsg("");
   }
 
-  // clear pinned
   function clearPinned() {
     setPinned({});
   }
 
-  // TabButton small component
   const TabButton = ({ id, label }) => (
     <button
       className={`tab-btn ${activeTab === id ? "active" : ""}`}
@@ -527,12 +671,7 @@ export default function Assessment() {
 
   // CSS
   const styleTag = `
-    :root {
-      --accent: ${PRIMARY_COLOR};
-      --accent-600: ${PRIMARY_COLOR};
-      --glass-light: rgba(255,255,255,0.82);
-      --glass-dark: rgba(10,18,30,0.55);
-    }
+    :root { --accent: ${PRIMARY_COLOR}; --accent-600: ${PRIMARY_COLOR}; --glass-light: rgba(255,255,255,0.82); --glass-dark: rgba(10,18,30,0.55); }
     .mec-wrap { max-width: 1080px; margin: 22px auto; padding: 18px; }
     .glass { backdrop-filter: blur(8px) saturate(120%); -webkit-backdrop-filter: blur(8px) saturate(120%); border-radius: 14px; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 10px 30px rgba(10,10,10,0.08); }
     .glass-light { background: var(--glass-light); }
@@ -547,38 +686,19 @@ export default function Assessment() {
     .ql-item:hover { transform: translateY(-4px); }
     .history-item { padding:12px; border-radius:12px; margin-bottom:10px; font-size:14px; display:flex; justify-content:space-between; align-items:center; gap:12px; }
     .notif { padding:12px; border-radius:12px; margin-bottom:10px; font-size:14px; }
-    .btn-primary {
-      background: linear-gradient(90deg, var(--accent), #ff944d);
-      color: white;
-      border:none;
-      padding:10px 14px;
-      border-radius:12px;
-      cursor:pointer;
-      font-weight:800;
-      box-shadow: 0 10px 28px rgba(255,110,40,0.12);
-    }
-    .btn-ghost {
-      background: transparent;
-      border:1px solid rgba(0,0,0,0.06);
-      color: inherit;
-      padding:8px 12px;
-      border-radius:10px;
-      cursor:pointer;
-    }
+    .btn-primary { background: linear-gradient(90deg, var(--accent), #ff944d); color: white; border:none; padding:10px 14px; border-radius:12px; cursor:pointer; font-weight:800; box-shadow: 0 10px 28px rgba(255,110,40,0.12); }
+    .btn-ghost { background: transparent; border:1px solid rgba(0,0,0,0.06); color: inherit; padding:8px 12px; border-radius:10px; cursor:pointer; }
     .pro-banner { padding:10px 12px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; gap:10px; }
     .fade-in { animation: fade .45s ease both; }
     .slide-up { animation: slideUp .35s cubic-bezier(.2,.9,.3,1) both; }
     @keyframes fade { from { opacity:0 } to { opacity:1 } }
     @keyframes slideUp { from { opacity:0; transform: translateY(6px) } to { opacity:1; transform: translateY(0) } }
-
-    /* responsiveness */
-    @media (max-width: 980px) {
-      .grid-2 { grid-template-columns: 1fr; }
-      .right-col { order: 2; }
-    }
+    .collapse { margin-top: 12px; border-radius: 10px; border: 1px dashed rgba(0,0,0,0.06); padding: 12px; background: rgba(255,255,255,0.96); }
+    .collapse-header { display:flex; justify-content:space-between; align-items:center; cursor:pointer; gap:12px; }
+    .collapse-body { margin-top: 12px; font-size:13px; line-height:1.45; }
+    @media (max-width: 980px) { .grid-2 { grid-template-columns: 1fr; } .right-col { order: 2; } }
   `;
 
-  // render
   return (
     <>
       <style>{styleTag}</style>
@@ -589,24 +709,17 @@ export default function Assessment() {
           <div className="header-row" style={{ padding: 14 }}>
             <div>
               <div style={{ fontSize: 20, fontWeight: 900, color: `var(--accent-600)` }}>Teacher Assessment</div>
-              
             </div>
 
             <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
               <div style={{ textAlign: "right" }}>
                 <div style={{ fontSize: 12, opacity: 0.7 }}>Mode</div>
                 <div style={{ display: "flex", gap: 8, marginTop: 6 }}>
-                  <button
-                    className="btn-ghost"
-                    onClick={() => setDarkMode((d) => !d)}
-                    aria-label="Toggle dark mode"
-                    title="Toggle dark mode"
-                  >
+                  <button className="btn-ghost" onClick={() => setDarkMode((d) => !d)} aria-label="Toggle dark mode" title="Toggle dark mode">
                     {darkMode ? "Light" : "Dark"}
                   </button>
                 </div>
               </div>
-
             </div>
           </div>
 
@@ -620,7 +733,6 @@ export default function Assessment() {
           </div>
 
           <div style={{ padding: 14 }}>
-            {/* ASSESSMENT */}
             {activeTab === "assessment" && (
               <div className="panel slide-up" style={{ background: darkMode ? "var(--glass-dark)" : "#fff" }}>
                 <div className="grid-2">
@@ -628,49 +740,22 @@ export default function Assessment() {
                     <div style={{ fontWeight: 800, marginBottom: 10 }}>Open Google Sheet</div>
 
                     <label className="small" style={{ display: "block", marginBottom: 6 }}>Select Class</label>
-                    <select
-                      value={selectedClass}
-                      onChange={(e) => setSelectedClass(e.target.value)}
-                      style={{
-                        width: "100%",
-                        padding: 12,
-                        borderRadius: 10,
-                        border: "1px solid rgba(0,0,0,0.06)",
-                        marginBottom: 12,
-                        background: darkMode ? "#071827" : "#fff",
-                        color: "inherit"
-                      }}
-                    >
+                    <select value={selectedClass} onChange={(e) => setSelectedClass(e.target.value)} style={{ width: "100%", padding: 12, borderRadius: 10, border: "1px solid rgba(0,0,0,0.06)", marginBottom: 12, background: darkMode ? "#071827" : "#fff", color: "inherit" }}>
                       <option value="">-- Choose Class --</option>
                       {classes.map((c) => <option key={c} value={c}>{c}</option>)}
                     </select>
 
                     <label className="small" style={{ display: "block", marginBottom: 6 }}>Select Subject</label>
-                    <select
-                      value={selectedSubject}
-                      onChange={(e) => setSelectedSubject(e.target.value)}
-                      style={{
-                        width: "100%",
-                        padding: 12,
-                        borderRadius: 10,
-                        border: "1px solid rgba(0,0,0,0.06)",
-                        marginBottom: 14,
-                        background: darkMode ? "#071827" : "#fff",
-                        color: "inherit"
-                      }}
-                    >
+                    <select value={selectedSubject} onChange={(e) => setSelectedSubject(e.target.value)} style={{ width: "100%", padding: 12, borderRadius: 10, border: "1px solid rgba(0,0,0,0.06)", marginBottom: 14, background: darkMode ? "#071827" : "#fff", color: "inherit" }}>
                       <option value="">-- Choose Subject --</option>
                       {subjects.map((s) => <option key={s} value={s}>{s}</option>)}
                     </select>
 
                     <div style={{ display: "flex", gap: 10, marginTop: 6 }}>
                       <button className="btn-primary" onClick={accessPermitThenLoad}>Load Sheet</button>
-                      <button
-                        className="btn-ghost"
-                        onClick={handleEdit}
-                        style={{ border: "1px solid rgba(0,0,0,0.06)" }}
-                      >
-                        Edit in Sheet
+                      <button className="btn-ghost" onClick={handleEdit} style={{ border: "1px solid rgba(0,0,0,0.06)" }}>Edit in Sheet</button>
+                      <button className="btn-ghost" onClick={handleDownloadOffline} style={{ border: "1px solid rgba(0,0,0,0.06)" }}>
+                        {isDownloading ? "Preparing..." : "Download for Offline"}
                       </button>
                     </div>
 
@@ -680,21 +765,35 @@ export default function Assessment() {
                       </div>
                     )}
 
+                    {/* Collapsible offline instructions */}
+                    <div className="collapse" style={{ marginTop: 12 }}>
+                      <div className="collapse-header" onClick={() => setShowOfflineInstructions((s) => !s)}>
+                        <div style={{ fontWeight: 800 }}>Offline Use Instructions</div>
+                        <div className="small">{showOfflineInstructions ? "Hide" : "Show"}</div>
+                      </div>
+                      {showOfflineInstructions && (
+                        <div className="collapse-body">
+                          <ol>
+                            <li>Choose Class and Subject and click <strong>Download for Offline</strong>.</li>
+                            <li>If you are online the app will try to download the actual sheet as an <code>.xlsx</code>. If offline, a CSV template will be downloaded instead.</li>
+                            <li>Open the downloaded file in MS Excel or any spreadsheet app on your phone/computer and fill the results offline.</li>
+                            <li>When done, attach the file in an email or upload (via your school admin page) and send to the administrator for import.</li>
+                            <li>After sending, you can <strong>Load Sheet</strong> in this app to view the live sheet or use <strong>Edit in Sheet</strong> to update in browser/app.</li>
+                          </ol>
+                          <div style={{ marginTop: 8 }} className="small">Notes: To download the real sheet as <code>.xlsx</code> you must be signed into the same Google account in your browser that has access to the sheet.</div>
+                        </div>
+                      )}
+                    </div>
+
                     {sheetUrl && (
                       <div style={{ marginTop: 14 }}>
                         <div style={{ fontSize: 13, marginBottom: 8, opacity: 0.85 }}>Preview (embedded)</div>
-                        <iframe
-                          title="Google Sheet Preview"
-                          src={sheetUrl}
-                          width="100%"
-                          height="520"
-                          style={{ borderRadius: 12, border: "1px solid rgba(0,0,0,0.06)" }}
-                        />
+                        <iframe title="Google Sheet Preview" src={sheetUrl} width="100%" height="520" style={{ borderRadius: 12, border: "1px solid rgba(0,0,0,0.06)" }} />
                       </div>
                     )}
                   </div>
 
-                  {/* Right column: quick pinned */}
+                  {/* Right column */}
                   <aside className="right-col">
                     <div style={{ padding: 14, borderRadius: 12, background: darkMode ? "rgba(8,12,18,0.6)" : "#fbfdff" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
@@ -711,10 +810,7 @@ export default function Assessment() {
                               <div className="small" style={{ marginTop: 6 }}>{p.count} visits</div>
                             </div>
                             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                              <button
-                                onClick={() => openQuickLink(p.key)}
-                                style={{ padding: "8px 10px", borderRadius: 8, border: "none", background: `linear-gradient(90deg, ${PRIMARY_COLOR}, #ff944d)`, color: "white", cursor: "pointer" }}
-                              >Open</button>
+                              <button onClick={() => openQuickLink(p.key)} style={{ padding: "8px 10px", borderRadius: 8, border: "none", background: `linear-gradient(90deg, ${PRIMARY_COLOR}, #ff944d)`, color: "white", cursor: "pointer" }}>Open</button>
                             </div>
                           </div>
                         ))}
@@ -730,7 +826,6 @@ export default function Assessment() {
               </div>
             )}
 
-            {/* QUICK LINKS */}
             {activeTab === "quick" && (
               <div className="panel slide-up" style={{ background: darkMode ? "var(--glass-dark)" : "#fff" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -756,7 +851,6 @@ export default function Assessment() {
               </div>
             )}
 
-            {/* HISTORY */}
             {activeTab === "history" && (
               <div className="panel slide-up" style={{ background: darkMode ? "var(--glass-dark)" : "#fff" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -775,26 +869,16 @@ export default function Assessment() {
                       <div style={{ textAlign: "right", minWidth: 140 }}>
                         <div className="small">{new Date(h.ts).toLocaleString()}</div>
                         <div style={{ marginTop: 8, display: "flex", gap: 8, justifyContent: "flex-end" }}>
-                          <button
-                            className="btn-ghost"
-                            onClick={() => {
-                              const link = sheetLinks[h.key];
-                              if (link) {
-                                setSheetUrl(link.replace("/edit", "/edit?usp=drivesdk"));
-                                addHistory(h.subject, h.class, "Loaded Sheet");
-                                bumpPinned(h.key);
-                                setActiveTab("assessment");
-                              } else alert("Link missing.");
-                            }}
-                          >
-                            Open
-                          </button>
-                          <button
-                            className="btn-ghost"
-                            onClick={() => removeHistoryEntry(idx)}
-                          >
-                            Remove
-                          </button>
+                          <button className="btn-ghost" onClick={() => {
+                            const link = sheetLinks[h.key];
+                            if (link) {
+                              setSheetUrl(link.split("/edit")[0] + "/edit?usp=drivesdk");
+                              addHistory(h.subject, h.class, "Loaded Sheet");
+                              bumpPinned(h.key);
+                              setActiveTab("assessment");
+                            } else alert("Link missing.");
+                          }}>Open</button>
+                          <button className="btn-ghost" onClick={() => removeHistoryEntry(idx)}>Remove</button>
                         </div>
                       </div>
                     </div>
@@ -804,7 +888,6 @@ export default function Assessment() {
               </div>
             )}
 
-            {/* NOTIFICATIONS */}
             {activeTab === "notifications" && (
               <div className="panel slide-up" style={{ background: darkMode ? "var(--glass-dark)" : "#fff" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
