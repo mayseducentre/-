@@ -585,12 +585,10 @@ export default function Assessment() {
       <Breadcrumb title="Assessment" image="https://lh3.googleusercontent.com/pw/AP1GczMwG1XcntnevAvGkmEm56QCW7jHRMy12WGJ9YdG_Qg-TmI4D8rdHwKcBNNqx2WFdQOJYhZPzsZOlZoTqDdhw5HNYO19MAoO8mhyh2PFuTyJxAmLuSc"/>
       <Header />
 
-            <video
-              src="https://drive.google.com/file/d/1lx5injOT13hK9DBDt1eYZj5IP-nKcBPA/view?usp=drivesdk"
-              controls
-            ></video>
-
+            
       <div className="mec-wrap">
+<video src="https://drive.google.com/file/d/1lx5injOT13hK9DBDt1eYZj5IP-nKcBPA/view?usp=drivesdk" controls></video>
+<br /><br/>
         <div className={`glass ${!darkMode ? "glass-light" : ""} fade-in`}>
           <div className="header-row" style={{ padding: 14 }}>
             <div>
