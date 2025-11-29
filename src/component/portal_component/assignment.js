@@ -123,6 +123,9 @@ export default function AssignmentHub() {
             </div>
           ))}
 
+<a>Note that the projects that was given to make non-computer based works have been recorded. A few student submitted their work. The remaining have a pending status. Thanks for your contribution to do projects given to you.</a>
+
+
           <button style={styles.button} onClick={submitAssignment}>
             Submit Assignment
           </button>
