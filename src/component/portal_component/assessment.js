@@ -587,11 +587,12 @@ export default function Assessment() {
 
             
       <div className="mec-wrap">
-<video
-  controls
-  style={{ width: "100%" }}
-  src="https://drive.google.com/uc?export=download&id=1lx5injOT13hK9DBDt1eYZj5IP-nKcBPA"
-></video>
+<iframe
+  src="https://drive.google.com/file/d/1lx5injOT13hK9DBDt1eYZj5IP-nKcBPA/preview"
+  allow="autoplay"
+  style={{ width: "100%", height: "300px", border: "none" }}
+></iframe>
+
 <br /><br/>
         <div className={`glass ${!darkMode ? "glass-light" : ""} fade-in`}>
           <div className="header-row" style={{ padding: 14 }}>
