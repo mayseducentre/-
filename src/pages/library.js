@@ -134,6 +134,16 @@ export default function Library() {
             <span style={titleStyle}>Digital Resources</span>
           </div>
         </Link>
+   <Link to="/assignment" style={{ textDecoration: "none" }}>
+          <div
+            style={itemStyle}
+            onMouseEnter={(e) => handleHover(e, true)}
+            onMouseLeave={(e) => handleHover(e, false)}
+          >
+            <img src={require("../img/web.jpg")} alt="Assignments" style={imgStyle} />
+            <span style={titleStyle}>Assignment</span>
+          </div>
+        </Link>
 
         {/* Student Projects */}
         <Link to="/projects" style={{ textDecoration: "none" }}>
