@@ -32,6 +32,7 @@ import UploadAccess from "./component/uploadmedia";
 import WordLearningApp from "./component/portal_component/assignment";
 import VirtualLabs from "./component/vrlab";
 import CreativeStudio from "./library/creative_stu";
+import AssignmentHub from "./component/assignment";
 
 
 
@@ -113,6 +114,7 @@ function App() {
   <Route path="/upload_file" element={<UploadAccess />} />
  <Route path="/vr_lab" element={<VirtualLabs />} />
 <Route path="/creative_stu" element={<CreativeStudio />} />
+<Route path="/assignment" element={<AssignmentHub />} />
        </Route>
     </Routes>
     </HashRouter>
