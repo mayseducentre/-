@@ -587,7 +587,11 @@ export default function Assessment() {
 
             
       <div className="mec-wrap">
-<video src="https://drive.google.com/file/d/1lx5injOT13hK9DBDt1eYZj5IP-nKcBPA/view?usp=drivesdk" controls></video>
+<video
+  src="https://drive.google.com/uc?export=download&id=1lx5injOT13hK9DBDt1eYZj5IP-nKcBPA"
+  controls
+  style={{ width: "100%" }}
+></video>
 <br /><br/>
         <div className={`glass ${!darkMode ? "glass-light" : ""} fade-in`}>
           <div className="header-row" style={{ padding: 14 }}>
