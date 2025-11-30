@@ -156,7 +156,7 @@ const sheetLinks = {
   "Creative Art_MEC 4":
     "https://docs.google.com/spreadsheets/d/1ceCOYu7EBBc6MJ6qppAhzg4bvfQIv8wB7XhKX9SYOOM/edit",
   "History_MEC 4":
-    "https://docs.google.com/spreadsheets/d/1HkXQhs0-mc30QHa-pIDMI6_yTXUPcIK-Jel32MLj1Po/edit",
+    "https://docs.google.com/spreadsheets/d/1HkXQhsU-mc30QHa-pIDMI6_yTXUPcIK-Jel32MLj1Po/edit",
   "Science_MEC 4":
     "https://docs.google.com/spreadsheets/d/1qAQUv10iGMhjWgTtfFugjBsEWEqugFYhJAihyXskV8U/edit",
   "Library_MEC 4":
