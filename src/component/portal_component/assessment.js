@@ -241,8 +241,7 @@ const sheetLinks = {
     "https://docs.google.com/spreadsheets/d/1KQbETabDTfPX2kIEIG4CLFGjWg1_TrTBUrUnmsQKPPo/edit",
   "Ga_KG 2":
     "https://docs.google.com/spreadsheets/d/1GFj_DtsAKBTycktCUGFpi7Zv2J7E8OAPywrBidg92Ow/edit",
-  "Owop_KG 2":
-    "https://docs.google.com/spreadsheets/d/1GLxmF6nQbH12UDcX91pBFAJE0K7i8PnGGKB8Zfb2ktc/edit",
+  
   "RME_KG 2":
     "https://docs.google.com/spreadsheets/d/1vNVj0-cF_qINPJ8DH_8bAkK8WbZK7ecNVMdP0WqhHsg/edit",
   "Phonics_KG 2":
