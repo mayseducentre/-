@@ -260,7 +260,7 @@ const sheetLinks = {
   "Creative Art_KG 2":
     "https://docs.google.com/spreadsheets/d/1NqEbFqW5EG3aRnOZwUoFQ5uwba3epameH2u-ztvcZ9g/edit",
   "History_KG 2":
-    "https://docs.google.com/spreadsheets/d/1fWxT_LYZpBvmqWqVNx5pdCzjvffk5yCGpaP5-OEi0s/edit",
+    "https://docs.google.com/spreadsheets/d/1fWxTqD_LYZqBvmqWqVN7pdCzjvffk5yCGpaP5-OEi0s/edit",
   "Science_KG 2":
     "https://docs.google.com/spreadsheets/d/15lEOZxCHq4i3hQ7VqCKz79DqO6V0G2Db89G1398QhXA/edit",
   "Math_KG 2":
