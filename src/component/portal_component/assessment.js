@@ -262,7 +262,7 @@ const sheetLinks = {
   "History_KG 2":
     "https://docs.google.com/spreadsheets/d/1fWxT_LYZpBvmqWqVNx5pdCzjvffk5yCGpaP5-OEi0s/edit",
   "Science_KG 2":
-    "https://docs.google.com/spreadsheets/d/15lEOZxCHq4i3Q7VqCKz79DqO6V0G2Db89G1398QhXA/edit",
+    "https://docs.google.com/spreadsheets/d/15lEOZxCHq4i3hQ7VqCKz79DqO6V0G2Db89G1398QhXA/edit",
   "Math_KG 2":
     "https://docs.google.com/spreadsheets/d/1_30LJ_EkkHMhMzSg3cfm4__Fd09umiCIMOjIFJaTuRo/edit",
   "English_KG 2":
