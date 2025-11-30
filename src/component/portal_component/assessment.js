@@ -265,6 +265,8 @@ const sheetLinks = {
     "https://docs.google.com/spreadsheets/d/15lEOZxCHq4i3hQ7VqCKz79DqO6V0G2Db89G1398QhXA/edit",
   "Math_KG 2":
     "https://docs.google.com/spreadsheets/d/1_30LJ_EkkHMhMzSg3cfm4__Fd09umiCIMOjIFJaTuRo/edit",
+"Health Safety_KG 2":
+"https://docs.google.com/spreadsheets/d/1GLxmF6nQbH12UDcX91pBFAJE0K7i8PnGGKB8Zfb2ktc/edit",
   "English_KG 2":
     "https://docs.google.com/spreadsheets/d/150YfNNTpqLYR7liQDEGrejMZ_5-UUpAxNg7GJE0iDzU/edit"
 };
