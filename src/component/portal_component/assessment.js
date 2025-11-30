@@ -252,7 +252,7 @@ const sheetLinks = {
   "Rhymes and Poems_KG 2":
     "https://docs.google.com/spreadsheets/d/1h2QMxWa1590O-Pcn_6gkdFe4fZugDwsB59KHmIu8rY/edit",
   "Reading and Comprehension_KG 2":
-    "https://docs.google.com/spreadsheets/d/1KQbETabDTfPX2kIEIG4CLFGjWg1_TrTBUrUnmsQKPPo/edit",
+    "https://docs.google.com/spreadsheets/d/194Cy_TO3nrPhXEf7IMJ9CzW79imQBhZUjyKrzHDyOxk/edit",
   "French_KG 2":
     "https://docs.google.com/spreadsheets/d/1d2wab-G2F2o0CU3nvSv9vKt-4tqzDmskD13EDcVwj7c/edit",
   "Computing_KG 2":
