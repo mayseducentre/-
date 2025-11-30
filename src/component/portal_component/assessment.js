@@ -232,7 +232,7 @@ const sheetLinks = {
   "Creative Art_MEC 3":
     "https://docs.google.com/spreadsheets/d/1v4ymkM7VdJX3BRnZIPi2vsiENot_WmP75Rf3-HWdxO4/edit",
   "History_MEC 3":
-    "https://docs.google.com/spreadsheets/d/1MHqx9OeyZVkm_lu6so4O58x81OgzwAJW60ogSWVdxw/edit",
+    "https://docs.google.com/spreadsheets/d/1MHqx9OeyZVkm_lu6so4O58xq81OgzwAJW60ogSWVdxw/edit",
   "Science_MEC 3":
     "https://docs.google.com/spreadsheets/d/1T9JTqOYAqqMGbXh_ICuSsYSckTqEosNA0cfiBOiHuAw/edit",
   "Math_MEC 3":
