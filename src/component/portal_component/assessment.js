@@ -202,7 +202,7 @@ const sheetLinks = {
   "Creative Art_MEC 2":
     "https://docs.google.com/spreadsheets/d/1TA8FVt9cleAN_Xyri39nrrvMyScjIR2EgflQMHY88OE/edit",
   "History_MEC 2":
-    "https://docs.google.com/spreadsheets/d/1MPRQ-88WesWFXc7wzvrrpm7ESbfXmwS1-xMBz4j8ZZA/edit",
+    "https://docs.google.com/spreadsheets/d/1MPRQ-88WesWFXc7wzvrrpm7ESbfXmwS1-xMBb4j8ZZA/edit",
   "Science_MEC 2":
     "https://docs.google.com/spreadsheets/d/1Gl0vMmAuXiNtOjKypFYGM_lRQ1tKGf41Gvo22fiduU8/edit",
   "Math_MEC 2":
