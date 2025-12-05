@@ -33,7 +33,7 @@ import WordLearningApp from "./component/portal_component/assignment";
 import VirtualLabs from "./component/vrlab";
 import CreativeStudio from "./library/creative_stu";
 import AssignmentHub from "./component/portal_component/assignment";
-
+import ELearningPlatform from "./library/elearn";
 
 
 window.addEventListener("keyup", (e)=>{
@@ -115,6 +115,7 @@ function App() {
  <Route path="/vr_lab" element={<VirtualLabs />} />
 <Route path="/creative_stu" element={<CreativeStudio />} />
 <Route path="/assignment" element={<AssignmentHub />} />
+<Route path="/elearn" element={<ELearningPlatform />} />
        </Route>
     </Routes>
     </HashRouter>
