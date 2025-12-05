@@ -7,7 +7,6 @@ import Banner from "../component/banner";
 import About from "../component/about";
 import Footer from "../component/footer";
 import ScrollToTop from "react-scroll-to-top";
-import Category from "../component/category";
 import Blog from "../component/blog";
 import Noties from "../notification/noties";
 import NotificationPermission from "../notification/noties_permission";
@@ -65,8 +64,8 @@ export default function Home(){
         <br/>
         <About />
         <InstallPromo />
-        <Category />
-        {/* <Noties />
+       {/* <Category />
+        <Noties />
         <NotificationPermission /> */}
         <Blog />
         <Imgsec />
