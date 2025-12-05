@@ -63,7 +63,7 @@ function LibraryWebsites() {
               marginLeft: "20px",
             }}
           >
-            Featured Websites
+            Featured Resources
           </h5>
 
           <center>
