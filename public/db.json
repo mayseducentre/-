@@ -124,6 +124,12 @@
           "url": "https://www.academicearth.org/",
           "description": "."
         },
+{
+          "id": "71",
+          "name": "Learn HTML",
+          "url": "https://www.w3schools.com/html/",
+          "description": "."
+        },
         {
           "id": "lib7646864",
           "name": "MIT App Inventor",
