@@ -150,6 +150,7 @@ const [loading, setLoading]=useState(false);
 <center>
 
 <img id="imgdisplay" src={require("../img/about.jpg")} style={{width:"auto",height:"auto"}} />
+ 
 </center>
 </div>
 
@@ -168,6 +169,7 @@ const [loading, setLoading]=useState(false);
    <img src={require("../img/mays/gra.jpg")} style={{width:"100%"}}/>
     <img src={require("../img/pic2.jpg")} style={{width:"100%"}}/>
    <img src={require("../img/sh.png")} style={{width:"100%"}}/>
+    <img src={require("../img/mg.jpg")} style={{width:"100%"}} />
     
   </div>
 
@@ -183,7 +185,8 @@ const [loading, setLoading]=useState(false);
   <img src={require("../img/mays/mec4.jpg")} style={{width:"100%"}}/>
   <img src={require("../img/mays/redcross.jpg")} style={{width:"100%"}}/>
   <img src={require("../img/mays/study.jpg")} style={{width:"100%"}}/>
-    
+   <img src={require("../img/j2.jpg")} style={{width:"100%"}} />
+     
  </div>
 
   <div className="imgcolumn">
@@ -199,6 +202,8 @@ const [loading, setLoading]=useState(false);
      <img src={require("../img/mays/davis.jpg")} style={{width:"100%"}}/>
      <img src={require("../img/ach.jpg")} style={{width:"100%"}} />
  <img src={require("../img/acc.jpg")} style={{width:"100%"}} />
+    <img src={require("../img/2w.jpg")} style={{width:"100%"}} />
+    <img src={require("../img/1n.jpg")} style={{width:"100%"}} />
     
   </div>
   <div className="imgcolumn">
@@ -213,6 +218,7 @@ const [loading, setLoading]=useState(false);
      <img src={require("../img/mays/lego.jpg")} style={{width:"100%"}}/>
      <img src={require("../img/davis.jpg")} style={{width:"100%"}}/>
      <img src={require("../img/gobe.jpg")} style={{width:"100%"}} />
+    <img src={require("../img/1w.png")} style={{width:"100%"}} />
     
   </div>
 
