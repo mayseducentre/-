@@ -79,10 +79,17 @@
         },
         {
           "id": "lib5261711",
-          "name": "Keyboard shortcuts",
+          "name": "VS Code Keyboard shortcuts",
           "url": "https://code.visualstudio.com/shortcuts/keyboard-shortcuts-windows.pdf",
           "description": "."
+        },
+{
+          "id": "lib5261",
+          "name": "Windows Keyboard shortcuts",
+          "url": "https://its.niagaracollege.ca/wp-content/uploads/2017/06/Windows-10-for-Windows-Keyboard-Shortcuts.pdf",
+          "description": "."
         }
+
       ],
       "featuredwebsites": [
         {
