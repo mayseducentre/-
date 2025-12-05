@@ -168,6 +168,16 @@ export default function Library() {
           </div>
         </Link>
 
+<Link to="/e_learn" style={{ textDecoration: "none" }}>
+          <div
+            style={itemStyle}
+            onMouseEnter={(e) => handleHover(e, true)}
+            onMouseLeave={(e) => handleHover(e, false)}
+          >
+            <img src="https://lh3.googleusercontent.com/pw/AP1GczMQK30hnET-Ucx1LeA2DhzHucMHh0RLA2Ba6CJezF0ryX_zOvaqlOgn1WPNfg1RLyYzXdHCjCP68GEvI2dwn8w5CelomlA_6FWrDK9VY5a7jmQ-QKs" alt="EL" style={imgStyle} />
+            <span style={titleStyle}>E-Learning</span>
+          </div>
+        </Link>
 
 <Link to="/creative_stu" style={{ textDecoration: "none" }}>
           <div
