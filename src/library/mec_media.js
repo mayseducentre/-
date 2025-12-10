@@ -186,7 +186,7 @@ const [loading, setLoading]=useState(false);
   <img src={require("../img/mays/redcross.jpg")} style={{width:"100%"}}/>
   <img src={require("../img/mays/study.jpg")} style={{width:"100%"}}/>
    <img src={require("../img/j2.jpg")} style={{width:"100%"}} />
-     <img src={require("../img/l3.jpg")} style={{width:"100%"}} />
+     <img src={require("../img/la3.jpg")} style={{width:"100%"}} />
  </div>
 
   <div className="imgcolumn">
