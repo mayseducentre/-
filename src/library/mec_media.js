@@ -180,7 +180,7 @@ const [loading, setLoading]=useState(false);
   <img src={require("../img/mays/kids.jpg")} style={{width:"100%"}}/>
   <img src={require("../img/mays/play.jpg")} style={{width:"100%"}}/>
   <img src={require("../img/mays/ply.jpg")} style={{width:"100%"}}/>
-  <img src={require("../img/mays/um.jpg")} style={{width:"100%"}}/>
+  <img src={require("../img/um.jpg")} style={{width:"100%"}}/>
   <img src={require("../img/mays/arts.jpg")} style={{width:"100%"}}/>
   <img src={require("../img/mays/mec4.jpg")} style={{width:"100%"}}/>
   <img src={require("../img/mays/redcross.jpg")} style={{width:"100%"}}/>
