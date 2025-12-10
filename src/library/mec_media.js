@@ -4,7 +4,7 @@ import Footer from "../component/footer";
 import Breadcrumb from "../component/breadcrumb";
 import ScrollToTop from "react-scroll-to-top";
 import MediaGallery from "../component/media";
-import mediaData from "../data/mec_media.json";
+import mediaData from "../component/mec_media.json";
 
 function MecMedia() {
   const [media, setMedia] = useState([]);
