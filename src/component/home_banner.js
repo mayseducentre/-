@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 export default function HomeBanner() {
   const banner = {
@@ -11,7 +11,33 @@ export default function HomeBanner() {
     button: "Learn More",
   };
 
+  const imgRef = useRef(null);
   const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    // If image was cached and already complete, trigger animation
+    const img = imgRef.current;
+    if (!img) return;
+
+    if (img.complete && img.naturalWidth !== 0) {
+      // run in next tick so transition has effect
+      const t = setTimeout(() => setLoaded(true), 30);
+      return () => clearTimeout(t);
+    }
+
+    // otherwise attach handler
+    const onLoad = () => {
+      // small delay so transition occurs smoothly
+      const t = setTimeout(() => setLoaded(true), 30);
+      // cleanup timeout if needed
+      img.removeEventListener("load", onLoad);
+      return () => clearTimeout(t);
+    };
+    img.addEventListener("load", onLoad);
+
+    // cleanup if component unmounts
+    return () => img.removeEventListener("load", onLoad);
+  }, []);
 
   const wrapper = {
     width: "100%",
@@ -22,20 +48,23 @@ export default function HomeBanner() {
 
   const imageBox = {
     width: "100%",
-    height: "260px",
+    height: 260,
     overflow: "hidden",
     position: "relative",
   };
 
-  // ✨ ANIMATED IMAGE (fade + cinematic zoom)
+  // Animated image: starts zoomed-in and slightly offset, then eases to final subtle zoom+pan
   const imageStyle = {
     width: "100%",
     height: "100%",
     objectFit: "cover",
     display: "block",
+    willChange: "transform, opacity",
     opacity: loaded ? 1 : 0,
-    transform: loaded ? "scale(1.06)" : "scale(1.15)",
-    transition: "opacity 1.4s ease, transform 5s ease",
+    // final transform includes a tiny pan (translateX) + small zoom
+    transform: loaded ? "scale(1.03) translateX(0)" : "scale(1.12) translateX(-3%)",
+    transition: "opacity 600ms ease, transform 7.5s cubic-bezier(.2,.8,.2,.99)",
+    transformOrigin: "center center",
   };
 
   const card = {
@@ -48,6 +77,7 @@ export default function HomeBanner() {
     boxShadow: "0 4px 25px rgba(0,0,0,0.4)",
     marginTop: "-48px",
     position: "relative",
+    color: "#fff",
   };
 
   const tag = {
@@ -87,10 +117,15 @@ export default function HomeBanner() {
     <div style={wrapper}>
       <div style={imageBox}>
         <img
+          ref={imgRef}
           src={banner.image}
           style={imageStyle}
           alt="School Banner"
-          onLoad={() => setLoaded(true)} // triggers animation
+          // keep onLoad as fallback (useful in some browsers)
+          onLoad={() => {
+            // ensure we trigger loaded if for some reason the effect didn't
+            if (!loaded) setTimeout(() => setLoaded(true), 20);
+          }}
         />
       </div>
 
