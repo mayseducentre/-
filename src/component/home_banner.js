@@ -2,7 +2,7 @@
 
 export default function HomeBanner() { // Inline JSON content for easy editing 
 
-const content = { title: "Welcome to", schoolName: "Mays Educational Centre", description: "A centre of excellence where young minds grow, explore, and achieve their greatest potential. We inspire creativity, discipline and innovation in every learner.", buttonText: "Explore Mays", image: "https://images.unsplash.com/photo-1600880292085-45e25e67ad6d?auto=format&fit=crop&w=1200&q=80", // Replace with your school banner image };
+const content = { title: "Welcome to", schoolName: "Mays Educational Centre", description: "A centre of excellence where young minds grow, explore, and achieve their greatest potential. We inspire creativity, discipline and innovation in every learner.", buttonText: "Explore Mays", image: "https://lh3.googleusercontent.com/pw/AP1GczMCbPwvfxUD6yYl5JSD6Q9qpXN8dLh_8v0M1oy2Ezij0M-dIEa2YIR8HYZfn7JKZhL36NhMbwa5-uQSFTDaBk4HKwiiVa9vmSrvkdZoWo8nOWfgzDo", // Replace with your school banner image };
 
 const [show, setShow] = useState(false); useEffect(() => { setTimeout(() => setShow(true), 200); }, []);
 
