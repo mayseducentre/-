@@ -14,6 +14,7 @@ export default function HomeBanner() {
     subtitle:
       "A private luxury learning environment built on excellence, discipline and future-ready skills.",
     button: "Learn More",
+    link:"/#about"
   };
 
   const mediaRef = useRef(null);
@@ -158,7 +159,7 @@ export default function HomeBanner() {
         <div style={tag}>{banner.tag}</div>
         <div style={title}>{banner.title}</div>
         <div style={subtitle}>{banner.subtitle}</div>
-        <button style={buttonStyle}>{banner.button}</button>
+        <button style={buttonStyle}><a href={banner.link}>{banner.button}</a></button>
       </div>
     </div>
   );
