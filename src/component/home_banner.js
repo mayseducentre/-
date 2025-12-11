@@ -1,6 +1,8 @@
 // HOME BANNER WITH INLINE JSON CONTENT + IMAGE SUPPORT (INLINE CSS ONLY) import { useEffect, useState } from "react";
 
-export default function HomeBanner() { // Inline JSON content for easy editing const content = { title: "Welcome to", schoolName: "Mays Educational Centre", description: "A centre of excellence where young minds grow, explore, and achieve their greatest potential. We inspire creativity, discipline and innovation in every learner.", buttonText: "Explore Mays", image: "https://images.unsplash.com/photo-1600880292085-45e25e67ad6d?auto=format&fit=crop&w=1200&q=80", // Replace with your school banner image };
+export default function HomeBanner() { // Inline JSON content for easy editing 
+
+const content = { title: "Welcome to", schoolName: "Mays Educational Centre", description: "A centre of excellence where young minds grow, explore, and achieve their greatest potential. We inspire creativity, discipline and innovation in every learner.", buttonText: "Explore Mays", image: "https://images.unsplash.com/photo-1600880292085-45e25e67ad6d?auto=format&fit=crop&w=1200&q=80", // Replace with your school banner image };
 
 const [show, setShow] = useState(false); useEffect(() => { setTimeout(() => setShow(true), 200); }, []);
 
