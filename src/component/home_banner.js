@@ -4,7 +4,7 @@ export default function HomeBanner() {
   // JSON config for media
   const banner = {
     media: {
-      type: "video", // "image" or "video"
+      type: "image", // "image" or "video"
       src: "https://www.w3schools.com/html/mov_bbb.mp4",
       poster:
         "https://lh3.googleusercontent.com/pw/AP1GczMCbPwvfxUD6yYl5JSD6Q9qpXN8dLh_8v0M1oy2Ezij0M-dIEa2YIR8HYZfn7JKZhL36NhMbwa5-uQSFTDaBk4HKwiiVa9vmSrvkdZoWo8nOWfgzDo",
