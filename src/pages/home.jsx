@@ -59,9 +59,9 @@ export default function Home(){
         <LongSwipeToAssess />
         
         <br/>
-         <Banner />
+         
          <HomeBanner />
-        
+        <Banner />
         <MecAIBanner />
         <br/>
         <br/>
