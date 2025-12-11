@@ -61,7 +61,7 @@ function MecMedia() {
       <Header />
 
       <div id="bookmain">
-        <Breadcrumb title="Library - Media Hub" image="../img/lyi.png" />
+        <Breadcrumb title="Library - Media Hub" image="https://lh3.googleusercontent.com/pw/AP1GczMCbPwvfxUD6yYl5JSD6Q9qpXN8dLh_8v0M1oy2Ezij0M-dIEa2YIR8HYZfn7JKZhL36NhMbwa5-uQSFTDaBk4HKwiiVa9vmSrvkdZoWo8nOWfgzDo" />
         <br/><br/><br/><br/>
 
         <MediaGallery />
