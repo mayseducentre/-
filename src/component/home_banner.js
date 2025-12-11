@@ -5,7 +5,7 @@ export default function HomeBanner() {
   const content = {
     greeting: "Akwaaba",
     announcement:
-      "School resumes on Monday — Parents should pick new prospectus.",
+      ".",
     image:
       "https://lh3.googleusercontent.com/pw/AP1GczMCbPwvfxUD6yYl5JSD6Q9qpXN8dLh_8v0M1oy2Ezij0M-dIEa2YIR8HYZfn7JKZhL36NhMbwa5-uQSFTDaBk4HKwiiVa9vmSrvkdZoWo8nOWfgzDo",
   };
