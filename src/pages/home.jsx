@@ -18,6 +18,7 @@ import "react-loading-skeleton/dist/skeleton.css"
 import LongSwipeToAssess from "../component/shortcut";
 import MecAIBanner from "../component/mecaibanner";
 import InstallPromo from "../component/installpromo";
+import HomeBanner from "../component/home_banner";
 
 // function loadP(){
 //     setTimeout(()=>{
@@ -58,6 +59,7 @@ export default function Home(){
         <LongSwipeToAssess />
         
         <br/>
+         <HomeBanner />
         <Banner />
         <MecAIBanner />
         <br/>
