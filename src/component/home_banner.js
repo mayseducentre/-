@@ -159,7 +159,7 @@ export default function HomeBanner() {
         <div style={tag}>{banner.tag}</div>
         <div style={title}>{banner.title}</div>
         <div style={subtitle}>{banner.subtitle}</div>
-        <button style={buttonStyle}><a href={banner.link}>{banner.button}</a></button>
+        <button style={buttonStyle}><a href={banner.link} style={{color:"white"}}>{banner.button}</a></button>
       </div>
     </div>
   );
