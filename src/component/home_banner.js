@@ -1,108 +1,107 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 export default function HomeBanner() {
-  // Inline JSON content
-  const content = {
-    greeting: "Akwaaba",
-    announcement:
-      ".",
+  // INLINE JSON DATA
+  const banner = {
     image:
       "https://lh3.googleusercontent.com/pw/AP1GczMCbPwvfxUD6yYl5JSD6Q9qpXN8dLh_8v0M1oy2Ezij0M-dIEa2YIR8HYZfn7JKZhL36NhMbwa5-uQSFTDaBk4HKwiiVa9vmSrvkdZoWo8nOWfgzDo",
+    title: "Akwaaba to Mays Educational Centre",
+    subtitle:
+      "A private luxury school that inspires excellence, confidence, and great futures.",
+    button: "Discover Mays",
   };
 
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const t = setTimeout(() => setVisible(true), 150);
-    return () => clearTimeout(t);
-  }, []);
-
-  // Styles
-  const container = {
+  // STYLES
+  const wrapper = {
     width: "100%",
-    minHeight: "65vh",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
     position: "relative",
+    fontFamily: "Segoe UI, sans-serif",
     overflow: "hidden",
-    color: "#fff",
-    backgroundColor: "#071028",
-    padding: "20px",
-    boxSizing: "border-box",
   };
 
-  const bgImage = {
-    position: "absolute",
-    inset: 0,
+  const imageStyle = {
     width: "100%",
-    height: "100%",
+    height: "340px",
     objectFit: "cover",
-    filter: "brightness(0.45) contrast(1.05)",
-    transform: "scale(1.03)",
-    zIndex: 1,
+    display: "block",
   };
 
-  const goldAccent = {
+  const gradientOverlay = {
     position: "absolute",
-    left: 20,
-    top: "20%",
-    width: 6,
-    height: "45%",
-    background: "linear-gradient(180deg,#f5c243,#c98f00)",
-    borderRadius: 6,
-    zIndex: 3,
-    boxShadow: "0 6px 20px rgba(201,143,0,0.25)",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "340px",
+    background:
+      "linear-gradient(to bottom, rgba(0,0,0,0.0), rgba(0,0,0,0.65))",
   };
 
   const card = {
-    position: "relative",
-    zIndex: 4,
-    maxWidth: 1100,
-    width: "100%",
-    padding: "40px 30px",
-    borderRadius: 16,
-    display: "flex",
-    flexDirection: "column",
-    backdropFilter: "blur(8px)",
-    background: "rgba(6,12,28,0.45)",
-    boxShadow: "0 10px 40px rgba(0,0,0,0.55)",
-    transform: visible ? "translateY(0)" : "translateY(30px)",
-    opacity: visible ? 1 : 0,
-    transition: "all 650ms cubic-bezier(.2,.9,.26,1)",
-    textAlign: "center",
+    position: "absolute",
+    bottom: "20px",
+    left: "50%",
+    transform: "translateX(-50%)",
+    width: "92%",
+    maxWidth: "720px",
+    backgroundColor: "#2d2d2de6",
+    color: "white",
+    padding: "22px",
+    borderRadius: "8px",
+    backdropFilter: "blur(6px)",
+    boxShadow: "0 6px 18px rgba(0,0,0,0.25)",
+    animation: "fadeIn 1s ease-out",
   };
 
-  const greetingStyle = {
-    fontSize: "5vw",
-    fontWeight: 800,
-    margin: 0,
-    letterSpacing: "1px",
-    textShadow: "0 6px 20px rgba(0,0,0,0.7)",
-    fontFamily: "Georgia, 'Times New Roman', serif",
+  const welcomeText = {
+    fontSize: "0.85rem",
+    fontWeight: "600",
+    opacity: 0.85,
+    marginBottom: "6px",
   };
 
-  const announcementStyle = {
-    marginTop: 20,
-    fontSize: "1.2rem",
-    color: "#f5d88b",
-    fontWeight: 500,
-    lineHeight: 1.5,
-    maxWidth: "90%",
-    marginLeft: "auto",
-    marginRight: "auto",
+  const title = {
+    fontSize: "clamp(1.3rem, 4vw, 2rem)",
+    fontWeight: "700",
+    lineHeight: "1.3em",
+    marginBottom: "10px",
+  };
+
+  const subtitle = {
+    fontSize: "clamp(0.85rem, 2.5vw, 1.1rem)",
+    lineHeight: "1.5em",
+    opacity: 0.9,
+    marginBottom: "16px",
+  };
+
+  const buttonStyle = {
+    backgroundColor: "#4A90E2",
+    color: "#fff",
+    padding: "10px 20px",
+    borderRadius: "6px",
+    fontSize: "1rem",
+    fontWeight: "600",
+    border: "none",
+    cursor: "pointer",
   };
 
   return (
-    <header style={container}>
-      <img src={content.image} alt="banner" style={bgImage} />
-      <div style={goldAccent} />
-      <section style={card}>
-        <h1 style={greetingStyle}>{content.greeting}</h1>
-        {content.announcement && (
-          <p style={announcementStyle}>{content.announcement}</p>
-        )}
-      </section>
-    </header>
+    <div style={wrapper}>
+      {/* Banner Image */}
+      <img src={banner.image} alt="Banner" style={imageStyle} />
+
+      {/* Gradient */}
+      <div style={gradientOverlay}></div>
+
+      {/* Text Card */}
+      <div style={card}>
+        <div style={welcomeText}>WELCOME</div>
+
+        <div style={title}>{banner.title}</div>
+
+        <div style={subtitle}>{banner.subtitle}</div>
+
+        <button style={buttonStyle}>{banner.button}</button>
+      </div>
+    </div>
   );
 }
