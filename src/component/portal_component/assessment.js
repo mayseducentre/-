@@ -226,7 +226,7 @@ const sheetLinks = {
   "Health Safety_MEC 3":
     "https://docs.google.com/spreadsheets/d/1Cp1ThaDGSgeD1DZd2kfeGM0SLuePE64CfGaywOiUFWk/edit",
   "French_MEC 3":
-    "https://docs.google.com/spreadsheets/d/1apTPBXRK6GhtfGsQIhZTyHNiKsVAAoamPGQ7xrWZw/edit",
+    "https://docs.google.com/spreadsheets/d/1apTPBXRK6GhtfGsQIh9XTyHNiKsVgAaoamPGQ7xrWZw/edit",
   "Computing_MEC 3":
     "https://docs.google.com/spreadsheets/d/15C67kvCELI8srfzsdv8tXhiBwbWkGKcCRgxrcvY65mM/edit",
   "Creative Art_MEC 3":
