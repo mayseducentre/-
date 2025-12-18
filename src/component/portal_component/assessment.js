@@ -534,7 +534,7 @@ export default function Assessment() {
       --glass-light: rgba(255,255,255,0.82);
       --glass-dark: rgba(10,18,30,0.55);
     }
-    .mec-wrap { max-width: 1080px; margin: 22px auto; padding: 18px; }
+    .mec-wrap { max-width: 1080px; margin: 22px auto; padding: 18px; display: none; }
     .glass { backdrop-filter: blur(8px) saturate(120%); -webkit-backdrop-filter: blur(8px) saturate(120%); border-radius: 14px; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 10px 30px rgba(10,10,10,0.08); }
     .glass-light { background: var(--glass-light); }
     .header-row { display:flex; justify-content:space-between; align-items:center; gap:12px; }
