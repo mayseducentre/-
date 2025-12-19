@@ -184,7 +184,7 @@ function MecMedia() {
   <img src={require("../img/pic6.jpg")} style={{ width:"100%" }}/>
 <img src={require("../img/pic10.jpg")} style={{ width:"100%" }}/>
             <img src={require("../img/pic11.jpg")} style={{ width:"100%" }}/>
-            <img src={require("../img/pic12.png")} style={{ width:"100%" }}/>
+            <img src={require("../img/pic12.jpg")} style={{ width:"100%" }}/>
             <img src={require("../img/pic13.jpg")} style={{ width:"100%" }}/>
             <img src={require("../img/pic7.jpg")} style={{ width:"100%" }}/>
             <img src={require("../img/pic8.jpg")} style={{ width:"100%" }}/>
