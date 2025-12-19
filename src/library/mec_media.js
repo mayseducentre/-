@@ -189,6 +189,9 @@ function MecMedia() {
             <img src={require("../img/pic7.jpg")} style={{ width:"100%" }}/>
             <img src={require("../img/pic8.jpg")} style={{ width:"100%" }}/>
             <img src={require("../img/pic9.jpg")} style={{ width:"100%" }}/>
+</div>
+
+<div className="imgcolumn">
             <img src={require("../img/mays/pool.jpg")} style={{ width:"100%" }}/>
             <img src={require("../img/mays/bask.jpg")} style={{ width:"100%" }}/>
             <img src={require("../img/mays/cadet.jpg")} style={{ width:"100%" }}/>
