@@ -173,6 +173,21 @@ function MecMedia() {
 
         {/* ---------------- YOUR STATIC IMAGES (KEPT EXACTLY AS THEY ARE) ---------------- */}
         <div className="imgrow">
+  <div className="imgcolumn">
+            <img src={require("../img/pic1.jpg")} style={{ width:"100%" }}/>
+            <img src={require("../img/pic14.jpg")} style={{ width:"100%" }}/>
+            <img src={require("../img/pic3.jpg")} style={{ width:"100%" }}/>
+            <img src={require("../img/pic4.jpg")} style={{ width:"100%" }}/>
+            <img src={require("../img/pic5.jpg")} style={{ width:"100%" }}/>
+            <img src={require("../img/pic6.jpg")} style={{ width:"100%" }}/>
+            <img src={require("../img/pic7.jpg")} style={{ width:"100%" }}/>
+            <img src={require("../img/pic8.jpg")} style={{ width:"100%" }}/>
+            <img src={require("../img/pic9.jpg")} style={{ width:"100%" }}/>
+            <img src={require("../img/pic10.jpg")} style={{ width:"100%" }}/>
+            <img src={require("../img/pic11.jpg")} style={{ width:"100%" }}/>
+            <img src={require("../img/pic12.png")} style={{ width:"100%" }}/>
+            <img src={require("../img/pic13.jpg")} style={{ width:"100%" }}/>
+          </div>
 
           {/* COLUMN 1 */}
           <div className="imgcolumn">
