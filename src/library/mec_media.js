@@ -45,6 +45,8 @@ const RECENT_IMAGES = [
 "pic27.jpg",
   "pic28.jpg",
   "pic29.jpg",
+"l3.jpg",
+"la3.jpg",
 "20251219_125511.jpg",
 "20251219_090343.jpg",
 "20251219_090414.jpg",
