@@ -36,7 +36,15 @@ const RECENT_IMAGES = [
   "pic18.jpg",
   "pic19.jpg",
   "pic20.jpg",
-"pic21.jpg"
+"pic21.jpg",
+"pic22.jpg",
+  "pic23.jpg",
+  "pic24.jpg",
+  "pic25.jpg",
+"pic26.jpg",
+"pic27.jpg",
+  "pic28.jpg",
+  "pic29.jpg"
 ];
 
 /* ---- BUILD IMAGES ARRAY AUTOMATICALLY ---- */
