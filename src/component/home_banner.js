@@ -4,8 +4,8 @@ export default function HomeBanner() {
   // JSON config for media
   const banner = {
     media: {
-      type: "video", // "image" or "video"
-      src: "../video/mec.mp4",
+      type: "image", // "image" or "video"
+      src: "https://lh3.googleusercontent.com/pw/AP1GczOPkJw6rdRmN7caWV063A5eRe8X5vetRr0PsERBYgLErU2LqniGd_p3aNo1BVsaoYoPQy9D2RVgD_q3_w6pSJi6bime7gpLrDBDGTkW0NZCO_i0Yf8",
       poster:
         "https://lh3.googleusercontent.com/pw/AP1GczMCbPwvfxUD6yYl5JSD6Q9qpXN8dLh_8v0M1oy2Ezij0M-dIEa2YIR8HYZfn7JKZhL36NhMbwa5-uQSFTDaBk4HKwiiVa9vmSrvkdZoWo8nOWfgzDo",
     },
