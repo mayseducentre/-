@@ -213,6 +213,12 @@
         }
       ],
       "featuredvideos": [
+{
+          "name": "Ecommerce",
+          "url": "https://www.youtube.com/embed/GWsm6cNpyAfOQiSj",
+          "description": "Ecommerce definition"
+        },
+
         {
           "name": "Homemade Drone",
           "url": "https://www.youtube.com/embed/SCvKoaTcjyQ",
