@@ -1,83 +1,74 @@
-import { useRef, useState } from "react";
-import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { useState } from "react";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../firebase";
 import emailjs from "emailjs-com";
 
-const select = { padding: "10px 12px", width: "100%" };
-
 export default function Accountform() {
-  const formRef = useRef();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState("student");
   const [password, setPassword] = useState("");
-  const [passconf, setPassconf] = useState("");
+  const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
 
-  function checkps() {
-    const ok = password === passconf;
-    document.getElementById("passcode_account").style.backgroundColor =
-      ok ? "#9ef178" : "#fa7373";
-    document.getElementById("passcode_confirm").style.backgroundColor =
-      ok ? "#9ef178" : "#fa7373";
-  }
-
-  async function Postaccount(e) {
+  async function createAccount(e) {
     e.preventDefault();
-    setLoading(true);
 
-    const name = document.getElementById("name_account").value;
-    const email = document.getElementById("email_account").value;
-    const role = document.getElementById("role_account").value;
-
-    if (password.length < 8 || password !== passconf) {
-      alert("Password must be at least 8 characters and match");
-      setLoading(false);
+    if (password.length < 8) {
+      alert("Password must be at least 8 characters");
       return;
     }
 
+    if (password !== confirm) {
+      alert("Passwords do not match");
+      return;
+    }
+
+    setLoading(true);
+
     try {
-      // 1️⃣ Create auth account
       const cred = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
 
-      // 2️⃣ Send verification email
       await sendEmailVerification(cred.user);
 
-      const uid = cred.user.uid;
-
-      // 3️⃣ Save profile (NO PASSWORD)
-      await setDoc(doc(db, "users", uid), {
-        uid,
+      await setDoc(doc(db, "users", cred.user.uid), {
+        uid: cred.user.uid,
         name,
         email,
         role,
         country: "Ghana",
-        status: "enrolled",
-        emailVerified: false,
-        createdAt: new Date().toISOString(),
+        status: "active",
+        createdAt: new Date(),
       });
 
-      // 4️⃣ Send EmailJS notice
-      emailjs.send(
+      await emailjs.send(
         "service_4dt6s3i",
         "template_wwdrjbl",
         {
           to_name: name,
           user_email: email,
           mays_msg:
-            "Your account was created successfully.\n\n" +
-            "IMPORTANT: Please check your email and VERIFY your account before logging in.\n\n" +
-            "Login uses EMAIL + PASSWORD.",
+            "Your account has been created successfully.\n\n" +
+            "Please check your email and VERIFY your account before logging in.",
         },
         "VIB8bKSD-ZS3RCCHD"
       );
 
-      alert(
-        "Account created! Please check your email and VERIFY your account before login."
-      );
-      formRef.current.reset();
+      alert("Account created! Please verify your email before login.");
+
+      setName("");
+      setEmail("");
+      setPassword("");
+      setConfirm("");
+      setRole("student");
     } catch (err) {
       alert(err.message);
     }
@@ -85,52 +76,125 @@ export default function Accountform() {
     setLoading(false);
   }
 
+  /* ---------- INLINE STYLES ---------- */
+  const page = {
+    minHeight: "100vh",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    background: "#f4f6f8",
+    padding: "20px",
+  };
+
+  const card = {
+    width: "100%",
+    maxWidth: "420px",
+    background: "#ffffff",
+    padding: "25px",
+    borderRadius: "10px",
+    boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
+  };
+
+  const title = {
+    textAlign: "center",
+    marginBottom: "20px",
+    fontSize: "20px",
+    fontWeight: "600",
+    color: "#333",
+  };
+
+  const input = {
+    width: "100%",
+    padding: "12px",
+    marginBottom: "12px",
+    borderRadius: "6px",
+    border: "1px solid #ccc",
+    fontSize: "14px",
+  };
+
+  const select = {
+    ...input,
+    cursor: "pointer",
+  };
+
+  const button = {
+    width: "100%",
+    padding: "12px",
+    borderRadius: "6px",
+    border: "none",
+    background: "#2563eb",
+    color: "#fff",
+    fontSize: "15px",
+    fontWeight: "600",
+    cursor: "pointer",
+    marginTop: "10px",
+    opacity: loading ? 0.7 : 1,
+  };
+
+  const hint = {
+    fontSize: "12px",
+    color: "#666",
+    marginBottom: "10px",
+    textAlign: "center",
+  };
+
   return (
-    <section className="checkout spad">
-      <div className="container">
-        <form onSubmit={Postaccount} ref={formRef}>
+    <section style={page}>
+      <div style={card}>
+        <div style={title}>Create Account</div>
+
+        <form onSubmit={createAccount}>
           <input
-            id="name_account"
+            style={input}
             placeholder="Full Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             required
-            autoComplete="off"
           />
 
           <input
-            id="email_account"
+            style={input}
             type="email"
-            placeholder="Valid email"
+            placeholder="Email Address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
-            autoComplete="off"
           />
 
           <input
-            id="passcode_account"
+            style={input}
             type="password"
-            placeholder="Password (min 8 chars)"
+            placeholder="Password (min 8 characters)"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
 
           <input
-            id="passcode_confirm"
+            style={input}
             type="password"
-            placeholder="Confirm password"
-            value={passconf}
-            onChange={(e) => setPassconf(e.target.value)}
-            onKeyUp={checkps}
+            placeholder="Confirm Password"
+            value={confirm}
+            onChange={(e) => setConfirm(e.target.value)}
             required
           />
 
-          <select id="role_account" style={select} required>
+          <select
+            style={select}
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+          >
             <option value="student">Student</option>
             <option value="staff">Teacher</option>
             <option value="parent">Parent</option>
           </select>
 
-          <button type="submit" disabled={loading}>
-            {loading ? "Creating..." : "Create Account"}
+          <div style={hint}>
+            A verification email will be sent after account creation.
+          </div>
+
+          <button type="submit" style={button} disabled={loading}>
+            {loading ? "Creating Account..." : "Create Account"}
           </button>
         </form>
       </div>
