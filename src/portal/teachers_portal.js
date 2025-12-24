@@ -16,18 +16,19 @@ import ScrollToTop from "react-scroll-to-top";
 
 export default function TeachersPortal({ user }) {
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
   // Inline styles
   const styles = {
     mainContainer: {
-      marginLeft: "260px", // space for sidebar
-      padding: "20px 30px",
+      marginLeft: sidebarOpen ? "260px" : "0",
+      padding: "20px",
+      transition: "margin-left 0.3s",
       minHeight: "100vh",
       backgroundColor: "#f4f7fb",
       fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-      transition: "all 0.3s ease",
-      display: "flex",
-      flexDirection: "column",
     },
     card: {
       backgroundColor: "#fff",
@@ -35,29 +36,45 @@ export default function TeachersPortal({ user }) {
       padding: "25px",
       marginBottom: "25px",
       boxShadow: "0 6px 18px rgba(0,0,0,0.08)",
-      transition: "transform 0.3s, box-shadow 0.3s",
       width: "100%",
     },
-    cardHover: {
-      transform: "translateY(-3px)",
-      boxShadow: "0 10px 25px rgba(0,0,0,0.12)",
+    hamburger: {
+      display: "none",
+      position: "fixed",
+      top: "15px",
+      left: "15px",
+      fontSize: "24px",
+      backgroundColor: "#007bff",
+      color: "#fff",
+      border: "none",
+      padding: "10px 12px",
+      borderRadius: "8px",
+      zIndex: 1100,
+      cursor: "pointer",
     },
-    responsive: {
-      '@media (max-width: 768px)': {
-        marginLeft: "0",
-        padding: "15px 10px",
-      },
+    '@media (max-width: 768px)': {
+      hamburger: { display: "block" },
+      mainContainer: { marginLeft: "0", padding: "15px" },
     },
   };
 
   return (
     <>
-      <Teachersidebar user={user} setActiveTab={setActiveTab} />
+      <button
+        style={styles.hamburger}
+        onClick={toggleSidebar}
+      >
+        ☰
+      </button>
 
-      <div style={{ ...styles.mainContainer }}>
-        <input type="hidden" value={user?.id || ""} />
-        <input type="hidden" value={user?.subject || ""} />
+      <Teachersidebar
+        user={user}
+        setActiveTab={setActiveTab}
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+      />
 
+      <div style={styles.mainContainer}>
         {activeTab === "dashboard" && <div style={styles.card}><TeacherDash /></div>}
         {activeTab === "assignments" && <div style={styles.card}><AssignCreate user={user} /></div>}
         {activeTab === "assessment" && <div style={styles.card}><Assessment /></div>}
