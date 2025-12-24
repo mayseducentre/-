@@ -5,7 +5,7 @@ import {
   updateDoc,
   deleteDoc,
   doc,
-  addDoc,
+  setDoc,
 } from "firebase/firestore";
 import { auth, db } from "../firebase";
 import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
