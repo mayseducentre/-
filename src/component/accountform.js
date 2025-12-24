@@ -3,21 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import emailjs from "emailjs-com";
 import { toFirestoreFields, fromFirestoreFields } from "./firestore";
 
-/* =========================
-   STATIC SUBJECTS (NO API)
-========================= */
-const SUBJECTS = [
-  "Mathematics",
-  "English Language",
-  "Integrated Science",
-  "Social Studies",
-  "ICT / Computing",
-  "RME",
-  "French",
-  "Creative Arts",
-  "Physical Education",
-];
-
 const select = {
   padding: "10px 12px",
   width: "100%",
@@ -26,39 +11,83 @@ const select = {
 export default function Accountform() {
   const [passconf, setPassconf] = useState("");
   const [password, setPassword] = useState("");
-  const [level, setLevel] = useState([]);
-  const formRef = useRef();
+
+  function Sortout() {
+    var role = document.getElementById("role_account").value;
+    if (role === "student") {
+      document.getElementById("studentlogic").style.display = "block";
+      document.getElementById("stafflogic").style.display = "none";
+      document.getElementById("parentlogic").style.display = "none";
+    }
+    if (role === "staff") {
+      document.getElementById("stafflogic").style.display = "block";
+      document.getElementById("studentlogic").style.display = "none";
+      document.getElementById("parentlogic").style.display = "none";
+    }
+    if (role === "parent") {
+      document.getElementById("parentlogic").style.display = "block";
+      document.getElementById("stafflogic").style.display = "none";
+      document.getElementById("studentlogic").style.display = "none";
+    }
+    if (role === "none") {
+      document.getElementById("parentlogic").style.display = "none";
+      document.getElementById("stafflogic").style.display = "none";
+      document.getElementById("studentlogic").style.display = "none";
+    }
+  }
+
+  function checkps() {
+    if (passconf !== password) {
+      document.getElementById("passcode_account").style.backgroundColor =
+        "#fa7373";
+
+      document.getElementById("passcode_confirm").style.backgroundColor =
+        "#fa7373";
+    } else if (passconf === password) {
+      document.getElementById("passcode_account").style.backgroundColor =
+        "#9ef178";
+
+      document.getElementById("passcode_confirm").style.backgroundColor =
+        "#9ef178";
+
+      setTimeout(() => {
+        document.getElementById("passcode_account").style.backgroundColor =
+          "white";
+        document.getElementById("passcode_confirm").style.backgroundColor =
+          "white";
+      }, 10000);
+    }
+  }
 
   var path = process.env.REACT_APP_API_URL;
+  let userIP = "";
+  const [level, setLevel] = useState([]);
+  const [subject, setSubject] = useState([]);
+  const formRef = useRef();
   var accountapi = process.env.REACT_APP_ACCOUNT_API;
 
-  /* =========================
-     LOAD LEVELS (UNCHANGED)
-  ========================= */
+  useEffect(() => {
+    fetch("https://api.ipify.org?format=json")
+      .then((res) => res.json())
+      .then((data) => {
+        userIP = data.ip;
+      });
+  }, []);
+
   useEffect(() => {
     fetch(`${path}/level`)
       .then((res) => res.json())
       .then((data) => setLevel(data))
-      .catch(console.log);
+      .catch((err) => console.log(err));
+
+    fetch(`${path}/courses`)
+      .then((res) => res.json())
+      .then((data) => setSubject(data))
+      .catch((err) => console.log(err));
   }, [path]);
 
-  function Sortout() {
-    var role = document.getElementById("role_account").value;
-    document.getElementById("studentlogic").style.display =
-      role === "student" ? "block" : "none";
-    document.getElementById("stafflogic").style.display =
-      role === "staff" ? "block" : "none";
-    document.getElementById("parentlogic").style.display =
-      role === "parent" ? "block" : "none";
-  }
-
-  function checkps() {
-    const color = passconf === password ? "#9ef178" : "#fa7373";
-    document.getElementById("passcode_account").style.backgroundColor = color;
-    document.getElementById("passcode_confirm").style.backgroundColor = color;
-  }
-
   async function Postaccount(e) {
+    Checkemail();
     e.preventDefault();
 
     var name = document.getElementById("name_account").value;
@@ -66,108 +95,496 @@ export default function Accountform() {
     var email = document.getElementById("email_account").value;
     var role = document.getElementById("role_account").value;
     var userclass = document.getElementById("class_account").value;
-    var staffSubject = document.getElementById("subject_account")?.value || "";
+    var subject = document.getElementById("subject_account").value;
     var gender = document.getElementById("gender_account").value;
+    var childid1 = document.getElementById("childid_account1").value;
+    var childid2 = document.getElementById("childid_account2").value;
     var phone = document.getElementById("phone_account").value;
     var birth = document.getElementById("birth_account").value;
-
-    if (role === "none") {
-      alert("Please select a role");
-      return;
-    }
-
-    if (passcode.length < 8 || passconf !== passcode) {
-      alert("Password error");
-      return;
-    }
+    var Pphone = document.getElementById("Pphone_account").value;
+    var childlevel = document.getElementById("childlevel_account").value;
 
     const hashedpassword = await hash(passcode, 10);
-    const id = "011" + Date.now().toString().slice(-6);
+    const constantPrefix = "011";
+    var d = new Date();
+    const timestamp = d.getTime().toString();
+    const acc_date = d.toLocaleDateString();
+    const randomdigit = Math.floor(Math.random() * 10).toString();
+    const id = constantPrefix + timestamp.slice(-6) + randomdigit;
+    var passconfirm = document.getElementById("passcode_confirm").value;
 
-    let formpage = {};
+    const formData = {
+      user_email: formRef.current.user_email.value,
+      reply_to: formRef.current.user_email.value,
+      subj: "User ID generated",
+      to_name: formRef.current.user_name.value,
+      mays_msg: `${name}, your userID is '${id}'. Please use this ${id} to login into the portal. https://mayseducentre.github.io/-#/portal`,
+    };
 
-    if (role === "student") {
-      formpage = {
-        id,
-        name,
-        email,
-        passcode: hashedpassword,
-        role,
-        class: userclass,
-        birth_date: birth,
-        gender,
-        status: "enrolled",
-      };
-    }
+    const noticemail = {
+      subject_mail: "New signup on MEC webapp",
+      main_body: `A new user has signed up to the following account: ${name}, ${email}. Check activity on https://mayseducentre.github.io/-/#/admin`,
+    };
 
-    if (role === "staff") {
-      formpage = {
-        id,
-        name,
-        email,
-        passcode: hashedpassword,
-        role,
-        subject: staffSubject,
-        contact: phone,
-        gender,
-        status: "enrolled",
-      };
-    }
+    var inputimg = document.getElementById("portal_img");
+    var datafile = inputimg.files[0];
+    var filereader = new FileReader();
+    filereader.readAsDataURL(datafile);
 
-    fetch(`${accountapi}/${role}account`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(toFirestoreFields(formpage)),
-    })
-      .then(() => {
-        alert("Account created successfully");
-        e.target.reset();
-      })
-      .catch(() => alert("Signup failed"));
+    filereader.addEventListener("load", () => {
+      var base64data = filereader.result;
+      let formpage = null;
+
+      if (role === "student") {
+        formpage = {
+          id, name, email,
+          passcode: hashedpassword,
+          country: "Ghana",
+          role: "student",
+          thumbnailUrl: base64data,
+          gender,
+          class: userclass,
+          birth_date: birth,
+          performance: "active",
+          notice: "", report: "",
+          address: "", school: "MEC",
+          ip: userIP,
+          status: "enrolled",
+          account_date: acc_date,
+        };
+      }
+      if (role === "staff") {
+        formpage = {
+          id, name, email,
+          passcode: hashedpassword,
+          country: "Ghana",
+          role: "staff",
+          gender,
+          subject,
+          contact: phone,
+          thumbnailUrl: base64data,
+          notice: "", school: "MEC",
+          report: "", address: "",
+          ip: userIP,
+          status: "enrolled",
+          account_date: acc_date,
+        };
+      }
+      if (role === "parent") {
+        formpage = {
+          id, name, email,
+          passcode: hashedpassword,
+          country: "Ghana",
+          gender,
+          role: "parent",
+          contact: Pphone,
+          child_id: childid1,
+          other_child_id: childid2,
+          child_level: childlevel,
+          notice: "", school: "MEC",
+          address: "", report: "",
+          thumbnailUrl: base64data,
+          status: "enrolled",
+          ip: userIP,
+          account_date: acc_date,
+        };
+      }
+
+      if (role === "none") {
+        alert("Please role cannot be none!");
+        return;
+      }
+
+      document.getElementById("waitbtn").style.display = "block";
+      document.getElementById("createbtn").style.display = "none";
+
+      const confirmationbox = window.confirm(
+        `You are creating an account as a ${role}. And are you sure that ${email} is valid. We will send a code to your mail.`
+      );
+
+      if (
+        passcode.length >= 8 &&
+        passconfirm === passcode &&
+        confirmationbox === true &&
+        role !== "none"
+      ) {
+        emailjs.send("service_4dt6s3i", "template_wwdrjbl", formData, "VIB8bKSD-ZS3RCCHD");
+        emailjs.send("service_4dt6s3i", "template_0q1tvwm", noticemail, "VIB8bKSD-ZS3RCCHD");
+
+        fetch(`${accountapi}/${role}account`, {
+          method: "POST",
+          body: JSON.stringify(toFirestoreFields(formpage)),
+          headers: { "Content-type": "application/json" },
+        })
+          .then((res) => res.json())
+          .then(() => {
+            alert("Signed up successfully! Please check your mail for your id. NB: if you haven't received your mail after 2 minutes, contact admin. 0549271528");
+            setTimeout(() => {
+              document.getElementById("waitbtn").style.display = "none";
+              document.getElementById("createbtn").style.display = "block";
+            }, 10000);
+
+            document.getElementById("name_account").value = "";
+            document.getElementById("passcode_confirm").value = "";
+            document.getElementById("passcode_account").value = "";
+            document.getElementById("email_account").value = "";
+          })
+          .catch(() => {
+            alert("Failed to signup");
+          });
+      } else if (passcode.length < 8) {
+        var errormsg = document.getElementById("error_msg");
+        errormsg.value = "Error occurred. Password must have 8 characters";
+        errormsg.style.color = "red";
+        setTimeout(() => { errormsg.value = null; }, 5000);
+      } else if (passconfirm !== passcode) {
+        var errormsg = document.getElementById("error_msg");
+        errormsg.value = "Error occurred. Password do not match";
+        errormsg.style.color = "red";
+        setTimeout(() => { errormsg.value = null; }, 5000);
+      }
+    });
   }
 
+  function imgfile() {
+    var inputimg = document.getElementById("portal_img");
+    var datafile = inputimg.files[0];
+    var filereader = new FileReader();
+    var topimgport = document.getElementById("displayimage");
+    filereader.readAsDataURL(datafile);
+
+    if (datafile.size > 5 * 1024 * 1024) {
+      alert("Sorry your file must be less than 5mb");
+    } else {
+      filereader.addEventListener("load", () => {
+        var url = filereader.result;
+        topimgport.src = url;
+      });
+    }
+  }
+
+  function Checkemail() {
+    const collections = ["studentaccount", "staffaccount", "parentaccount"];
+    collections.forEach((col) => {
+      fetch(`${accountapi}/${col}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.documents) {
+            const docs = data.documents.map((doc) => fromFirestoreFields(doc));
+            checkData(docs);
+          }
+        });
+    });
+  }
+
+  function checkData(docs) {
+    const email = document.getElementById("email_account").value;
+    for (let i = 0; i < docs.length; i++) {
+      if (email === docs[i].email) {
+        alert("This email already exists. Please change email.");
+        document.getElementById("email_account").value = "";
+        document.getElementById("error_msg").value = "email already exists";
+        document.getElementById("error_msg").style.color = "red";
+        break;
+      }
+    }
+  }
+
+  function checkID() {
+    fetch(`${accountapi}/studentaccount`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.documents) {
+          const docs = data.documents.map((doc) => fromFirestoreFields(doc));
+          verifyID(docs);
+        }
+      });
+  }
+
+  function verifyID(docs) {
+    var childid1 = document.getElementById("childid_account1");
+    var childid2 = document.getElementById("childid_account2");
+    const ids = docs.map((d) => d.id);
+
+    if (childid1.value.length === 10 && !ids.includes(childid1.value)) {
+      alert("Sorry child's ID does not exist.");
+      window.location.reload();
+    }
+    if (childid2.value.length === 10 && !ids.includes(childid2.value)) {
+      alert("Sorry child's ID does not exist.");
+      window.location.reload();
+    }
+  }
+
+ 
   return (
     <>
       <section className="checkout spad">
         <div className="container">
-          <form onSubmit={Postaccount} ref={formRef}>
-            {/* UI UNCHANGED */}
+          <div className="checkout__form">
+            <form onSubmit={Postaccount} ref={formRef}>
+              <div className="row">
+                <div className="col-lg-8 col-md-6">
+                  <h6 className="checkout__title">Account</h6>
 
-            <select id="role_account" style={select} onChange={Sortout}>
-              <option value="none">None</option>
-              <option value="student">Student</option>
-              <option value="staff">Teacher</option>
-              <option value="parent">Parent</option>
-            </select>
+                  <input
+                    type="text"
+                    style={{
+                      border: "none",
+                      width: "100%",
+                      padding: "8px 10px",
+                      background: "transparent",
+                    }}
+                    id="error_msg"
+                    readOnly
+                  />
+                  <div className="row">
+                    <div className="col-lg-6">
+                      <div className="checkout__input">
+                        <p>
+                          FullName<span>*</span>
+                        </p>
+                        <input
+                          type="text"
+                          id="name_account"
+                          placeholder="Full Name"
+                          name="user_name"
+                          required
+                          autoComplete="off"
+                        />
+                      </div>
+                      <div className="checkout__input">
+                        <p>
+                          Gender<span>*</span>
+                        </p>
+                        <select style={select} id="gender_account">
+                          <option value="Male">Male</option>
+                          <option value="Female">Female</option>
+                        </select>
+                      </div>
+                      <div className="checkout__input">
+                        <p>
+                          Upload Profile Picture<span>*</span>
+                        </p>
+                        <input
+                          type="file"
+                          onChange={imgfile}
+                          accept="image"
+                          id="portal_img"
+                          required
+                        />
+                        <img
+                          id="displayimage"
+                          style={{ maxWidth: "50%", maxHeight: "50%" }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-lg-6">
+                    <div className="checkout__input">
+                      <p>
+                        Email <small>[Valid email]</small>
+                        <span>*</span>
+                      </p>
+                      <input
+                        type="email"
+                        onBlur={Checkemail}
+                        id="email_account"
+                        name="user_email"
+                        placeholder="Valid email"
+                        required
+                        autoComplete="off"
+                      />
+                    </div>
+                    <div id="verify">
+                      <div className="checkout__input">
+                        <p>
+                          Password<span>*</span>
+                        </p>
+                        <input
+                          type="password"
+                          onKeyDown={Checkemail}
+                          id="passcode_account"
+                          value={password}
+                          placeholder="At least 8 characters"
+                          onChange={(e) => {
+                            setPassword(e.target.value);
+                          }}
+                          required
+                        />
+                      </div>
+                      <div className="checkout__input">
+                        <p>
+                          Confirm Password<span>*</span>
+                        </p>
+                        <input
+                          type="password"
+                          id="passcode_confirm"
+                          value={passconf}
+                          onChange={(e) => {
+                            setPassconf(e.target.value);
+                          }}
+                          onKeyUp={checkps}
+                          placeholder="Confirm password"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
 
-            <div id="studentlogic" style={{ display: "none" }}>
-              <select id="class_account" style={select}>
-                {level.map((lev) => (
-                  <option key={lev.level} value={lev.level}>
-                    {lev.level}
-                  </option>
-                ))}
-              </select>
-              <input type="date" id="birth_account" />
-            </div>
+                  <div className="row">
+                    <div className="col-lg-6">
+                      <div className="checkout__input">
+                        <p>
+                          Role<span>*</span>
+                        </p>
+                        <select
+                          style={select}
+                          id="role_account"
+                          onChange={Sortout}
+                        >
+                          <option value="none">None</option>
+                          <option value="student">Student</option>
+                          <option value="staff">Teacher</option>
+                          <option value="parent">Parent</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
 
-            <div id="stafflogic" style={{ display: "none" }}>
-              <input id="phone_account" placeholder="Phone Number" />
-              <select id="subject_account" style={select}>
-                {SUBJECTS.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </select>
-            </div>
+                  <div
+                    className="row"
+                    id="studentlogic"
+                    style={{ display: "none" }}
+                  >
+                    <div className="checkout__input">
+                      <p>
+                        Student's Form/Level<span>*</span>
+                      </p>
+                      <select style={select} id="class_account">
+                        {level.map((lev) => (
+                          <option value={lev.level}>{lev.level}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="checkout__input">
+                      <p>
+                        Date of Birth<span>*</span>
+                      </p>
+                      <input
+                        type="date"
+                        id="birth_account"
+                        placeholder="Enter your date of birth"
+                      />
+                    </div>
+                  </div>
 
-            <button type="submit" className="site-btn">
-              Create Account
-            </button>
-          </form>
+                  <div
+                    className="row"
+                    id="stafflogic"
+                    style={{ display: "none" }}
+                  >
+                    <div className="checkout__input">
+                      <p>
+                        Phone Number<span>*</span>
+                      </p>
+                      <input
+                        type="number"
+                        id="phone_account"
+                        placeholder="Enter phone number"
+                      />
+                    </div>
+                    <div className="checkout__input">
+                      <p>
+                        Subject<span>*</span>
+                      </p>
+                      <select style={select} id="subject_account">
+                        {subject.map((sub) => (
+                          <option value={sub.course}>{sub.course}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div
+                    className="row"
+                    id="parentlogic"
+                    style={{ display: "none" }}
+                  >
+                    <div className="checkout__input">
+                      <p>
+                        Phone Number<span>*</span>
+                      </p>
+                      <input
+                        type="number"
+                        id="Pphone_account"
+                        placeholder="Enter phone number"
+                      />
+                    </div>
+                    <div className="checkout__input">
+                      <p>
+                        Child's ID<span>*</span>
+                      </p>
+                      <input
+                        type="text"
+                        id="childid_account1"
+                        onKeyUp={checkID}
+                        placeholder="Enter child's id"
+                        autoComplete="off"
+                      />
+                    </div>
+                    <div className="checkout__input">
+                      <p>
+                        Other Child's ID<span>*</span>
+                      </p>
+                      <input
+                        type="text"
+                        id="childid_account2"
+                        onKeyUp={checkID}
+                        placeholder="Enter child's id"
+                        autoComplete="off"
+                      />
+                    </div>
+                    <div className="checkout__input">
+                      <p>
+                        Child's Level<span>*</span>
+                      </p>
+                      <select style={select} id="childlevel_account">
+                        <option value="primary">Basic/Primary</option>
+                        <option value="jhs">JHS</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-lg-4 col-md-6">
+                  <div className="checkout__order">
+                    <button
+                      type="submit"
+                      id="createbtn"
+                      className="site-btn"
+                      onClick={Checkemail}
+                    >
+                      Create Account
+                    </button>
+                    <a id="waitbtn" style={{ display: "none" }}>
+                      <div className="loadery"></div>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
         </div>
       </section>
+
+      <br />
+      <br />
+      <center>
+        <p>
+          <a href="tel:0549271528">Get help</a> if you need any help. Via call
+          or whatsapp
+        </p>
+      </center>
     </>
   );
 }
