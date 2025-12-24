@@ -20,23 +20,33 @@ export default function TeachersPortal({ user }) {
   // Inline styles
   const styles = {
     mainContainer: {
-      marginLeft: "260px", // sidebar width + padding
-      padding: "30px",
-      fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+      marginLeft: "260px", // space for sidebar
+      padding: "20px 30px",
       minHeight: "100vh",
-      backgroundColor: "#f5f7fa",
+      backgroundColor: "#f4f7fb",
+      fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
       transition: "all 0.3s ease",
+      display: "flex",
+      flexDirection: "column",
     },
     card: {
       backgroundColor: "#fff",
       borderRadius: "12px",
-      padding: "20px",
-      marginBottom: "20px",
-      boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-      transition: "transform 0.2s",
+      padding: "25px",
+      marginBottom: "25px",
+      boxShadow: "0 6px 18px rgba(0,0,0,0.08)",
+      transition: "transform 0.3s, box-shadow 0.3s",
+      width: "100%",
     },
     cardHover: {
-      transform: "scale(1.02)",
+      transform: "translateY(-3px)",
+      boxShadow: "0 10px 25px rgba(0,0,0,0.12)",
+    },
+    responsive: {
+      '@media (max-width: 768px)': {
+        marginLeft: "0",
+        padding: "15px 10px",
+      },
     },
   };
 
@@ -44,9 +54,9 @@ export default function TeachersPortal({ user }) {
     <>
       <Teachersidebar user={user} setActiveTab={setActiveTab} />
 
-      <div style={styles.mainContainer}>
-        <input type="hidden" value={user?.id || ""} id="teacherid" />
-        <input type="hidden" value={user?.subject || ""} id="subject_owner" />
+      <div style={{ ...styles.mainContainer }}>
+        <input type="hidden" value={user?.id || ""} />
+        <input type="hidden" value={user?.subject || ""} />
 
         {activeTab === "dashboard" && <div style={styles.card}><TeacherDash /></div>}
         {activeTab === "assignments" && <div style={styles.card}><AssignCreate user={user} /></div>}
@@ -63,7 +73,17 @@ export default function TeachersPortal({ user }) {
         <Footer />
       </div>
 
-      <ScrollToTop smooth style={{ backgroundColor: "#007bff", borderRadius: "50%" }} />
+      <ScrollToTop
+        smooth
+        style={{
+          backgroundColor: "#007bff",
+          borderRadius: "50%",
+          color: "#fff",
+          padding: "10px",
+          fontSize: "20px",
+          cursor: "pointer",
+        }}
+      />
     </>
   );
 }
