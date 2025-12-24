@@ -16,10 +16,9 @@ export default function Header(props) {
 
   return (
     <>
-      {/* ================= TOP NAV (DESKTOP) ================= */}
+      {/* ================= TOP NAV ================= */}
       <header id="header" style={styles.header}>
         <div style={styles.container}>
-          {/* Logo */}
           <a href="#/" style={styles.logoWrap}>
             <img
               src={require(`../img/${process.env.REACT_APP_LOGO}`)}
@@ -28,10 +27,8 @@ export default function Header(props) {
             />
           </a>
 
-          {/* Center Text */}
           <span style={styles.navText}>{props.navtext}</span>
 
-          {/* Navigation */}
           <nav id="navbar" style={styles.navbar}>
             <ul style={styles.navList}>
               {navLinks.map((item) => (
@@ -44,22 +41,14 @@ export default function Header(props) {
             </ul>
           </nav>
 
-          {/* Search Icon */}
-          <i
-            className="fa fa-search"
-            style={styles.searchIcon}
-          />
+          <i className="fa fa-search" style={styles.searchIcon}></i>
         </div>
       </header>
 
-      {/* ================= BOTTOM NAV (MOBILE) ================= */}
+      {/* ================= BOTTOM NAV ================= */}
       <div className="bottom-nav" style={styles.bottomNav}>
         {navLinks.map((item) => (
-          <a
-            key={item.href}
-            href={item.href}
-            style={styles.bottomLink}
-          >
+          <a key={item.href} href={item.href} style={styles.bottomLink}>
             <i className={`fa ${item.icon}`} style={styles.bottomIcon}></i>
             <small style={styles.bottomText}>{item.short}</small>
           </a>
@@ -74,7 +63,7 @@ const navLinks = [
   { href: "#/", label: "Home", short: "Home", icon: "fa-home" },
   { href: "#/ai", label: "MEC AI", short: "AI", icon: "fa-reddit-alien" },
   { href: "#/about", label: "About", short: "About", icon: "fa-info-circle" },
-  { href: "#/news_updates", label: "News & Updates", short: "News", icon: "fa-newspaper-o" },
+  { href: "#/news_updates", label: "News", short: "News", icon: "fa-newspaper-o" },
   { href: "#/library", label: "Library", short: "Library", icon: "fa-book" },
   { href: "#/contact", label: "Contact", short: "Contact", icon: "fa-phone" },
   { href: "#/admissions", label: "Admissions", short: "Apply", icon: "fa-graduation-cap" },
@@ -89,13 +78,13 @@ const styles = {
     top: 0,
     width: "100%",
     zIndex: 1200,
-    background: "linear-gradient(135deg, #0f172a,#7a5018)",
-    boxShadow: "0 8px 30px rgba(0,0,0,0.35)",
+    background: "linear-gradient(135deg, #7a5018, #5f3d12)",
+    boxShadow: "0 6px 20px rgba(0,0,0,0.4)",
   },
   container: {
     maxWidth: 1200,
     margin: "0 auto",
-    padding: "10px 18px",
+    padding: "12px 18px",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
@@ -108,13 +97,12 @@ const styles = {
   logo: {
     height: 42,
     objectFit: "contain",
-    animation: "zoomIn 0.6s ease",
   },
   navText: {
-    color: "#e5e7eb",
+    color: "#f5deb3",
     fontSize: 14,
     fontWeight: 500,
-    opacity: 0.85,
+    opacity: 0.9,
   },
   navbar: {
     display: "none",
@@ -127,43 +115,42 @@ const styles = {
     padding: 0,
   },
   navLink: {
-    color: "#e5e7eb",
+    color: "#fff",
     textDecoration: "none",
     fontSize: 14,
-    padding: "8px 10px",
-    borderRadius: 6,
+    padding: "8px 12px",
+    borderRadius: 8,
     transition: "0.25s",
   },
   searchIcon: {
-    color: "#ffffff",
+    color: "#fff",
     fontSize: 16,
     cursor: "pointer",
   },
 
-  /* -------- MOBILE BOTTOM NAV -------- */
+  /* ======= MOBILE ======= */
   bottomNav: {
     position: "fixed",
     bottom: 0,
     left: 0,
     right: 0,
-    height: 68,
-    background: "rgba(255,255,255,0.92)",
-    backdropFilter: "blur(10px)",
+    height: 70,
+    background: "rgba(122, 80, 24, 0.96)",
     display: "flex",
     justifyContent: "space-around",
     alignItems: "center",
-    borderTop: "1px solid #e5e7eb",
+    boxShadow: "0 -6px 18px rgba(0,0,0,0.35)",
     zIndex: 1200,
   },
   bottomLink: {
     textAlign: "center",
     textDecoration: "none",
-    color: "#475569",
+    color: "#f5deb3",
     fontSize: 11,
     transition: "0.2s",
   },
   bottomIcon: {
-    fontSize: 18,
+    fontSize: 19,
     marginBottom: 2,
   },
   bottomText: {
@@ -171,7 +158,7 @@ const styles = {
   },
 };
 
-/* ================= MEDIA QUERY ================= */
+/* ======= MEDIA SWITCH ======= */
 if (window.innerWidth >= 768) {
   styles.navbar.display = "block";
   styles.bottomNav.display = "none";
