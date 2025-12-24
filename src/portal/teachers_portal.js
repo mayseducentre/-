@@ -15,31 +15,55 @@ import Footer from "../component/footer";
 import ScrollToTop from "react-scroll-to-top";
 
 export default function TeachersPortal({ user }) {
-  const [activeTab, setActiveTab] = useState("dashboard"); // React-style tab switching
+  const [activeTab, setActiveTab] = useState("dashboard");
+
+  // Inline styles
+  const styles = {
+    mainContainer: {
+      marginLeft: "260px", // sidebar width + padding
+      padding: "30px",
+      fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+      minHeight: "100vh",
+      backgroundColor: "#f5f7fa",
+      transition: "all 0.3s ease",
+    },
+    card: {
+      backgroundColor: "#fff",
+      borderRadius: "12px",
+      padding: "20px",
+      marginBottom: "20px",
+      boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+      transition: "transform 0.2s",
+    },
+    cardHover: {
+      transform: "scale(1.02)",
+    },
+  };
 
   return (
     <>
       <Teachersidebar user={user} setActiveTab={setActiveTab} />
-      <div id="main" style={{ marginLeft: "250px", padding: "20px" }}>
+
+      <div style={styles.mainContainer}>
         <input type="hidden" value={user?.id || ""} id="teacherid" />
         <input type="hidden" value={user?.subject || ""} id="subject_owner" />
 
-        {activeTab === "dashboard" && <TeacherDash />}
-        {activeTab === "assignments" && <AssignCreate user={user} />}
-        {activeTab === "assessment" && <Assessment />}
-        {activeTab === "studentperformance" && <StudentPerform />}
-        {activeTab === "staffchatroom" && <StaffChatRoom />}
-        {activeTab === "lessons" && <LNote />}
-        {activeTab === "register" && <RegisterBook />}
-        {activeTab === "gradebook" && <GradeCreate user={user} />}
-        {activeTab === "virtualclass" && <Meet />}
-        {activeTab === "calendar" && <ViewCalendar />}
-        {activeTab === "announcements" && <AnnounceHubView />}
+        {activeTab === "dashboard" && <div style={styles.card}><TeacherDash /></div>}
+        {activeTab === "assignments" && <div style={styles.card}><AssignCreate user={user} /></div>}
+        {activeTab === "assessment" && <div style={styles.card}><Assessment /></div>}
+        {activeTab === "studentperformance" && <div style={styles.card}><StudentPerform /></div>}
+        {activeTab === "staffchatroom" && <div style={styles.card}><StaffChatRoom /></div>}
+        {activeTab === "lessons" && <div style={styles.card}><LNote /></div>}
+        {activeTab === "register" && <div style={styles.card}><RegisterBook /></div>}
+        {activeTab === "gradebook" && <div style={styles.card}><GradeCreate user={user} /></div>}
+        {activeTab === "virtualclass" && <div style={styles.card}><Meet /></div>}
+        {activeTab === "calendar" && <div style={styles.card}><ViewCalendar /></div>}
+        {activeTab === "announcements" && <div style={styles.card}><AnnounceHubView /></div>}
 
         <Footer />
       </div>
 
-      <ScrollToTop smooth className="scrolly" />
+      <ScrollToTop smooth style={{ backgroundColor: "#007bff", borderRadius: "50%" }} />
     </>
   );
 }
