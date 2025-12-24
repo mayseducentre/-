@@ -1,70 +1,210 @@
+// signin (3).js
 import React, { useEffect, useState } from "react";
 import { compare } from "bcrypt-ts";
 
 import StudentPortal from "../portal/student_portal";
 import ParentPortal from "../portal/parent_portal";
 import TeachersPortal from "../portal/teachers_portal";
+import Daycarestaffportal from "../portal/daycarestaff";
 
-const path = process.env.REACT_APP_ACCOUNT_API;
+const path = process.env.REACT_APP_ACCOUNT_API; // from .env
 
 export default function SignLog() {
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
-  const [portal, setPortal] = useState(null);
-  const [users, setUsers] = useState([]);
-  const [error, setError] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [loginError, setLoginError] = useState("");
+  const [portal, setPortal] = useState(null); // student | staff | parent | daycare
+  const [userData, setUserData] = useState([]);
 
+  // Load saved credentials
   useEffect(() => {
-    Promise.all([
-      fetch(`${path}/studentaccount`).then((r) => r.json()),
-      fetch(`${path}/staffaccount`).then((r) => r.json()),
-      fetch(`${path}/parentaccount`).then((r) => r.json()),
-    ]).then(([s, t, p]) => {
-      const mapDocs = (d, role) =>
-        d?.documents?.map((doc) => ({
-          id: doc.fields.id.stringValue,
-          passcode: doc.fields.passcode.stringValue,
-          role,
-          status: doc.fields.status.stringValue,
-        })) || [];
+    const savedId = localStorage.getItem("portalid");
+    const savedKey = localStorage.getItem("portalkey");
+    const savedCheck = localStorage.getItem("portalcheck") === "true";
 
-      setUsers([
-        ...mapDocs(s, "student"),
-        ...mapDocs(t, "staff"),
-        ...mapDocs(p, "parent"),
-      ]);
-    });
+    if (savedId && savedKey) {
+      setUserId(savedId);
+      setPassword(savedKey);
+      setRememberMe(savedCheck);
+    }
   }, []);
 
-  async function handleLogin(e) {
-    e.preventDefault();
-    setError("");
+  // Fetch users from Firestore REST
+  useEffect(() => {
+    async function fetchAccounts() {
+      try {
+        const [students, staff, parents] = await Promise.all([
+          fetch(`${path}/studentaccount`).then((res) => res.json()),
+          fetch(`${path}/staffaccount`).then((res) => res.json()),
+          fetch(`${path}/parentaccount`).then((res) => res.json()),
+        ]);
 
-    for (const u of users) {
-      if (u.id === userId && u.status === "enrolled") {
-        const ok = await compare(password, u.passcode);
-        if (ok) {
-          if (u.role === "student") setPortal(<StudentPortal user={u} />);
-          if (u.role === "staff") setPortal(<TeachersPortal user={u} />);
-          if (u.role === "parent") setPortal(<ParentPortal user={u} />);
-          return;
+        // Firestore REST wraps docs → map them
+        const normalize = (docs, role) =>
+          docs?.documents?.map((doc) => ({
+            id: doc.fields.id.stringValue,
+            passcode: doc.fields.passcode.stringValue,
+            status: doc.fields.status.stringValue,
+            role: role,
+          })) || [];
+
+        setUserData([
+          ...normalize(students, "student"),
+          ...normalize(staff, "staff"),
+          ...normalize(parents, "parent"),
+        ]);
+      } catch (err) {
+        alert("Network error. Try again.");
+        console.error(err);
+      }
+    }
+    fetchAccounts();
+  }, []);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setLoginError("");
+
+    if (rememberMe) {
+      localStorage.setItem("portalid", userId);
+      localStorage.setItem("portalkey", password);
+      localStorage.setItem("portalcheck", rememberMe.toString());
+    } else {
+      localStorage.removeItem("portalid");
+      localStorage.removeItem("portalkey");
+      localStorage.removeItem("portalcheck");
+    }
+
+    let success = false;
+
+    for (const user of userData) {
+      // use bcrypt-ts compare (async)
+      let isMatch = false;
+      try {
+        isMatch = await compare(password, user.passcode);
+      } catch (err) {
+        console.error("Compare error", err);
+        isMatch = false;
+      }
+
+      if (user.id === userId && isMatch && user.status === "enrolled") {
+        const dateSeen = new Date().toISOString();
+
+        if (user.role === "student") {
+          await updateLastSeen("studentaccount", user.id, dateSeen);
+          setPortal({ type: "student", user });
+        } else if (user.role === "staff") {
+          setPortal({ type: "staff", user });
+        } else if (user.role === "daycare") {
+          setPortal({ type: "daycare", user });
+        } else if (user.role === "parent") {
+          setPortal({ type: "parent", user });
         }
+
+        success = true;
+        break;
       }
     }
 
-    setError("Invalid login details");
+    if (!success) {
+      setLoginError("Invalid user ID or password");
+    }
+
+    setLoading(false);
+  };
+
+  // Update last seen with Firestore REST
+  const updateLastSeen = async (type, id, datetime) => {
+    try {
+      await fetch(`${path}/${type}/${id}?updateMask.fieldPaths=lastseen`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fields: {
+            lastseen: { stringValue: datetime },
+          },
+        }),
+      });
+    } catch (err) {
+      console.error("Failed to update last seen", err);
+    }
+  };
+
+  // Portals
+  if (portal) {
+    const { type, user } = portal;
+    if (type === "student") return <StudentPortal user={user} />;
+    if (type === "staff") return <TeachersPortal user={user} />;
+    if (type === "daycare") return <Daycarestaffportal user={user} />;
+    if (type === "parent") return <ParentPortal user={user} />;
   }
 
-  if (portal) return portal;
-
+  // Login form (kept same structure & ids as original)
   return (
-    <section className="containerS">
-      <form onSubmit={handleLogin}>
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        <input value={userId} onChange={(e) => setUserId(e.target.value)} placeholder="User ID" />
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
-        <button type="submit">Login</button>
-      </form>
+    <section className="containerS" id="portalogin">
+      <div className="formpage login" id="login">
+        <a
+          onClick={() => window.history.back()}
+          style={{ fontSize: "30px", cursor: "pointer" }}
+        >
+          &times;
+        </a>
+        <div className="form-content">
+          <header>Login</header>
+          <form className="form" onSubmit={handleLogin}>
+            {loginError && (
+              <input
+                style={{ color: "red", border: "none", width: "100%" }}
+                readOnly
+                value={loginError}
+              />
+            )}
+            <div className="field input-field">
+              <input
+                type="text"
+                placeholder="User_Id"
+                value={userId}
+                onChange={(e) => setUserId(e.target.value)}
+                required
+              />
+            </div>
+            <div className="field input-field">
+              <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <a onClick={() => (window.location.href = "#/fgps")}>
+                Forgot password
+              </a>
+            </div>
+            <br />
+            <div className="form-link">
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
+              <label>Remember me</label>
+            </div>
+            <div className="form-link">
+              <p>
+                Don't have an account? <a href="#/account">Create one</a>
+              </p>
+            </div>
+            <div className="field button-field">
+              <button type="submit" disabled={loading}>
+                {loading ? "Logging in..." : "Login"}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </section>
   );
 }
