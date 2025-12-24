@@ -1,123 +1,45 @@
-import React, { useEffect } from "react";
-import ScrollToTop from "react-scroll-to-top";
-
-import Footer from "../component/footer";
-import Headline from "../component/headlines";
-import Assessment from "../component/portal_component/assessment";
-import AssignCreate from "../component/portal_component/assignment_create";
-import MeetST from "../component/portal_component/meet_students";
-import MeetT from "../component/portal_component/meet_teachers";
-import StaffChatRoom from "../component/portal_component/staffchatroom";
-import StudentPerform from "../component/portal_component/student_performance";
-import TeacherDash from "../component/portal_component/teacherdash";
+import React, { useState } from "react";
 import Teachersidebar from "../portal_sidebar/teachers_sidebar";
-import MeetP from "../component/portal_component/meet_parent";
+import TeacherDash from "../component/portal_component/teacherdash";
+import AssignCreate from "../component/portal_component/assignment_create";
+import Assessment from "../component/portal_component/assessment";
+import StudentPerform from "../component/portal_component/student_performance";
+import StaffChatRoom from "../component/portal_component/staffchatroom";
 import LNote from "../component/portal_component/lesson_note";
-import Meet from "../component/portal_component/meet_online";
 import RegisterBook from "../component/portal_component/registerbook";
+import GradeCreate from "../component/portal_component/postgrades";
+import Meet from "../component/portal_component/meet_online";
 import ViewCalendar from "../component/portal_component/viewcalendar";
 import AnnounceHubView from "../component/portal_component/viewannounce";
-import GradeCreate from "../component/portal_component/postgrades";
+import Footer from "../component/footer";
+import ScrollToTop from "react-scroll-to-top";
 
-function TeachersPortal({ user }) {
-  useEffect(() => {
-    fetch(`${process.env.REACT_APP_ACCOUNT_API}/studentaccount`)
-      .then((res) => res.json())
-      .then((data) => {
-        const studentTotal = document.getElementById("stu_total");
-        if (studentTotal) studentTotal.innerHTML = data.length;
-      })
-      .catch((err) => console.log(err));
-
-    fetch(`${process.env.REACT_APP_API_URL}/courses`)
-      .then((res) => res.json())
-      .then((data) => {
-        const subjTotal = document.getElementById("subj_total");
-        if (subjTotal) subjTotal.innerHTML = data.length;
-      })
-      .catch((err) => console.log(err));
-  }, []);
+export default function TeachersPortal({ user }) {
+  const [activeTab, setActiveTab] = useState("dashboard"); // React-style tab switching
 
   return (
     <>
-      <div id="main">
-        <input
-          type="text"
-          value={user.id}
-          id="teacherid"
-          style={{ display: "none" }}
-          readOnly
-        />
-        <input
-          type="text"
-          value={user.subject}
-          id="subject_owner"
-          style={{ display: "none" }}
-          readOnly
-        />
+      <Teachersidebar user={user} setActiveTab={setActiveTab} />
+      <div id="main" style={{ marginLeft: "250px", padding: "20px" }}>
+        <input type="hidden" value={user?.id || ""} id="teacherid" />
+        <input type="hidden" value={user?.subject || ""} id="subject_owner" />
 
-      
-        <Teachersidebar user={user} />
-        <Headline />
-        <br />
-        <br />
-        <br />
+        {activeTab === "dashboard" && <TeacherDash />}
+        {activeTab === "assignments" && <AssignCreate user={user} />}
+        {activeTab === "assessment" && <Assessment />}
+        {activeTab === "studentperformance" && <StudentPerform />}
+        {activeTab === "staffchatroom" && <StaffChatRoom />}
+        {activeTab === "lessons" && <LNote />}
+        {activeTab === "register" && <RegisterBook />}
+        {activeTab === "gradebook" && <GradeCreate user={user} />}
+        {activeTab === "virtualclass" && <Meet />}
+        {activeTab === "calendar" && <ViewCalendar />}
+        {activeTab === "announcements" && <AnnounceHubView />}
 
-        <div id="staffdash">
-          <TeacherDash />
-          <MeetT />
-          <MeetST />
-          <MeetP />
-        </div>
-
-        <div id="assigncreate" style={{ display: "none" }}>
-          <AssignCreate user={user}/>
-        </div>
-
-        <div id="assessment" style={{ display: "none" }}>
-          <Assessment />
-        </div>
-
-        <div id="studentperformance" style={{ display: "none" }}>
-          <StudentPerform />
-        </div>
-
-        <div id="staffchatroom" style={{ display: "none" }}>
-          <StaffChatRoom />
-        </div>
-
-        <div id="teachersnote" style={{ display: "none" }}>
-          <LNote />
-        </div>
-
-        <div id="meetonline" style={{ display: "none" }}>
-          <Meet />
-        </div>
-
-        <div id="register" style={{ display: "none" }}>
-          <RegisterBook />
-        </div>
-
-        <div id="calendarviewing" style={{ display: "none" }}>
-          <ViewCalendar />
-        </div>
-
-        <div id="messageme" style={{ display: "none" }}>
-          <AnnounceHubView />
-        </div>
-
-        <div id="creategrade" style={{ display: "none" }}>
-          <GradeCreate user={user} />
-        </div>
-
-        <div id="footerport">
-          <Footer />
-        </div>
+        <Footer />
       </div>
 
       <ScrollToTop smooth className="scrolly" />
     </>
   );
 }
-
-export default TeachersPortal;
