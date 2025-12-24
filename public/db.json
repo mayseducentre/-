@@ -213,6 +213,13 @@
         }
       ],
       "featuredvideos": [
+
+{
+          "name": "C++ Tutorials",
+          "url": "https://www.youtube.com/embed/y6tVw8nbbGNdTX0m",
+          "description": "C++ course"
+        },
+
 {
           "name": "Ecommerce",
           "url": "https://www.youtube.com/embed/GWsm6cNpyAfOQiSj",
