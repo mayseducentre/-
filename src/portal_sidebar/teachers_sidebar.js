@@ -1,95 +1,147 @@
 import React from "react";
 
-export default function Teachersidebar({ user, setActiveTab, sidebarOpen, setSidebarOpen }) {
+export default function Teachersidebar({
+  user,
+  setActiveTab,
+  activeTab,
+}) {
   const menuItems = [
-    { label: "Dashboard", tab: "dashboard", icon: "fa fa-grid" },
-    { label: "Assignments", tab: "assignments", icon: "fa fa-diamond" },
-    { label: "Lesson Note", tab: "lessons", icon: "fa fa-book" },
-    { label: "Gradebook", tab: "gradebook", icon: "fa fa-file" },
-    { label: "Announcements", tab: "announcements", icon: "fa fa-bullhorn" },
-    { label: "Assessment", tab: "assessment", icon: "fa fa-filter" },
-    { label: "Register Book", tab: "register", icon: "fa fa-file" },
-    { label: "Staff Chat Room", tab: "staffchatroom", icon: "fa fa-comments" },
-    { label: "Virtual Classroom", tab: "virtualclass", icon: "fa fa-laptop" },
-    { label: "Calendar & Scheduling", tab: "calendar", icon: "fa fa-calendar" },
-    { label: "Student Performance", tab: "studentperformance", icon: "fa fa-line-chart" },
+    { label: "Dashboard", tab: "dashboard", icon: "🏠" },
+    { label: "Assignments", tab: "assignments", icon: "📝" },
+    { label: "Lesson Note", tab: "lessons", icon: "📘" },
+    { label: "Gradebook", tab: "gradebook", icon: "📊" },
+    { label: "Assessment", tab: "assessment", icon: "🧠" },
+    { label: "Register Book", tab: "register", icon: "📋" },
+    { label: "Staff Chat", tab: "staffchatroom", icon: "💬" },
+    { label: "Virtual Class", tab: "virtualclass", icon: "💻" },
+    { label: "Calendar", tab: "calendar", icon: "📅" },
+    { label: "Performance", tab: "studentperformance", icon: "📈" },
+    { label: "Announcements", tab: "announcements", icon: "📢" },
   ];
 
-  const styles = {
-    sidebar: {
-      width: "260px",
-      position: "fixed",
-      top: 0,
-      left: sidebarOpen ? "0" : "-270px",
-      height: "100%",
-      backgroundColor: "#1f2a38",
-      color: "#fff",
-      paddingTop: "20px",
-      transition: "left 0.3s",
-      zIndex: 1000,
-      display: "flex",
-      flexDirection: "column",
-    },
-    profile: { textAlign: "center", marginBottom: "30px" },
-    profileImg: { width: "80px", height: "80px", borderRadius: "50%", marginBottom: "10px" },
-    menu: { listStyle: "none", padding: "0", width: "100%" },
-    menuItem: {
-      padding: "12px 20px",
-      cursor: "pointer",
-      display: "flex",
-      alignItems: "center",
-      transition: "background 0.2s",
-    },
-    icon: { marginRight: "12px", width: "20px", textAlign: "center" },
-    closeBtn: {
-      display: "none",
-      position: "absolute",
-      top: "15px",
-      right: "-45px",
-      fontSize: "24px",
-      cursor: "pointer",
-      color: "#007bff",
-      backgroundColor: "#fff",
-      borderRadius: "50%",
-      width: "35px",
-      height: "35px",
-      textAlign: "center",
-      lineHeight: "35px",
-    },
-  };
+  const isMobile = window.innerWidth <= 768;
 
-  return (
-    <aside style={styles.sidebar}>
-      <div style={styles.profile}>
-        <img src={user?.thumbnailUrl || "/default.png"} alt="profile" style={styles.profileImg} />
-        <h3>{user?.name || "Teacher"}</h3>
-        <p>{user?.subject || "Subject"}</p>
-      </div>
+  /* ================= DESKTOP SIDEBAR ================= */
+  if (!isMobile) {
+    return (
+      <aside style={styles.sidebar}>
+        <div style={styles.profile}>
+          <img
+            src={user?.thumbnailUrl || "/default.png"}
+            alt="profile"
+            style={styles.avatar}
+          />
+          <h3 style={{ margin: 0 }}>{user?.name || "Teacher"}</h3>
+          <small style={{ opacity: 0.8 }}>
+            {user?.subject || "Subject"}
+          </small>
+        </div>
 
-      <ul style={styles.menu}>
-        {menuItems.map((item) => (
+        <ul style={styles.menu}>
+          {menuItems.map((item) => (
+            <li
+              key={item.tab}
+              style={{
+                ...styles.menuItem,
+                background:
+                  activeTab === item.tab ? "#2563eb" : "transparent",
+              }}
+              onClick={() => setActiveTab(item.tab)}
+            >
+              <span style={{ marginRight: 10 }}>{item.icon}</span>
+              {item.label}
+            </li>
+          ))}
+
           <li
-            key={item.tab}
-            style={styles.menuItem}
-            onClick={() => {
-              setActiveTab(item.tab);
-              if (window.innerWidth <= 768) setSidebarOpen(false);
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = "#007bff")}
-            onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+            style={{ ...styles.menuItem, color: "#ff4d4f" }}
+            onClick={() => window.location.reload()}
           >
-            <i className={item.icon} style={styles.icon}></i>
-            {item.label}
+            🚪 Sign Out
           </li>
-        ))}
-        <li
-          style={{ ...styles.menuItem, color: "#ff4d4f" }}
-          onClick={() => window.location.reload()}
+        </ul>
+      </aside>
+    );
+  }
+
+  /* ================= MOBILE BOTTOM NAV ================= */
+  return (
+    <nav style={styles.bottomNav}>
+      {menuItems.slice(0, 5).map((item) => (
+        <div
+          key={item.tab}
+          style={{
+            ...styles.navItem,
+            color: activeTab === item.tab ? "#2563eb" : "#6b7280",
+          }}
+          onClick={() => setActiveTab(item.tab)}
         >
-          <i className="fa fa-sign-out" style={styles.icon}></i>
-          Sign Out
-        </li>
-      </ul>
-    </aside>
+          <div style={{ fontSize: 18 }}>{item.icon}</div>
+          <small>{item.label}</small>
+        </div>
+      ))}
+    </nav>
   );
 }
+
+/* ================= STYLES ================= */
+const styles = {
+  sidebar: {
+    width: 260,
+    height: "100vh",
+    background: "#1f2937",
+    color: "#ffffff",
+    padding: 20,
+    position: "fixed",
+    top: 0,
+    left: 0,
+    display: "flex",
+    flexDirection: "column",
+    zIndex: 1000,
+  },
+  profile: {
+    textAlign: "center",
+    marginBottom: 30,
+  },
+  avatar: {
+    width: 80,
+    height: 80,
+    borderRadius: "50%",
+    marginBottom: 10,
+    objectFit: "cover",
+  },
+  menu: {
+    listStyle: "none",
+    padding: 0,
+    margin: 0,
+    flex: 1,
+    overflowY: "auto",
+  },
+  menuItem: {
+    padding: "12px 15px",
+    borderRadius: 8,
+    cursor: "pointer",
+    marginBottom: 6,
+    display: "flex",
+    alignItems: "center",
+    transition: "background 0.2s",
+  },
+  bottomNav: {
+    position: "fixed",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 64,
+    background: "#ffffff",
+    display: "flex",
+    justifyContent: "space-around",
+    alignItems: "center",
+    borderTop: "1px solid #e5e7eb",
+    zIndex: 1000,
+  },
+  navItem: {
+    textAlign: "center",
+    fontSize: 12,
+    cursor: "pointer",
+  },
+};
