@@ -1,5 +1,4 @@
 import React from "react";
-import { Link } from "react-router-dom";
 
 export default function Teachersidebar({ user, setActiveTab }) {
   const menuItems = [
@@ -16,23 +15,80 @@ export default function Teachersidebar({ user, setActiveTab }) {
     { label: "Student Performance", tab: "studentperformance", icon: "fa fa-line-chart" },
   ];
 
+  // Inline styles
+  const styles = {
+    sidebar: {
+      width: "250px",
+      position: "fixed",
+      top: 0,
+      left: 0,
+      height: "100%",
+      backgroundColor: "#1f2a38",
+      color: "#fff",
+      paddingTop: "20px",
+      fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+      overflowY: "auto",
+      boxShadow: "2px 0 12px rgba(0,0,0,0.1)",
+      transition: "all 0.3s ease",
+      zIndex: 100,
+    },
+    profile: {
+      textAlign: "center",
+      marginBottom: "30px",
+      padding: "0 10px",
+    },
+    profileImg: {
+      width: "80px",
+      height: "80px",
+      borderRadius: "50%",
+      objectFit: "cover",
+      border: "2px solid #007bff",
+    },
+    profileName: { marginTop: "10px", fontSize: "18px", fontWeight: "600" },
+    profileSubject: { fontSize: "14px", color: "#a0b0c0" },
+    menu: { listStyle: "none", padding: "0" },
+    menuItem: {
+      padding: "12px 20px",
+      cursor: "pointer",
+      display: "flex",
+      alignItems: "center",
+      transition: "background 0.2s, color 0.2s",
+    },
+    menuItemHover: {
+      backgroundColor: "#007bff",
+      color: "#fff",
+      borderRadius: "8px",
+    },
+    icon: { marginRight: "12px", width: "20px", textAlign: "center" },
+  };
+
   return (
-    <aside className="sidebar" style={{ width: "250px", position: "fixed", height: "100%", background: "#222", color: "#fff", paddingTop: "20px" }}>
-      <div style={{ textAlign: "center", marginBottom: "20px" }}>
-        <img src={user?.thumbnailUrl || "/default.png"} alt="profile" style={{ width: "80px", height: "80px", borderRadius: "50%" }} />
-        <h3 style={{ marginTop: "10px" }}>{user?.name || "Teacher"}</h3>
-        <p>{user?.subject || "Subject"}</p>
+    <aside style={styles.sidebar}>
+      <div style={styles.profile}>
+        <img src={user?.thumbnailUrl || "/default.png"} alt="profile" style={styles.profileImg} />
+        <h3 style={styles.profileName}>{user?.name || "Teacher"}</h3>
+        <p style={styles.profileSubject}>{user?.subject || "Subject"}</p>
       </div>
 
-      <ul style={{ listStyle: "none", padding: "0" }}>
+      <ul style={styles.menu}>
         {menuItems.map((item) => (
-          <li key={item.tab} style={{ padding: "10px 20px", cursor: "pointer" }} onClick={() => setActiveTab(item.tab)}>
-            <i className={item.icon} style={{ marginRight: "10px" }}></i>
+          <li
+            key={item.tab}
+            style={styles.menuItem}
+            onClick={() => setActiveTab(item.tab)}
+            onMouseEnter={(e) => (e.currentTarget.style.background = "#007bff")}
+            onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+          >
+            <i className={item.icon} style={styles.icon}></i>
             {item.label}
           </li>
         ))}
-        <li style={{ padding: "10px 20px", cursor: "pointer" }} onClick={() => window.location.reload()}>
-          <i className="fa fa-sign-out"></i> Sign Out
+        <li
+          style={{ ...styles.menuItem, marginTop: "20px", color: "#ff4d4f" }}
+          onClick={() => window.location.reload()}
+        >
+          <i className="fa fa-sign-out" style={styles.icon}></i>
+          Sign Out
         </li>
       </ul>
     </aside>
