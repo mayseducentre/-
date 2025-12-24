@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 
 export default function Teachersidebar({ user, setActiveTab }) {
+  const [collapsed, setCollapsed] = useState(false);
+
   const menuItems = [
     { label: "Dashboard", tab: "dashboard", icon: "fa fa-grid" },
     { label: "Assignments", tab: "assignments", icon: "fa fa-diamond" },
@@ -18,7 +20,7 @@ export default function Teachersidebar({ user, setActiveTab }) {
   // Inline styles
   const styles = {
     sidebar: {
-      width: "250px",
+      width: collapsed ? "70px" : "250px",
       position: "fixed",
       top: 0,
       left: 0,
@@ -28,38 +30,46 @@ export default function Teachersidebar({ user, setActiveTab }) {
       paddingTop: "20px",
       fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
       overflowY: "auto",
-      boxShadow: "2px 0 12px rgba(0,0,0,0.1)",
-      transition: "all 0.3s ease",
+      transition: "width 0.3s",
       zIndex: 100,
+      display: "flex",
+      flexDirection: "column",
+      alignItems: collapsed ? "center" : "flex-start",
     },
     profile: {
       textAlign: "center",
       marginBottom: "30px",
-      padding: "0 10px",
+      width: "100%",
+      padding: collapsed ? "0" : "0 10px",
     },
     profileImg: {
-      width: "80px",
-      height: "80px",
+      width: collapsed ? "40px" : "80px",
+      height: collapsed ? "40px" : "80px",
       borderRadius: "50%",
       objectFit: "cover",
       border: "2px solid #007bff",
+      marginBottom: collapsed ? "0" : "10px",
     },
-    profileName: { marginTop: "10px", fontSize: "18px", fontWeight: "600" },
-    profileSubject: { fontSize: "14px", color: "#a0b0c0" },
-    menu: { listStyle: "none", padding: "0" },
+    profileName: {
+      fontSize: "18px",
+      fontWeight: "600",
+      display: collapsed ? "none" : "block",
+    },
+    profileSubject: {
+      fontSize: "14px",
+      color: "#a0b0c0",
+      display: collapsed ? "none" : "block",
+    },
+    menu: { listStyle: "none", padding: "0", width: "100%" },
     menuItem: {
-      padding: "12px 20px",
+      padding: collapsed ? "10px 0" : "12px 20px",
       cursor: "pointer",
       display: "flex",
       alignItems: "center",
-      transition: "background 0.2s, color 0.2s",
+      transition: "all 0.2s",
+      width: "100%",
     },
-    menuItemHover: {
-      backgroundColor: "#007bff",
-      color: "#fff",
-      borderRadius: "8px",
-    },
-    icon: { marginRight: "12px", width: "20px", textAlign: "center" },
+    icon: { marginRight: collapsed ? "0" : "12px", width: "20px", textAlign: "center" },
   };
 
   return (
@@ -80,7 +90,7 @@ export default function Teachersidebar({ user, setActiveTab }) {
             onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
           >
             <i className={item.icon} style={styles.icon}></i>
-            {item.label}
+            {!collapsed && item.label}
           </li>
         ))}
         <li
@@ -88,9 +98,27 @@ export default function Teachersidebar({ user, setActiveTab }) {
           onClick={() => window.location.reload()}
         >
           <i className="fa fa-sign-out" style={styles.icon}></i>
-          Sign Out
+          {!collapsed && "Sign Out"}
         </li>
       </ul>
+
+      {/* Collapse button */}
+      <button
+        onClick={() => setCollapsed(!collapsed)}
+        style={{
+          marginTop: "auto",
+          marginBottom: "20px",
+          backgroundColor: "#007bff",
+          color: "#fff",
+          border: "none",
+          borderRadius: "8px",
+          padding: "8px 12px",
+          cursor: "pointer",
+          alignSelf: "center",
+        }}
+      >
+        {collapsed ? "→" : "←"}
+      </button>
     </aside>
   );
 }
