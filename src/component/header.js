@@ -89,7 +89,7 @@ const styles = {
     top: 0,
     width: "100%",
     zIndex: 1200,
-    background: "linear-gradient(135deg, #0f172a, #1e293b)",
+    background: "linear-gradient(135deg, #0f172a,#7a5018)",
     boxShadow: "0 8px 30px rgba(0,0,0,0.35)",
   },
   container: {
