@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Teachersidebar from "../portal_sidebar/teachers_sidebar";
+
 import TeacherDash from "../component/portal_component/teacherdash";
 import AssignCreate from "../component/portal_component/assignment_create";
 import Assessment from "../component/portal_component/assessment";
@@ -16,91 +17,73 @@ import ScrollToTop from "react-scroll-to-top";
 
 export default function TeachersPortal({ user }) {
   const [activeTab, setActiveTab] = useState("dashboard");
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-
-  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
-
-  // Inline styles
-  const styles = {
-    mainContainer: {
-      marginLeft: sidebarOpen ? "260px" : "0",
-      padding: "20px",
-      transition: "margin-left 0.3s",
-      minHeight: "100vh",
-      backgroundColor: "#f4f7fb",
-      fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-    },
-    card: {
-      backgroundColor: "#fff",
-      borderRadius: "12px",
-      padding: "25px",
-      marginBottom: "25px",
-      boxShadow: "0 6px 18px rgba(0,0,0,0.08)",
-      width: "100%",
-    },
-    hamburger: {
-      display: "none",
-      position: "fixed",
-      top: "15px",
-      left: "15px",
-      fontSize: "24px",
-      backgroundColor: "#007bff",
-      color: "#fff",
-      border: "none",
-      padding: "10px 12px",
-      borderRadius: "8px",
-      zIndex: 1100,
-      cursor: "pointer",
-    },
-    '@media (max-width: 768px)': {
-      hamburger: { display: "block" },
-      mainContainer: { marginLeft: "0", padding: "15px" },
-    },
-  };
+  const isMobile = window.innerWidth <= 768;
 
   return (
-    <>
-      <button
-        style={styles.hamburger}
-        onClick={toggleSidebar}
-      >
-        ☰
-      </button>
-
+    <div style={styles.wrapper}>
       <Teachersidebar
         user={user}
+        activeTab={activeTab}
         setActiveTab={setActiveTab}
-        sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen}
       />
 
-      <div style={styles.mainContainer}>
-        {activeTab === "dashboard" && <div style={styles.card}><TeacherDash /></div>}
-        {activeTab === "assignments" && <div style={styles.card}><AssignCreate user={user} /></div>}
-        {activeTab === "assessment" && <div style={styles.card}><Assessment /></div>}
-        {activeTab === "studentperformance" && <div style={styles.card}><StudentPerform /></div>}
-        {activeTab === "staffchatroom" && <div style={styles.card}><StaffChatRoom /></div>}
-        {activeTab === "lessons" && <div style={styles.card}><LNote /></div>}
-        {activeTab === "register" && <div style={styles.card}><RegisterBook /></div>}
-        {activeTab === "gradebook" && <div style={styles.card}><GradeCreate user={user} /></div>}
-        {activeTab === "virtualclass" && <div style={styles.card}><Meet /></div>}
-        {activeTab === "calendar" && <div style={styles.card}><ViewCalendar /></div>}
-        {activeTab === "announcements" && <div style={styles.card}><AnnounceHubView /></div>}
+      <main
+        style={{
+          ...styles.content,
+          marginLeft: isMobile ? 0 : 260,
+          paddingBottom: isMobile ? 80 : 20,
+        }}
+      >
+        {activeTab === "dashboard" && <Card><TeacherDash /></Card>}
+        {activeTab === "assignments" && <Card><AssignCreate user={user} /></Card>}
+        {activeTab === "assessment" && <Card><Assessment /></Card>}
+        {activeTab === "studentperformance" && <Card><StudentPerform /></Card>}
+        {activeTab === "staffchatroom" && <Card><StaffChatRoom /></Card>}
+        {activeTab === "lessons" && <Card><LNote /></Card>}
+        {activeTab === "register" && <Card><RegisterBook /></Card>}
+        {activeTab === "gradebook" && <Card><GradeCreate user={user} /></Card>}
+        {activeTab === "virtualclass" && <Card><Meet /></Card>}
+        {activeTab === "calendar" && <Card><ViewCalendar /></Card>}
+        {activeTab === "announcements" && <Card><AnnounceHubView /></Card>}
 
         <Footer />
-      </div>
+      </main>
 
       <ScrollToTop
         smooth
         style={{
-          backgroundColor: "#007bff",
+          backgroundColor: "#2563eb",
           borderRadius: "50%",
           color: "#fff",
           padding: "10px",
-          fontSize: "20px",
-          cursor: "pointer",
+          fontSize: "18px",
         }}
       />
-    </>
+    </div>
   );
 }
+
+/* ================= CARD WRAPPER ================= */
+const Card = ({ children }) => (
+  <div style={styles.card}>{children}</div>
+);
+
+/* ================= STYLES ================= */
+const styles = {
+  wrapper: {
+    minHeight: "100vh",
+    background: "#f4f7fb",
+  },
+  content: {
+    minHeight: "100vh",
+    padding: 20,
+    transition: "0.3s",
+  },
+  card: {
+    background: "#ffffff",
+    borderRadius: 14,
+    padding: 25,
+    marginBottom: 25,
+    boxShadow: "0 8px 22px rgba(0,0,0,0.06)",
+  },
+};
