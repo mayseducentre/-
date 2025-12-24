@@ -72,7 +72,7 @@ const Card = ({ children }) => (
 const styles = {
   wrapper: {
     minHeight: "100vh",
-    background: "#f4f7fb",
+    width:"100%"
   },
   content: {
     minHeight: "100vh",
