@@ -76,13 +76,12 @@ const styles = {
   },
   content: {
     minHeight: "100vh",
-    padding: 20,
     transition: "0.3s",
   },
   card: {
     background: "#ffffff",
     borderRadius: 14,
-    padding: 25,
+    padding: 15,
     marginBottom: 25,
     boxShadow: "0 8px 22px rgba(0,0,0,0.06)",
   },
