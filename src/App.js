@@ -33,6 +33,7 @@ import WordLearningApp from "./component/portal_component/assignment";
 import VirtualLabs from "./component/vrlab";
 import CreativeStudio from "./library/creative_stu";
 import AssignmentHub from "./component/portal_component/assignment";
+import AdminDashboard from "./component/accountadm";
 import ELearningPlatform from "./library/elearn";
 
 
@@ -116,6 +117,7 @@ function App() {
 <Route path="/creative_stu" element={<CreativeStudio />} />
 <Route path="/assignment" element={<AssignmentHub />} />
 <Route path="/elearn" element={<ELearningPlatform />} />
+<Route path="/admaccount" element={<AdminDashboard />} />
        </Route>
     </Routes>
     </HashRouter>
