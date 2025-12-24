@@ -6,7 +6,7 @@ const MecAIBanner = () => {
   const styles = {
     button: {
       position: "fixed",
-      bottom: "30px",
+      bottom: "50px",
       right: "25px",
       background: "linear-gradient(90deg, #6366f1, #a855f7, #ec4899)",
       color: "white",
