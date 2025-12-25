@@ -86,7 +86,7 @@ export default function SignLog() {
       justifyContent: "center",
       alignItems: "center",
       height: "100vh",
-      backgroundImage: "url('../bg.jpg')",
+      backgroundImage: "url('https://lh3.googleusercontent.com/pw/AP1GczMotW0xM1NEHI4m5HwaAaX1Whb9vyN2kDm5o5ToJAunNdl5XP_kFxLQFOO-7MdupH3O6woIvUJ60-HP8dsFEwPk7cFuxRqbbP3ePVZFunmepXcbsBs')",
       backgroundSize: "cover",
       backgroundPosition: "center",
       fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
