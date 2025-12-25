@@ -1,0 +1,250 @@
+import React, { useState } from "react";
+import {
+  getAuth,
+  deleteUser,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+} from "firebase/auth";
+import { doc, deleteDoc, updateDoc } from "firebase/firestore";
+import { db } from "../firebase";
+
+/* ================= COMPONENT ================= */
+export default function TeacherSettings({ user }) {
+  const auth = getAuth();
+  const currentUser = auth.currentUser;
+
+  const [activeSection, setActiveSection] = useState("profile");
+  const [displayName, setDisplayName] = useState(user?.name || "");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  /* ================= UPDATE PROFILE ================= */
+  async function updateProfile() {
+    if (!displayName.trim()) {
+      alert("Name cannot be empty");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await updateDoc(doc(db, "users", currentUser.uid), {
+        name: displayName,
+        updatedAt: new Date(),
+      });
+      alert("Profile updated successfully");
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  /* ================= DELETE ACCOUNT ================= */
+  async function handleDeleteAccount() {
+    if (!password) {
+      alert("Enter your password to confirm deletion");
+      return;
+    }
+
+    if (!window.confirm("This will permanently delete your account. Continue?")) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const credential = EmailAuthProvider.credential(
+        currentUser.email,
+        password
+      );
+
+      // Re-authenticate
+      await reauthenticateWithCredential(currentUser, credential);
+
+      // Delete Firestore user document
+      await deleteDoc(doc(db, "users", currentUser.uid));
+
+      // Delete Firebase Auth account
+      await deleteUser(currentUser);
+
+      alert("Account deleted successfully");
+      window.location.href = "#/";
+    } catch (err) {
+      console.error(err);
+      alert(err.message || "Failed to delete account");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  /* ================= UI ================= */
+  return (
+    <div style={styles.wrapper}>
+      {/* Sidebar */}
+      <aside style={styles.side}>
+        {["profile", "security", "danger"].map((tab) => (
+          <button
+            key={tab}
+            style={{
+              ...styles.sideBtn,
+              background:
+                activeSection === tab ? "#7a5018" : "transparent",
+              color: activeSection === tab ? "#fff" : "#333",
+            }}
+            onClick={() => setActiveSection(tab)}
+          >
+            {tab === "profile" && "Profile"}
+            {tab === "security" && "Security"}
+            {tab === "danger" && "Danger Zone"}
+          </button>
+        ))}
+      </aside>
+
+      {/* Content */}
+      <section style={styles.content}>
+        {/* PROFILE */}
+        {activeSection === "profile" && (
+          <Block title="Profile Information">
+            <input
+              style={styles.input}
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              placeholder="Full Name"
+            />
+            <input
+              style={{ ...styles.input, background: "#f5f5f5" }}
+              value={currentUser?.email || ""}
+              disabled
+            />
+            <button
+              style={styles.primaryBtn}
+              onClick={updateProfile}
+              disabled={loading}
+            >
+              Save Changes
+            </button>
+          </Block>
+        )}
+
+        {/* SECURITY */}
+        {activeSection === "security" && (
+          <Block title="Account Security">
+            <p style={styles.text}>
+              Email verification and password updates are managed by Firebase.
+            </p>
+            <p style={styles.text}>
+              Always keep your credentials secure.
+            </p>
+          </Block>
+        )}
+
+        {/* DANGER */}
+        {activeSection === "danger" && (
+          <Block title="Danger Zone">
+            <p style={styles.dangerText}>
+              Deleting your account is permanent and irreversible.
+            </p>
+
+            <input
+              type="password"
+              placeholder="Enter password to confirm"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={styles.input}
+            />
+
+            <button
+              style={styles.dangerBtn}
+              onClick={handleDeleteAccount}
+              disabled={loading}
+            >
+              {loading ? "Deleting..." : "Delete My Account"}
+            </button>
+          </Block>
+        )}
+      </section>
+    </div>
+  );
+}
+
+/* ================= REUSABLE BLOCK ================= */
+const Block = ({ title, children }) => (
+  <div style={styles.block}>
+    <h3 style={styles.blockTitle}>{title}</h3>
+    {children}
+  </div>
+);
+
+/* ================= STYLES ================= */
+const styles = {
+  wrapper: {
+    display: "flex",
+    minHeight: "100vh",
+    background: "#f4f7fb",
+  },
+  side: {
+    width: 220,
+    background: "#ffffff",
+    padding: 15,
+    borderRight: "1px solid #eee",
+  },
+  sideBtn: {
+    width: "100%",
+    padding: "12px",
+    borderRadius: 10,
+    border: "none",
+    marginBottom: 10,
+    fontWeight: 600,
+    cursor: "pointer",
+    transition: "0.2s",
+  },
+  content: {
+    flex: 1,
+    padding: 25,
+  },
+  block: {
+    background: "#fff",
+    borderRadius: 14,
+    padding: 25,
+    boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
+    maxWidth: 500,
+  },
+  blockTitle: {
+    marginBottom: 15,
+    color: "#7a5018",
+  },
+  input: {
+    width: "100%",
+    padding: 12,
+    borderRadius: 10,
+    border: "1px solid #ccc",
+    marginBottom: 12,
+  },
+  primaryBtn: {
+    background: "#7a5018",
+    color: "#fff",
+    padding: 12,
+    border: "none",
+    borderRadius: 10,
+    cursor: "pointer",
+    fontWeight: 600,
+  },
+  dangerBtn: {
+    background: "#b91c1c",
+    color: "#fff",
+    padding: 12,
+    border: "none",
+    borderRadius: 10,
+    cursor: "pointer",
+    fontWeight: 600,
+  },
+  text: {
+    fontSize: 14,
+    color: "#555",
+  },
+  dangerText: {
+    color: "#b91c1c",
+    marginBottom: 10,
+    fontWeight: 600,
+  },
+};
