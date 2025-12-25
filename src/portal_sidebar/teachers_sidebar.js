@@ -1,22 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { getAuth, signOut } from "firebase/auth";
 
-export default function Teachersidebar({
-  user,
-  setActiveTab,
-  activeTab,
-}) {
+export default function Teachersidebar({ user, setActiveTab, activeTab }) {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const auth = getAuth();
+
+  useEffect(() => {
+    const resize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", resize);
+    return () => window.removeEventListener("resize", resize);
+  }, []);
+
   const menuItems = [
     { label: "Dashboard", tab: "dashboard", icon: "🏠" },
     { label: "Assignments", tab: "assignments", icon: "📝" },
-    { label: "Lesson Note", tab: "lessons", icon: "📘" },
+    { label: "Lessons", tab: "lessons", icon: "📘" },
     { label: "Gradebook", tab: "gradebook", icon: "📊" },
     { label: "Assessment", tab: "assessment", icon: "🧠" },
-    { label: "Register Book", tab: "register", icon: "📋" },
+    { label: "Register", tab: "register", icon: "📋" },
     { label: "Announcements", tab: "announcements", icon: "📢" },
-{ label: "Settings", tab: "settings", icon: "fa fa-cog" }
+    { label: "Settings", tab: "settings", icon: "⚙️" },
   ];
-
-  const isMobile = window.innerWidth <= 768;
 
   /* ================= DESKTOP SIDEBAR ================= */
   if (!isMobile) {
@@ -28,10 +32,8 @@ export default function Teachersidebar({
             alt="profile"
             style={styles.avatar}
           />
-          <h3 style={{ margin: 0 }}>{user?.name || "Teacher"}</h3>
-          <small style={{ opacity: 0.8 }}>
-            {user?.subject || "Subject"}
-          </small>
+          <strong>{user?.name || "Teacher"}</strong>
+          <small>{user?.subject || "Subject"}</small>
         </div>
 
         <ul style={styles.menu}>
@@ -41,19 +43,18 @@ export default function Teachersidebar({
               style={{
                 ...styles.menuItem,
                 background:
-                  activeTab === item.tab ? "#2563eb" : "transparent",
+                  activeTab === item.tab
+                    ? "rgba(255,255,255,0.18)"
+                    : "transparent",
               }}
               onClick={() => setActiveTab(item.tab)}
             >
-              <span style={{ marginRight: 10 }}>{item.icon}</span>
+              <span style={styles.icon}>{item.icon}</span>
               {item.label}
             </li>
           ))}
 
-          <li
-            style={{ ...styles.menuItem, color: "#ff4d4f" }}
-            onClick={() => window.location.reload()}
-          >
+          <li style={styles.logout} onClick={() => signOut(auth)}>
             🚪 Sign Out
           </li>
         </ul>
@@ -61,22 +62,26 @@ export default function Teachersidebar({
     );
   }
 
-  /* ================= MOBILE BOTTOM NAV ================= */
+  /* ================= MOBILE BOTTOM NAV (SCROLLABLE) ================= */
   return (
     <nav style={styles.bottomNav}>
-      {menuItems.slice(0, 5).map((item) => (
-        <div
-          key={item.tab}
-          style={{
-            ...styles.navItem,
-            color: activeTab === item.tab ? "#2563eb" : "#6b7280",
-          }}
-          onClick={() => setActiveTab(item.tab)}
-        >
-          <div style={{ fontSize: 18 }}>{item.icon}</div>
-          <small>{item.label}</small>
-        </div>
-      ))}
+      <div style={styles.scrollRow}>
+        {menuItems.map((item) => (
+          <div
+            key={item.tab}
+            style={{
+              ...styles.navItem,
+              opacity: activeTab === item.tab ? 1 : 0.65,
+              borderBottom:
+                activeTab === item.tab ? "3px solid #fff" : "3px solid transparent",
+            }}
+            onClick={() => setActiveTab(item.tab)}
+          >
+            <div style={styles.navIcon}>{item.icon}</div>
+            <small>{item.label}</small>
+          </div>
+        ))}
+      </div>
     </nav>
   );
 }
@@ -86,59 +91,80 @@ const styles = {
   sidebar: {
     width: 260,
     height: "100vh",
-    background: "#1f2937",
-    color: "#ffffff",
+    background: "#7a5018",
+    color: "#fff",
     padding: 20,
     position: "fixed",
-    top: 0,
     left: 0,
+    top: 0,
     display: "flex",
     flexDirection: "column",
     zIndex: 1000,
   },
   profile: {
     textAlign: "center",
-    marginBottom: 30,
+    marginBottom: 25,
   },
   avatar: {
-    width: 80,
-    height: 80,
+    width: 75,
+    height: 75,
     borderRadius: "50%",
-    marginBottom: 10,
-    objectFit: "cover",
+    marginBottom: 8,
   },
   menu: {
     listStyle: "none",
     padding: 0,
     margin: 0,
     flex: 1,
-    overflowY: "auto",
   },
   menuItem: {
-    padding: "12px 15px",
-    borderRadius: 8,
+    padding: "12px 14px",
+    borderRadius: 10,
     cursor: "pointer",
-    marginBottom: 6,
     display: "flex",
     alignItems: "center",
-    transition: "background 0.2s",
+    gap: 10,
+    marginBottom: 6,
   },
+  icon: {
+    fontSize: 18,
+  },
+  logout: {
+    marginTop: "auto",
+    padding: "12px",
+    color: "#ffdddd",
+    cursor: "pointer",
+  },
+
+  /* MOBILE */
   bottomNav: {
     position: "fixed",
     bottom: 0,
     left: 0,
     right: 0,
-    height: 64,
-    background: "#ffffff",
-    display: "flex",
-    justifyContent: "space-around",
-    alignItems: "center",
-    borderTop: "1px solid #e5e7eb",
+    height: 78,
+    background: "#7a5018",
     zIndex: 1000,
+    overflow: "hidden",
+  },
+  scrollRow: {
+    display: "flex",
+    overflowX: "auto",
+    height: "100%",
+    alignItems: "center",
+    padding: "0 8px env(safe-area-inset-bottom)",
+    gap: 10,
+    scrollbarWidth: "none", // Firefox
   },
   navItem: {
+    minWidth: 72,
+    flexShrink: 0,
     textAlign: "center",
-    fontSize: 12,
     cursor: "pointer",
+    color: "#fff",
+    paddingBottom: 6,
+  },
+  navIcon: {
+    fontSize: 20,
   },
 };
