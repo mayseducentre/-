@@ -13,8 +13,7 @@ export default function Teachersidebar({
     { label: "Assessment", tab: "assessment", icon: "🧠" },
     { label: "Register Book", tab: "register", icon: "📋" },
     { label: "Announcements", tab: "announcements", icon: "📢" },
-{ label: "Settings", tab: "settings", icon: "fa fa-cog" },
-  ];
+{ label: "Settings", tab: "settings", icon: "fa fa-cog" }
   ];
 
   const isMobile = window.innerWidth <= 768;
