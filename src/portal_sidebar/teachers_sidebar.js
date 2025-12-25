@@ -161,7 +161,7 @@ const styles = {
     flexShrink: 0,
     textAlign: "center",
     cursor: "pointer",
-    color: "#fff",
+    color: "black",
     paddingBottom: 6,
   },
   navIcon: {
