@@ -12,11 +12,9 @@ export default function Teachersidebar({
     { label: "Gradebook", tab: "gradebook", icon: "📊" },
     { label: "Assessment", tab: "assessment", icon: "🧠" },
     { label: "Register Book", tab: "register", icon: "📋" },
-    { label: "Staff Chat", tab: "staffchatroom", icon: "💬" },
-    { label: "Virtual Class", tab: "virtualclass", icon: "💻" },
-    { label: "Calendar", tab: "calendar", icon: "📅" },
-    { label: "Performance", tab: "studentperformance", icon: "📈" },
     { label: "Announcements", tab: "announcements", icon: "📢" },
+{ label: "Settings", tab: "settings", icon: "fa fa-cog" },
+  ];
   ];
 
   const isMobile = window.innerWidth <= 768;
