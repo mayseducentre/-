@@ -86,7 +86,7 @@ export default function SignLog() {
       justifyContent: "center",
       alignItems: "center",
       height: "100vh",
-      backgroundImage: "url('/bg.jpg')",
+      backgroundImage: "url('../bg.jpg')",
       backgroundSize: "cover",
       backgroundPosition: "center",
       fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
