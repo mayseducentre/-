@@ -8,7 +8,7 @@ import StudentPerform from "../component/portal_component/student_performance";
 import LNote from "../component/portal_component/lesson_note";
 import RegisterBook from "../component/portal_component/registerbook";
 import GradeCreate from "../component/portal_component/postgrades";
-import Headn from "../component/neutral_head";
+import HeadN from "../component/neutral_head";
 
 
 import Footer from "../component/footer";
@@ -19,6 +19,7 @@ export default function TeachersPortal({ user }) {
   const isMobile = window.innerWidth <= 768;
 
   return (
+<HeadN />
     <div style={styles.wrapper}>
       <Teachersidebar
         user={user}
