@@ -49,16 +49,7 @@ export default function TeachersPortal({ user }) {
         <Footer />
       </main>
 
-      <ScrollToTop
-        smooth
-        style={{
-          backgroundColor: "#2563eb",
-          borderRadius: "50%",
-          color: "#fff",
-          padding: "10px",
-          fontSize: "18px",
-        }}
-      />
+      <ScrollToTop smooth />
     </div>
   );
 }
@@ -77,6 +68,8 @@ const styles = {
   content: {
     minHeight: "100vh",
     transition: "0.3s",
+margin:0,
+width:"100%"
   },
   card: {
     background: "#ffffff",
