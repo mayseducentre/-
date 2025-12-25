@@ -9,6 +9,8 @@ import LNote from "../component/portal_component/lesson_note";
 import RegisterBook from "../component/portal_component/registerbook";
 import GradeCreate from "../component/portal_component/postgrades";
 import HeadN from "../component/neutral_head";
+import TeacherSettings from "../component/portal_component/teacher_settings";
+
 
 
 import Footer from "../component/footer";
@@ -46,7 +48,7 @@ export default function TeachersPortal({ user }) {
         {activeTab === "register" && <Card><RegisterBook /></Card>}
         {activeTab === "gradebook" && <Card><GradeCreate user={user} /></Card>}
         
-        
+        {activeTab === "settings" && <Card><TeacherSettings user={user} /></Card>} 
         <Footer />
       </main>
 
