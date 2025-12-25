@@ -19,6 +19,7 @@ export default function TeachersPortal({ user }) {
   const isMobile = window.innerWidth <= 768;
 
   return (
+<>
 <HeadN />
     <div style={styles.wrapper}>
       <Teachersidebar
@@ -48,6 +49,7 @@ export default function TeachersPortal({ user }) {
 
       <ScrollToTop smooth />
     </div>
+</>
   );
 }
 
