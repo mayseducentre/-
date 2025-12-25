@@ -21,6 +21,9 @@ export default function TeachersPortal({ user }) {
   return (
 <>
 <HeadN />
+
+<br />
+<br />
     <div style={styles.wrapper}>
       <Teachersidebar
         user={user}
