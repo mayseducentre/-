@@ -5,13 +5,12 @@ import TeacherDash from "../component/portal_component/teacherdash";
 import AssignCreate from "../component/portal_component/assignment_create";
 import Assessment from "../component/portal_component/assessment";
 import StudentPerform from "../component/portal_component/student_performance";
-import StaffChatRoom from "../component/portal_component/staffchatroom";
 import LNote from "../component/portal_component/lesson_note";
 import RegisterBook from "../component/portal_component/registerbook";
 import GradeCreate from "../component/portal_component/postgrades";
-import Meet from "../component/portal_component/meet_online";
-import ViewCalendar from "../component/portal_component/viewcalendar";
-import AnnounceHubView from "../component/portal_component/viewannounce";
+
+
+
 import Footer from "../component/footer";
 import ScrollToTop from "react-scroll-to-top";
 
@@ -38,14 +37,11 @@ export default function TeachersPortal({ user }) {
         {activeTab === "assignments" && <Card><AssignCreate user={user} /></Card>}
         {activeTab === "assessment" && <Card><Assessment /></Card>}
         {activeTab === "studentperformance" && <Card><StudentPerform /></Card>}
-        {activeTab === "staffchatroom" && <Card><StaffChatRoom /></Card>}
         {activeTab === "lessons" && <Card><LNote /></Card>}
         {activeTab === "register" && <Card><RegisterBook /></Card>}
         {activeTab === "gradebook" && <Card><GradeCreate user={user} /></Card>}
-        {activeTab === "virtualclass" && <Card><Meet /></Card>}
-        {activeTab === "calendar" && <Card><ViewCalendar /></Card>}
-        {activeTab === "announcements" && <Card><AnnounceHubView /></Card>}
-
+        
+        
         <Footer />
       </main>
 
