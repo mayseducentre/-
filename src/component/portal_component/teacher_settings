@@ -1,22 +1,35 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   getAuth,
   deleteUser,
   EmailAuthProvider,
   reauthenticateWithCredential,
 } from "firebase/auth";
-import { doc, deleteDoc, updateDoc } from "firebase/firestore";
+import { doc, deleteDoc, setDoc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
 
-/* ================= COMPONENT ================= */
 export default function TeacherSettings({ user }) {
   const auth = getAuth();
-  const currentUser = auth.currentUser;
+  const [currentUser, setCurrentUser] = useState(null);
 
   const [activeSection, setActiveSection] = useState("profile");
-  const [displayName, setDisplayName] = useState(user?.name || "");
+  const [displayName, setDisplayName] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  /* ================= AUTH GUARD ================= */
+  useEffect(() => {
+    const unsub = auth.onAuthStateChanged((u) => {
+      if (!u) return;
+      setCurrentUser(u);
+      setDisplayName(user?.name || "");
+    });
+    return () => unsub();
+  }, [auth, user]);
+
+  if (!currentUser) {
+    return <p style={{ padding: 20 }}>Loading settings...</p>;
+  }
 
   /* ================= UPDATE PROFILE ================= */
   async function updateProfile() {
@@ -27,13 +40,24 @@ export default function TeacherSettings({ user }) {
 
     try {
       setLoading(true);
-      await updateDoc(doc(db, "users", currentUser.uid), {
-        name: displayName,
-        updatedAt: new Date(),
-      });
+
+      const ref = doc(db, "users", currentUser.uid);
+      const snap = await getDoc(ref);
+
+      await setDoc(
+        ref,
+        {
+          name: displayName,
+          email: currentUser.email,
+          updatedAt: new Date(),
+        },
+        { merge: true }
+      );
+
       alert("Profile updated successfully");
     } catch (err) {
-      alert(err.message);
+      console.error(err);
+      alert("Failed to update profile");
     } finally {
       setLoading(false);
     }
@@ -42,13 +66,11 @@ export default function TeacherSettings({ user }) {
   /* ================= DELETE ACCOUNT ================= */
   async function handleDeleteAccount() {
     if (!password) {
-      alert("Enter your password to confirm deletion");
+      alert("Enter your password to confirm");
       return;
     }
 
-    if (!window.confirm("This will permanently delete your account. Continue?")) {
-      return;
-    }
+    if (!window.confirm("This action is permanent. Continue?")) return;
 
     try {
       setLoading(true);
@@ -58,20 +80,16 @@ export default function TeacherSettings({ user }) {
         password
       );
 
-      // Re-authenticate
       await reauthenticateWithCredential(currentUser, credential);
 
-      // Delete Firestore user document
       await deleteDoc(doc(db, "users", currentUser.uid));
-
-      // Delete Firebase Auth account
       await deleteUser(currentUser);
 
       alert("Account deleted successfully");
-      window.location.href = "#/";
+      window.location.href = "/";
     } catch (err) {
       console.error(err);
-      alert(err.message || "Failed to delete account");
+      alert(err.message || "Account deletion failed");
     } finally {
       setLoading(false);
     }
@@ -80,15 +98,13 @@ export default function TeacherSettings({ user }) {
   /* ================= UI ================= */
   return (
     <div style={styles.wrapper}>
-      {/* Sidebar */}
       <aside style={styles.side}>
         {["profile", "security", "danger"].map((tab) => (
           <button
             key={tab}
             style={{
               ...styles.sideBtn,
-              background:
-                activeSection === tab ? "#7a5018" : "transparent",
+              background: activeSection === tab ? "#7a5018" : "transparent",
               color: activeSection === tab ? "#fff" : "#333",
             }}
             onClick={() => setActiveSection(tab)}
@@ -100,9 +116,7 @@ export default function TeacherSettings({ user }) {
         ))}
       </aside>
 
-      {/* Content */}
       <section style={styles.content}>
-        {/* PROFILE */}
         {activeSection === "profile" && (
           <Block title="Profile Information">
             <input
@@ -113,7 +127,7 @@ export default function TeacherSettings({ user }) {
             />
             <input
               style={{ ...styles.input, background: "#f5f5f5" }}
-              value={currentUser?.email || ""}
+              value={currentUser.email}
               disabled
             />
             <button
@@ -126,39 +140,32 @@ export default function TeacherSettings({ user }) {
           </Block>
         )}
 
-        {/* SECURITY */}
         {activeSection === "security" && (
           <Block title="Account Security">
             <p style={styles.text}>
-              Email verification and password updates are managed by Firebase.
-            </p>
-            <p style={styles.text}>
-              Always keep your credentials secure.
+              Your authentication is securely handled by Firebase.
             </p>
           </Block>
         )}
 
-        {/* DANGER */}
         {activeSection === "danger" && (
           <Block title="Danger Zone">
             <p style={styles.dangerText}>
-              Deleting your account is permanent and irreversible.
+              This action permanently deletes your account.
             </p>
-
             <input
               type="password"
-              placeholder="Enter password to confirm"
+              placeholder="Confirm password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               style={styles.input}
             />
-
             <button
               style={styles.dangerBtn}
               onClick={handleDeleteAccount}
               disabled={loading}
             >
-              {loading ? "Deleting..." : "Delete My Account"}
+              {loading ? "Deleting..." : "Delete Account"}
             </button>
           </Block>
         )}
@@ -167,7 +174,7 @@ export default function TeacherSettings({ user }) {
   );
 }
 
-/* ================= REUSABLE BLOCK ================= */
+/* ================= UI BLOCK ================= */
 const Block = ({ title, children }) => (
   <div style={styles.block}>
     <h3 style={styles.blockTitle}>{title}</h3>
@@ -177,42 +184,31 @@ const Block = ({ title, children }) => (
 
 /* ================= STYLES ================= */
 const styles = {
-  wrapper: {
-    display: "flex",
-    minHeight: "100vh",
-    background: "#f4f7fb",
-  },
+  wrapper: { display: "flex", minHeight: "100vh", background: "#f4f7fb" },
   side: {
     width: 220,
-    background: "#ffffff",
+    background: "#fff",
     padding: 15,
     borderRight: "1px solid #eee",
   },
   sideBtn: {
     width: "100%",
-    padding: "12px",
+    padding: 12,
     borderRadius: 10,
     border: "none",
     marginBottom: 10,
-    fontWeight: 600,
     cursor: "pointer",
-    transition: "0.2s",
+    fontWeight: 600,
   },
-  content: {
-    flex: 1,
-    padding: 25,
-  },
+  content: { flex: 1, padding: 25 },
   block: {
     background: "#fff",
     borderRadius: 14,
     padding: 25,
     boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
-    maxWidth: 500,
+    maxWidth: 520,
   },
-  blockTitle: {
-    marginBottom: 15,
-    color: "#7a5018",
-  },
+  blockTitle: { marginBottom: 15, color: "#7a5018" },
   input: {
     width: "100%",
     padding: 12,
@@ -226,8 +222,8 @@ const styles = {
     padding: 12,
     border: "none",
     borderRadius: 10,
-    cursor: "pointer",
     fontWeight: 600,
+    cursor: "pointer",
   },
   dangerBtn: {
     background: "#b91c1c",
@@ -235,16 +231,9 @@ const styles = {
     padding: 12,
     border: "none",
     borderRadius: 10,
+    fontWeight: 600,
     cursor: "pointer",
-    fontWeight: 600,
   },
-  text: {
-    fontSize: 14,
-    color: "#555",
-  },
-  dangerText: {
-    color: "#b91c1c",
-    marginBottom: 10,
-    fontWeight: 600,
-  },
+  text: { fontSize: 14, color: "#555" },
+  dangerText: { color: "#b91c1c", fontWeight: 600 },
 };
