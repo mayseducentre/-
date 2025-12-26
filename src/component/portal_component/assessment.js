@@ -1,7 +1,7 @@
 // Assessment.upgraded.optionB.js
 import React, { useEffect, useMemo, useState } from "react";
 import Breadcrumb from "../breadcrumb";
-import HeadN from "../neutral_header";
+import HeadN from "../neutral_head";
 
 /**
  * Assessment.upgraded.optionB.js
