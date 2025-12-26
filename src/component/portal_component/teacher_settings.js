@@ -14,8 +14,32 @@ export default function TeacherSettings({ user }) {
 
   const [activeSection, setActiveSection] = useState("profile");
   const [displayName, setDisplayName] = useState("");
+  const [subject, setSubject] = useState("");
+  const [contact, setContact] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const subjects = [
+    "Mathematics",
+    "English Language",
+    "Integrated Science",
+    "Social Studies",
+    "ICT",
+    "Physics",
+    "Chemistry",
+    "Biology",
+    "Economics",
+    "Geography",
+    "History",
+    "Government",
+    "French",
+    "Religious & Moral Education",
+    "Physical Education",
+    "Creative Arts",
+    "Business Studies",
+    "Accounting",
+    "Literature",
+  ];
 
   /* ================= RESPONSIVE ================= */
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -28,13 +52,20 @@ export default function TeacherSettings({ user }) {
 
   /* ================= AUTH GUARD ================= */
   useEffect(() => {
-    const unsub = auth.onAuthStateChanged((u) => {
+    const unsub = auth.onAuthStateChanged(async (u) => {
       if (!u) return;
       setCurrentUser(u);
-      setDisplayName(user?.name || "");
+
+      const snap = await getDoc(doc(db, "users", u.uid));
+      if (snap.exists()) {
+        const data = snap.data();
+        setDisplayName(data.name || "");
+        setSubject(data.subject || "");
+        setContact(data.contact || "");
+      }
     });
     return () => unsub();
-  }, [auth, user]);
+  }, [auth]);
 
   if (!currentUser) {
     return <p style={{ padding: 20 }}>Loading settings...</p>;
@@ -47,18 +78,24 @@ export default function TeacherSettings({ user }) {
       return;
     }
 
+    if (!subject || !contact) {
+      alert("Subject and contact are required");
+      return;
+    }
+
     try {
       setLoading(true);
-      const ref = doc(db, "users", currentUser.uid);
       await setDoc(
-        ref,
+        doc(db, "users", currentUser.uid),
         {
           name: displayName,
-          email: currentUser.email,
+          subject,
+          contact,
           updatedAt: new Date(),
         },
         { merge: true }
       );
+
       alert("Profile updated successfully");
     } catch (err) {
       console.error(err);
@@ -107,13 +144,12 @@ export default function TeacherSettings({ user }) {
         flexDirection: isMobile ? "column" : "row",
       }}
     >
-      {/* SIDEBAR / TABS */}
+      {/* SIDEBAR */}
       <aside
         style={{
           ...styles.side,
           width: isMobile ? "100%" : 220,
           display: isMobile ? "flex" : "block",
-          flexDirection: isMobile ? "row" : "column",
           borderRight: isMobile ? "none" : "1px solid #eee",
           borderBottom: isMobile ? "1px solid #eee" : "none",
         }}
@@ -123,10 +159,6 @@ export default function TeacherSettings({ user }) {
             key={tab}
             style={{
               ...styles.sideBtn,
-              flex: isMobile ? 1 : "unset",
-              marginBottom: isMobile ? 0 : 10,
-              marginRight: isMobile ? 6 : 0,
-              fontSize: isMobile ? 14 : 15,
               background:
                 activeSection === tab ? "#7a5018" : "transparent",
               color: activeSection === tab ? "#fff" : "#333",
@@ -141,25 +173,36 @@ export default function TeacherSettings({ user }) {
       </aside>
 
       {/* CONTENT */}
-      <section
-        style={{
-          ...styles.content,
-          padding: isMobile ? 15 : 25,
-        }}
-      >
+      <section style={styles.content}>
         {activeSection === "profile" && (
-          <Block title="Profile Information">
+          <Block title="Teacher Profile">
             <input
               style={styles.input}
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
               placeholder="Full Name"
             />
+
+            <select
+              style={styles.input}
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
+            >
+              <option value="">Select Subject</option>
+              {subjects.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+
             <input
-              style={{ ...styles.input, background: "#f5f5f5" }}
-              value={currentUser.email}
-              disabled
+              style={styles.input}
+              value={contact}
+              onChange={(e) => setContact(e.target.value)}
+              placeholder="Contact Number"
             />
+
             <button
               style={styles.primaryBtn}
               onClick={updateProfile}
@@ -173,7 +216,7 @@ export default function TeacherSettings({ user }) {
         {activeSection === "security" && (
           <Block title="Account Security">
             <p style={styles.text}>
-              Your authentication is securely handled by Firebase.
+              Authentication is securely handled by Firebase.
             </p>
           </Block>
         )}
@@ -230,16 +273,17 @@ const styles = {
     border: "none",
     cursor: "pointer",
     fontWeight: 600,
+    marginBottom: 8,
   },
   content: {
     flex: 1,
+    padding: 20,
   },
   block: {
     background: "#fff",
     borderRadius: 14,
     padding: 20,
     boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
-    width: "100%",
     maxWidth: 520,
     margin: "0 auto",
   },
