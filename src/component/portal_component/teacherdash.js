@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { collection, getDocs, query, orderBy, doc, getDoc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  orderBy,
+  doc,
+  getDoc,
+} from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { db } from "../../firebase";
 import MeetStaff from "./meet_teachers";
@@ -9,61 +16,51 @@ export default function TeacherDash() {
   const user = auth.currentUser;
 
   const [profile, setProfile] = useState(null);
+  const [stats, setStats] = useState({
+    students: 0,
+    teachers: 0,
+    parents: 0,
+    subjects: 0,
+  });
 
-  const [students, setStudents] = useState([]);
-  const [teachers, setTeachers] = useState([]);
-  const [parents, setParents] = useState([]);
-  const [subjects, setSubjects] = useState([]);
-
-  /* ================= FETCH LOGGED-IN STAFF PROFILE ================= */
+  /* ================= FETCH PROFILE ================= */
   useEffect(() => {
     if (!user) return;
 
     async function fetchProfile() {
-      try {
-        const snap = await getDoc(doc(db, "users", user.uid));
-        if (snap.exists()) {
-          setProfile(snap.data());
-        }
-      } catch (err) {
-        console.error("Error fetching profile:", err);
-      }
+      const snap = await getDoc(doc(db, "users", user.uid));
+      if (snap.exists()) setProfile(snap.data());
     }
 
     fetchProfile();
   }, [user]);
 
-  /* ================= FETCH COUNTS ================= */
+  /* ================= FETCH STATS ================= */
   useEffect(() => {
     async function fetchUsers() {
-      try {
-        const q = query(collection(db, "users"), orderBy("createdAt", "desc"));
-        const snap = await getDocs(q);
+      const q = query(collection(db, "users"), orderBy("createdAt", "desc"));
+      const snap = await getDocs(q);
+      const users = snap.docs.map((d) => d.data());
 
-        const allUsers = snap.docs.map((doc) => doc.data());
+      const staff = users.filter((u) => u.role === "staff");
 
-        setStudents(allUsers.filter((u) => u.role === "student"));
-
-        const staff = allUsers.filter((u) => u.role === "staff");
-        setTeachers(staff);
-
-        setParents(allUsers.filter((u) => u.role === "parent"));
-
-        const subjList = staff.map((u) => u.subject).filter(Boolean);
-        setSubjects([...new Set(subjList)]);
-      } catch (err) {
-        console.error("Error fetching users:", err);
-      }
+      setStats({
+        students: users.filter((u) => u.role === "student").length,
+        teachers: staff.length,
+        parents: users.filter((u) => u.role === "parent").length,
+        subjects: [...new Set(staff.map((s) => s.subject).filter(Boolean))]
+          .length,
+      });
     }
 
     fetchUsers();
   }, []);
 
   return (
-    <div style={styles.wrapper}>
-      {/* ================= HEADER / PROFILE ================= */}
-      <div style={styles.header}>
-        <div style={styles.profileRow}>
+    <div style={styles.page}>
+      {/* ================= HERO ================= */}
+      <section style={styles.hero}>
+        <div style={styles.heroContent}>
           <img
             src={profile?.photoURL || "/default-avatar.png"}
             alt="profile"
@@ -71,31 +68,25 @@ export default function TeacherDash() {
           />
 
           <div>
-            <h2 style={styles.username}>
-              {profile?.name || "Staff Member"}
-            </h2>
-
-            <p style={styles.email}>
-              {profile?.email || user?.email}
-            </p>
-
-            <p style={styles.uid}>
+            <h2 style={styles.name}>{profile?.name || "Teacher"}</h2>
+            <p style={styles.email}>{profile?.email || user?.email}</p>
+            <span style={styles.staffId}>
               Staff ID: {profile?.uniqueId || "—"}
-            </p>
+            </span>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* ================= STATS ================= */}
-      <div style={styles.cardsContainer}>
-        <StatCard title="Students" value={students.length} />
-        <StatCard title="Teachers" value={teachers.length} />
-        <StatCard title="Parents" value={parents.length} />
-        <StatCard title="Subjects" value={subjects.length} />
-      </div>
+      <section style={styles.grid}>
+        <StatCard title="Students" value={stats.students} icon="🎓" />
+        <StatCard title="Teachers" value={stats.teachers} icon="👩🏽‍🏫" />
+        <StatCard title="Parents" value={stats.parents} icon="👨‍👩‍👧" />
+        <StatCard title="Subjects" value={stats.subjects} icon="📚" />
+      </section>
 
-      {/* ================= MEET STAFF ================= */}
-      <section style={{ marginTop: 40 }}>
+      {/* ================= STAFF ================= */}
+      <section style={{ marginTop: 50 }}>
         <h3 style={styles.sectionTitle}>Meet Your Staff</h3>
         <MeetStaff />
       </section>
@@ -104,94 +95,116 @@ export default function TeacherDash() {
 }
 
 /* ================= STAT CARD ================= */
-const StatCard = ({ title, value }) => (
-  <div style={styles.card}>
-    <span style={styles.cardTitle}>{title}</span>
-    <span style={styles.cardValue}>{value}</span>
+const StatCard = ({ title, value, icon }) => (
+  <div
+    style={styles.card}
+    onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-6px)")}
+    onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
+  >
+    <div style={styles.cardIcon}>{icon}</div>
+    <div>
+      <p style={styles.cardTitle}>{title}</p>
+      <h2 style={styles.cardValue}>{value}</h2>
+    </div>
   </div>
 );
 
 /* ================= STYLES ================= */
 const styles = {
-  wrapper: {
+  page: {
     padding: 20,
-    width:"100%"
+    maxWidth: 1300,
     margin: "0 auto",
     fontFamily: "Inter, system-ui, sans-serif",
+    animation: "fadeIn 0.6s ease",
   },
 
-  header: {
-    background: "linear-gradient(135deg, #ffedd5, #fed7aa)",
-    borderRadius: 15,
-    padding: 20,
-    marginBottom: 30,
-
+  hero: {
+    background:
+      "linear-gradient(135deg, #7a5018, #d6a75c)",
+    borderRadius: 22,
+    padding: 24,
+    color: "#fff",
+    marginBottom: 35,
+    boxShadow: "0 20px 40px rgba(0,0,0,0.18)",
   },
 
-  profileRow: {
+  heroContent: {
     display: "flex",
     alignItems: "center",
-    gap: 16,
+    gap: 18,
     flexWrap: "wrap",
-    width:"100%"
   },
 
   avatar: {
-    width: 82,
-    height: 82,
+    width: 90,
+    height: 90,
     borderRadius: "50%",
     objectFit: "cover",
-    background: "#fff",
-    border: "3px solid #fff",
+    border: "3px solid rgba(255,255,255,0.7)",
   },
 
-  username: {
-    fontSize: 22,
-    fontWeight: 600,
+  name: {
+    fontSize: 24,
+    fontWeight: 700,
     margin: 0,
   },
 
   email: {
     fontSize: 14,
-    color: "#555",
-    marginTop: 2,
-  },
-
-  uid: {
-    fontSize: 13,
-    color: "#7a5018",
-    fontWeight: 600,
+    opacity: 0.9,
     marginTop: 4,
   },
 
-  cardsContainer: {
+  staffId: {
+    display: "inline-block",
+    marginTop: 6,
+    padding: "4px 10px",
+    borderRadius: 999,
+    background: "rgba(255,255,255,0.15)",
+    fontSize: 13,
+    fontWeight: 600,
+  },
+
+  grid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
-    gap: 16,
+    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+    gap: 20,
   },
 
   card: {
-    background: "#fff",
-    borderRadius: 14,
-    padding: 18,
-    boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
-    textAlign: "center",
+    background: "rgba(255,255,255,0.9)",
+    backdropFilter: "blur(8px)",
+    borderRadius: 18,
+    padding: 22,
+    display: "flex",
+    alignItems: "center",
+    gap: 16,
+    boxShadow: "0 12px 30px rgba(0,0,0,0.12)",
+    transition: "all 0.3s ease",
+    cursor: "pointer",
+  },
+
+  cardIcon: {
+    fontSize: 34,
   },
 
   cardTitle: {
-    fontSize: 13,
-    color: "#777",
+    fontSize: 14,
+    color: "#666",
+    marginBottom: 4,
   },
 
   cardValue: {
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: 700,
     color: "#7a5018",
+    margin: 0,
   },
 
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: 600,
+    fontSize: 22,
+    fontWeight: 700,
     marginBottom: 16,
   },
 };
