@@ -17,6 +17,15 @@ export default function TeacherSettings({ user }) {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+  /* ================= RESPONSIVE ================= */
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const resize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", resize);
+    return () => window.removeEventListener("resize", resize);
+  }, []);
+
   /* ================= AUTH GUARD ================= */
   useEffect(() => {
     const unsub = auth.onAuthStateChanged((u) => {
@@ -40,10 +49,7 @@ export default function TeacherSettings({ user }) {
 
     try {
       setLoading(true);
-
       const ref = doc(db, "users", currentUser.uid);
-      const snap = await getDoc(ref);
-
       await setDoc(
         ref,
         {
@@ -53,7 +59,6 @@ export default function TeacherSettings({ user }) {
         },
         { merge: true }
       );
-
       alert("Profile updated successfully");
     } catch (err) {
       console.error(err);
@@ -81,7 +86,6 @@ export default function TeacherSettings({ user }) {
       );
 
       await reauthenticateWithCredential(currentUser, credential);
-
       await deleteDoc(doc(db, "users", currentUser.uid));
       await deleteUser(currentUser);
 
@@ -97,14 +101,34 @@ export default function TeacherSettings({ user }) {
 
   /* ================= UI ================= */
   return (
-    <div style={styles.wrapper}>
-      <aside style={styles.side}>
+    <div
+      style={{
+        ...styles.wrapper,
+        flexDirection: isMobile ? "column" : "row",
+      }}
+    >
+      {/* SIDEBAR / TABS */}
+      <aside
+        style={{
+          ...styles.side,
+          width: isMobile ? "100%" : 220,
+          display: isMobile ? "flex" : "block",
+          flexDirection: isMobile ? "row" : "column",
+          borderRight: isMobile ? "none" : "1px solid #eee",
+          borderBottom: isMobile ? "1px solid #eee" : "none",
+        }}
+      >
         {["profile", "security", "danger"].map((tab) => (
           <button
             key={tab}
             style={{
               ...styles.sideBtn,
-              background: activeSection === tab ? "#7a5018" : "transparent",
+              flex: isMobile ? 1 : "unset",
+              marginBottom: isMobile ? 0 : 10,
+              marginRight: isMobile ? 6 : 0,
+              fontSize: isMobile ? 14 : 15,
+              background:
+                activeSection === tab ? "#7a5018" : "transparent",
               color: activeSection === tab ? "#fff" : "#333",
             }}
             onClick={() => setActiveSection(tab)}
@@ -116,7 +140,13 @@ export default function TeacherSettings({ user }) {
         ))}
       </aside>
 
-      <section style={styles.content}>
+      {/* CONTENT */}
+      <section
+        style={{
+          ...styles.content,
+          padding: isMobile ? 15 : 25,
+        }}
+      >
         {activeSection === "profile" && (
           <Block title="Profile Information">
             <input
@@ -184,42 +214,52 @@ const Block = ({ title, children }) => (
 
 /* ================= STYLES ================= */
 const styles = {
-  wrapper: { display: "flex", minHeight: "100vh", background: "#f4f7fb" },
+  wrapper: {
+    display: "flex",
+    minHeight: "100vh",
+    background: "#f4f7fb",
+  },
   side: {
-    width: 220,
     background: "#fff",
-    padding: 15,
-    borderRight: "1px solid #eee",
+    padding: 10,
   },
   sideBtn: {
     width: "100%",
     padding: 12,
     borderRadius: 10,
     border: "none",
-    marginBottom: 10,
     cursor: "pointer",
     fontWeight: 600,
   },
-  content: { flex: 1, padding: 25 },
+  content: {
+    flex: 1,
+  },
   block: {
     background: "#fff",
     borderRadius: 14,
-    padding: 25,
+    padding: 20,
     boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
+    width: "100%",
     maxWidth: 520,
+    margin: "0 auto",
   },
-  blockTitle: { marginBottom: 15, color: "#7a5018" },
+  blockTitle: {
+    marginBottom: 15,
+    color: "#7a5018",
+  },
   input: {
     width: "100%",
-    padding: 12,
+    padding: 14,
     borderRadius: 10,
     border: "1px solid #ccc",
     marginBottom: 12,
+    fontSize: 15,
   },
   primaryBtn: {
     background: "#7a5018",
     color: "#fff",
-    padding: 12,
+    padding: 14,
+    width: "100%",
     border: "none",
     borderRadius: 10,
     fontWeight: 600,
@@ -228,12 +268,20 @@ const styles = {
   dangerBtn: {
     background: "#b91c1c",
     color: "#fff",
-    padding: 12,
+    padding: 14,
+    width: "100%",
     border: "none",
     borderRadius: 10,
     fontWeight: 600,
     cursor: "pointer",
   },
-  text: { fontSize: 14, color: "#555" },
-  dangerText: { color: "#b91c1c", fontWeight: 600 },
+  text: {
+    fontSize: 14,
+    color: "#555",
+  },
+  dangerText: {
+    color: "#b91c1c",
+    fontWeight: 600,
+    marginBottom: 10,
+  },
 };
