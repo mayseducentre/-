@@ -15,6 +15,16 @@ export default function Accountform() {
   const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // NEW STATES
+  const [contact, setContact] = useState("");
+  const [subject, setSubject] = useState("");
+  const [studentId, setStudentId] = useState("");
+
+  // GENERATE UNIQUE ID
+  const generateId = (prefix) => {
+    return `${prefix}-${Math.floor(100000 + Math.random() * 900000)}`;
+  };
+
   async function createAccount(e) {
     e.preventDefault();
 
@@ -25,6 +35,17 @@ export default function Accountform() {
 
     if (password !== confirm) {
       alert("Passwords do not match");
+      return;
+    }
+
+    // ROLE VALIDATIONS
+    if (role === "staff" && (!subject || !contact)) {
+      alert("Teacher must provide subject and contact");
+      return;
+    }
+
+    if (role === "parent" && (!contact || !studentId)) {
+      alert("Parent must provide contact and student ID");
       return;
     }
 
@@ -39,11 +60,21 @@ export default function Accountform() {
 
       await sendEmailVerification(cred.user);
 
+      // ASSIGN PREFIX
+      let uniqueId = "";
+      if (role === "student") uniqueId = generateId("Stu");
+      if (role === "staff") uniqueId = generateId("Tch");
+      if (role === "parent") uniqueId = generateId("Par");
+
       await setDoc(doc(db, "users", cred.user.uid), {
         uid: cred.user.uid,
+        uniqueId,
         name,
         email,
         role,
+        contact: contact || null,
+        subject: role === "staff" ? subject : null,
+        linkedStudentId: role === "parent" ? studentId : null,
         country: "Ghana",
         status: "active",
         createdAt: new Date(),
@@ -56,19 +87,24 @@ export default function Accountform() {
           to_name: name,
           user_email: email,
           mays_msg:
-            "Your account has been created successfully.\n\n" +
-            "Please check your email and VERIFY your account before logging in.",
+            `Your account has been created successfully.\n\n` +
+            `Account ID: ${uniqueId}\n\n` +
+            `Please check your email and VERIFY your account before logging in.`,
         },
         "VIB8bKSD-ZS3RCCHD"
       );
 
       alert("Account created! Please verify your email before login.");
 
+      // RESET
       setName("");
       setEmail("");
       setPassword("");
       setConfirm("");
       setRole("student");
+      setContact("");
+      setSubject("");
+      setStudentId("");
     } catch (err) {
       alert(err.message);
     }
@@ -188,6 +224,41 @@ export default function Accountform() {
             <option value="staff">Teacher</option>
             <option value="parent">Parent</option>
           </select>
+
+          {/* CONDITIONAL FIELDS */}
+          {role === "staff" && (
+            <>
+              <input
+                style={input}
+                placeholder="Subject Taught"
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+              />
+              <input
+                style={input}
+                placeholder="Contact Number"
+                value={contact}
+                onChange={(e) => setContact(e.target.value)}
+              />
+            </>
+          )}
+
+          {role === "parent" && (
+            <>
+              <input
+                style={input}
+                placeholder="Contact Number"
+                value={contact}
+                onChange={(e) => setContact(e.target.value)}
+              />
+              <input
+                style={input}
+                placeholder="Student ID"
+                value={studentId}
+                onChange={(e) => setStudentId(e.target.value)}
+              />
+            </>
+          )}
 
           <div style={hint}>
             A verification email will be sent after account creation.
