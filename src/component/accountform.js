@@ -25,21 +25,13 @@ export default function Accountform() {
     "English Language",
     "Integrated Science",
     "Social Studies",
-    "ICT",
-    "Physics",
-    "Chemistry",
-    "Biology",
-    "Economics",
-    "Geography",
+    "Computing",
     "History",
-    "Government",
     "French",
     "Religious & Moral Education",
     "Physical Education",
     "Creative Arts",
-    "Business Studies",
-    "Accounting",
-    "Literature",
+    "Other",
   ];
 
   // GENERATE UNIQUE ID
