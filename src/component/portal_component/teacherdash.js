@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
 import { db } from "../../firebase";
-import MeetStaff from "./meet_staff";
+import MeetStaff from "./meet_teachers";
 
 export default function TeacherDash() {
   const [students, setStudents] = useState([]);
