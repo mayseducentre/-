@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { db } from "../../firebase";
 import MeetStaff from "./meet_teachers";
 
@@ -14,15 +14,15 @@ export default function TeacherDash() {
       try {
         const q = query(collection(db, "users"), orderBy("createdAt", "desc"));
         const snap = await getDocs(q);
-        const allUsers = snap.docs.map(doc => doc.data());
+        const allUsers = snap.docs.map((doc) => doc.data());
 
-        setStudents(allUsers.filter(u => u.role === "student"));
-        const staff = allUsers.filter(u => u.role === "staff");
+        setStudents(allUsers.filter((u) => u.role === "student"));
+        const staff = allUsers.filter((u) => u.role === "staff");
         setTeachers(staff);
-        setParents(allUsers.filter(u => u.role === "parent"));
+        setParents(allUsers.filter((u) => u.role === "parent"));
 
         // Unique subjects from teachers
-        const subjList = staff.map(u => u.subject).filter(Boolean);
+        const subjList = staff.map((u) => u.subject).filter(Boolean);
         setSubjects([...new Set(subjList)]);
       } catch (err) {
         console.error("Error fetching users:", err);
@@ -32,47 +32,120 @@ export default function TeacherDash() {
   }, []);
 
   return (
-    <div style={{ padding: 15 }}>
-      <h5 style={{ marginBottom: 20, color: "teal" }}>Teacher Dashboard</h5>
+    <div style={styles.wrapper}>
+      <h2 style={styles.heading}>Teacher Dashboard</h2>
 
       {/* Dashboard Cards */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 20 }}>
-        <Card title="Total Students" value={students.length} />
-        <Card title="Total Teachers" value={teachers.length} />
-        <Card title="Total Parents" value={parents.length} />
-        <Card title="Subjects Taught" value={subjects.length} />
+      <div style={styles.cardsContainer}>
+        <Card title="Total Students" value={students.length} color="#16a34a" />
+        <Card title="Total Teachers" value={teachers.length} color="#2563eb" />
+        <Card title="Total Parents" value={parents.length} color="#f59e0b" />
+        <Card title="Subjects Taught" value={subjects.length} color="#7a5018" />
       </div>
 
       {/* Meet Staff */}
-      <div style={{ marginTop: 40 }}>
-        <h3 style={{ color: "#7a5018", marginBottom: 15 }}>Meet Your Staff</h3>
+      <section style={{ marginTop: 40 }}>
+        <h3 style={styles.subHeading}>Meet Your Staff</h3>
         <MeetStaff />
-      </div>
+      </section>
+
+      {/* Recent Activity Placeholder */}
+      <section style={{ marginTop: 40 }}>
+        <h3 style={styles.subHeading}>Recent Announcements</h3>
+        <div style={styles.activityGrid}>
+          <ActivityCard
+            title="School Closed on Friday"
+            desc="All classes are suspended due to maintenance."
+            time="2 hours ago"
+          />
+          <ActivityCard
+            title="Math Quiz This Week"
+            desc="All students must prepare for the Math Quiz scheduled on Wednesday."
+            time="1 day ago"
+          />
+        </div>
+      </section>
     </div>
   );
 }
 
-// Reusable Card Component
-const Card = ({ title, value }) => (
+/* ================= CARD COMPONENT ================= */
+const Card = ({ title, value, color }) => (
   <div
     style={{
-      flex: "1 1 220px",
-      background: "#fff",
-      padding: 15,
-      borderRadius: 12,
-      boxShadow: "0 8px 20px rgba(0,0,0,0.1)",
-      minHeight: 100,
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",
-      transition: "transform 0.2s",
-      cursor: "pointer",
+      ...styles.card,
+      borderLeft: `5px solid ${color}`,
     }}
-    onMouseEnter={e => e.currentTarget.style.transform="scale(1.05)"}
-    onMouseLeave={e => e.currentTarget.style.transform="scale(1)"}
   >
-    <h5 style={{ marginBottom: 10, color: "#333" }}>{title}</h5>
-    <h3 style={{ color: "#7a5018" }}>{value}</h3>
+    <h4 style={styles.cardTitle}>{title}</h4>
+    <p style={{ ...styles.cardValue, color }}>{value}</p>
   </div>
 );
+
+/* ================= ACTIVITY CARD ================= */
+const ActivityCard = ({ title, desc, time }) => (
+  <div style={styles.activityCard}>
+    <h4 style={{ marginBottom: 8 }}>{title}</h4>
+    <p style={{ marginBottom: 8, color: "#555" }}>{desc}</p>
+    <small style={{ color: "#888" }}>{time}</small>
+  </div>
+);
+
+/* ================= STYLES ================= */
+const styles = {
+  wrapper: {
+    padding: 20,
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+    color: "#333",
+  },
+  heading: {
+    fontSize: 28,
+    fontWeight: 600,
+    marginBottom: 20,
+    color: "#2563eb",
+  },
+  subHeading: {
+    fontSize: 22,
+    fontWeight: 600,
+    marginBottom: 15,
+    color: "#7a5018",
+  },
+  cardsContainer: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+    gap: 20,
+  },
+  card: {
+    background: "#fff",
+    borderRadius: 12,
+    padding: 20,
+    boxShadow: "0 8px 25px rgba(0,0,0,0.08)",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    cursor: "pointer",
+    transition: "transform 0.2s",
+  },
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: 500,
+    marginBottom: 10,
+  },
+  cardValue: {
+    fontSize: 28,
+    fontWeight: 600,
+  },
+  activityGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+    gap: 20,
+  },
+  activityCard: {
+    background: "#fff",
+    borderRadius: 12,
+    padding: 20,
+    boxShadow: "0 6px 20px rgba(0,0,0,0.06)",
+    transition: "transform 0.2s",
+    cursor: "pointer",
+  },
+};
