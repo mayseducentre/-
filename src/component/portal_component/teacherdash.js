@@ -125,7 +125,7 @@ const styles = {
     borderRadius: 15,
     padding: 20,
     marginBottom: 30,
-width:"100%"
+
   },
 
   profileRow: {
@@ -133,6 +133,7 @@ width:"100%"
     alignItems: "center",
     gap: 16,
     flexWrap: "wrap",
+    width:"100%"
   },
 
   avatar: {
