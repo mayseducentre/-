@@ -115,16 +115,17 @@ const StatCard = ({ title, value }) => (
 const styles = {
   wrapper: {
     padding: 20,
-    maxWidth: 1200,
+    width:"100%"
     margin: "0 auto",
     fontFamily: "Inter, system-ui, sans-serif",
   },
 
   header: {
     background: "linear-gradient(135deg, #ffedd5, #fed7aa)",
-    borderRadius: 18,
+    borderRadius: 15,
     padding: 20,
     marginBottom: 30,
+width:"100%"
   },
 
   profileRow: {
