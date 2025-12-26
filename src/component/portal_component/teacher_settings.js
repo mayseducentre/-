@@ -11,8 +11,9 @@ import { db } from "../../firebase";
 export default function TeacherSettings({ user }) {
   const auth = getAuth();
   const [currentUser, setCurrentUser] = useState(null);
-
   const [activeSection, setActiveSection] = useState("profile");
+
+  // Core fields
   const [displayName, setDisplayName] = useState("");
   const [subject, setSubject] = useState("");
   const [contact, setContact] = useState("");
@@ -20,6 +21,13 @@ export default function TeacherSettings({ user }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Additional fields
+  const [department, setDepartment] = useState("");
+  const [room, setRoom] = useState("");
+  const [experience, setExperience] = useState("");
+  const [profilePic, setProfilePic] = useState("");
+  const [bio, setBio] = useState("");
 
   const subjects = [
     "Mathematics",
@@ -37,7 +45,6 @@ export default function TeacherSettings({ user }) {
 
   /* ================= RESPONSIVE ================= */
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-
   useEffect(() => {
     const resize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener("resize", resize);
@@ -58,6 +65,11 @@ export default function TeacherSettings({ user }) {
         setContact(data.contact || "");
         setUniqueId(data.uniqueId || "");
         setEmail(data.email || "");
+        setDepartment(data.department || "");
+        setRoom(data.room || "");
+        setExperience(data.experience || "");
+        setProfilePic(data.photoURL || "");
+        setBio(data.bio || "");
       }
     });
     return () => unsub();
@@ -73,7 +85,6 @@ export default function TeacherSettings({ user }) {
       alert("Name cannot be empty");
       return;
     }
-
     if (!subject || !contact) {
       alert("Subject and contact are required");
       return;
@@ -87,11 +98,15 @@ export default function TeacherSettings({ user }) {
           name: displayName,
           subject,
           contact,
+          department,
+          room,
+          experience,
+          bio,
+          photoURL: profilePic,
           updatedAt: new Date(),
         },
         { merge: true }
       );
-
       alert("Profile updated successfully");
     } catch (err) {
       console.error(err);
@@ -107,21 +122,17 @@ export default function TeacherSettings({ user }) {
       alert("Enter your password to confirm");
       return;
     }
-
     if (!window.confirm("This action is permanent. Continue?")) return;
 
     try {
       setLoading(true);
-
       const credential = EmailAuthProvider.credential(
         currentUser.email,
         password
       );
-
       await reauthenticateWithCredential(currentUser, credential);
       await deleteDoc(doc(db, "users", currentUser.uid));
       await deleteUser(currentUser);
-
       alert("Account deleted successfully");
       window.location.href = "/";
     } catch (err) {
@@ -172,15 +183,13 @@ export default function TeacherSettings({ user }) {
       <section style={styles.content}>
         {activeSection === "profile" && (
           <Block title="Teacher Profile">
-            {/* Display ID (readonly) */}
+            {/* Read-only fields */}
             <input
               style={{ ...styles.input, background: "#f5f5f5" }}
               value={uniqueId}
               disabled
               placeholder="Your ID"
             />
-
-            {/* Display email (readonly) */}
             <input
               style={{ ...styles.input, background: "#f5f5f5" }}
               value={email}
@@ -195,7 +204,6 @@ export default function TeacherSettings({ user }) {
               onChange={(e) => setDisplayName(e.target.value)}
               placeholder="Full Name"
             />
-
             <select
               style={styles.input}
               value={subject}
@@ -208,12 +216,41 @@ export default function TeacherSettings({ user }) {
                 </option>
               ))}
             </select>
-
             <input
               style={styles.input}
               value={contact}
               onChange={(e) => setContact(e.target.value)}
               placeholder="Contact Number"
+            />
+            <input
+              style={styles.input}
+              value={department}
+              onChange={(e) => setDepartment(e.target.value)}
+              placeholder="Department / Grade"
+            />
+            <input
+              style={styles.input}
+              value={room}
+              onChange={(e) => setRoom(e.target.value)}
+              placeholder="Office / Room Number"
+            />
+            <input
+              style={styles.input}
+              value={experience}
+              onChange={(e) => setExperience(e.target.value)}
+              placeholder="Years of Experience"
+            />
+            <input
+              style={styles.input}
+              value={profilePic}
+              onChange={(e) => setProfilePic(e.target.value)}
+              placeholder="Profile Picture URL"
+            />
+            <textarea
+              style={{ ...styles.input, height: 80 }}
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              placeholder="Short Bio"
             />
 
             <button
@@ -221,7 +258,7 @@ export default function TeacherSettings({ user }) {
               onClick={updateProfile}
               disabled={loading}
             >
-              Save Changes
+              {loading ? "Saving..." : "Save Changes"}
             </button>
           </Block>
         )}
