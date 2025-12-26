@@ -1,67 +1,87 @@
 import React, { useEffect, useState } from "react";
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebase";
 import MeetStaff from "./meet_teachers";
 
 export default function TeacherDash() {
-  const [students, setStudents] = useState([]);
-  const [teachers, setTeachers] = useState([]);
-  const [parents, setParents] = useState([]);
-  const [subjects, setSubjects] = useState([]);
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  const [stats, setStats] = useState({
+    students: 0,
+    teachers: 0,
+    parents: 0,
+    subjects: 0,
+  });
 
   useEffect(() => {
-    async function fetchUsers() {
+    async function fetchStats() {
       try {
-        const q = query(collection(db, "users"), orderBy("createdAt", "desc"));
-        const snap = await getDocs(q);
-        const allUsers = snap.docs.map((doc) => doc.data());
+        const snap = await getDocs(collection(db, "users"));
+        const users = snap.docs.map((d) => d.data());
 
-        setStudents(allUsers.filter((u) => u.role === "student"));
-        const staff = allUsers.filter((u) => u.role === "staff");
-        setTeachers(staff);
-        setParents(allUsers.filter((u) => u.role === "parent"));
+        const staff = users.filter((u) => u.role === "staff");
 
-        // Unique subjects from teachers
-        const subjList = staff.map((u) => u.subject).filter(Boolean);
-        setSubjects([...new Set(subjList)]);
-      } catch (err) {
-        console.error("Error fetching users:", err);
+        setStats({
+          students: users.filter((u) => u.role === "student").length,
+          teachers: staff.length,
+          parents: users.filter((u) => u.role === "parent").length,
+          subjects: [...new Set(staff.map((u) => u.subject).filter(Boolean))]
+            .length,
+        });
+      } catch (e) {
+        console.error(e);
       }
     }
-    fetchUsers();
+    fetchStats();
   }, []);
 
   return (
-    <div style={styles.wrapper}>
-      <h2 style={styles.heading}>Teacher Dashboard</h2>
+    <div style={styles.container}>
+      {/* ===== HEADER ===== */}
+      <header style={styles.header}>
+        <div style={styles.profile}>
+          <img
+            src={user?.photoURL || "https://i.pravatar.cc/100"}
+            alt="profile"
+            style={styles.avatar}
+          />
+          <div>
+            <h3 style={styles.name}>
+              {user?.displayName || "Staff Member"}
+            </h3>
+            <p style={styles.meta}>{user?.email}</p>
+            <small style={styles.id}>ID: {user?.uid}</small>
+          </div>
+        </div>
+      </header>
 
-      {/* Dashboard Cards */}
-      <div style={styles.cardsContainer}>
-        <Card title="Total Students" value={students.length} color="#16a34a" />
-        <Card title="Total Teachers" value={teachers.length} color="#2563eb" />
-        <Card title="Total Parents" value={parents.length} color="#f59e0b" />
-        <Card title="Subjects Taught" value={subjects.length} color="#7a5018" />
-      </div>
+      {/* ===== STATS ===== */}
+      <section style={styles.statsGrid}>
+        <StatCard label="Students" value={stats.students} />
+        <StatCard label="Teachers" value={stats.teachers} />
+        <StatCard label="Parents" value={stats.parents} />
+        <StatCard label="Subjects" value={stats.subjects} />
+      </section>
 
-      {/* Meet Staff */}
-      <section style={{ marginTop: 40 }}>
-        <h3 style={styles.subHeading}>Meet Your Staff</h3>
+      {/* ===== STAFF ===== */}
+      <section style={styles.section}>
+        <h3 style={styles.sectionTitle}>Meet Staff</h3>
         <MeetStaff />
       </section>
 
-      {/* Recent Activity Placeholder */}
-      <section style={{ marginTop: 40 }}>
-        <h3 style={styles.subHeading}>Recent Announcements</h3>
-        <div style={styles.activityGrid}>
-          <ActivityCard
-            title="School Closed on Friday"
-            desc="All classes are suspended due to maintenance."
-            time="2 hours ago"
+      {/* ===== ANNOUNCEMENTS ===== */}
+      <section style={styles.section}>
+        <h3 style={styles.sectionTitle}>Announcements</h3>
+        <div style={styles.announcementGrid}>
+          <Announcement
+            title="School Closed Friday"
+            text="Maintenance work ongoing."
           />
-          <ActivityCard
-            title="Math Quiz This Week"
-            desc="All students must prepare for the Math Quiz scheduled on Wednesday."
-            time="1 day ago"
+          <Announcement
+            title="Weekly Assessment"
+            text="Prepare students for quizzes."
           />
         </div>
       </section>
@@ -69,83 +89,103 @@ export default function TeacherDash() {
   );
 }
 
-/* ================= CARD COMPONENT ================= */
-const Card = ({ title, value, color }) => (
-  <div
-    style={{
-      ...styles.card,
-      borderLeft: `5px solid ${color}`,
-    }}
-  >
-    <h4 style={styles.cardTitle}>{title}</h4>
-    <p style={{ ...styles.cardValue, color }}>{value}</p>
+/* ================= COMPONENTS ================= */
+
+const StatCard = ({ label, value }) => (
+  <div style={styles.statCard}>
+    <p style={styles.statLabel}>{label}</p>
+    <h2 style={styles.statValue}>{value}</h2>
   </div>
 );
 
-/* ================= ACTIVITY CARD ================= */
-const ActivityCard = ({ title, desc, time }) => (
-  <div style={styles.activityCard}>
-    <h4 style={{ marginBottom: 8 }}>{title}</h4>
-    <p style={{ marginBottom: 8, color: "#555" }}>{desc}</p>
-    <small style={{ color: "#888" }}>{time}</small>
+const Announcement = ({ title, text }) => (
+  <div style={styles.announcement}>
+    <h4>{title}</h4>
+    <p>{text}</p>
   </div>
 );
 
 /* ================= STYLES ================= */
+
 const styles = {
-  wrapper: {
+  container: {
     padding: 20,
-    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-    color: "#333",
+    maxWidth: 1200,
+    margin: "0 auto",
+    fontFamily: "Inter, system-ui, sans-serif",
+    background: "#f7f8fa",
   },
-  heading: {
+
+  header: {
+    background: "linear-gradient(135deg,#f97316,#fb923c)",
+    borderRadius: 16,
+    padding: 20,
+    color: "#fff",
+    marginBottom: 25,
+  },
+
+  profile: {
+    display: "flex",
+    alignItems: "center",
+    gap: 15,
+    flexWrap: "wrap",
+  },
+
+  avatar: {
+    width: 70,
+    height: 70,
+    borderRadius: "50%",
+    objectFit: "cover",
+    border: "3px solid #fff",
+  },
+
+  name: { margin: 0, fontSize: 20 },
+  meta: { margin: "2px 0", opacity: 0.9 },
+  id: { fontSize: 12, opacity: 0.8 },
+
+  statsGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))",
+    gap: 15,
+    marginBottom: 30,
+  },
+
+  statCard: {
+    background: "#fff",
+    borderRadius: 14,
+    padding: 20,
+    boxShadow: "0 6px 18px rgba(0,0,0,0.06)",
+  },
+
+  statLabel: {
+    fontSize: 14,
+    color: "#777",
+  },
+
+  statValue: {
     fontSize: 28,
     fontWeight: 600,
-    marginBottom: 20,
-    color: "#2563eb",
+    marginTop: 5,
   },
-  subHeading: {
-    fontSize: 22,
-    fontWeight: 600,
+
+  section: { marginBottom: 35 },
+
+  sectionTitle: {
+    fontSize: 20,
     marginBottom: 15,
     color: "#7a5018",
   },
-  cardsContainer: {
+
+  announcementGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-    gap: 20,
+    gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))",
+    gap: 15,
   },
-  card: {
+
+  announcement: {
     background: "#fff",
+    padding: 16,
     borderRadius: 12,
-    padding: 20,
-    boxShadow: "0 8px 25px rgba(0,0,0,0.08)",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    cursor: "pointer",
-    transition: "transform 0.2s",
-  },
-  cardTitle: {
-    fontSize: 16,
-    fontWeight: 500,
-    marginBottom: 10,
-  },
-  cardValue: {
-    fontSize: 28,
-    fontWeight: 600,
-  },
-  activityGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-    gap: 20,
-  },
-  activityCard: {
-    background: "#fff",
-    borderRadius: 12,
-    padding: 20,
-    boxShadow: "0 6px 20px rgba(0,0,0,0.06)",
-    transition: "transform 0.2s",
-    cursor: "pointer",
+    boxShadow: "0 4px 14px rgba(0,0,0,0.05)",
   },
 };
