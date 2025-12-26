@@ -6,7 +6,7 @@ import {
   reauthenticateWithCredential,
 } from "firebase/auth";
 import { doc, deleteDoc, setDoc, getDoc } from "firebase/firestore";
-import { db } from "././firebase";
+import { db } from ".//./firebase";
 
 export default function TeacherSettings({ user }) {
   const auth = getAuth();
