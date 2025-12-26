@@ -238,7 +238,7 @@ export default function Accountform() {
             style={select}
             value={role}
             onChange={(e) => setRole(e.target.value)}
-          >
+         required >
             <option value="student">Student</option>
             <option value="staff">Teacher</option>
             <option value="parent">Parent</option>
@@ -265,7 +265,7 @@ export default function Accountform() {
                 placeholder="Contact Number"
                 value={contact}
                 onChange={(e) => setContact(e.target.value)}
-              />
+            required  />
             </>
           )}
 
@@ -283,7 +283,7 @@ export default function Accountform() {
                 placeholder="Student ID"
                 value={studentId}
                 onChange={(e) => setStudentId(e.target.value)}
-              />
+           required   />
             </>
           )}
 
