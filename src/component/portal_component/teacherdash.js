@@ -87,7 +87,7 @@ export default function TeacherDash() {
 
       {/* ================= STAFF ================= */}
       <section style={{ marginTop: 50 }}>
-        <h3 style={styles.sectionTitle}>Meet Your Staff</h3>
+        <h3 style={styles.sectionTitle}>Meet Staff</h3>
         <MeetStaff />
       </section>
     </div>
