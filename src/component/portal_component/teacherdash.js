@@ -1,177 +1,78 @@
+import React, { useEffect, useState } from "react";
+import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
+import { db } from "../../firebase";
+import MeetStaff from "./meet_staff";
 
-function fetchAssign(){
+export default function TeacherDash() {
+  const [students, setStudents] = useState([]);
+  const [teachers, setTeachers] = useState([]);
+  const [parents, setParents] = useState([]);
+  const [subjects, setSubjects] = useState([]);
 
-  var subject=document.getElementById("subject_owner").value;
-  if(subject === "English"){
-    var path=`${process.env.REACT_APP_ASSIGN_API}/engassign`;
+  useEffect(() => {
+    async function fetchUsers() {
+      try {
+        const q = query(collection(db, "users"), orderBy("createdAt", "desc"));
+        const snap = await getDocs(q);
+        const allUsers = snap.docs.map(doc => doc.data());
+
+        setStudents(allUsers.filter(u => u.role === "student"));
+        const staff = allUsers.filter(u => u.role === "staff");
+        setTeachers(staff);
+        setParents(allUsers.filter(u => u.role === "parent"));
+
+        // Unique subjects from teachers
+        const subjList = staff.map(u => u.subject).filter(Boolean);
+        setSubjects([...new Set(subjList)]);
+      } catch (err) {
+        console.error("Error fetching users:", err);
+      }
+    }
+    fetchUsers();
+  }, []);
+
+  return (
+    <div style={{ padding: 20 }}>
+      <h2 style={{ marginBottom: 20, color: "#7a5018" }}>Teacher Dashboard</h2>
+
+      {/* Dashboard Cards */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 20 }}>
+        <Card title="Total Students" value={students.length} />
+        <Card title="Total Teachers" value={teachers.length} />
+        <Card title="Total Parents" value={parents.length} />
+        <Card title="Subjects Taught" value={subjects.length} />
+      </div>
+
+      {/* Meet Staff */}
+      <div style={{ marginTop: 40 }}>
+        <h3 style={{ color: "#7a5018", marginBottom: 15 }}>Meet Your Staff</h3>
+        <MeetStaff />
+      </div>
+    </div>
+  );
 }
-if(subject === "Science"){
-    var path=`${process.env.REACT_APP_ASSIGN_API}/sciassign`;
-}
-if(subject === "Social Studies"){
-    var path=`${process.env.REACT_APP_ASSIGN_API}/socassign`;
-}
-if(subject === "Mathematics"){
-    var path=`${process.env.REACT_APP_ASSIGN_API}/mathassign`;
-}
-if(subject === "Computing"){
-    var path=`${process.env.REACT_APP_ASSIGN_API}/compassign`;
-}
-if(subject === "Creative Art"){
-    var path=`${process.env.REACT_APP_ASSIGN_API}/artassign`;
-}
 
-
-  fetch(path)
-  .then(res => res.json())
-  .then(data => findCheck(data))
-  .catch(err => console.log(err))
-
-
-}
-
-
-function findCheck(data){
-  for(var i=0; i< data.length; i++){
-    document.getElementById("assign_posted").innerHTML=data.length;
-  }
-}
-
-
-function fetchLunch(){
-
-  fetch(`${process.env.REACT_APP_API_URL}/stafflunch`)
-  .then(res => res.json())
-  .then(data => staffLunch(data))
-  .catch(err => console.log(err))
-}
-
-
-function staffLunch(data){
-  var day =["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
-
-  var d = new Date();
-  let dy=day[d.getDay()];
-        
-          for(var i=0; i< data.length; i++){
-            if(data[i].day === dy){
-
-              document.getElementById("today_lunch").innerHTML=data[i].food;
-            }
-            else{
-             
-              document.getElementById("today_lunch").innerHTML="No food today"; 
-            }
-          }
-        }
-
-export default function TeacherDash(){
- 
-    
-    return(
-        <div>
-         <div className="col-lg-8">
-          <div className="row">
-        <div className="col-xxl-4 col-md-6">
-              <div className="cardy info-card sales-card">
-
-                
-
-                <div className="card-body">
-                  <h5 className="card-title" onClick={fetchAssign}>Assignment Posted <span style={{cursor:"pointer"}}>| Check</span></h5>
-
-                  <div className="d-flex align-items-center">
-                    <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i className="fa fa-cart"></i>
-                    </div>
-                    <div className="ps-3">
-                      <h3 id="assign_posted"></h3>
-                      <span className="text-success small pt-1 fw-bold">12%</span> <span className="text-muted small pt-2 ps-1">increase</span>
-
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-            <div className="col-xxl-4 col-md-6">
-              <div className="cardy info-card sales-card">
-
-                
-
-                <div className="card-body">
-                  <h5 className="card-title">Students <span>| Total</span></h5>
-
-                  <div className="d-flex align-items-center">
-                    <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i className="fa fa-cart"></i>
-                    </div>
-                    <div className="ps-3">
-                      <h3 id="stu_total"></h3>
-                      <span className="text-success small pt-1 fw-bold">12%</span> <span className="text-muted small pt-2 ps-1">increase</span>
-
-                    </div>
-                  </div>
-                </div>
-
-
-               
-
-              </div>
-            </div>
-
-
-            <div className="col-xxl-4 col-md-6">
-            <div className="cardy info-card sales-card">
-
-                
-
-                <div className="card-body">
-                  <h5 className="card-title">Recent Subjects <span>| Total</span></h5>
-
-                  <div className="d-flex align-items-center">
-                    <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i className="fa fa-cart"></i>
-                    </div>
-                    <div className="ps-3">
-                      <h3 id="subj_total"></h3>
-                      <span className="text-success small pt-1 fw-bold">12%</span> <span className="text-muted small pt-2 ps-1">increase</span>
-
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-
-
-            <div className="col-xxl-4 col-md-6">
-            <div className="cardy info-card sales-card">
-
-                
-
-                <div className="card-body">
-                  <h5 className="card-title" onClick={fetchLunch}>Today's Lunch <span>| Lunch</span></h5>
-
-                  <div className="d-flex align-items-center">
-                    <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i className="fa fa-cart"></i>
-                    </div>
-                    <div className="ps-3">
-                      <h3 id="today_lunch"></h3>
-                      <span className="text-success small pt-1 fw-bold">90%</span> <span className="text-muted small pt-2 ps-1">increase</span>
-
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-
-
-
-            </div>
-            </div>
-        </div>
-    )
-}
+// Reusable Card Component
+const Card = ({ title, value }) => (
+  <div
+    style={{
+      flex: "1 1 220px",
+      background: "#fff",
+      padding: 20,
+      borderRadius: 12,
+      boxShadow: "0 8px 20px rgba(0,0,0,0.1)",
+      minHeight: 120,
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      transition: "transform 0.2s",
+      cursor: "pointer",
+    }}
+    onMouseEnter={e => e.currentTarget.style.transform="scale(1.05)"}
+    onMouseLeave={e => e.currentTarget.style.transform="scale(1)"}
+  >
+    <h4 style={{ marginBottom: 10, color: "#333" }}>{title}</h4>
+    <h2 style={{ color: "#7a5018" }}>{value}</h2>
+  </div>
+);
