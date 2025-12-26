@@ -1,197 +1,272 @@
-import React, { useState, useEffect } from 'react';
-import Breadcrumb from "../breadcrumb";
+import React, { useState } from "react";
 
-export default function LNote() {
-  const notedb = process.env.REACT_APP_NOTE_DB;
-  
+export default function LessonNoteGenerator() {
+  // Lesson note fields
+  const [school, setSchool] = useState("");
+  const [classLevel, setClassLevel] = useState("");
+  const [subject, setSubject] = useState("");
+  const [topic, setTopic] = useState("");
+  const [duration, setDuration] = useState("");
+  const [objectives, setObjectives] = useState("");
+  const [materials, setMaterials] = useState("");
+  const [intro, setIntro] = useState("");
+  const [development, setDevelopment] = useState("");
+  const [conclusion, setConclusion] = useState("");
+  const [assessment, setAssessment] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const [formData, setFormData] = useState({
-    subject: '',
-    name:'',
-    classLevel: '',
-    date: new Date().toISOString().split('T')[0],
-    duration: '',
-    week: '',
-    day: '',
-    topic: '',
-    subTopic: '',
-    reference: '',
-    objectives: '',
-    rpk: '',
-    tlms: '',
-    introduction: '',
-    contentDevelopment: '',
-    activity: '',
-    conclusion: '',
-    evaluation: '',
-    assignment: ''
-  });
+  // GROQ AI generation
+  async function generateWithGROQ() {
+    if (!topic || !subject) {
+      alert("Please fill in Subject and Topic first.");
+      return;
+    }
 
-  const [lessonNotes, setLessonNotes] = useState([]); // State to hold fetched lesson notes
+    setLoading(true);
+    const prompt = `
+Create a detailed GES‑style lesson note with these details:
+School: ${school}
+Class: ${classLevel}
+Subject: ${subject}
+Topic: ${topic}
+Duration: ${duration}
 
-  useEffect(() => {
-    setFormData({ ...formData, date: new Date().toISOString().split('T')[0] });
-    fetchLessonNotes(); // Fetch existing notes on component mount
-  }, []);
+Include sections with clear headings:
+- Learning Objectives
+- Materials / Resources
+- Introduction
+- Lesson Development
+- Conclusion
+- Assessment
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+Make it teacher‑friendly and professional.
+`;
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
     try {
-      const response = await fetch(`${notedb}/note`, {
-        method: 'POST',
+      const res = await fetch("https://api.groq.ai/v1/complete", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.REACT_APP_GROQ_API_KEY}`,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          model: "groq2o-mini", // or a better model if you have access
+          prompt: prompt,
+          max_tokens: 600,
+        }),
       });
-      if (response.ok) {
-        alert('Lesson note submitted successfully!');
-        setFormData({
-          subject: '',
-          name:'',
-          classLevel:'',
-          date: new Date().toISOString().split('T')[0],
-          duration: '',
-          week: '',
-          day: '',
-          topic: '',
-          subTopic: '',
-          reference: '',
-          objectives: '',
-          rpk: '',
-          tlms: '',
-          introduction: '',
-          contentDevelopment: '',
-          activity: '',
-          conclusion: '',
-          evaluation: '',
-          assignment: ''
-        });
-        fetchLessonNotes(); // Refresh notes after submission
-      } else {
-        alert('Failed to submit lesson note.');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred.');
-    }
-  };
 
-  const fetchLessonNotes = async () => {
-    try {
-      const response = await fetch(`${notedb}/note`);
-      const data = await response.json();
-      setLessonNotes(data); // Store notes in state
-    } catch (error) {
-      console.error('Error fetching lesson notes:', error);
-    }
-  };
+      const data = await res.json();
+      const text = data.output_text || "";
 
-  const handleDelete = async (id) => {
-    var redelete=window.confirm("You are ready to delete the note. It would be permanently deleted.");
-    if(redelete== true){
-    try {
-      const response = await fetch(`${notedb}/note/${id}`, {
-        method: 'DELETE',
-      });
-      if (response.ok) {
-        alert('Lesson note deleted successfully!');
-        fetchLessonNotes(); // Refresh notes after deletion
-      } else {
-        alert('Failed to delete lesson note.');
-      }
-    } catch (error) {
-      console.error('Error deleting lesson note:', error);
+      // Simple parser (split by headings)
+      const splitBy = (label) =>
+        (text.split(label + ":")[1] || "")
+          .split("\n\n")[0]
+          .trim();
+
+      setObjectives(splitBy("Learning Objectives"));
+      setMaterials(splitBy("Materials"));
+      setIntro(splitBy("Introduction"));
+      setDevelopment(splitBy("Lesson Development"));
+      setConclusion(splitBy("Conclusion"));
+      setAssessment(splitBy("Assessment"));
+    } catch (err) {
+      console.error(err);
+      alert("AI generation failed.");
+    } finally {
+      setLoading(false);
     }
   }
-  };
+
+  // Download as TXT
+  function downloadTXT() {
+    const content = `
+School: ${school}
+Class: ${classLevel}
+Subject: ${subject}
+Topic: ${topic}
+Duration: ${duration}
+
+Learning Objectives:
+${objectives}
+
+Materials:
+${materials}
+
+Introduction:
+${intro}
+
+Lesson Development:
+${development}
+
+Conclusion:
+${conclusion}
+
+Assessment:
+${assessment}
+    `;
+    const blob = new Blob([content], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${subject}_${topic}_LessonNote.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 
   return (
-    <>
-    <Breadcrumb title="Create Lesson Note" />
+    <div style={styles.container}>
+      <h2 style={styles.header}>Lesson Note Generator (GROQ AI)</h2>
 
-    <br />
+      {/* Basic Info */}
+      <div style={styles.formGroup}>
+        <input
+          style={styles.input}
+          placeholder="School Name"
+          value={school}
+          onChange={(e) => setSchool(e.target.value)}
+        />
+        <input
+          style={styles.input}
+          placeholder="Class / Grade"
+          value={classLevel}
+          onChange={(e) => setClassLevel(e.target.value)}
+        />
+        <input
+          style={styles.input}
+          placeholder="Subject"
+          value={subject}
+          onChange={(e) => setSubject(e.target.value)}
+        />
+        <input
+          style={styles.input}
+          placeholder="Topic"
+          value={topic}
+          onChange={(e) => setTopic(e.target.value)}
+        />
+        <input
+          style={styles.input}
+          placeholder="Duration (e.g., 40 mins)"
+          value={duration}
+          onChange={(e) => setDuration(e.target.value)}
+        />
+      </div>
 
-    <div>
-      <form onSubmit={handleSubmit} className="lesson-note-form">
-        <label>Name</label>
-        <input type="text" name="name" value={formData.name} onChange={handleChange} required/>
+      <button
+        style={styles.aiButton}
+        onClick={generateWithGROQ}
+        disabled={loading}
+      >
+        {loading ? "Generating..." : "Generate with AI"}
+      </button>
 
-        <label>Subject:</label>
-        <input type="text" name="subject" value={formData.subject} onChange={handleChange} required />
+      {/* Editable Sections */}
+      <div style={styles.formGroup}>
+        <textarea
+          style={styles.textarea}
+          placeholder="Learning Objectives"
+          value={objectives}
+          onChange={(e) => setObjectives(e.target.value)}
+        />
+        <textarea
+          style={styles.textarea}
+          placeholder="Materials / Resources"
+          value={materials}
+          onChange={(e) => setMaterials(e.target.value)}
+        />
+        <textarea
+          style={styles.textarea}
+          placeholder="Introduction"
+          value={intro}
+          onChange={(e) => setIntro(e.target.value)}
+        />
+        <textarea
+          style={styles.textarea}
+          placeholder="Lesson Development"
+          value={development}
+          onChange={(e) => setDevelopment(e.target.value)}
+        />
+        <textarea
+          style={styles.textarea}
+          placeholder="Conclusion"
+          value={conclusion}
+          onChange={(e) => setConclusion(e.target.value)}
+        />
+        <textarea
+          style={styles.textarea}
+          placeholder="Assessment"
+          value={assessment}
+          onChange={(e) => setAssessment(e.target.value)}
+        />
+      </div>
 
-        <label>Class:</label>
-        <input type="text" name="classLevel" value={formData.classLevel} onChange={handleChange} required />
-
-        <label>Date Posted:</label>
-        <input type="text" name="date" value={formData.date} readOnly/>
-
-        <label>Duration:</label>
-        <input type="text" name="duration" value={formData.duration} onChange={handleChange} />
-
-        <label>Week:</label>
-        <input type="number" name="week" value={formData.week} onChange={handleChange} required />
-
-        <label>Day / Date:</label>
-        <input type="text" name="day" value={formData.day} onChange={handleChange} />
-
-        <label>Topic:</label>
-        <input type="text" name="topic" value={formData.topic} onChange={handleChange} required />
-
-        <label>Sub-Topic:</label>
-        <input type="text" name="subTopic" value={formData.subTopic} onChange={handleChange} required />
-
-        <label>Reference:</label>
-        <input type="text" name="reference" value={formData.reference} onChange={handleChange} required />
-
-        <label>Objectives:</label>
-        <textarea name="objectives" value={formData.objectives} onChange={handleChange} required />
-
-        <label>RPK:</label>
-        <textarea name="rpk" value={formData.rpk} onChange={handleChange} required />
-
-        <label>TLMs:</label>
-        <textarea name="tlms" value={formData.tlms} onChange={handleChange} required />
-
-        <label>Introduction:</label>
-        <textarea name="introduction" value={formData.introduction} onChange={handleChange} required />
-
-        <label>Core Point:</label>
-        <textarea name="contentDevelopment" value={formData.contentDevelopment} onChange={handleChange} required />
-
-        <label>Activity:</label>
-        <textarea name="activity" value={formData.activity} onChange={handleChange} required />
-
-        <label>Conclusion:</label>
-        <textarea name="conclusion" value={formData.conclusion} onChange={handleChange} required />
-
-        <label>Evaluation:</label>
-        <textarea name="evaluation" value={formData.evaluation} onChange={handleChange} required />
-
-        <label>Assignment:</label>
-        <textarea name="assignment" value={formData.assignment} onChange={handleChange} required />
-
-        <button type="submit">Submit Lesson Note</button>
-      </form>
-
-      <h2>Lesson Notes</h2>
-      <ul>
-        {lessonNotes.map((note) => (
-          <li key={note.id}>
-            <p><strong>Topic:</strong> {note.topic}</p>
-            <p><strong>Class:</strong> {note.classLevel}</p>
-            <p><strong>Date Posted:</strong> {note.date}</p>
-            <p>{note.status}</p>
-            <button onClick={() => handleDelete(note.id)}>Delete</button>
-          </li>
-        ))}
-      </ul>
+      <button style={styles.downloadButton} onClick={downloadTXT}>
+        Download Lesson Note
+      </button>
     </div>
-    </>
   );
 }
+
+// 🧨 INLINE STYLES (PRO UI)
+const styles = {
+  container: {
+    maxWidth: 900,
+    margin: "30px auto",
+    padding: 20,
+    fontFamily: "Inter, sans-serif",
+    background: "#f4f6f8",
+    borderRadius: 12,
+    boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
+  },
+  header: {
+    fontSize: 26,
+    fontWeight: 700,
+    color: "#2563eb",
+    marginBottom: 18,
+    textAlign: "center",
+  },
+  formGroup: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 10,
+    marginBottom: 20,
+  },
+  input: {
+    padding: 12,
+    borderRadius: 8,
+    border: "1px solid #ccc",
+    fontSize: 15,
+    outline: "none",
+  },
+  textarea: {
+    padding: 12,
+    borderRadius: 8,
+    border: "1px solid #ccc",
+    fontSize: 15,
+    minHeight: 80,
+    resize: "vertical",
+  },
+  aiButton: {
+    padding: "14px 0",
+    background: "#7a5018",
+    color: "#fff",
+    fontSize: 15,
+    fontWeight: 600,
+    border: "none",
+    borderRadius: 8,
+    cursor: "pointer",
+    marginBottom: 20,
+  },
+  downloadButton: {
+    padding: "14px 0",
+    background: "#16a34a",
+    color: "#fff",
+    fontSize: 15,
+    fontWeight: 600,
+    border: "none",
+    borderRadius: 8,
+    cursor: "pointer",
+    marginTop: 10,
+  },
+};
