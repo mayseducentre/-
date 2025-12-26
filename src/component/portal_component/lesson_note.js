@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export default function LessonNoteGenerator() {
+export default function LNote() {
   // Lesson note fields
   const [school, setSchool] = useState("");
   const [classLevel, setClassLevel] = useState("");
