@@ -113,7 +113,7 @@ Write it in plain text, professional, structured, ready for teaching. Avoid Mark
 
       {/* Copy Prompt */}
       <button style={{ ...styles.button, marginBottom: 10 }} onClick={copyPrompt}>
-        Copy AI Prompt
+        Copy Prompt
       </button>
 
       {/* Word-style formatting toolbar */}
