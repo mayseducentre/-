@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import { saveAs } from "file-saver";
 import { Document, Packer, Paragraph, TextRun } from "docx";
 
-export default function LNote() {
+export default function LessonNoteEditor() {
   const SCHOOL_NAME = "Mays Educational Centre";
 
   const [classLevel, setClassLevel] = useState("");
@@ -12,7 +12,6 @@ export default function LNote() {
 
   const editorRef = useRef(null);
 
-  // Generate AI prompt
   const generatePrompt = () => `
 Create a detailed, teacher-friendly GES-standard lesson note:
 
@@ -39,54 +38,50 @@ Write it in plain text, professional, structured, ready for teaching. Avoid Mark
     alert("Prompt copied to clipboard!");
   };
 
-  // Simple formatting function
-  const formatText = (command) => {
-    document.execCommand(command, false, null);
+  const formatText = (command, value = null) => {
+    document.execCommand(command, false, value);
   };
 
-  // Download editor content as DOCX
   const downloadDocx = async () => {
     const html = editorRef.current.innerHTML;
     if (!html) return alert("Editor is empty!");
 
-    const parseHtml = (htmlString) => {
-      const container = document.createElement("div");
-      container.innerHTML = htmlString;
-      const paragraphs = [];
+    const container = document.createElement("div");
+    container.innerHTML = html;
 
-      container.childNodes.forEach((node) => {
-        const children = [];
-        node.childNodes.forEach((child) => {
-          children.push(
-            new TextRun({
-              text: child.textContent,
-              bold: child.tagName === "B" || child.style.fontWeight === "bold",
-              italics: child.tagName === "I" || child.style.fontStyle === "italic",
-              underline: child.tagName === "U" || child.style.textDecoration === "underline" ? {} : undefined,
+    const paragraphs = [];
+
+    const traverseNodes = (nodes) => {
+      nodes.forEach((node) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          paragraphs.push(
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: node.textContent,
+                  bold: node.parentElement?.tagName === "B" || node.parentElement?.style.fontWeight === "bold",
+                  italics: node.parentElement?.tagName === "I" || node.parentElement?.style.fontStyle === "italic",
+                  underline: node.parentElement?.tagName === "U" || node.parentElement?.style.textDecoration === "underline" ? {} : undefined,
+                }),
+              ],
             })
           );
-        });
-        paragraphs.push(new Paragraph({ children }));
+        } else {
+          traverseNodes(node.childNodes);
+        }
       });
-      return paragraphs;
     };
 
-    const doc = new Document({
-      sections: [
-        {
-          properties: {},
-          children: parseHtml(html),
-        },
-      ],
-    });
+    traverseNodes(container.childNodes);
 
+    const doc = new Document({ sections: [{ children: paragraphs }] });
     const blob = await Packer.toBlob(doc);
     saveAs(blob, `${subject || "Subject"}_${topic || "Topic"}_LessonNote.docx`);
   };
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.header}>Lesson Note Generator</h2>
+      <h2 style={styles.header}>Lesson Note Editor</h2>
 
       {/* Basic Info */}
       <div style={styles.formGroup}>
@@ -116,40 +111,39 @@ Write it in plain text, professional, structured, ready for teaching. Avoid Mark
         />
       </div>
 
-      <div style={{ marginBottom: 10 }}>
-        <button onClick={copyPrompt} style={styles.button}>
-          Copy AI Prompt
-        </button>
-      </div>
+      {/* Copy Prompt */}
+      <button style={{ ...styles.button, marginBottom: 10 }} onClick={copyPrompt}>
+        Copy AI Prompt
+      </button>
 
-      {/* Formatting toolbar */}
-      <div style={{ marginBottom: 10 }}>
-        <button onClick={() => formatText("bold")} style={styles.button}>
-          Bold
+      {/* Word-style formatting toolbar */}
+      <div style={styles.toolbar}>
+        <button onClick={() => formatText("bold")} style={styles.toolbarButton}>
+          <b>B</b>
         </button>
-        <button onClick={() => formatText("italic")} style={styles.button}>
-          Italic
+        <button onClick={() => formatText("italic")} style={styles.toolbarButton}>
+          <i>I</i>
         </button>
-        <button onClick={() => formatText("underline")} style={styles.button}>
-          Underline
+        <button onClick={() => formatText("underline")} style={styles.toolbarButton}>
+          <u>U</u>
         </button>
-        <button
-          onClick={() => formatText("formatBlock", "<H1>")}
-          style={styles.button}
+        <select
+          onChange={(e) => formatText("formatBlock", e.target.value)}
+          style={{ ...styles.toolbarButton, minWidth: 80 }}
         >
-          H1
+          <option value="">Paragraph</option>
+          <option value="H1">Heading 1</option>
+          <option value="H2">Heading 2</option>
+          <option value="H3">Heading 3</option>
+        </select>
+        <button onClick={() => formatText("justifyLeft")} style={styles.toolbarButton}>
+          L
         </button>
-        <button
-          onClick={() => formatText("formatBlock", "<H2>")}
-          style={styles.button}
-        >
-          H2
+        <button onClick={() => formatText("justifyCenter")} style={styles.toolbarButton}>
+          C
         </button>
-        <button
-          onClick={() => formatText("formatBlock", "<P>")}
-          style={styles.button}
-        >
-          Paragraph
+        <button onClick={() => formatText("justifyRight")} style={styles.toolbarButton}>
+          R
         </button>
       </div>
 
@@ -161,7 +155,7 @@ Write it in plain text, professional, structured, ready for teaching. Avoid Mark
         placeholder="Paste AI-generated lesson note here and edit..."
       ></div>
 
-      <button onClick={downloadDocx} style={{ ...styles.button, marginTop: 10 }}>
+      <button style={{ ...styles.button, marginTop: 10 }} onClick={downloadDocx}>
         Download as DOCX
       </button>
     </div>
@@ -200,8 +194,6 @@ const styles = {
   },
   button: {
     padding: "8px 14px",
-    marginRight: 6,
-    marginBottom: 6,
     background: "#7a5018",
     color: "#fff",
     border: "none",
@@ -209,8 +201,26 @@ const styles = {
     cursor: "pointer",
     fontWeight: 600,
   },
+  toolbar: {
+    display: "flex",
+    gap: 4,
+    marginBottom: 10,
+    flexWrap: "wrap",
+    border: "1px solid #ccc",
+    padding: 4,
+    borderRadius: 6,
+    background: "#e0e0e0",
+  },
+  toolbarButton: {
+    padding: "4px 8px",
+    background: "#fff",
+    border: "1px solid #ccc",
+    borderRadius: 4,
+    cursor: "pointer",
+    fontWeight: 600,
+  },
   editor: {
-    minHeight: 300,
+    minHeight: 350,
     border: "1px solid #ccc",
     borderRadius: 8,
     padding: 12,
