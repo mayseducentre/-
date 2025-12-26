@@ -32,8 +32,8 @@ export default function TeacherDash() {
   }, []);
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2 style={{ marginBottom: 20, color: "#7a5018" }}>Teacher Dashboard</h2>
+    <div style={{ padding: 15 }}>
+      <h5 style={{ marginBottom: 20, color: "teal" }}>Teacher Dashboard</h5>
 
       {/* Dashboard Cards */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: 20 }}>
@@ -58,10 +58,10 @@ const Card = ({ title, value }) => (
     style={{
       flex: "1 1 220px",
       background: "#fff",
-      padding: 20,
+      padding: 15,
       borderRadius: 12,
       boxShadow: "0 8px 20px rgba(0,0,0,0.1)",
-      minHeight: 120,
+      minHeight: 100,
       display: "flex",
       flexDirection: "column",
       justifyContent: "center",
@@ -72,7 +72,7 @@ const Card = ({ title, value }) => (
     onMouseEnter={e => e.currentTarget.style.transform="scale(1.05)"}
     onMouseLeave={e => e.currentTarget.style.transform="scale(1)"}
   >
-    <h4 style={{ marginBottom: 10, color: "#333" }}>{title}</h4>
-    <h2 style={{ color: "#7a5018" }}>{value}</h2>
+    <h5 style={{ marginBottom: 10, color: "#333" }}>{title}</h5>
+    <h3 style={{ color: "#7a5018" }}>{value}</h3>
   </div>
 );
