@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { collection, getDocs, query, orderBy, doc, getDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebase";
 import MeetStaff from "./meet_teachers";
 
@@ -8,184 +8,188 @@ export default function TeacherDash() {
   const auth = getAuth();
   const user = auth.currentUser;
 
-  const [stats, setStats] = useState({
-    students: 0,
-    teachers: 0,
-    parents: 0,
-    subjects: 0,
-  });
+  const [profile, setProfile] = useState(null);
 
+  const [students, setStudents] = useState([]);
+  const [teachers, setTeachers] = useState([]);
+  const [parents, setParents] = useState([]);
+  const [subjects, setSubjects] = useState([]);
+
+  /* ================= FETCH LOGGED-IN STAFF PROFILE ================= */
   useEffect(() => {
-    async function fetchStats() {
+    if (!user) return;
+
+    async function fetchProfile() {
       try {
-        const snap = await getDocs(collection(db, "users"));
-        const users = snap.docs.map((d) => d.data());
-
-        const staff = users.filter((u) => u.role === "staff");
-
-        setStats({
-          students: users.filter((u) => u.role === "student").length,
-          teachers: staff.length,
-          parents: users.filter((u) => u.role === "parent").length,
-          subjects: [...new Set(staff.map((u) => u.subject).filter(Boolean))]
-            .length,
-        });
-      } catch (e) {
-        console.error(e);
+        const snap = await getDoc(doc(db, "users", user.uid));
+        if (snap.exists()) {
+          setProfile(snap.data());
+        }
+      } catch (err) {
+        console.error("Error fetching profile:", err);
       }
     }
-    fetchStats();
+
+    fetchProfile();
+  }, [user]);
+
+  /* ================= FETCH COUNTS ================= */
+  useEffect(() => {
+    async function fetchUsers() {
+      try {
+        const q = query(collection(db, "users"), orderBy("createdAt", "desc"));
+        const snap = await getDocs(q);
+
+        const allUsers = snap.docs.map((doc) => doc.data());
+
+        setStudents(allUsers.filter((u) => u.role === "student"));
+
+        const staff = allUsers.filter((u) => u.role === "staff");
+        setTeachers(staff);
+
+        setParents(allUsers.filter((u) => u.role === "parent"));
+
+        const subjList = staff.map((u) => u.subject).filter(Boolean);
+        setSubjects([...new Set(subjList)]);
+      } catch (err) {
+        console.error("Error fetching users:", err);
+      }
+    }
+
+    fetchUsers();
   }, []);
 
   return (
-    <div style={styles.container}>
-      {/* ===== HEADER ===== */}
-      <header style={styles.header}>
-        <div style={styles.profile}>
+    <div style={styles.wrapper}>
+      {/* ================= HEADER / PROFILE ================= */}
+      <div style={styles.header}>
+        <div style={styles.profileRow}>
           <img
-            src={user?.photoURL || "https://i.pravatar.cc/100"}
+            src={profile?.photoURL || "/default-avatar.png"}
             alt="profile"
             style={styles.avatar}
           />
+
           <div>
-            <h3 style={styles.name}>
-              {user?.displayName || "Staff Member"}
-            </h3>
-            <p style={styles.meta}>{user?.email}</p>
-            <small style={styles.id}>ID: {user?.uid}</small>
+            <h2 style={styles.username}>
+              {profile?.name || "Staff Member"}
+            </h2>
+
+            <p style={styles.email}>
+              {profile?.email || user?.email}
+            </p>
+
+            <p style={styles.uid}>
+              Staff ID: {profile?.uniqueId || "—"}
+            </p>
           </div>
         </div>
-      </header>
+      </div>
 
-      {/* ===== STATS ===== */}
-      <section style={styles.statsGrid}>
-        <StatCard label="Students" value={stats.students} />
-        <StatCard label="Teachers" value={stats.teachers} />
-        <StatCard label="Parents" value={stats.parents} />
-        <StatCard label="Subjects" value={stats.subjects} />
-      </section>
+      {/* ================= STATS ================= */}
+      <div style={styles.cardsContainer}>
+        <StatCard title="Students" value={students.length} />
+        <StatCard title="Teachers" value={teachers.length} />
+        <StatCard title="Parents" value={parents.length} />
+        <StatCard title="Subjects" value={subjects.length} />
+      </div>
 
-      {/* ===== STAFF ===== */}
-      <section style={styles.section}>
-        <h3 style={styles.sectionTitle}>Meet Staff</h3>
+      {/* ================= MEET STAFF ================= */}
+      <section style={{ marginTop: 40 }}>
+        <h3 style={styles.sectionTitle}>Meet Your Staff</h3>
         <MeetStaff />
-      </section>
-
-      {/* ===== ANNOUNCEMENTS ===== */}
-      <section style={styles.section}>
-        <h3 style={styles.sectionTitle}>Announcements</h3>
-        <div style={styles.announcementGrid}>
-          <Announcement
-            title="School Closed Friday"
-            text="Maintenance work ongoing."
-          />
-          <Announcement
-            title="Weekly Assessment"
-            text="Prepare students for quizzes."
-          />
-        </div>
       </section>
     </div>
   );
 }
 
-/* ================= COMPONENTS ================= */
-
-const StatCard = ({ label, value }) => (
-  <div style={styles.statCard}>
-    <p style={styles.statLabel}>{label}</p>
-    <h2 style={styles.statValue}>{value}</h2>
-  </div>
-);
-
-const Announcement = ({ title, text }) => (
-  <div style={styles.announcement}>
-    <h4>{title}</h4>
-    <p>{text}</p>
+/* ================= STAT CARD ================= */
+const StatCard = ({ title, value }) => (
+  <div style={styles.card}>
+    <span style={styles.cardTitle}>{title}</span>
+    <span style={styles.cardValue}>{value}</span>
   </div>
 );
 
 /* ================= STYLES ================= */
-
 const styles = {
-  container: {
+  wrapper: {
     padding: 20,
     maxWidth: 1200,
     margin: "0 auto",
     fontFamily: "Inter, system-ui, sans-serif",
-    background: "#f7f8fa",
   },
 
   header: {
-    background: "linear-gradient(135deg,#f97316,#fb923c)",
-    borderRadius: 16,
+    background: "linear-gradient(135deg, #ffedd5, #fed7aa)",
+    borderRadius: 18,
     padding: 20,
-    color: "#fff",
-    marginBottom: 25,
+    marginBottom: 30,
   },
 
-  profile: {
+  profileRow: {
     display: "flex",
     alignItems: "center",
-    gap: 15,
+    gap: 16,
     flexWrap: "wrap",
   },
 
   avatar: {
-    width: 70,
-    height: 70,
+    width: 82,
+    height: 82,
     borderRadius: "50%",
     objectFit: "cover",
+    background: "#fff",
     border: "3px solid #fff",
   },
 
-  name: { margin: 0, fontSize: 20 },
-  meta: { margin: "2px 0", opacity: 0.9 },
-  id: { fontSize: 12, opacity: 0.8 },
-
-  statsGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))",
-    gap: 15,
-    marginBottom: 30,
+  username: {
+    fontSize: 22,
+    fontWeight: 600,
+    margin: 0,
   },
 
-  statCard: {
+  email: {
+    fontSize: 14,
+    color: "#555",
+    marginTop: 2,
+  },
+
+  uid: {
+    fontSize: 13,
+    color: "#7a5018",
+    fontWeight: 600,
+    marginTop: 4,
+  },
+
+  cardsContainer: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
+    gap: 16,
+  },
+
+  card: {
     background: "#fff",
     borderRadius: 14,
-    padding: 20,
-    boxShadow: "0 6px 18px rgba(0,0,0,0.06)",
+    padding: 18,
+    boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
+    textAlign: "center",
   },
 
-  statLabel: {
-    fontSize: 14,
+  cardTitle: {
+    fontSize: 13,
     color: "#777",
   },
 
-  statValue: {
-    fontSize: 28,
-    fontWeight: 600,
-    marginTop: 5,
-  },
-
-  section: { marginBottom: 35 },
-
-  sectionTitle: {
-    fontSize: 20,
-    marginBottom: 15,
+  cardValue: {
+    fontSize: 26,
+    fontWeight: 700,
     color: "#7a5018",
   },
 
-  announcementGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))",
-    gap: 15,
-  },
-
-  announcement: {
-    background: "#fff",
-    padding: 16,
-    borderRadius: 12,
-    boxShadow: "0 4px 14px rgba(0,0,0,0.05)",
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: 600,
+    marginBottom: 16,
   },
 };
