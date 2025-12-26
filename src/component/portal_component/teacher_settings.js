@@ -16,6 +16,8 @@ export default function TeacherSettings({ user }) {
   const [displayName, setDisplayName] = useState("");
   const [subject, setSubject] = useState("");
   const [contact, setContact] = useState("");
+  const [uniqueId, setUniqueId] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -24,21 +26,13 @@ export default function TeacherSettings({ user }) {
     "English Language",
     "Integrated Science",
     "Social Studies",
-    "ICT",
-    "Physics",
-    "Chemistry",
-    "Biology",
-    "Economics",
-    "Geography",
+    "Computing",
     "History",
-    "Government",
     "French",
     "Religious & Moral Education",
     "Physical Education",
     "Creative Arts",
-    "Business Studies",
-    "Accounting",
-    "Literature",
+    "Other",
   ];
 
   /* ================= RESPONSIVE ================= */
@@ -62,6 +56,8 @@ export default function TeacherSettings({ user }) {
         setDisplayName(data.name || "");
         setSubject(data.subject || "");
         setContact(data.contact || "");
+        setUniqueId(data.uniqueId || "");
+        setEmail(data.email || "");
       }
     });
     return () => unsub();
@@ -176,6 +172,23 @@ export default function TeacherSettings({ user }) {
       <section style={styles.content}>
         {activeSection === "profile" && (
           <Block title="Teacher Profile">
+            {/* Display ID (readonly) */}
+            <input
+              style={{ ...styles.input, background: "#f5f5f5" }}
+              value={uniqueId}
+              disabled
+              placeholder="Your ID"
+            />
+
+            {/* Display email (readonly) */}
+            <input
+              style={{ ...styles.input, background: "#f5f5f5" }}
+              value={email}
+              disabled
+              placeholder="Email"
+            />
+
+            {/* Editable fields */}
             <input
               style={styles.input}
               value={displayName}
