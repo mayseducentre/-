@@ -44,7 +44,7 @@ export default function Teachersidebar({ user, setActiveTab, activeTab }) {
                 ...styles.menuItem,
                 background:
                   activeTab === item.tab
-                    ? "rgba(255,255,255,0.18)"
+                    ? "rgba(255, 255, 255, 0.15)"
                     : "transparent",
               }}
               onClick={() => setActiveTab(item.tab)}
@@ -73,7 +73,9 @@ export default function Teachersidebar({ user, setActiveTab, activeTab }) {
               ...styles.navItem,
               opacity: activeTab === item.tab ? 1 : 0.65,
               borderBottom:
-                activeTab === item.tab ? "3px solid #fff" : "3px solid transparent",
+                activeTab === item.tab
+                  ? "3px solid #7a5018"
+                  : "3px solid transparent",
             }}
             onClick={() => setActiveTab(item.tab)}
           >
@@ -91,14 +93,15 @@ const styles = {
   sidebar: {
     width: 260,
     height: "100vh",
-    background: "white",
-    color: "black",
+    background: "#2C2F33", // darker professional background
+    color: "white",
     padding: 20,
     position: "fixed",
     left: 0,
     top: 0,
     display: "flex",
     flexDirection: "column",
+    overflowY: "auto", // scrollable sidebar
     zIndex: 1000,
   },
   profile: {
@@ -110,6 +113,7 @@ const styles = {
     height: 75,
     borderRadius: "50%",
     marginBottom: 8,
+    border: "2px solid #7a5018",
   },
   menu: {
     listStyle: "none",
@@ -125,6 +129,7 @@ const styles = {
     alignItems: "center",
     gap: 10,
     marginBottom: 6,
+    transition: "0.2s",
   },
   icon: {
     fontSize: 18,
@@ -132,7 +137,7 @@ const styles = {
   logout: {
     marginTop: "auto",
     padding: "12px",
-    color: "#ffdddd",
+    color: "#ff5555",
     cursor: "pointer",
   },
 
@@ -143,9 +148,10 @@ const styles = {
     left: 0,
     right: 0,
     height: 78,
-    background: "white",
+    background: "#f4f4f4",
     zIndex: 1000,
     overflow: "hidden",
+    borderTop: "1px solid #ccc",
   },
   scrollRow: {
     display: "flex",
@@ -161,7 +167,7 @@ const styles = {
     flexShrink: 0,
     textAlign: "center",
     cursor: "pointer",
-    color: "black",
+    color: "#333",
     paddingBottom: 6,
   },
   navIcon: {
