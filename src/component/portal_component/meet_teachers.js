@@ -1,59 +1,118 @@
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react";
+import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
+import { db } from "../../firebase";
 
-var path=process.env.REACT_APP_ACCOUNT_API;
-export default function MeetT(){
+export default function MeetStaff() {
+  const [staffList, setStaffList] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    const [staff, setStaff]=useState([]);
-const stc=()=>{
-  fetch(`${path}/staffaccount`)
-  .then(res => res.json())
-  .then(data => setStaff(data))
-  .catch(err => console.log(err))
-  
-}
-    useEffect(()=>{
-  stc()    
-    },[])
-    return(
-        <>
-         <div className="col-12">
-              <div className="card recent-sales overflow-auto">
+  useEffect(() => {
+    async function fetchStaff() {
+      try {
+        const q = query(
+          collection(db, "users"),
+          where("role", "==", "staff"),
+          orderBy("createdAt", "asc")
+        );
+        const snap = await getDocs(q);
+        const staff = snap.docs.map(doc => doc.data());
+        setStaffList(staff);
+      } catch (err) {
+        console.error("Error fetching staff:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchStaff();
+  }, []);
 
-               
-                <div className="card-body"  style={{maxHeight:"400px"}}>
-                  <a className="pointer" onClick={()=>{stc()}}>Refresh</a>
-                  <h5 className="card-title">Meet Teachers <span>| {process.env.REACT_APP_BRAND_SHORT}</span></h5>
+  if (loading) return <p>Loading staff...</p>;
 
-                  <table className="table table-borderless datatable">
-                    <thead>
-                      <tr>
-                        <th>Profile Pic</th>
-                        <th>Staff_Name</th>
-                        <th>Subject</th>
-                        <th>Email</th>
-                        <th>Contact</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {staff.map((info)=>(
-                        <tr key={info.id}>
-                        <td><img className="hoverprofile" src={info.thumbnailUrl} /></td>
-                        <td>{info.name}</td>
-                        <td>{info.subject}</td>
-                        <td><a onClick={()=>{window.location.href=`tel:${info.email}`}}>{info.email}</a></td>
-                        <td><a onClick={()=>{window.location.href=`tel:${info.contact}`}}>{info.contact}</a></td>
-                        </tr>
-                      
-                    ))}
-                      
-                    </tbody>
-                  </table>
+  if (staffList.length === 0)
+    return <p>No staff accounts available at the moment.</p>;
 
-                </div>
+  return (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+        gap: 20,
+      }}
+    >
+      {staffList.map((staff, index) => (
+        <div
+          key={index}
+          style={{
+            background: "#fff",
+            padding: 20,
+            borderRadius: 12,
+            boxShadow: "0 8px 20px rgba(0,0,0,0.1)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            textAlign: "center",
+            transition: "transform 0.2s",
+          }}
+          onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.05)")}
+          onMouseLeave={e => (e.currentTarget.style.transform = "scale(1)")}
+        >
+          {/* Optional profile picture */}
+          <div
+            style={{
+              width: 80,
+              height: 80,
+              borderRadius: "50%",
+              background: "#f0f0f0",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              fontSize: 24,
+              fontWeight: 600,
+              marginBottom: 15,
+              overflow: "hidden",
+            }}
+          >
+            {staff.photoURL ? (
+              <img
+                src={staff.photoURL}
+                alt={staff.name}
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+            ) : (
+              staff.name?.charAt(0) || "T"
+            )}
+          </div>
 
-              </div>
-            </div>
+          {/* Name */}
+          <h4 style={{ marginBottom: 5, color: "#333" }}>{staff.name}</h4>
 
-        </>
-    )
+          {/* Subject */}
+          {staff.subject && (
+            <p style={{ color: "#7a5018", marginBottom: 5 }}>{staff.subject}</p>
+          )}
+
+          {/* Role */}
+          <span
+            style={{
+              background: "#f4f6f8",
+              color: "#555",
+              padding: "3px 8px",
+              borderRadius: 6,
+              fontSize: 12,
+              fontWeight: 600,
+            }}
+          >
+            {staff.role.charAt(0).toUpperCase() + staff.role.slice(1)}
+          </span>
+
+          {/* Optional join date */}
+          {staff.createdAt && (
+            <p style={{ fontSize: 12, color: "#999", marginTop: 8 }}>
+              Joined: {new Date(staff.createdAt.seconds * 1000).toLocaleDateString()}
+            </p>
+          )}
+        </div>
+      ))}
+    </div>
+  );
 }
