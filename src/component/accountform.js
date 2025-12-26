@@ -20,6 +20,28 @@ export default function Accountform() {
   const [subject, setSubject] = useState("");
   const [studentId, setStudentId] = useState("");
 
+  const subjects = [
+    "Mathematics",
+    "English Language",
+    "Integrated Science",
+    "Social Studies",
+    "ICT",
+    "Physics",
+    "Chemistry",
+    "Biology",
+    "Economics",
+    "Geography",
+    "History",
+    "Government",
+    "French",
+    "Religious & Moral Education",
+    "Physical Education",
+    "Creative Arts",
+    "Business Studies",
+    "Accounting",
+    "Literature",
+  ];
+
   // GENERATE UNIQUE ID
   const generateId = (prefix) => {
     return `${prefix}-${Math.floor(100000 + Math.random() * 900000)}`;
@@ -38,7 +60,6 @@ export default function Accountform() {
       return;
     }
 
-    // ROLE VALIDATIONS
     if (role === "staff" && (!subject || !contact)) {
       alert("Teacher must provide subject and contact");
       return;
@@ -60,7 +81,6 @@ export default function Accountform() {
 
       await sendEmailVerification(cred.user);
 
-      // ASSIGN PREFIX
       let uniqueId = "";
       if (role === "student") uniqueId = generateId("Stu");
       if (role === "staff") uniqueId = generateId("Tch");
@@ -96,7 +116,6 @@ export default function Accountform() {
 
       alert("Account created! Please verify your email before login.");
 
-      // RESET
       setName("");
       setEmail("");
       setPassword("");
@@ -225,15 +244,22 @@ export default function Accountform() {
             <option value="parent">Parent</option>
           </select>
 
-          {/* CONDITIONAL FIELDS */}
+          {/* TEACHER FIELDS */}
           {role === "staff" && (
             <>
-              <input
-                style={input}
-                placeholder="Subject Taught"
+              <select
+                style={select}
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
-              />
+              >
+                <option value="">Select Subject</option>
+                {subjects.map((subj) => (
+                  <option key={subj} value={subj}>
+                    {subj}
+                  </option>
+                ))}
+              </select>
+
               <input
                 style={input}
                 placeholder="Contact Number"
@@ -243,6 +269,7 @@ export default function Accountform() {
             </>
           )}
 
+          {/* PARENT FIELDS */}
           {role === "parent" && (
             <>
               <input
