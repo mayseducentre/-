@@ -15,9 +15,11 @@ import { saveAs } from "file-saver";
 
 const LEVEL_CLASSES = {
   Lower: ["MEC 1", "MEC 2", "MEC 3"],
-  Upper: ["Class 4", "Class 5", "Class 6"],
+  Upper: ["Class 4", "Class 5", "Class 5"],
   JHS: ["JHS 1", "JHS 2", "JHS 3"],
 };
+
+const WEEK_COLOR = "#f7f1e3";
 
 export default function SchemeOfWorkBuilder() {
   const [level, setLevel] = useState("Lower");
@@ -28,16 +30,16 @@ export default function SchemeOfWorkBuilder() {
   const [classes, setClasses] = useState(
     LEVEL_CLASSES.Lower.map((c, i) => ({
       name: c,
-      color: ["#eef4ff", "#fff4e6", "#eefaf1"][i],
+      color: ["#e8f0ff", "#fff1e0", "#e9f7ef"][i],
     }))
   );
 
   const weeks = useMemo(() => {
-    const rows = [];
-    for (let i = 1; i <= weeksCount; i++) rows.push({ week: i, type: "teaching" });
-    rows.push({ week: weeksCount + 1, type: "revision" });
-    rows.push({ week: weeksCount + 2, type: "exam" });
-    return rows;
+    const arr = [];
+    for (let i = 1; i <= weeksCount; i++) arr.push({ week: i, type: "teaching" });
+    arr.push({ week: weeksCount + 1, type: "revision" });
+    arr.push({ week: weeksCount + 2, type: "exam" });
+    return arr;
   }, [weeksCount]);
 
   const [data, setData] = useState({});
@@ -47,8 +49,8 @@ export default function SchemeOfWorkBuilder() {
       ...prev,
       [week]: {
         ...prev[week],
-        [cls]: { ...prev?.[week]?.[cls], [field]: value },
-      },
+        [cls]: { ...prev?.[week]?.[cls], [field]: value }
+      }
     }));
   };
 
@@ -57,13 +59,13 @@ export default function SchemeOfWorkBuilder() {
     setClasses(
       LEVEL_CLASSES[lvl].map((c, i) => ({
         name: c,
-        color: ["#eef4ff", "#fff4e6", "#eefaf1"][i],
+        color: ["#e8f0ff", "#fff1e0", "#e9f7ef"][i],
       }))
     );
     setData({});
   };
 
-  const cellBorder = {
+  const border = {
     top: { style: BorderStyle.SINGLE, size: 1 },
     bottom: { style: BorderStyle.SINGLE, size: 1 },
     left: { style: BorderStyle.SINGLE, size: 1 },
@@ -77,14 +79,20 @@ export default function SchemeOfWorkBuilder() {
       new TableRow({
         children: [
           new TableCell({
-            borders: cellBorder,
-            children: [new Paragraph({ text: "WEEKS", alignment: AlignmentType.CENTER })],
+            shading: { fill: "F7F1E3" },
+            borders: border,
+            children: [
+              new Paragraph({
+                alignment: AlignmentType.CENTER,
+                children: [new TextRun({ text: "WEEKS", bold: true })],
+              }),
+            ],
           }),
           ...classes.flatMap(cls => [
             new TableCell({
               columnSpan: 2,
               shading: { fill: cls.color.replace("#", "") },
-              borders: cellBorder,
+              borders: border,
               children: [
                 new Paragraph({
                   alignment: AlignmentType.CENTER,
@@ -100,10 +108,16 @@ export default function SchemeOfWorkBuilder() {
     rows.push(
       new TableRow({
         children: [
-          new TableCell({ borders: cellBorder, children: [new Paragraph("")] }),
+          new TableCell({ borders: border, children: [new Paragraph("")] }),
           ...classes.flatMap(() => [
-            new TableCell({ borders: cellBorder, children: [new Paragraph("TOPICS")] }),
-            new TableCell({ borders: cellBorder, children: [new Paragraph("REFERENCE")] }),
+            new TableCell({
+              borders: border,
+              children: [new Paragraph({ text: "TOPICS", alignment: AlignmentType.CENTER })],
+            }),
+            new TableCell({
+              borders: border,
+              children: [new Paragraph({ text: "REFERENCE", alignment: AlignmentType.CENTER })],
+            }),
           ]),
         ],
       })
@@ -114,28 +128,44 @@ export default function SchemeOfWorkBuilder() {
         new TableRow({
           children: [
             new TableCell({
-              borders: cellBorder,
-              children: [new Paragraph({ text: String(w.week), alignment: AlignmentType.CENTER })],
+              shading: { fill: "F7F1E3" },
+              borders: border,
+              children: [
+                new Paragraph({
+                  alignment: AlignmentType.CENTER,
+                  children: [new TextRun({ text: String(w.week), bold: true })],
+                }),
+              ],
             }),
             ...classes.flatMap(cls => {
               if (w.type !== "teaching") {
                 return [
                   new TableCell({
-                    borders: cellBorder,
-                    children: [new Paragraph(w.type === "revision" ? "Revision" : "Examination")],
+                    columnSpan: 2,
+                    borders: border,
+                    children: [
+                      new Paragraph({
+                        alignment: AlignmentType.CENTER,
+                        children: [
+                          new TextRun({
+                            text: w.type === "revision" ? "Revision" : "Examination",
+                            bold: true,
+                          }),
+                        ],
+                      }),
+                    ],
                   }),
-                  new TableCell({ borders: cellBorder, children: [new Paragraph("")] }),
                 ];
               }
               return [
                 new TableCell({
                   shading: { fill: cls.color.replace("#", "") },
-                  borders: cellBorder,
+                  borders: border,
                   children: [new Paragraph(data?.[w.week]?.[cls.name]?.topic || "")],
                 }),
                 new TableCell({
                   shading: { fill: cls.color.replace("#", "") },
-                  borders: cellBorder,
+                  borders: border,
                   children: [new Paragraph(data?.[w.week]?.[cls.name]?.reference || "")],
                 }),
               ];
@@ -182,27 +212,27 @@ export default function SchemeOfWorkBuilder() {
   return (
     <div style={{
       minHeight: "100vh",
-      background: "linear-gradient(135deg,#f5f7fa,#e6ebf2)",
-      padding: 24,
+      background: "#f3f4f6",
+      padding: 12,
       fontFamily: "Garamond, serif"
     }}>
       <div style={{
-        maxWidth: 1200,
+        maxWidth: 1300,
         margin: "auto",
-        background: "#fff",
-        borderRadius: 12,
-        padding: 24,
-        boxShadow: "0 20px 40px rgba(0,0,0,0.08)"
+        background: "#ffffff",
+        borderRadius: 10,
+        padding: 16,
+        boxShadow: "0 10px 30px rgba(0,0,0,0.08)"
       }}>
-        <h1 style={{ textAlign: "center", marginBottom: 20 }}>
+        <h2 style={{ textAlign: "center", fontWeight: "bold", marginBottom: 16 }}>
           Scheme of Work Builder
-        </h1>
+        </h2>
 
         <div style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))",
-          gap: 12,
-          marginBottom: 20
+          gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))",
+          gap: 10,
+          marginBottom: 16
         }}>
           <select value={level} onChange={e => changeLevel(e.target.value)}>
             <option value="Lower">Lower Primary</option>
@@ -215,19 +245,41 @@ export default function SchemeOfWorkBuilder() {
         </div>
 
         <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <table style={{
+            width: "100%",
+            borderCollapse: "collapse",
+            minWidth: 900
+          }}>
             <thead>
               <tr>
-                <th style={{ padding: 12, textAlign: "center" }}>Weeks</th>
+                <th style={{
+                  background: WEEK_COLOR,
+                  padding: 14,
+                  textAlign: "center",
+                  fontWeight: "bold"
+                }}>
+                  WEEKS
+                </th>
                 {classes.map(cls => (
-                  <th key={cls.name} colSpan={2} style={{ background: cls.color, padding: 12 }}>
+                  <th key={cls.name} colSpan={2} style={{
+                    background: cls.color,
+                    padding: 14,
+                    textAlign: "center",
+                    fontWeight: "bold"
+                  }}>
                     {cls.name}
-                    <input type="color" value={cls.color} style={{ marginLeft: 8 }}
+                    <input
+                      type="color"
+                      value={cls.color}
+                      style={{ marginLeft: 8 }}
                       onChange={e =>
                         setClasses(prev =>
-                          prev.map(c => c.name === cls.name ? { ...c, color: e.target.value } : c)
+                          prev.map(c =>
+                            c.name === cls.name ? { ...c, color: e.target.value } : c
+                          )
                         )
-                      } />
+                      }
+                    />
                   </th>
                 ))}
               </tr>
@@ -235,8 +287,8 @@ export default function SchemeOfWorkBuilder() {
                 <th></th>
                 {classes.map(cls => (
                   <React.Fragment key={cls.name}>
-                    <th>Topics</th>
-                    <th>Reference</th>
+                    <th style={{ textAlign: "center", fontWeight: "bold" }}>TOPICS</th>
+                    <th style={{ textAlign: "center", fontWeight: "bold" }}>REFERENCE</th>
                   </React.Fragment>
                 ))}
               </tr>
@@ -245,25 +297,48 @@ export default function SchemeOfWorkBuilder() {
             <tbody>
               {weeks.map(w => (
                 <tr key={w.week}>
-                  <td style={{ textAlign: "center", fontWeight: "bold" }}>{w.week}</td>
+                  <td style={{
+                    background: WEEK_COLOR,
+                    textAlign: "center",
+                    fontWeight: "bold",
+                    padding: 12
+                  }}>
+                    {w.week}
+                  </td>
                   {classes.flatMap(cls =>
                     w.type === "teaching" ? [
-                      <td key={cls.name + "t"} style={{ background: cls.color }}>
+                      <td key={cls.name + "t"} style={{ background: cls.color, padding: 10 }}>
                         <textarea
-                          style={{ width: "100%", minHeight: 50 }}
+                          style={{
+                            width: "100%",
+                            minHeight: 70,
+                            fontFamily: "Garamond, serif",
+                            fontSize: 16,
+                            padding: 8
+                          }}
                           value={data?.[w.week]?.[cls.name]?.topic || ""}
                           onChange={e => updateCell(w.week, cls.name, "topic", e.target.value)}
                         />
                       </td>,
-                      <td key={cls.name + "r"} style={{ background: cls.color }}>
+                      <td key={cls.name + "r"} style={{ background: cls.color, padding: 10 }}>
                         <textarea
-                          style={{ width: "100%", minHeight: 50 }}
+                          style={{
+                            width: "100%",
+                            minHeight: 70,
+                            fontFamily: "Garamond, serif",
+                            fontSize: 16,
+                            padding: 8
+                          }}
                           value={data?.[w.week]?.[cls.name]?.reference || ""}
                           onChange={e => updateCell(w.week, cls.name, "reference", e.target.value)}
                         />
                       </td>
                     ] : [
-                      <td key={cls.name + "t"} colSpan={2} style={{ textAlign: "center" }}>
+                      <td key={cls.name + "x"} colSpan={2} style={{
+                        textAlign: "center",
+                        fontWeight: "bold",
+                        padding: 14
+                      }}>
                         {w.type === "revision" ? "Revision" : "Examination"}
                       </td>
                     ]
@@ -275,13 +350,15 @@ export default function SchemeOfWorkBuilder() {
         </div>
 
         <button onClick={downloadDocx} style={{
-          marginTop: 20,
-          padding: "12px 24px",
-          borderRadius: 8,
-          background: "#1e40af",
+          marginTop: 18,
+          width: "100%",
+          padding: "14px",
+          background: "#1e3a8a",
           color: "#fff",
           border: "none",
+          borderRadius: 8,
           fontSize: 16,
+          fontWeight: "bold",
           cursor: "pointer"
         }}>
           Download Word File
