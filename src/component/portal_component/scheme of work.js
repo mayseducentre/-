@@ -9,7 +9,7 @@ import {
   TextRun,
   WidthType,
   AlignmentType,
-  BorderStyle,
+  BorderStyle
 } from "docx";
 import { saveAs } from "file-saver";
 
@@ -20,8 +20,8 @@ const LEVEL_CLASSES = {
 };
 
 const WEEK_COLOR = "#f7f1e3";
-const FONTS = ["Garamond", "Times New Roman", "Georgia", "Serif"];
-const FONT_SIZES = [11, 12, 13, 14, 15, 16];
+const FONTS = ["Garamond", "Times New Roman", "Georgia", "Arial", "Verdana"];
+const FONT_SIZES = [11, 12, 13, 14, 15, 16, 18];
 
 export default function SchemeOfWorkBuilder() {
   const [level, setLevel] = useState("Lower");
@@ -30,7 +30,6 @@ export default function SchemeOfWorkBuilder() {
   const [weeksCount, setWeeksCount] = useState(12);
   const [fontFamily, setFontFamily] = useState("Garamond");
   const [fontSize, setFontSize] = useState(13);
-  const [schoolName, setSchoolName] = useState("Mays Educational Centre");
 
   const [classes, setClasses] = useState(
     LEVEL_CLASSES.Lower.map((c, i) => ({
@@ -50,16 +49,16 @@ export default function SchemeOfWorkBuilder() {
   const [data, setData] = useState({});
 
   const updateCell = (week, cls, field, value) => {
-    setData((prev) => ({
+    setData(prev => ({
       ...prev,
       [week]: {
         ...prev[week],
-        [cls]: { ...prev?.[week]?.[cls], [field]: value },
-      },
+        [cls]: { ...prev?.[week]?.[cls], [field]: value }
+      }
     }));
   };
 
-  const changeLevel = (lvl) => {
+  const changeLevel = lvl => {
     setLevel(lvl);
     setClasses(
       LEVEL_CLASSES[lvl].map((c, i) => ({
@@ -70,7 +69,6 @@ export default function SchemeOfWorkBuilder() {
     setData({});
   };
 
-  /* ---------- DOCX helpers ---------- */
   const border = {
     top: { style: BorderStyle.SINGLE, size: 1 },
     bottom: { style: BorderStyle.SINGLE, size: 1 },
@@ -81,305 +79,187 @@ export default function SchemeOfWorkBuilder() {
   const padding = { top: 200, bottom: 200, left: 200, right: 200 };
 
   const downloadDocx = async () => {
-    try {
-      const rows = [];
+    const rows = [];
 
-      // Header row
+    // Header row
+    rows.push(
+      new TableRow({
+        children: [
+          new TableCell({
+            shading: { fill: "F7F1E3" },
+            borders: border,
+            margins: padding,
+            children: [
+              new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "WEEKS", bold: true })] }),
+            ],
+          }),
+          ...classes.flatMap(cls => [
+            new TableCell({
+              columnSpan: 2,
+              shading: { fill: cls.color.replace("#", "") },
+              borders: border,
+              margins: padding,
+              children: [
+                new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: cls.name, bold: true })] }),
+              ],
+            }),
+          ]),
+        ],
+      })
+    );
+
+    // Sub-header row
+    rows.push(
+      new TableRow({
+        children: [
+          new TableCell({ borders: border, margins: padding, children: [new Paragraph("")] }),
+          ...classes.flatMap(() => [
+            new TableCell({ borders: border, margins: padding, children: [new Paragraph({ text: "TOPICS", alignment: AlignmentType.CENTER })] }),
+            new TableCell({ borders: border, margins: padding, children: [new Paragraph({ text: "REFERENCE", alignment: AlignmentType.CENTER })] }),
+          ]),
+        ],
+      })
+    );
+
+    // Data rows
+    weeks.forEach(w => {
       rows.push(
         new TableRow({
           children: [
             new TableCell({
-              width: { size: 6, type: WidthType.PERCENTAGE },
               shading: { fill: "F7F1E3" },
               borders: border,
               margins: padding,
-              children: [
-                new Paragraph({
-                  alignment: AlignmentType.CENTER,
-                  children: [new TextRun({ text: "WEEKS", bold: true })],
-                }),
-              ],
+              children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: String(w.week), bold: true })] })],
             }),
-            ...classes.flatMap((cls) => [
-              new TableCell({
-                columnSpan: 2,
-                width: { size: 31, type: WidthType.PERCENTAGE },
-                shading: { fill: cls.color.replace("#", "") },
-                borders: border,
-                margins: padding,
-                children: [
-                  new Paragraph({
-                    alignment: AlignmentType.CENTER,
-                    children: [new TextRun({ text: cls.name, bold: true })],
-                  }),
-                ],
-              }),
-            ]),
-          ],
-        })
-      );
-
-      // Sub-header row
-      rows.push(
-        new TableRow({
-          children: [
-            new TableCell({ borders: border }),
-            ...classes.flatMap(() => [
-              new TableCell({
-                width: { size: 22, type: WidthType.PERCENTAGE },
-                borders: border,
-                margins: padding,
-                children: [
-                  new Paragraph({
-                    alignment: AlignmentType.CENTER,
-                    children: [new TextRun({ text: "TOPICS", bold: true })],
-                  }),
-                ],
-              }),
-              new TableCell({
-                width: { size: 9, type: WidthType.PERCENTAGE },
-                borders: border,
-                margins: padding,
-                children: [
-                  new Paragraph({
-                    alignment: AlignmentType.CENTER,
-                    children: [new TextRun({ text: "REFERENCE", bold: true })],
-                  }),
-                ],
-              }),
-            ]),
-          ],
-        })
-      );
-
-      // Data rows
-      weeks.forEach((w) => {
-        rows.push(
-          new TableRow({
-            children: [
-              new TableCell({
-                shading: { fill: "F7F1E3" },
-                borders: border,
-                margins: padding,
-                children: [
-                  new Paragraph({
-                    alignment: AlignmentType.CENTER,
-                    children: [new TextRun({ text: String(w.week), bold: true })],
-                  }),
-                ],
-              }),
-              ...classes.flatMap((cls) => {
-                if (w.type !== "teaching") {
-                  return [
-                    new TableCell({
-                      columnSpan: 2,
-                      borders: border,
-                      margins: padding,
-                      children: [
-                        new Paragraph({
-                          alignment: AlignmentType.CENTER,
-                          children: [
-                            new TextRun({
-                              text: w.type === "revision" ? "Revision" : "Examination",
-                              bold: true,
-                            }),
-                          ],
-                        }),
-                      ],
-                    }),
-                  ];
-                }
+            ...classes.flatMap(cls => {
+              if (w.type !== "teaching") {
                 return [
                   new TableCell({
-                    width: { size: 22, type: WidthType.PERCENTAGE },
-                    shading: { fill: cls.color.replace("#", "") },
+                    columnSpan: 2,
                     borders: border,
                     margins: padding,
-                    children: [
-                      new Paragraph({ text: data?.[w.week]?.[cls.name]?.topic || "" }),
-                    ],
-                  }),
-                  new TableCell({
-                    width: { size: 9, type: WidthType.PERCENTAGE },
-                    shading: { fill: cls.color.replace("#", "") },
-                    borders: border,
-                    margins: padding,
-                    children: [
-                      new Paragraph({ text: data?.[w.week]?.[cls.name]?.reference || "" }),
-                    ],
+                    children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: w.type === "revision" ? "Revision" : "Examination", bold: true })] })],
                   }),
                 ];
-              }),
-            ],
-          })
-        );
-      });
+              }
+              return [
+                new TableCell({
+                  shading: { fill: cls.color.replace("#", "") },
+                  borders: border,
+                  margins: padding,
+                  children: [new Paragraph({ text: data?.[w.week]?.[cls.name]?.topic || "" })],
+                }),
+                new TableCell({
+                  shading: { fill: cls.color.replace("#", "") },
+                  borders: border,
+                  margins: padding,
+                  children: [new Paragraph({ text: data?.[w.week]?.[cls.name]?.reference || "" })],
+                }),
+              ];
+            }),
+          ],
+        })
+      );
+    });
 
-      const doc = new Document({
-        styles: {
-          default: {
-            document: {
-              run: { font: fontFamily, size: fontSize * 2 },
-              paragraph: { spacing: { line: 360 } },
-            },
+    const doc = new Document({
+      styles: {
+        default: {
+          document: {
+            run: { font: fontFamily, size: fontSize * 2 }, // half-points
+            paragraph: { spacing: { line: 360 } },
           },
         },
-        sections: [
-          {
-            children: [
-              new Paragraph({
-                alignment: AlignmentType.CENTER,
-                children: [
-                  new TextRun({ text: schoolName, bold: true, size: fontSize * 2 }),
-                ],
-              }),
-              new Paragraph({
-                alignment: AlignmentType.CENTER,
-                children: [
-                  new TextRun({
-                    text: `${subject.toUpperCase()} ${term.toUpperCase()} SCHEME OF WORK (${level.toUpperCase()})`,
-                    bold: true,
-                    size: fontSize * 2,
-                  }),
-                ],
-              }),
-              new Paragraph(""),
-              new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows }),
-            ],
-          },
-        ],
-      });
+      },
+      sections: [
+        {
+          children: [
+            new Paragraph({
+              alignment: AlignmentType.CENTER,
+              children: [new TextRun({ text: `${subject.toUpperCase()} ${term.toUpperCase()} SCHEME OF WORK (${level.toUpperCase()})`, bold: true })],
+            }),
+            new Paragraph(""),
+            new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows }),
+          ],
+        },
+      ],
+    });
 
-      const blob = await Packer.toBlob(doc);
-      saveAs(blob, `${subject}_${level}_${term}_Scheme.docx`);
-    } catch (err) {
-      console.error("Error generating docx:", err);
-      alert("Failed to generate Word file. Check console for details.");
-    }
+    saveAs(await Packer.toBlob(doc), `${subject}_${level}_${term}_Scheme.docx`);
   };
 
   return (
     <div style={{ minHeight: "100vh", background: "#f3f4f6", padding: 12, fontFamily }}>
-      <div
-        style={{
-          maxWidth: 1400,
-          margin: "auto",
-          background: "#fff",
-          borderRadius: 10,
-          padding: 16,
-          boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
-        }}
-      >
-        <h2 style={{ textAlign: "center", fontWeight: "bold" }}>Scheme of Work Builder</h2>
+      <div style={{ maxWidth: 1400, margin: "auto", background: "#fff", borderRadius: 10, padding: 20, boxShadow: "0 10px 30px rgba(0,0,0,0.08)" }}>
+        <h2 style={{ textAlign: "center", fontWeight: "bold", marginBottom: 20 }}>Scheme of Work Builder</h2>
 
-        {/* Controls */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit,minmax(140px,1fr))",
-            gap: 10,
-            marginBottom: 16,
-          }}
-        >
-          <select value={level} onChange={(e) => changeLevel(e.target.value)}>
+        {/* Options */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))", gap: 12, marginBottom: 20 }}>
+          <select value={level} onChange={e => changeLevel(e.target.value)}>
             <option value="Lower">Lower Primary</option>
             <option value="Upper">Upper Primary</option>
             <option value="JHS">JHS</option>
           </select>
-          <input value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="Subject" />
-          <input value={term} onChange={(e) => setTerm(e.target.value)} placeholder="Term" />
-          <input type="number" value={weeksCount} min="1" onChange={(e) => setWeeksCount(+e.target.value)} />
-          <input value={schoolName} onChange={(e) => setSchoolName(e.target.value)} placeholder="School Name" />
-          <select value={fontFamily} onChange={(e) => setFontFamily(e.target.value)}>
-            {FONTS.map((f) => (
-              <option key={f}>{f}</option>
-            ))}
+          <input value={subject} onChange={e => setSubject(e.target.value)} placeholder="Subject" />
+          <input value={term} onChange={e => setTerm(e.target.value)} placeholder="Term" />
+          <input type="number" min="1" value={weeksCount} onChange={e => setWeeksCount(+e.target.value)} />
+          <select value={fontFamily} onChange={e => setFontFamily(e.target.value)}>
+            {FONTS.map(f => <option key={f}>{f}</option>)}
           </select>
-          <select value={fontSize} onChange={(e) => setFontSize(+e.target.value)}>
-            {FONT_SIZES.map((s) => (
-              <option key={s}>{s}px</option>
-            ))}
+          <select value={fontSize} onChange={e => setFontSize(+e.target.value)}>
+            {FONT_SIZES.map(s => <option key={s}>{s}px</option>)}
           </select>
         </div>
 
         {/* Table */}
         <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", minWidth: 1100, borderCollapse: "collapse", tableLayout: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 1000 }}>
             <thead>
               <tr>
-                <th style={{ background: WEEK_COLOR, padding: 14, textAlign: "center", fontWeight: "bold", width: "6%" }}>WEEKS</th>
-                {classes.map((cls) => (
-                  <th
-                    key={cls.name}
-                    colSpan={2}
-                    style={{ background: cls.color, padding: 14, textAlign: "center", fontWeight: "bold", width: "31%" }}
-                  >
+                <th style={{ background: WEEK_COLOR, padding: 16, textAlign: "center", fontWeight: "bold" }}>WEEKS</th>
+                {classes.map(cls => (
+                  <th key={cls.name} colSpan={2} style={{ background: cls.color, padding: 16, textAlign: "center", fontWeight: "bold" }}>
                     {cls.name}
-                    <input
-                      type="color"
-                      value={cls.color}
-                      style={{ marginLeft: 6 }}
-                      onChange={(e) =>
-                        setClasses((prev) => prev.map((c) => (c.name === cls.name ? { ...c, color: e.target.value } : c)))
-                      }
-                    />
+                    <input type="color" value={cls.color} style={{ marginLeft: 6 }} onChange={e =>
+                      setClasses(prev => prev.map(c => c.name === cls.name ? { ...c, color: e.target.value } : c))
+                    } />
                   </th>
                 ))}
               </tr>
               <tr>
                 <th></th>
-                {classes.map((cls) => (
+                {classes.map(cls => (
                   <React.Fragment key={cls.name}>
-                    <th style={{ textAlign: "center", fontWeight: "bold", width: "22%" }}>TOPICS</th>
-                    <th style={{ textAlign: "center", fontWeight: "bold", width: "9%" }}>REFERENCE</th>
+                    <th style={{ textAlign: "center", fontWeight: "bold" }}>TOPICS</th>
+                    <th style={{ textAlign: "center", fontWeight: "bold" }}>REFERENCE</th>
                   </React.Fragment>
                 ))}
               </tr>
             </thead>
-
             <tbody>
-              {weeks.map((w) => (
+              {weeks.map(w => (
                 <tr key={w.week}>
                   <td style={{ background: WEEK_COLOR, textAlign: "center", fontWeight: "bold", padding: 14 }}>{w.week}</td>
-                  {classes.flatMap((cls) =>
-                    w.type === "teaching"
-                      ? [
-                          <td key={cls.name + "t"} style={{ background: cls.color, padding: 12 }}>
-                            <textarea
-                              style={{
-                                width: "100%",
-                                minHeight: 90,
-                                fontFamily,
-                                fontSize,
-                                padding: 10,
-                                resize: "vertical",
-                                whiteSpace: "pre-wrap",
-                              }}
-                              value={data?.[w.week]?.[cls.name]?.topic || ""}
-                              onChange={(e) => updateCell(w.week, cls.name, "topic", e.target.value)}
-                            />
-                          </td>,
-                          <td key={cls.name + "r"} style={{ background: cls.color, padding: 12 }}>
-                            <textarea
-                              style={{
-                                width: "100%",
-                                minHeight: 70,
-                                fontFamily,
-                                fontSize,
-                                padding: 10,
-                                resize: "vertical",
-                                whiteSpace: "pre-wrap",
-                              }}
-                              value={data?.[w.week]?.[cls.name]?.reference || ""}
-                              onChange={(e) => updateCell(w.week, cls.name, "reference", e.target.value)}
-                            />
-                          </td>,
-                        ]
-                      : [
-                          <td key={cls.name + "x"} colSpan={2} style={{ textAlign: "center", fontWeight: "bold", padding: 16 }}>
-                            {w.type === "revision" ? "Revision" : "Examination"}
-                          </td>,
-                        ]
+                  {classes.flatMap(cls =>
+                    w.type === "teaching" ? [
+                      <td key={cls.name + "t"} style={{ background: cls.color, padding: 12 }}>
+                        <textarea style={{ width: "100%", minHeight: 70, fontFamily, fontSize, padding: 8, resize: "vertical" }}
+                          value={data?.[w.week]?.[cls.name]?.topic || ""}
+                          onChange={e => updateCell(w.week, cls.name, "topic", e.target.value)}
+                        />
+                      </td>,
+                      <td key={cls.name + "r"} style={{ background: cls.color, padding: 12 }}>
+                        <textarea style={{ width: "100%", minHeight: 70, fontFamily, fontSize, padding: 8, resize: "vertical" }}
+                          value={data?.[w.week]?.[cls.name]?.reference || ""}
+                          onChange={e => updateCell(w.week, cls.name, "reference", e.target.value)}
+                        />
+                      </td>
+                    ] : [
+                      <td key={cls.name + "x"} colSpan={2} style={{ textAlign: "center", fontWeight: "bold", padding: 16 }}>
+                        {w.type === "revision" ? "Revision" : "Examination"}
+                      </td>
+                    ]
                   )}
                 </tr>
               ))}
@@ -387,20 +267,7 @@ export default function SchemeOfWorkBuilder() {
           </table>
         </div>
 
-        <button
-          onClick={downloadDocx}
-          style={{
-            marginTop: 18,
-            width: "100%",
-            padding: 14,
-            background: "#1e3a8a",
-            color: "#fff",
-            border: "none",
-            borderRadius: 8,
-            fontSize: 16,
-            fontWeight: "bold",
-          }}
-        >
+        <button onClick={downloadDocx} style={{ marginTop: 20, width: "100%", padding: 14, background: "#1e3a8a", color: "#fff", border: "none", borderRadius: 8, fontSize: 16, fontWeight: "bold", cursor: "pointer" }}>
           Download Word File
         </button>
       </div>
