@@ -8,6 +8,7 @@ import StudentPerform from "../component/portal_component/student_performance";
 import LNote from "../component/portal_component/lesson_note";
 import RegisterBook from "../component/portal_component/registerbook";
 import MecAi from "../component/mecai";
+import SchemeOfWorkBuilder from "../component/portal_component/scheme of work";
 import HeadN from "../component/neutral_head";
 import TeacherSettings from "../component/portal_component/teacher_settings";
 
@@ -47,6 +48,7 @@ export default function TeachersPortal({ user }) {
         {activeTab === "lessons" && <Card><LNote /></Card>}
         {activeTab === "register" && <Card><RegisterBook /></Card>}
         {activeTab === "mecai" && <Card><MecAi /></Card>}
+{activeTab === "schemeofwork" && <Card><SchemeOfWorkBuilder /></Card>}
         
         {activeTab === "settings" && <Card><TeacherSettings user={user} /></Card>} 
         <Footer />
