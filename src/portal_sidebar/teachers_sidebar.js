@@ -28,7 +28,7 @@ export default function Teachersidebar({ user, setActiveTab, activeTab }) {
     try {
       await signOut(auth);
       // Optionally redirect after sign out
-      window.location.href = "#/portal"; 
+      window.location.reload()
     } catch (err) {
       console.error("Sign out failed:", err);
       alert("Failed to sign out. Please try again.");
