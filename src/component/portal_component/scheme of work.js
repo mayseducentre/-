@@ -76,7 +76,7 @@ export default function SchemeOfWorkBuilder() {
     right: { style: BorderStyle.SINGLE, size: 1 },
   };
 
-  const padding = { top: 200, bottom: 200, left: 200, right: 200 };
+  const padding = { top: 250, bottom: 250, left: 250, right: 250 }; // more padding for DOCX
 
   const downloadDocx = async () => {
     const rows = [];
@@ -89,9 +89,7 @@ export default function SchemeOfWorkBuilder() {
             shading: { fill: "F7F1E3" },
             borders: border,
             margins: padding,
-            children: [
-              new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "WEEKS", bold: true })] }),
-            ],
+            children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "WEEKS", bold: true })] })],
           }),
           ...classes.flatMap(cls => [
             new TableCell({
@@ -99,16 +97,14 @@ export default function SchemeOfWorkBuilder() {
               shading: { fill: cls.color.replace("#", "") },
               borders: border,
               margins: padding,
-              children: [
-                new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: cls.name, bold: true })] }),
-              ],
+              children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: cls.name, bold: true })] })],
             }),
           ]),
         ],
       })
     );
 
-    // Sub-header row
+    // Sub-header
     rows.push(
       new TableRow({
         children: [
@@ -147,7 +143,7 @@ export default function SchemeOfWorkBuilder() {
                 new TableCell({
                   shading: { fill: cls.color.replace("#", "") },
                   borders: border,
-                  margins: padding,
+                  margins: { ...padding, right: 500, left: 500 }, // extra space for topics
                   children: [new Paragraph({ text: data?.[w.week]?.[cls.name]?.topic || "" })],
                 }),
                 new TableCell({
@@ -167,7 +163,7 @@ export default function SchemeOfWorkBuilder() {
       styles: {
         default: {
           document: {
-            run: { font: fontFamily, size: fontSize * 2 }, // half-points
+            run: { font: fontFamily, size: fontSize * 2 },
             paragraph: { spacing: { line: 360 } },
           },
         },
@@ -214,7 +210,7 @@ export default function SchemeOfWorkBuilder() {
 
         {/* Table */}
         <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 1000 }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "auto", minWidth: 1000 }}>
             <thead>
               <tr>
                 <th style={{ background: WEEK_COLOR, padding: 16, textAlign: "center", fontWeight: "bold" }}>WEEKS</th>
@@ -231,8 +227,8 @@ export default function SchemeOfWorkBuilder() {
                 <th></th>
                 {classes.map(cls => (
                   <React.Fragment key={cls.name}>
-                    <th style={{ textAlign: "center", fontWeight: "bold" }}>TOPICS</th>
-                    <th style={{ textAlign: "center", fontWeight: "bold" }}>REFERENCE</th>
+                    <th style={{ textAlign: "center", fontWeight: "bold", width: "70%" }}>TOPICS</th>
+                    <th style={{ textAlign: "center", fontWeight: "bold", width: "30%" }}>REFERENCE</th>
                   </React.Fragment>
                 ))}
               </tr>
@@ -243,14 +239,16 @@ export default function SchemeOfWorkBuilder() {
                   <td style={{ background: WEEK_COLOR, textAlign: "center", fontWeight: "bold", padding: 14 }}>{w.week}</td>
                   {classes.flatMap(cls =>
                     w.type === "teaching" ? [
-                      <td key={cls.name + "t"} style={{ background: cls.color, padding: 12 }}>
-                        <textarea style={{ width: "100%", minHeight: 70, fontFamily, fontSize, padding: 8, resize: "vertical" }}
+                      <td key={cls.name + "t"} style={{ background: cls.color, padding: 14 }}>
+                        <textarea
+                          style={{ width: "100%", minHeight: 80, fontFamily, fontSize, padding: 12, resize: "vertical" }}
                           value={data?.[w.week]?.[cls.name]?.topic || ""}
                           onChange={e => updateCell(w.week, cls.name, "topic", e.target.value)}
                         />
                       </td>,
-                      <td key={cls.name + "r"} style={{ background: cls.color, padding: 12 }}>
-                        <textarea style={{ width: "100%", minHeight: 70, fontFamily, fontSize, padding: 8, resize: "vertical" }}
+                      <td key={cls.name + "r"} style={{ background: cls.color, padding: 14 }}>
+                        <textarea
+                          style={{ width: "100%", minHeight: 60, fontFamily, fontSize, padding: 10, resize: "vertical" }}
                           value={data?.[w.week]?.[cls.name]?.reference || ""}
                           onChange={e => updateCell(w.week, cls.name, "reference", e.target.value)}
                         />
