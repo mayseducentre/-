@@ -48,7 +48,7 @@ export default function TeachersPortal({ user }) {
         {activeTab === "lessons" && <Card><LNote /></Card>}
         {activeTab === "register" && <Card><RegisterBook /></Card>}
         {activeTab === "mecai" && <Card><MecAi /></Card>}
-{activeTab === "schemeofwork" && <Card><SchemeOfWorkBuilder /></Card>}
+{activeTab === "sow" && <Card><SchemeOfWorkBuilder /></Card>}
         
         {activeTab === "settings" && <Card><TeacherSettings user={user} /></Card>} 
         <Footer />
