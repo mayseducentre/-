@@ -30,6 +30,7 @@ export default function SchemeOfWorkBuilder() {
   const [weeksCount, setWeeksCount] = useState(12);
   const [fontFamily, setFontFamily] = useState("Garamond");
   const [fontSize, setFontSize] = useState(13);
+  const [cellPadding, setCellPadding] = useState(200); // Word DOCX units (twips)
 
   const [classes, setClasses] = useState(
     LEVEL_CLASSES.Lower.map((c, i) => ({
@@ -76,8 +77,6 @@ export default function SchemeOfWorkBuilder() {
     right: { style: BorderStyle.SINGLE, size: 1 },
   };
 
-  const padding = { top: 250, bottom: 250, left: 250, right: 250 }; // more padding for DOCX
-
   const downloadDocx = async () => {
     const rows = [];
 
@@ -88,7 +87,7 @@ export default function SchemeOfWorkBuilder() {
           new TableCell({
             shading: { fill: "F7F1E3" },
             borders: border,
-            margins: padding,
+            margins: { top: cellPadding, bottom: cellPadding, left: cellPadding, right: cellPadding },
             children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "WEEKS", bold: true })] })],
           }),
           ...classes.flatMap(cls => [
@@ -96,7 +95,7 @@ export default function SchemeOfWorkBuilder() {
               columnSpan: 2,
               shading: { fill: cls.color.replace("#", "") },
               borders: border,
-              margins: padding,
+              margins: { top: cellPadding, bottom: cellPadding, left: cellPadding, right: cellPadding },
               children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: cls.name, bold: true })] })],
             }),
           ]),
@@ -108,10 +107,10 @@ export default function SchemeOfWorkBuilder() {
     rows.push(
       new TableRow({
         children: [
-          new TableCell({ borders: border, margins: padding, children: [new Paragraph("")] }),
+          new TableCell({ borders: border, margins: { top: cellPadding, bottom: cellPadding }, children: [new Paragraph("")] }),
           ...classes.flatMap(() => [
-            new TableCell({ borders: border, margins: padding, children: [new Paragraph({ text: "TOPICS", alignment: AlignmentType.CENTER })] }),
-            new TableCell({ borders: border, margins: padding, children: [new Paragraph({ text: "REFERENCE", alignment: AlignmentType.CENTER })] }),
+            new TableCell({ borders: border, margins: { top: cellPadding, bottom: cellPadding }, children: [new Paragraph({ text: "TOPICS", alignment: AlignmentType.CENTER })] }),
+            new TableCell({ borders: border, margins: { top: cellPadding, bottom: cellPadding }, children: [new Paragraph({ text: "REFERENCE", alignment: AlignmentType.CENTER })] }),
           ]),
         ],
       })
@@ -125,7 +124,7 @@ export default function SchemeOfWorkBuilder() {
             new TableCell({
               shading: { fill: "F7F1E3" },
               borders: border,
-              margins: padding,
+              margins: { top: cellPadding, bottom: cellPadding },
               children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: String(w.week), bold: true })] })],
             }),
             ...classes.flatMap(cls => {
@@ -134,7 +133,7 @@ export default function SchemeOfWorkBuilder() {
                   new TableCell({
                     columnSpan: 2,
                     borders: border,
-                    margins: padding,
+                    margins: { top: cellPadding, bottom: cellPadding },
                     children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: w.type === "revision" ? "Revision" : "Examination", bold: true })] })],
                   }),
                 ];
@@ -143,14 +142,14 @@ export default function SchemeOfWorkBuilder() {
                 new TableCell({
                   shading: { fill: cls.color.replace("#", "") },
                   borders: border,
-                  margins: { ...padding, right: 500, left: 500 }, // extra space for topics
-                  children: [new Paragraph({ text: data?.[w.week]?.[cls.name]?.topic || "" })],
+                  margins: { top: cellPadding * 1.5, bottom: cellPadding * 1.5, left: cellPadding, right: cellPadding }, // extra space for topics
+                  children: [new Paragraph({ text: data?.[w.week]?.[cls.name]?.topic || "", spacing: { line: 360 } })],
                 }),
                 new TableCell({
                   shading: { fill: cls.color.replace("#", "") },
                   borders: border,
-                  margins: padding,
-                  children: [new Paragraph({ text: data?.[w.week]?.[cls.name]?.reference || "" })],
+                  margins: { top: cellPadding, bottom: cellPadding, left: cellPadding, right: cellPadding },
+                  children: [new Paragraph({ text: data?.[w.week]?.[cls.name]?.reference || "", spacing: { line: 360 } })],
                 }),
               ];
             }),
@@ -171,12 +170,9 @@ export default function SchemeOfWorkBuilder() {
       sections: [
         {
           children: [
-            new Paragraph({
-              alignment: AlignmentType.CENTER,
-              children: [new TextRun({ text: `${subject.toUpperCase()} ${term.toUpperCase()} SCHEME OF WORK (${level.toUpperCase()})`, bold: true })],
-            }),
+            new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: `${subject.toUpperCase()} ${term.toUpperCase()} SCHEME OF WORK (${level.toUpperCase()})`, bold: true })] }),
             new Paragraph(""),
-            new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows }),
+            new Table({ width: { size: 100, type: WidthType.AUTO }, rows }), // Auto-fit table width
           ],
         },
       ],
@@ -206,6 +202,7 @@ export default function SchemeOfWorkBuilder() {
           <select value={fontSize} onChange={e => setFontSize(+e.target.value)}>
             {FONT_SIZES.map(s => <option key={s}>{s}px</option>)}
           </select>
+          <input type="number" min={50} max={1000} value={cellPadding} onChange={e => setCellPadding(+e.target.value)} placeholder="Cell Padding" />
         </div>
 
         {/* Table */}
