@@ -15,6 +15,7 @@ export default function Teachersidebar({ user, setActiveTab, activeTab }) {
     { label: "Dashboard", tab: "dashboard", icon: "🏠" },
     { label: "Assignments", tab: "assignments", icon: "📝" },
     { label: "Lessons", tab: "lessons", icon: "📘" },
+{ label: "SOW", tab: "sow", icon: "📒" },
     { label: "Mecai", tab: "mecai", icon: "🕹" },
     { label: "Assessment", tab: "assessment", icon: "🧠" },
     { label: "Register", tab: "register", icon: "📋" },
