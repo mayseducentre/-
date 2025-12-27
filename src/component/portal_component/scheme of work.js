@@ -69,6 +69,7 @@ export default function SchemeOfWorkBuilder() {
     setData({});
   };
 
+  /* ---------- DOCX helpers ---------- */
   const border = {
     top: { style: BorderStyle.SINGLE, size: 1 },
     bottom: { style: BorderStyle.SINGLE, size: 1 },
@@ -76,63 +77,60 @@ export default function SchemeOfWorkBuilder() {
     right: { style: BorderStyle.SINGLE, size: 1 },
   };
 
-  const cellPadding = { top: 200, bottom: 200, left: 200, right: 200 };
+  const padding = { top: 200, bottom: 200, left: 200, right: 200 };
 
   const downloadDocx = async () => {
     const rows = [];
 
+    /* Header row */
     rows.push(
       new TableRow({
         children: [
           new TableCell({
+            width: { size: 6, type: WidthType.PERCENTAGE },
             shading: { fill: "F7F1E3" },
             borders: border,
-            margins: cellPadding,
-            children: [
-              new Paragraph({
-                alignment: AlignmentType.CENTER,
-                children: [new TextRun({ text: "WEEKS", bold: true })],
-              }),
-            ],
+            margins: padding,
+            children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "WEEKS", bold: true })] })],
           }),
           ...classes.flatMap(cls => [
             new TableCell({
               columnSpan: 2,
+              width: { size: 31, type: WidthType.PERCENTAGE },
               shading: { fill: cls.color.replace("#", "") },
               borders: border,
-              margins: cellPadding,
-              children: [
-                new Paragraph({
-                  alignment: AlignmentType.CENTER,
-                  children: [new TextRun({ text: cls.name, bold: true })],
-                }),
-              ],
+              margins: padding,
+              children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: cls.name, bold: true })] })],
             }),
           ]),
         ],
       })
     );
 
+    /* Sub-header */
     rows.push(
       new TableRow({
         children: [
-          new TableCell({ borders: border, margins: cellPadding, children: [new Paragraph("")] }),
+          new TableCell({ borders: border }),
           ...classes.flatMap(() => [
             new TableCell({
+              width: { size: 22, type: WidthType.PERCENTAGE },
               borders: border,
-              margins: cellPadding,
-              children: [new Paragraph({ text: "TOPICS", alignment: AlignmentType.CENTER })],
+              margins: padding,
+              children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "TOPICS", bold: true })] })],
             }),
             new TableCell({
+              width: { size: 9, type: WidthType.PERCENTAGE },
               borders: border,
-              margins: cellPadding,
-              children: [new Paragraph({ text: "REFERENCE", alignment: AlignmentType.CENTER })],
+              margins: padding,
+              children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "REFERENCE", bold: true })] })],
             }),
           ]),
         ],
       })
     );
 
+    /* Data rows */
     weeks.forEach(w => {
       rows.push(
         new TableRow({
@@ -140,13 +138,8 @@ export default function SchemeOfWorkBuilder() {
             new TableCell({
               shading: { fill: "F7F1E3" },
               borders: border,
-              margins: cellPadding,
-              children: [
-                new Paragraph({
-                  alignment: AlignmentType.CENTER,
-                  children: [new TextRun({ text: String(w.week), bold: true })],
-                }),
-              ],
+              margins: padding,
+              children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: String(w.week), bold: true })] })],
             }),
             ...classes.flatMap(cls => {
               if (w.type !== "teaching") {
@@ -154,32 +147,24 @@ export default function SchemeOfWorkBuilder() {
                   new TableCell({
                     columnSpan: 2,
                     borders: border,
-                    margins: cellPadding,
-                    children: [
-                      new Paragraph({
-                        alignment: AlignmentType.CENTER,
-                        children: [
-                          new TextRun({
-                            text: w.type === "revision" ? "Revision" : "Examination",
-                            bold: true,
-                          }),
-                        ],
-                      }),
-                    ],
+                    margins: padding,
+                    children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: w.type === "revision" ? "Revision" : "Examination", bold: true })] })],
                   }),
                 ];
               }
               return [
                 new TableCell({
+                  width: { size: 22, type: WidthType.PERCENTAGE },
                   shading: { fill: cls.color.replace("#", "") },
                   borders: border,
-                  margins: cellPadding,
+                  margins: padding,
                   children: [new Paragraph(data?.[w.week]?.[cls.name]?.topic || "")],
                 }),
                 new TableCell({
+                  width: { size: 9, type: WidthType.PERCENTAGE },
                   shading: { fill: cls.color.replace("#", "") },
                   borders: border,
-                  margins: cellPadding,
+                  margins: padding,
                   children: [new Paragraph(data?.[w.week]?.[cls.name]?.reference || "")],
                 }),
               ];
@@ -198,26 +183,16 @@ export default function SchemeOfWorkBuilder() {
           },
         },
       },
-      sections: [
-        {
-          children: [
-            new Paragraph({
-              alignment: AlignmentType.CENTER,
-              children: [
-                new TextRun({
-                  text: `${subject.toUpperCase()} ${term.toUpperCase()} SCHEME OF WORK (${level.toUpperCase()})`,
-                  bold: true,
-                }),
-              ],
-            }),
-            new Paragraph(""),
-            new Table({
-              width: { size: 100, type: WidthType.PERCENTAGE },
-              rows,
-            }),
-          ],
-        },
-      ],
+      sections: [{
+        children: [
+          new Paragraph({
+            alignment: AlignmentType.CENTER,
+            children: [new TextRun({ text: `${subject.toUpperCase()} ${term.toUpperCase()} SCHEME OF WORK (${level.toUpperCase()})`, bold: true })],
+          }),
+          new Paragraph(""),
+          new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows }),
+        ],
+      }],
     });
 
     saveAs(await Packer.toBlob(doc), `${subject}_${level}_${term}_Scheme.docx`);
@@ -225,24 +200,10 @@ export default function SchemeOfWorkBuilder() {
 
   return (
     <div style={{ minHeight: "100vh", background: "#f3f4f6", padding: 12, fontFamily }}>
-      <div style={{
-        maxWidth: 1300,
-        margin: "auto",
-        background: "#fff",
-        borderRadius: 10,
-        padding: 16,
-        boxShadow: "0 10px 30px rgba(0,0,0,0.08)"
-      }}>
-        <h2 style={{ textAlign: "center", fontWeight: "bold" }}>
-          Scheme of Work Builder
-        </h2>
+      <div style={{ maxWidth: 1400, margin: "auto", background: "#fff", borderRadius: 10, padding: 16, boxShadow: "0 10px 30px rgba(0,0,0,0.08)" }}>
+        <h2 style={{ textAlign: "center", fontWeight: "bold" }}>Scheme of Work Builder</h2>
 
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit,minmax(140px,1fr))",
-          gap: 10,
-          marginBottom: 16
-        }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(140px,1fr))", gap: 10, marginBottom: 16 }}>
           <select value={level} onChange={e => changeLevel(e.target.value)}>
             <option value="Lower">Lower Primary</option>
             <option value="Upper">Upper Primary</option>
@@ -250,43 +211,30 @@ export default function SchemeOfWorkBuilder() {
           </select>
           <input value={subject} onChange={e => setSubject(e.target.value)} placeholder="Subject" />
           <input value={term} onChange={e => setTerm(e.target.value)} placeholder="Term" />
-          <input type="number" min="1" value={weeksCount} onChange={e => setWeeksCount(+e.target.value)} />
-
+          <input type="number" value={weeksCount} min="1" onChange={e => setWeeksCount(+e.target.value)} />
           <select value={fontFamily} onChange={e => setFontFamily(e.target.value)}>
             {FONTS.map(f => <option key={f}>{f}</option>)}
           </select>
-
           <select value={fontSize} onChange={e => setFontSize(+e.target.value)}>
-            {FONT_SIZES.map(s => <option key={s} value={s}>{s}px</option>)}
+            {FONT_SIZES.map(s => <option key={s}>{s}px</option>)}
           </select>
         </div>
 
         <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 900 }}>
+          <table style={{
+            width: "100%",
+            minWidth: 1100,
+            borderCollapse: "collapse",
+            tableLayout: "auto"
+          }}>
             <thead>
               <tr>
-                <th style={{ background: WEEK_COLOR, padding: 14, textAlign: "center", fontWeight: "bold" }}>
-                  WEEKS
-                </th>
+                <th style={{ background: WEEK_COLOR, padding: 14, textAlign: "center", fontWeight: "bold", width: "6%" }}>WEEKS</th>
                 {classes.map(cls => (
-                  <th key={cls.name} colSpan={2} style={{
-                    background: cls.color,
-                    padding: 14,
-                    textAlign: "center",
-                    fontWeight: "bold"
-                  }}>
+                  <th key={cls.name} colSpan={2} style={{ background: cls.color, padding: 14, textAlign: "center", fontWeight: "bold", width: "31%" }}>
                     {cls.name}
-                    <input
-                      type="color"
-                      value={cls.color}
-                      style={{ marginLeft: 6 }}
-                      onChange={e =>
-                        setClasses(prev =>
-                          prev.map(c =>
-                            c.name === cls.name ? { ...c, color: e.target.value } : c
-                          )
-                        )
-                      }
+                    <input type="color" value={cls.color} style={{ marginLeft: 6 }}
+                      onChange={e => setClasses(prev => prev.map(c => c.name === cls.name ? { ...c, color: e.target.value } : c))}
                     />
                   </th>
                 ))}
@@ -295,8 +243,8 @@ export default function SchemeOfWorkBuilder() {
                 <th></th>
                 {classes.map(cls => (
                   <React.Fragment key={cls.name}>
-                    <th style={{fontWeight: "bold" }}>TOPICS</th>
-                    <th style={{fontWeight: "bold" }}>REFERENCE</th>
+                    <th style={{ textAlign: "center", fontWeight: "bold", width: "22%" }}>TOPICS</th>
+                    <th style={{ textAlign: "center", fontWeight: "bold", width: "9%" }}>REFERENCE</th>
                   </React.Fragment>
                 ))}
               </tr>
@@ -305,24 +253,19 @@ export default function SchemeOfWorkBuilder() {
             <tbody>
               {weeks.map(w => (
                 <tr key={w.week}>
-                  <td style={{
-                    background: WEEK_COLOR,
-                    textAlign: "center",
-                    fontWeight: "bold",
-                    padding: 14
-                  }}>
-                    {w.week}
-                  </td>
+                  <td style={{ background: WEEK_COLOR, textAlign: "center", fontWeight: "bold", padding: 14 }}>{w.week}</td>
                   {classes.flatMap(cls =>
                     w.type === "teaching" ? [
                       <td key={cls.name + "t"} style={{ background: cls.color, padding: 12 }}>
                         <textarea
                           style={{
                             width: "100%",
-                            minHeight: 80,
+                            minHeight: 90,
                             fontFamily,
                             fontSize,
-                            padding: 10
+                            padding: 10,
+                            resize: "vertical",
+                            whiteSpace: "pre-wrap"
                           }}
                           value={data?.[w.week]?.[cls.name]?.topic || ""}
                           onChange={e => updateCell(w.week, cls.name, "topic", e.target.value)}
@@ -332,21 +275,19 @@ export default function SchemeOfWorkBuilder() {
                         <textarea
                           style={{
                             width: "100%",
-                            minHeight: 80,
+                            minHeight: 70,
                             fontFamily,
                             fontSize,
-                            padding: 10
+                            padding: 10,
+                            resize: "vertical",
+                            whiteSpace: "pre-wrap"
                           }}
                           value={data?.[w.week]?.[cls.name]?.reference || ""}
                           onChange={e => updateCell(w.week, cls.name, "reference", e.target.value)}
                         />
                       </td>
                     ] : [
-                      <td key={cls.name + "x"} colSpan={2} style={{
-                        textAlign: "center",
-                        fontWeight: "bold",
-                        padding: 16
-                      }}>
+                      <td key={cls.name + "x"} colSpan={2} style={{ textAlign: "center", fontWeight: "bold", padding: 16 }}>
                         {w.type === "revision" ? "Revision" : "Examination"}
                       </td>
                     ]
