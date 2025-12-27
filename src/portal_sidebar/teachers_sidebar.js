@@ -2,26 +2,38 @@ import React, { useEffect, useState } from "react";
 import { getAuth, signOut } from "firebase/auth";
 
 export default function Teachersidebar({ user, setActiveTab, activeTab }) {
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const auth = getAuth();
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
+  // Track window size changes for responsive layout
   useEffect(() => {
-    const resize = () => setIsMobile(window.innerWidth <= 768);
-    window.addEventListener("resize", resize);
-    return () => window.removeEventListener("resize", resize);
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const menuItems = [
     { label: "Dashboard", tab: "dashboard", icon: "🏠" },
     { label: "Assignments", tab: "assignments", icon: "📝" },
     { label: "Lessons", tab: "lessons", icon: "📘" },
-{ label: "SOW", tab: "sow", icon: "📒" },
-    { label: "Mecai", tab: "mecai", icon: "🕹" },
+    { label: "SOW", tab: "sow", icon: "📒" },
+    { label: "MecAi", tab: "mecai", icon: "🕹" },
     { label: "Assessment", tab: "assessment", icon: "🧠" },
     { label: "Register", tab: "register", icon: "📋" },
     { label: "Announcements", tab: "announcements", icon: "📢" },
     { label: "Settings", tab: "settings", icon: "⚙️" },
   ];
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      // Optionally redirect after sign out
+      window.location.href = "/login"; 
+    } catch (err) {
+      console.error("Sign out failed:", err);
+      alert("Failed to sign out. Please try again.");
+    }
+  };
 
   /* ================= DESKTOP SIDEBAR ================= */
   if (!isMobile) {
@@ -55,7 +67,7 @@ export default function Teachersidebar({ user, setActiveTab, activeTab }) {
             </li>
           ))}
 
-          <li style={styles.logout} onClick={() => signOut(auth)}>
+          <li style={styles.logout} onClick={handleSignOut}>
             🚪 Sign Out
           </li>
         </ul>
@@ -63,7 +75,7 @@ export default function Teachersidebar({ user, setActiveTab, activeTab }) {
     );
   }
 
-  /* ================= MOBILE BOTTOM NAV (SCROLLABLE) ================= */
+  /* ================= MOBILE BOTTOM NAV ================= */
   return (
     <nav style={styles.bottomNav}>
       <div style={styles.scrollRow}>
@@ -84,6 +96,18 @@ export default function Teachersidebar({ user, setActiveTab, activeTab }) {
             <small>{item.label}</small>
           </div>
         ))}
+
+        <div
+          style={{
+            ...styles.navItem,
+            color: "#ff5555",
+            borderBottom: "3px solid transparent",
+          }}
+          onClick={handleSignOut}
+        >
+          <div style={styles.navIcon}>🚪</div>
+          <small>Sign Out</small>
+        </div>
       </div>
     </nav>
   );
@@ -94,7 +118,7 @@ const styles = {
   sidebar: {
     width: 260,
     height: "100vh",
-    background: "#2C2F33", // darker professional background
+    background: "#2C2F33",
     color: "white",
     padding: 20,
     position: "fixed",
@@ -102,7 +126,7 @@ const styles = {
     top: 0,
     display: "flex",
     flexDirection: "column",
-    overflowY: "auto", // scrollable sidebar
+    overflowY: "auto",
     zIndex: 1000,
   },
   profile: {
@@ -148,10 +172,10 @@ const styles = {
     bottom: 0,
     left: 0,
     right: 0,
-    height: 78,
+    height: 90,
     background: "#f4f4f4",
     zIndex: 1000,
-    overflow: "hidden",
+    overflowX: "auto",
     borderTop: "1px solid #ccc",
   },
   scrollRow: {
@@ -170,6 +194,7 @@ const styles = {
     cursor: "pointer",
     color: "#333",
     paddingBottom: 6,
+    paddingTop: 6,
   },
   navIcon: {
     fontSize: 20,
