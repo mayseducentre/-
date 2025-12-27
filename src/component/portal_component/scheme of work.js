@@ -9,7 +9,7 @@ import {
   TextRun,
   WidthType,
   AlignmentType,
-  BorderStyle
+  BorderStyle,
 } from "docx";
 import { saveAs } from "file-saver";
 
@@ -30,7 +30,8 @@ export default function SchemeOfWorkBuilder() {
   const [weeksCount, setWeeksCount] = useState(12);
   const [fontFamily, setFontFamily] = useState("Garamond");
   const [fontSize, setFontSize] = useState(13);
-  const [cellPadding, setCellPadding] = useState(200); // Word DOCX units (twips)
+  const [topicPadding, setTopicPadding] = useState(250); // wider
+  const [referencePadding, setReferencePadding] = useState(150); // medium
 
   const [classes, setClasses] = useState(
     LEVEL_CLASSES.Lower.map((c, i) => ({
@@ -54,8 +55,8 @@ export default function SchemeOfWorkBuilder() {
       ...prev,
       [week]: {
         ...prev[week],
-        [cls]: { ...prev?.[week]?.[cls], [field]: value }
-      }
+        [cls]: { ...prev?.[week]?.[cls], [field]: value },
+      },
     }));
   };
 
@@ -80,14 +81,13 @@ export default function SchemeOfWorkBuilder() {
   const downloadDocx = async () => {
     const rows = [];
 
-    // Header row
+    // Header
     rows.push(
       new TableRow({
         children: [
           new TableCell({
             shading: { fill: "F7F1E3" },
             borders: border,
-            margins: { top: cellPadding, bottom: cellPadding, left: cellPadding, right: cellPadding },
             children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "WEEKS", bold: true })] })],
           }),
           ...classes.flatMap(cls => [
@@ -95,7 +95,6 @@ export default function SchemeOfWorkBuilder() {
               columnSpan: 2,
               shading: { fill: cls.color.replace("#", "") },
               borders: border,
-              margins: { top: cellPadding, bottom: cellPadding, left: cellPadding, right: cellPadding },
               children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: cls.name, bold: true })] })],
             }),
           ]),
@@ -107,16 +106,16 @@ export default function SchemeOfWorkBuilder() {
     rows.push(
       new TableRow({
         children: [
-          new TableCell({ borders: border, margins: { top: cellPadding, bottom: cellPadding }, children: [new Paragraph("")] }),
+          new TableCell({ borders: border, children: [new Paragraph("")] }),
           ...classes.flatMap(() => [
-            new TableCell({ borders: border, margins: { top: cellPadding, bottom: cellPadding }, children: [new Paragraph({ text: "TOPICS", alignment: AlignmentType.CENTER })] }),
-            new TableCell({ borders: border, margins: { top: cellPadding, bottom: cellPadding }, children: [new Paragraph({ text: "REFERENCE", alignment: AlignmentType.CENTER })] }),
+            new TableCell({ borders: border, children: [new Paragraph({ text: "TOPICS", alignment: AlignmentType.CENTER })] }),
+            new TableCell({ borders: border, children: [new Paragraph({ text: "REFERENCE", alignment: AlignmentType.CENTER })] }),
           ]),
         ],
       })
     );
 
-    // Data rows
+    // Data
     weeks.forEach(w => {
       rows.push(
         new TableRow({
@@ -124,7 +123,6 @@ export default function SchemeOfWorkBuilder() {
             new TableCell({
               shading: { fill: "F7F1E3" },
               borders: border,
-              margins: { top: cellPadding, bottom: cellPadding },
               children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: String(w.week), bold: true })] })],
             }),
             ...classes.flatMap(cls => {
@@ -133,7 +131,6 @@ export default function SchemeOfWorkBuilder() {
                   new TableCell({
                     columnSpan: 2,
                     borders: border,
-                    margins: { top: cellPadding, bottom: cellPadding },
                     children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: w.type === "revision" ? "Revision" : "Examination", bold: true })] })],
                   }),
                 ];
@@ -142,13 +139,13 @@ export default function SchemeOfWorkBuilder() {
                 new TableCell({
                   shading: { fill: cls.color.replace("#", "") },
                   borders: border,
-                  margins: { top: cellPadding * 1.5, bottom: cellPadding * 1.5, left: cellPadding, right: cellPadding }, // extra space for topics
+                  margins: { top: topicPadding, bottom: topicPadding, left: topicPadding, right: topicPadding },
                   children: [new Paragraph({ text: data?.[w.week]?.[cls.name]?.topic || "", spacing: { line: 360 } })],
                 }),
                 new TableCell({
                   shading: { fill: cls.color.replace("#", "") },
                   borders: border,
-                  margins: { top: cellPadding, bottom: cellPadding, left: cellPadding, right: cellPadding },
+                  margins: { top: referencePadding, bottom: referencePadding, left: referencePadding, right: referencePadding },
                   children: [new Paragraph({ text: data?.[w.week]?.[cls.name]?.reference || "", spacing: { line: 360 } })],
                 }),
               ];
@@ -170,9 +167,12 @@ export default function SchemeOfWorkBuilder() {
       sections: [
         {
           children: [
-            new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: `${subject.toUpperCase()} ${term.toUpperCase()} SCHEME OF WORK (${level.toUpperCase()})`, bold: true })] }),
+            new Paragraph({
+              alignment: AlignmentType.CENTER,
+              children: [new TextRun({ text: `${subject.toUpperCase()} ${term.toUpperCase()} SCHEME OF WORK (${level.toUpperCase()})`, bold: true })],
+            }),
             new Paragraph(""),
-            new Table({ width: { size: 100, type: WidthType.AUTO }, rows }), // Auto-fit table width
+            new Table({ width: { size: 100, type: WidthType.AUTO }, rows }),
           ],
         },
       ],
@@ -186,23 +186,55 @@ export default function SchemeOfWorkBuilder() {
       <div style={{ maxWidth: 1400, margin: "auto", background: "#fff", borderRadius: 10, padding: 20, boxShadow: "0 10px 30px rgba(0,0,0,0.08)" }}>
         <h2 style={{ textAlign: "center", fontWeight: "bold", marginBottom: 20 }}>Scheme of Work Builder</h2>
 
-        {/* Options */}
+        {/* Customization Controls */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))", gap: 12, marginBottom: 20 }}>
-          <select value={level} onChange={e => changeLevel(e.target.value)}>
-            <option value="Lower">Lower Primary</option>
-            <option value="Upper">Upper Primary</option>
-            <option value="JHS">JHS</option>
-          </select>
-          <input value={subject} onChange={e => setSubject(e.target.value)} placeholder="Subject" />
-          <input value={term} onChange={e => setTerm(e.target.value)} placeholder="Term" />
-          <input type="number" min="1" value={weeksCount} onChange={e => setWeeksCount(+e.target.value)} />
-          <select value={fontFamily} onChange={e => setFontFamily(e.target.value)}>
-            {FONTS.map(f => <option key={f}>{f}</option>)}
-          </select>
-          <select value={fontSize} onChange={e => setFontSize(+e.target.value)}>
-            {FONT_SIZES.map(s => <option key={s}>{s}px</option>)}
-          </select>
-          <input type="number" min={50} max={1000} value={cellPadding} onChange={e => setCellPadding(+e.target.value)} placeholder="Cell Padding" />
+          <label>
+            Level
+            <select value={level} onChange={e => changeLevel(e.target.value)}>
+              <option value="Lower">Lower Primary</option>
+              <option value="Upper">Upper Primary</option>
+              <option value="JHS">JHS</option>
+            </select>
+          </label>
+
+          <label>
+            Subject
+            <input value={subject} onChange={e => setSubject(e.target.value)} placeholder="Subject" />
+          </label>
+
+          <label>
+            Term
+            <input value={term} onChange={e => setTerm(e.target.value)} placeholder="Term" />
+          </label>
+
+          <label>
+            Weeks
+            <input type="number" min="1" value={weeksCount} onChange={e => setWeeksCount(+e.target.value)} />
+          </label>
+
+          <label>
+            Font Family
+            <select value={fontFamily} onChange={e => setFontFamily(e.target.value)}>
+              {FONTS.map(f => <option key={f}>{f}</option>)}
+            </select>
+          </label>
+
+          <label>
+            Font Size
+            <select value={fontSize} onChange={e => setFontSize(+e.target.value)}>
+              {FONT_SIZES.map(s => <option key={s}>{s}px</option>)}
+            </select>
+          </label>
+
+          <label>
+            Topics Padding
+            <input type="number" min={50} max={1000} value={topicPadding} onChange={e => setTopicPadding(+e.target.value)} />
+          </label>
+
+          <label>
+            Reference Padding
+            <input type="number" min={50} max={1000} value={referencePadding} onChange={e => setReferencePadding(+e.target.value)} />
+          </label>
         </div>
 
         {/* Table */}
