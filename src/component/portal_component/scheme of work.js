@@ -295,8 +295,8 @@ export default function SchemeOfWorkBuilder() {
                 <th></th>
                 {classes.map(cls => (
                   <React.Fragment key={cls.name}>
-                    <th style={{ textAlign: "center", fontWeight: "bold" }}>TOPICS</th>
-                    <th style={{ textAlign: "center", fontWeight: "bold" }}>REFERENCE</th>
+                    <th style={{fontWeight: "bold" }}>TOPICS</th>
+                    <th style={{fontWeight: "bold" }}>REFERENCE</th>
                   </React.Fragment>
                 ))}
               </tr>
