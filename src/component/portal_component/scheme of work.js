@@ -239,7 +239,7 @@ export default function SchemeOfWorkBuilder() {
 
         {/* Table */}
         <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "auto", minWidth: 1000 }}>
+          <table style={{ width: "100vh", borderCollapse: "collapse", tableLayout: "auto", minWidth: 1000 }}>
             <thead>
               <tr>
                 <th style={{ background: WEEK_COLOR, padding: 16, textAlign: "center", fontWeight: "bold" }}>WEEKS</th>
