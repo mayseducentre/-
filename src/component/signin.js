@@ -18,8 +18,11 @@ export default function SignLog() {
 
   // Preload remembered email
   useEffect(() => {
-    const remembered = localStorage.getItem("rememberMe");
-    if (remembered) setEmail(remembered);
+    const rememberedEmail = localStorage.getItem("rememberMeEmail");
+    if (rememberedEmail) {
+      setEmail(rememberedEmail);
+      setRemember(true);
+    }
   }, []);
 
   async function handleLogin(e) {
@@ -39,9 +42,9 @@ export default function SignLog() {
       const user = snap.data();
       setUserData(user);
 
-      // Remember Me
-      if (remember) localStorage.setItem("rememberMe", email);
-      else localStorage.removeItem("rememberMe");
+      // Remember Me: store/remove email
+      if (remember) localStorage.setItem("rememberMeEmail", email);
+      else localStorage.removeItem("rememberMeEmail");
 
       // Route by role
       if (user.role === "student") setPortal("student");
@@ -65,7 +68,6 @@ export default function SignLog() {
       alert("Enter your email first");
       return;
     }
-
     try {
       await sendPasswordResetEmail(auth, email);
       alert("Password reset email sent.");
@@ -74,52 +76,17 @@ export default function SignLog() {
     }
   }
 
-  // Render portals safely
+  // Render portals
   if (portal === "student") return <StudentPortal user={userData} />;
   if (portal === "staff") return <TeachersPortal user={userData} />;
   if (portal === "parent") return <ParentPortal user={userData} />;
 
-  // Inline styles
+  // Styles
   const styles = {
-    container: {
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      height: "100vh",
-      backgroundImage: "url('https://lh3.googleusercontent.com/pw/AP1GczNJf5NYNZDcbW47OQcGxyTYFvXnc8dsmeOYKzEQ0TGSTYNgOEpJNAkvluXTZhW6dh6HEXnLsropNIyzkXcoSoJFlsnubGHZ3H27rjIXKp70JskIE74')",
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-    },
-    formWrapper: {
-      backgroundColor: "rgba(255,255,255,0.95)",
-      padding: "40px",
-      borderRadius: "12px",
-      boxShadow: "0px 8px 20px rgba(0,0,0,0.15)",
-      width: "100%",
-      maxWidth: "400px",
-      textAlign: "center",
-    },
-    input: {
-      width: "100%",
-      padding: "12px 15px",
-      margin: "10px 0",
-      borderRadius: "8px",
-      border: "1px solid #ccc",
-      fontSize: "16px",
-    },
-    button: {
-      width: "100%",
-      padding: "12px",
-      marginTop: "15px",
-      backgroundColor: "#007bff",
-      color: "#fff",
-      border: "none",
-      borderRadius: "8px",
-      fontSize: "16px",
-      cursor: "pointer",
-      transition: "background 0.3s",
-    },
+    container: { display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", backgroundColor: "#f4f6f8", fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" },
+    formWrapper: { backgroundColor: "#fff", padding: "40px", borderRadius: "12px", boxShadow: "0px 8px 20px rgba(0,0,0,0.15)", width: "100%", maxWidth: "400px", textAlign: "center" },
+    input: { width: "100%", padding: "12px 15px", margin: "10px 0", borderRadius: "8px", border: "1px solid #ccc", fontSize: "16px" },
+    button: { width: "100%", padding: "12px", marginTop: "15px", backgroundColor: "#007bff", color: "#fff", border: "none", borderRadius: "8px", fontSize: "16px", cursor: "pointer", transition: "background 0.3s" },
     forgotPassword: { color: "#007bff", cursor: "pointer", fontSize: "14px", marginTop: "10px", display: "block" },
     error: { color: "red", marginBottom: "10px" },
     checkboxContainer: { display: "flex", alignItems: "center", marginTop: "10px", fontSize: "14px" },
@@ -139,9 +106,7 @@ export default function SignLog() {
             Remember Me
           </div>
           <span style={styles.forgotPassword} onClick={forgotPassword}>Forgot password?</span>
-          <button type="submit" style={styles.button} disabled={loading}>
-            {loading ? "Logging in..." : "Login"}
-          </button>
+          <button type="submit" style={styles.button} disabled={loading}>{loading ? "Logging in..." : "Login"}</button>
         </form>
       </div>
     </div>
