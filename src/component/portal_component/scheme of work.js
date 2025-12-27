@@ -1,303 +1,779 @@
-import React, { useState, useMemo } from "react";
-import {
-  Document,
-  Packer,
-  Paragraph,
-  Table,
-  TableRow,
-  TableCell,
-  TextRun,
-  WidthType,
-  AlignmentType,
-  BorderStyle,
-} from "docx";
-import { saveAs } from "file-saver";
+import React, { useState, useMemo } from 'react';
+import { Download, Plus, Trash2, GripVertical } from 'lucide-react';
 
-const LEVEL_CLASSES = {
-  Lower: ["MEC 1", "MEC 2", "MEC 3"],
-  Upper: ["Class 4", "Class 5", "Class 6"],
-  JHS: ["JHS 1", "JHS 2", "JHS 3"],
-};
+// Import required for Word export
+const { Document, Packer, Paragraph, Table, TableRow, TableCell, WidthType, AlignmentType, VerticalAlign, BorderStyle } = window.docx || {};
 
-const WEEK_COLOR = "#f7f1e3";
-const FONTS = ["Garamond", "Times New Roman", "Georgia", "Arial", "Verdana"];
-const FONT_SIZES = [11, 12, 13, 14, 15, 16, 18];
+const SchemeOfWorkBuilder = () => {
+  // Configuration state
+  const [level, setLevel] = useState('Lower');
+  const [subject, setSubject] = useState('');
+  const [term, setTerm] = useState('1');
+  const [weeks, setWeeks] = useState(12);
+  const [fontFamily, setFontFamily] = useState('Arial');
+  const [fontSize, setFontSize] = useState(12);
+  const [padding, setPadding] = useState({ top: 8, bottom: 8, left: 8, right: 8 });
+  const [headerColor, setHeaderColor] = useState('#4a90e2');
+  const [classColumnColor, setClassColumnColor] = useState('#f0f4f8');
 
-export default function SchemeOfWorkBuilder() {
-  const [level, setLevel] = useState("Lower");
-  const [subject, setSubject] = useState("Computing");
-  const [term, setTerm] = useState("First Term");
-  const [weeksCount, setWeeksCount] = useState(12);
-  const [fontFamily, setFontFamily] = useState("Garamond");
-  const [fontSize, setFontSize] = useState(13);
-  const [topicPadding, setTopicPadding] = useState(250); // wider
-  const [referencePadding, setReferencePadding] = useState(150); // medium
+  // Classes for each level
+  const [classes, setClasses] = useState({
+    Lower: ['Primary 1', 'Primary 2', 'Primary 3'],
+    Upper: ['Primary 4', 'Primary 5', 'Primary 6'],
+    JHS: ['JHS 1', 'JHS 2', 'JHS 3']
+  });
 
-  const [classes, setClasses] = useState(
-    LEVEL_CLASSES.Lower.map((c, i) => ({
-      name: c,
-      color: ["#e8f0ff", "#fff1e0", "#e9f7ef"][i],
-    }))
-  );
+  // Table data: weeks x classes x {topic, reference}
+  const [tableData, setTableData] = useState(() => {
+    const initialData = {};
+    const totalWeeks = weeks + 2; // +2 for revision and exam
+    ['Lower', 'Upper', 'JHS'].forEach(lvl => {
+      initialData[lvl] = {};
+      classes[lvl].forEach(cls => {
+        initialData[lvl][cls] = Array(totalWeeks).fill(null).map(() => ({
+          topic: '',
+          reference: ''
+        }));
+      });
+    });
+    return initialData;
+  });
 
-  const weeks = useMemo(() => {
-    const arr = [];
-    for (let i = 1; i <= weeksCount; i++) arr.push({ week: i, type: "teaching" });
-    arr.push({ week: weeksCount + 1, type: "revision" });
-    arr.push({ week: weeksCount + 2, type: "exam" });
-    return arr;
-  }, [weeksCount]);
+  // Get current classes based on selected level
+  const currentClasses = useMemo(() => classes[level], [classes, level]);
 
-  const [data, setData] = useState({});
+  // Generate week labels
+  const weekLabels = useMemo(() => {
+    const labels = [];
+    for (let i = 1; i <= weeks; i++) {
+      labels.push(`Week ${i}`);
+    }
+    labels.push('Revision');
+    labels.push('Exam');
+    return labels;
+  }, [weeks]);
 
-  const updateCell = (week, cls, field, value) => {
-    setData(prev => ({
+  // Update cell data
+  const updateCell = (className, weekIndex, field, value) => {
+    setTableData(prev => ({
       ...prev,
-      [week]: {
-        ...prev[week],
-        [cls]: { ...prev?.[week]?.[cls], [field]: value },
-      },
+      [level]: {
+        ...prev[level],
+        [className]: prev[level][className].map((cell, idx) =>
+          idx === weekIndex ? { ...cell, [field]: value } : cell
+        )
+      }
     }));
   };
 
-  const changeLevel = lvl => {
-    setLevel(lvl);
-    setClasses(
-      LEVEL_CLASSES[lvl].map((c, i) => ({
-        name: c,
-        color: ["#e8f0ff", "#fff1e0", "#e9f7ef"][i],
-      }))
-    );
-    setData({});
+  // Add new class
+  const addClass = () => {
+    const newClassName = prompt('Enter class name:');
+    if (newClassName && !classes[level].includes(newClassName)) {
+      setClasses(prev => ({
+        ...prev,
+        [level]: [...prev[level], newClassName]
+      }));
+      setTableData(prev => ({
+        ...prev,
+        [level]: {
+          ...prev[level],
+          [newClassName]: Array(weeks + 2).fill(null).map(() => ({
+            topic: '',
+            reference: ''
+          }))
+        }
+      }));
+    }
   };
 
-  const border = {
-    top: { style: BorderStyle.SINGLE, size: 1 },
-    bottom: { style: BorderStyle.SINGLE, size: 1 },
-    left: { style: BorderStyle.SINGLE, size: 1 },
-    right: { style: BorderStyle.SINGLE, size: 1 },
+  // Remove class
+  const removeClass = (className) => {
+    if (classes[level].length <= 1) {
+      alert('Must have at least one class');
+      return;
+    }
+    if (confirm(`Remove ${className}?`)) {
+      setClasses(prev => ({
+        ...prev,
+        [level]: prev[level].filter(c => c !== className)
+      }));
+      setTableData(prev => {
+        const newData = { ...prev };
+        delete newData[level][className];
+        return newData;
+      });
+    }
   };
 
-  const downloadDocx = async () => {
-    const rows = [];
+  // Update weeks count
+  const updateWeeks = (newWeeks) => {
+    const num = parseInt(newWeeks) || 12;
+    setWeeks(num);
+    
+    // Adjust table data
+    setTableData(prev => {
+      const newData = { ...prev };
+      Object.keys(newData).forEach(lvl => {
+        Object.keys(newData[lvl]).forEach(cls => {
+          const currentLength = newData[lvl][cls].length;
+          const targetLength = num + 2;
+          
+          if (currentLength < targetLength) {
+            // Add new weeks
+            const toAdd = targetLength - currentLength;
+            newData[lvl][cls] = [
+              ...newData[lvl][cls].slice(0, -2),
+              ...Array(toAdd).fill(null).map(() => ({ topic: '', reference: '' })),
+              ...newData[lvl][cls].slice(-2)
+            ];
+          } else if (currentLength > targetLength) {
+            // Remove weeks
+            newData[lvl][cls] = [
+              ...newData[lvl][cls].slice(0, num),
+              ...newData[lvl][cls].slice(-2)
+            ];
+          }
+        });
+      });
+      return newData;
+    });
+  };
 
-    // Header
-    rows.push(
-      new TableRow({
+  // Export to Word
+  const exportToWord = async () => {
+    if (!window.docx) {
+      alert('Loading export library...');
+      return;
+    }
+
+    try {
+      // Create header rows
+      const headerRow1 = new TableRow({
         children: [
           new TableCell({
-            shading: { fill: "F7F1E3" },
-            borders: border,
-            children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "WEEKS", bold: true })] })],
+            children: [new Paragraph({ text: 'Week', alignment: AlignmentType.CENTER })],
+            shading: { fill: headerColor.replace('#', '') },
+            verticalAlign: VerticalAlign.CENTER,
+            width: { size: 10, type: WidthType.PERCENTAGE }
           }),
-          ...classes.flatMap(cls => [
+          ...currentClasses.flatMap(() => [
             new TableCell({
-              columnSpan: 2,
-              shading: { fill: cls.color.replace("#", "") },
-              borders: border,
-              children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: cls.name, bold: true })] })],
+              children: [new Paragraph({ text: 'Topics', alignment: AlignmentType.CENTER })],
+              shading: { fill: headerColor.replace('#', '') },
+              verticalAlign: VerticalAlign.CENTER,
+              width: { size: 35, type: WidthType.PERCENTAGE }
             }),
-          ]),
-        ],
-      })
-    );
+            new TableCell({
+              children: [new Paragraph({ text: 'Reference', alignment: AlignmentType.CENTER })],
+              shading: { fill: headerColor.replace('#', '') },
+              verticalAlign: VerticalAlign.CENTER,
+              width: { size: 20, type: WidthType.PERCENTAGE }
+            })
+          ])
+        ]
+      });
 
-    // Sub-header
-    rows.push(
-      new TableRow({
+      const headerRow2 = new TableRow({
         children: [
-          new TableCell({ borders: border, children: [new Paragraph("")] }),
-          ...classes.flatMap(() => [
-            new TableCell({ borders: border, children: [new Paragraph({ text: "TOPICS", alignment: AlignmentType.CENTER })] }),
-            new TableCell({ borders: border, children: [new Paragraph({ text: "REFERENCE", alignment: AlignmentType.CENTER })] }),
-          ]),
-        ],
-      })
-    );
+          new TableCell({
+            children: [new Paragraph('')],
+            shading: { fill: classColumnColor.replace('#', '') }
+          }),
+          ...currentClasses.flatMap(cls => [
+            new TableCell({
+              children: [new Paragraph({ text: cls, alignment: AlignmentType.CENTER })],
+              shading: { fill: classColumnColor.replace('#', '') },
+              columnSpan: 2
+            })
+          ])
+        ]
+      });
 
-    // Data
-    weeks.forEach(w => {
-      rows.push(
-        new TableRow({
+      // Create data rows
+      const dataRows = weekLabels.map((weekLabel, weekIndex) => {
+        const isSpecialWeek = weekIndex >= weeks;
+        
+        return new TableRow({
           children: [
             new TableCell({
-              shading: { fill: "F7F1E3" },
-              borders: border,
-              children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: String(w.week), bold: true })] })],
+              children: [new Paragraph({ text: weekLabel, alignment: AlignmentType.CENTER })],
+              shading: { fill: 'e8e8e8' },
+              verticalAlign: VerticalAlign.CENTER
             }),
-            ...classes.flatMap(cls => {
-              if (w.type !== "teaching") {
-                return [
-                  new TableCell({
-                    columnSpan: 2,
-                    borders: border,
-                    children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: w.type === "revision" ? "Revision" : "Examination", bold: true })] })],
-                  }),
-                ];
-              }
+            ...currentClasses.flatMap(cls => {
+              const cellData = tableData[level][cls][weekIndex];
               return [
                 new TableCell({
-                  shading: { fill: cls.color.replace("#", "") },
-                  borders: border,
-                  margins: { top: topicPadding, bottom: topicPadding, left: topicPadding, right: topicPadding },
-                  children: [new Paragraph({ text: data?.[w.week]?.[cls.name]?.topic || "", spacing: { line: 360 } })],
+                  children: [new Paragraph(cellData.topic || '')],
+                  verticalAlign: VerticalAlign.TOP
                 }),
                 new TableCell({
-                  shading: { fill: cls.color.replace("#", "") },
-                  borders: border,
-                  margins: { top: referencePadding, bottom: referencePadding, left: referencePadding, right: referencePadding },
-                  children: [new Paragraph({ text: data?.[w.week]?.[cls.name]?.reference || "", spacing: { line: 360 } })],
-                }),
+                  children: [new Paragraph(cellData.reference || '')],
+                  verticalAlign: VerticalAlign.TOP
+                })
               ];
-            }),
-          ],
-        })
-      );
-    });
+            })
+          ]
+        });
+      });
 
-    const doc = new Document({
-      styles: {
-        default: {
-          document: {
-            run: { font: fontFamily, size: fontSize * 2 },
-            paragraph: { spacing: { line: 360 } },
-          },
-        },
-      },
-      sections: [
-        {
+      const table = new Table({
+        rows: [headerRow1, headerRow2, ...dataRows],
+        width: { size: 100, type: WidthType.PERCENTAGE }
+      });
+
+      const doc = new Document({
+        sections: [{
           children: [
             new Paragraph({
-              alignment: AlignmentType.CENTER,
-              children: [new TextRun({ text: `${subject.toUpperCase()} ${term.toUpperCase()} SCHEME OF WORK (${level.toUpperCase()})`, bold: true })],
+              text: `${subject || 'Subject'} - ${level} Level - Term ${term}`,
+              heading: 'Heading1',
+              alignment: AlignmentType.CENTER
             }),
-            new Paragraph(""),
-            new Table({ width: { size: 100, type: WidthType.AUTO }, rows }),
-          ],
-        },
-      ],
-    });
+            new Paragraph(''),
+            table
+          ]
+        }]
+      });
 
-    saveAs(await Packer.toBlob(doc), `${subject}_${level}_${term}_Scheme.docx`);
+      const blob = await Packer.toBlob(doc);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Scheme_of_Work_${level}_Term${term}.docx`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Export error:', error);
+      alert('Export failed. Please try again.');
+    }
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f3f4f6", padding: 12, fontFamily }}>
-      <div style={{ maxWidth: 1400, margin: "auto", background: "#fff", borderRadius: 10, padding: 20, boxShadow: "0 10px 30px rgba(0,0,0,0.08)" }}>
-        <h2 style={{ textAlign: "center", fontWeight: "bold", marginBottom: 20 }}>Scheme of Work Builder</h2>
+    <div style={{ 
+      padding: '20px', 
+      fontFamily: 'system-ui, -apple-system, sans-serif',
+      maxWidth: '100%',
+      backgroundColor: '#f8f9fa'
+    }}>
+      <h1 style={{ textAlign: 'center', color: '#2c3e50', marginBottom: '30px' }}>
+        📚 Scheme of Work Builder
+      </h1>
 
-        {/* Customization Controls */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))", gap: 12, marginBottom: 20 }}>
-          <label>
-            Level
-            <select value={level} onChange={e => changeLevel(e.target.value)}>
-              <option value="Lower">Lower Primary</option>
-              <option value="Upper">Upper Primary</option>
-              <option value="JHS">JHS</option>
+      {/* Configuration Panel */}
+      <div style={{
+        backgroundColor: 'white',
+        padding: '25px',
+        borderRadius: '10px',
+        marginBottom: '25px',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+      }}>
+        <h3 style={{ marginTop: 0, color: '#34495e' }}>Configuration</h3>
+        
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: '15px',
+          marginBottom: '20px'
+        }}>
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', fontSize: '14px' }}>
+              Subject
+            </label>
+            <input
+              type="text"
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
+              placeholder="e.g., Mathematics"
+              style={{
+                width: '100%',
+                padding: '8px',
+                border: '1px solid #ddd',
+                borderRadius: '5px',
+                fontSize: '14px'
+              }}
+            />
+          </div>
+
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', fontSize: '14px' }}>
+              Level
+            </label>
+            <select
+              value={level}
+              onChange={(e) => setLevel(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '8px',
+                border: '1px solid #ddd',
+                borderRadius: '5px',
+                fontSize: '14px'
+              }}
+            >
+              <option>Lower</option>
+              <option>Upper</option>
+              <option>JHS</option>
             </select>
-          </label>
+          </div>
 
-          <label>
-            Subject
-            <input value={subject} onChange={e => setSubject(e.target.value)} placeholder="Subject" />
-          </label>
-
-          <label>
-            Term
-            <input value={term} onChange={e => setTerm(e.target.value)} placeholder="Term" />
-          </label>
-
-          <label>
-            Weeks
-            <input type="number" min="1" value={weeksCount} onChange={e => setWeeksCount(+e.target.value)} />
-          </label>
-
-          <label>
-            Font Family
-            <select value={fontFamily} onChange={e => setFontFamily(e.target.value)}>
-              {FONTS.map(f => <option key={f}>{f}</option>)}
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', fontSize: '14px' }}>
+              Term
+            </label>
+            <select
+              value={term}
+              onChange={(e) => setTerm(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '8px',
+                border: '1px solid #ddd',
+                borderRadius: '5px',
+                fontSize: '14px'
+              }}
+            >
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
             </select>
-          </label>
+          </div>
 
-          <label>
-            Font Size
-            <select value={fontSize} onChange={e => setFontSize(+e.target.value)}>
-              {FONT_SIZES.map(s => <option key={s}>{s}px</option>)}
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', fontSize: '14px' }}>
+              Teaching Weeks
+            </label>
+            <input
+              type="number"
+              value={weeks}
+              onChange={(e) => updateWeeks(e.target.value)}
+              min="1"
+              max="20"
+              style={{
+                width: '100%',
+                padding: '8px',
+                border: '1px solid #ddd',
+                borderRadius: '5px',
+                fontSize: '14px'
+              }}
+            />
+          </div>
+
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', fontSize: '14px' }}>
+              Font Family
+            </label>
+            <select
+              value={fontFamily}
+              onChange={(e) => setFontFamily(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '8px',
+                border: '1px solid #ddd',
+                borderRadius: '5px',
+                fontSize: '14px'
+              }}
+            >
+              <option>Arial</option>
+              <option>Times New Roman</option>
+              <option>Calibri</option>
+              <option>Georgia</option>
+              <option>Verdana</option>
             </select>
-          </label>
+          </div>
 
-          <label>
-            Topics Padding
-            <input type="number" min={50} max={1000} value={topicPadding} onChange={e => setTopicPadding(+e.target.value)} />
-          </label>
-
-          <label>
-            Reference Padding
-            <input type="number" min={50} max={1000} value={referencePadding} onChange={e => setReferencePadding(+e.target.value)} />
-          </label>
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', fontSize: '14px' }}>
+              Font Size (px)
+            </label>
+            <input
+              type="number"
+              value={fontSize}
+              onChange={(e) => setFontSize(parseInt(e.target.value) || 12)}
+              min="8"
+              max="24"
+              style={{
+                width: '100%',
+                padding: '8px',
+                border: '1px solid #ddd',
+                borderRadius: '5px',
+                fontSize: '14px'
+              }}
+            />
+          </div>
         </div>
 
-        {/* Table */}
-        <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100vh", borderCollapse: "collapse", tableLayout: "auto", minWidth: 1000 }}>
-            <thead>
-              <tr>
-                <th style={{ background: WEEK_COLOR, padding: 16, textAlign: "center", fontWeight: "bold" }}>WEEKS</th>
-                {classes.map(cls => (
-                  <th key={cls.name} colSpan={2} style={{ background: cls.color, padding: 16, textAlign: "center", fontWeight: "bold" }}>
-                    {cls.name}
-                    <input type="color" value={cls.color} style={{ marginLeft: 6 }} onChange={e =>
-                      setClasses(prev => prev.map(c => c.name === cls.name ? { ...c, color: e.target.value } : c))
-                    } />
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+          gap: '15px',
+          marginBottom: '20px'
+        }}>
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', fontSize: '14px' }}>
+              Padding Top (px)
+            </label>
+            <input
+              type="number"
+              value={padding.top}
+              onChange={(e) => setPadding(p => ({ ...p, top: parseInt(e.target.value) || 0 }))}
+              min="0"
+              max="50"
+              style={{
+                width: '100%',
+                padding: '8px',
+                border: '1px solid #ddd',
+                borderRadius: '5px',
+                fontSize: '14px'
+              }}
+            />
+          </div>
+
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', fontSize: '14px' }}>
+              Padding Bottom (px)
+            </label>
+            <input
+              type="number"
+              value={padding.bottom}
+              onChange={(e) => setPadding(p => ({ ...p, bottom: parseInt(e.target.value) || 0 }))}
+              min="0"
+              max="50"
+              style={{
+                width: '100%',
+                padding: '8px',
+                border: '1px solid #ddd',
+                borderRadius: '5px',
+                fontSize: '14px'
+              }}
+            />
+          </div>
+
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', fontSize: '14px' }}>
+              Padding Left (px)
+            </label>
+            <input
+              type="number"
+              value={padding.left}
+              onChange={(e) => setPadding(p => ({ ...p, left: parseInt(e.target.value) || 0 }))}
+              min="0"
+              max="50"
+              style={{
+                width: '100%',
+                padding: '8px',
+                border: '1px solid #ddd',
+                borderRadius: '5px',
+                fontSize: '14px'
+              }}
+            />
+          </div>
+
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', fontSize: '14px' }}>
+              Padding Right (px)
+            </label>
+            <input
+              type="number"
+              value={padding.right}
+              onChange={(e) => setPadding(p => ({ ...p, right: parseInt(e.target.value) || 0 }))}
+              min="0"
+              max="50"
+              style={{
+                width: '100%',
+                padding: '8px',
+                border: '1px solid #ddd',
+                borderRadius: '5px',
+                fontSize: '14px'
+              }}
+            />
+          </div>
+
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', fontSize: '14px' }}>
+              Header Color
+            </label>
+            <input
+              type="color"
+              value={headerColor}
+              onChange={(e) => setHeaderColor(e.target.value)}
+              style={{
+                width: '100%',
+                height: '38px',
+                border: '1px solid #ddd',
+                borderRadius: '5px',
+                cursor: 'pointer'
+              }}
+            />
+          </div>
+
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', fontSize: '14px' }}>
+              Class Column Color
+            </label>
+            <input
+              type="color"
+              value={classColumnColor}
+              onChange={(e) => setClassColumnColor(e.target.value)}
+              style={{
+                width: '100%',
+                height: '38px',
+                border: '1px solid #ddd',
+                borderRadius: '5px',
+                cursor: 'pointer'
+              }}
+            />
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          <button
+            onClick={addClass}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#27ae60',
+              color: 'white',
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: '600',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}
+          >
+            <Plus size={18} /> Add Class
+          </button>
+
+          <button
+            onClick={exportToWord}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#2980b9',
+              color: 'white',
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: '600',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}
+          >
+            <Download size={18} /> Download Word (.docx)
+          </button>
+        </div>
+      </div>
+
+      {/* Table Container */}
+      <div style={{
+        backgroundColor: 'white',
+        padding: '20px',
+        borderRadius: '10px',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+        overflowX: 'auto'
+      }}>
+        <table style={{
+          width: '100%',
+          borderCollapse: 'collapse',
+          fontFamily: fontFamily,
+          fontSize: `${fontSize}px`,
+          minWidth: '800px'
+        }}>
+          <thead>
+            {/* First header row: Topics and Reference */}
+            <tr>
+              <th style={{
+                border: '1px solid #ddd',
+                padding: `${padding.top}px ${padding.right}px ${padding.bottom}px ${padding.left}px`,
+                backgroundColor: headerColor,
+                color: 'white',
+                fontWeight: 'bold',
+                textAlign: 'center',
+                width: '100px',
+                position: 'sticky',
+                left: 0,
+                zIndex: 3
+              }}>
+                Week
+              </th>
+              {currentClasses.map((cls, idx) => (
+                <React.Fragment key={cls}>
+                  <th style={{
+                    border: '1px solid #ddd',
+                    padding: `${padding.top}px ${padding.right}px ${padding.bottom}px ${padding.left}px`,
+                    backgroundColor: headerColor,
+                    color: 'white',
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                    minWidth: '300px'
+                  }}>
+                    Topics
                   </th>
-                ))}
-              </tr>
-              <tr>
-                <th></th>
-                {classes.map(cls => (
-                  <React.Fragment key={cls.name}>
-                    <th style={{ textAlign: "center", fontWeight: "bold", width: "70%" }}>TOPICS</th>
-                    <th style={{ textAlign: "center", fontWeight: "bold", width: "30%" }}>REFERENCE</th>
-                  </React.Fragment>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {weeks.map(w => (
-                <tr key={w.week}>
-                  <td style={{ background: WEEK_COLOR, textAlign: "center", fontWeight: "bold", padding: 14 }}>{w.week}</td>
-                  {classes.flatMap(cls =>
-                    w.type === "teaching" ? [
-                      <td key={cls.name + "t"} style={{ background: cls.color, padding: 14 }}>
-                        <textarea
-                          style={{ width: "100%", minHeight: 80, fontFamily, fontSize, padding: 12, resize: "vertical" }}
-                          value={data?.[w.week]?.[cls.name]?.topic || ""}
-                          onChange={e => updateCell(w.week, cls.name, "topic", e.target.value)}
-                        />
-                      </td>,
-                      <td key={cls.name + "r"} style={{ background: cls.color, padding: 14 }}>
-                        <textarea
-                          style={{ width: "100%", minHeight: 60, fontFamily, fontSize, padding: 10, resize: "vertical" }}
-                          value={data?.[w.week]?.[cls.name]?.reference || ""}
-                          onChange={e => updateCell(w.week, cls.name, "reference", e.target.value)}
-                        />
-                      </td>
-                    ] : [
-                      <td key={cls.name + "x"} colSpan={2} style={{ textAlign: "center", fontWeight: "bold", padding: 16 }}>
-                        {w.type === "revision" ? "Revision" : "Examination"}
-                      </td>
-                    ]
-                  )}
-                </tr>
+                  <th style={{
+                    border: '1px solid #ddd',
+                    padding: `${padding.top}px ${padding.right}px ${padding.bottom}px ${padding.left}px`,
+                    backgroundColor: headerColor,
+                    color: 'white',
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                    minWidth: '150px'
+                  }}>
+                    Reference
+                  </th>
+                </React.Fragment>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </tr>
 
-        <button onClick={downloadDocx} style={{ marginTop: 20, width: "100%", padding: 14, background: "#1e3a8a", color: "#fff", border: "none", borderRadius: 8, fontSize: 16, fontWeight: "bold", cursor: "pointer" }}>
-          Download Word File
-        </button>
+            {/* Second header row: Class names */}
+            <tr>
+              <th style={{
+                border: '1px solid #ddd',
+                padding: `${padding.top}px ${padding.right}px ${padding.bottom}px ${padding.left}px`,
+                backgroundColor: classColumnColor,
+                fontWeight: 'bold',
+                textAlign: 'center',
+                position: 'sticky',
+                left: 0,
+                zIndex: 3
+              }}></th>
+              {currentClasses.map((cls, idx) => (
+                <th
+                  key={cls}
+                  colSpan={2}
+                  style={{
+                    border: '1px solid #ddd',
+                    padding: `${padding.top}px ${padding.right}px ${padding.bottom}px ${padding.left}px`,
+                    backgroundColor: classColumnColor,
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                    position: 'relative'
+                  }}
+                >
+                  {cls}
+                  {currentClasses.length > 1 && (
+                    <button
+                      onClick={() => removeClass(cls)}
+                      style={{
+                        marginLeft: '10px',
+                        padding: '2px 6px',
+                        backgroundColor: '#e74c3c',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '3px',
+                        cursor: 'pointer',
+                        fontSize: '12px'
+                      }}
+                      title="Remove class"
+                    >
+                      <Trash2 size={12} />
+                    </button>
+                  )}
+                </th>
+              ))}
+            </tr>
+          </thead>
+
+          <tbody>
+            {weekLabels.map((weekLabel, weekIndex) => (
+              <tr key={weekIndex}>
+                <td style={{
+                  border: '1px solid #ddd',
+                  padding: `${padding.top}px ${padding.right}px ${padding.bottom}px ${padding.left}px`,
+                  backgroundColor: '#e8e8e8',
+                  fontWeight: 'bold',
+                  textAlign: 'center',
+                  verticalAlign: 'middle',
+                  position: 'sticky',
+                  left: 0,
+                  zIndex: 2
+                }}>
+                  {weekLabel}
+                </td>
+                {currentClasses.map((cls) => {
+                  const cellData = tableData[level][cls][weekIndex];
+                  return (
+                    <React.Fragment key={cls}>
+                      <td style={{
+                        border: '1px solid #ddd',
+                        padding: '0',
+                        verticalAlign: 'top'
+                      }}>
+                        <textarea
+                          value={cellData.topic}
+                          onChange={(e) => updateCell(cls, weekIndex, 'topic', e.target.value)}
+                          style={{
+                            width: '100%',
+                            minHeight: '60px',
+                            padding: `${padding.top}px ${padding.right}px ${padding.bottom}px ${padding.left}px`,
+                            border: 'none',
+                            fontFamily: fontFamily,
+                            fontSize: `${fontSize}px`,
+                            resize: 'vertical',
+                            outline: 'none'
+                          }}
+                          placeholder="Enter topic..."
+                        />
+                      </td>
+                      <td style={{
+                        border: '1px solid #ddd',
+                        padding: '0',
+                        verticalAlign: 'top'
+                      }}>
+                        <textarea
+                          value={cellData.reference}
+                          onChange={(e) => updateCell(cls, weekIndex, 'reference', e.target.value)}
+                          style={{
+                            width: '100%',
+                            minHeight: '60px',
+                            padding: `${padding.top}px ${padding.right}px ${padding.bottom}px ${padding.left}px`,
+                            border: 'none',
+                            fontFamily: fontFamily,
+                            fontSize: `${fontSize}px`,
+                            resize: 'vertical',
+                            outline: 'none'
+                          }}
+                          placeholder="Enter reference..."
+                        />
+                      </td>
+                    </React.Fragment>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div style={{
+        marginTop: '20px',
+        padding: '15px',
+        backgroundColor: '#fff3cd',
+        borderRadius: '5px',
+        fontSize: '14px',
+        color: '#856404'
+      }}>
+        <strong>💡 Tips:</strong>
+        <ul style={{ margin: '10px 0 0 0', paddingLeft: '20px' }}>
+          <li>Textareas are resizable - drag the bottom-right corner to expand</li>
+          <li>Use the color pickers to customize header and column colors</li>
+          <li>Add or remove classes using the buttons above</li>
+          <li>All formatting is preserved when exporting to Word</li>
+        </ul>
       </div>
     </div>
   );
+};
+
+// Load docx library
+if (!window.docx) {
+  const script = document.createElement('script');
+  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/docx/7.8.2/docx.min.js';
+  script.onload = () => {
+    console.log('Docx library loaded');
+  };
+  document.head.appendChild(script);
 }
+
+export default SchemeOfWorkBuilder;
