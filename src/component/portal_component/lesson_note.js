@@ -119,6 +119,11 @@ Write it in plain text, professional, structured, ready for teaching. Avoid Mark
 <br />
 
 <p>Kindly copy prompt and paste prompt in MECAI (find MECAI on the navigation menu). MECAI is equiped to help generate professional lesson notes. After MECAI generates lesson note, copy the lesson note and paste it in the editor below for download.</p>
+
+
+<br />
+<br />
+<br />
       {/* Word-style formatting toolbar */}
       <div style={styles.toolbar}>
         <button onClick={() => formatText("bold")} style={styles.toolbarButton}>
