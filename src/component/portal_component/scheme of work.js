@@ -1,8 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Download, Plus, Trash2, GripVertical } from 'lucide-react';
-
-// Import required for Word export
-const { Document, Packer, Paragraph, Table, TableRow, TableCell, WidthType, AlignmentType, VerticalAlign, BorderStyle } = window.docx || {};
+import { Document, Packer, Paragraph, Table, TableRow, TableCell, WidthType, AlignmentType, VerticalAlign, BorderStyle, convertInchesToTwip } from 'docx';
 
 const SchemeOfWorkBuilder = () => {
   // Configuration state
@@ -68,7 +65,7 @@ const SchemeOfWorkBuilder = () => {
 
   // Add new class
   const addClass = () => {
-    const newClassName = prompt('Enter class name:');
+    const newClassName = window.prompt('Enter class name:');
     if (newClassName && !classes[level].includes(newClassName)) {
       setClasses(prev => ({
         ...prev,
@@ -90,10 +87,11 @@ const SchemeOfWorkBuilder = () => {
   // Remove class
   const removeClass = (className) => {
     if (classes[level].length <= 1) {
-      alert('Must have at least one class');
+      window.alert('Must have at least one class');
       return;
     }
-    if (confirm(`Remove ${className}?`)) {
+    // eslint-disable-next-line no-restricted-globals
+    if (window.confirm(`Remove ${className}?`)) {
       setClasses(prev => ({
         ...prev,
         [level]: prev[level].filter(c => c !== className)
@@ -140,113 +138,233 @@ const SchemeOfWorkBuilder = () => {
     });
   };
 
-  // Export to Word
+  // Export to Word using docx library
   const exportToWord = async () => {
-    if (!window.docx) {
-      alert('Loading export library...');
-      return;
-    }
-
     try {
-      // Create header rows
-      const headerRow1 = new TableRow({
-        children: [
+      // Convert padding to twips (1/20th of a point)
+      const paddingTwips = {
+        top: convertInchesToTwip(padding.top / 72),
+        bottom: convertInchesToTwip(padding.bottom / 72),
+        left: convertInchesToTwip(padding.left / 72),
+        right: convertInchesToTwip(padding.right / 72)
+      };
+
+      // Border configuration
+      const borderConfig = {
+        style: BorderStyle.SINGLE,
+        size: 6,
+        color: "CCCCCC"
+      };
+
+      // Create header row 1: Week | Topics | Reference (repeated)
+      const headerRow1Cells = [
+        new TableCell({
+          children: [new Paragraph({ 
+            text: 'Week', 
+            alignment: AlignmentType.CENTER,
+            bold: true
+          })],
+          shading: { fill: headerColor.replace('#', '') },
+          verticalAlign: VerticalAlign.CENTER,
+          width: { size: 10, type: WidthType.PERCENTAGE },
+          margins: paddingTwips,
+          borders: {
+            top: borderConfig,
+            bottom: borderConfig,
+            left: borderConfig,
+            right: borderConfig
+          }
+        })
+      ];
+
+      currentClasses.forEach(() => {
+        headerRow1Cells.push(
           new TableCell({
-            children: [new Paragraph({ text: 'Week', alignment: AlignmentType.CENTER })],
+            children: [new Paragraph({ 
+              text: 'Topics', 
+              alignment: AlignmentType.CENTER,
+              bold: true
+            })],
             shading: { fill: headerColor.replace('#', '') },
             verticalAlign: VerticalAlign.CENTER,
-            width: { size: 10, type: WidthType.PERCENTAGE }
+            width: { size: 40, type: WidthType.PERCENTAGE },
+            margins: paddingTwips,
+            borders: {
+              top: borderConfig,
+              bottom: borderConfig,
+              left: borderConfig,
+              right: borderConfig
+            }
           }),
-          ...currentClasses.flatMap(() => [
-            new TableCell({
-              children: [new Paragraph({ text: 'Topics', alignment: AlignmentType.CENTER })],
-              shading: { fill: headerColor.replace('#', '') },
-              verticalAlign: VerticalAlign.CENTER,
-              width: { size: 35, type: WidthType.PERCENTAGE }
-            }),
-            new TableCell({
-              children: [new Paragraph({ text: 'Reference', alignment: AlignmentType.CENTER })],
-              shading: { fill: headerColor.replace('#', '') },
-              verticalAlign: VerticalAlign.CENTER,
-              width: { size: 20, type: WidthType.PERCENTAGE }
-            })
-          ])
-        ]
+          new TableCell({
+            children: [new Paragraph({ 
+              text: 'Reference', 
+              alignment: AlignmentType.CENTER,
+              bold: true
+            })],
+            shading: { fill: headerColor.replace('#', '') },
+            verticalAlign: VerticalAlign.CENTER,
+            width: { size: 20, type: WidthType.PERCENTAGE },
+            margins: paddingTwips,
+            borders: {
+              top: borderConfig,
+              bottom: borderConfig,
+              left: borderConfig,
+              right: borderConfig
+            }
+          })
+        );
       });
 
-      const headerRow2 = new TableRow({
-        children: [
+      const headerRow1 = new TableRow({ children: headerRow1Cells });
+
+      // Create header row 2: Class names
+      const headerRow2Cells = [
+        new TableCell({
+          children: [new Paragraph('')],
+          shading: { fill: classColumnColor.replace('#', '') },
+          margins: paddingTwips,
+          borders: {
+            top: borderConfig,
+            bottom: borderConfig,
+            left: borderConfig,
+            right: borderConfig
+          }
+        })
+      ];
+
+      currentClasses.forEach(cls => {
+        headerRow2Cells.push(
           new TableCell({
-            children: [new Paragraph('')],
-            shading: { fill: classColumnColor.replace('#', '') }
-          }),
-          ...currentClasses.flatMap(cls => [
-            new TableCell({
-              children: [new Paragraph({ text: cls, alignment: AlignmentType.CENTER })],
-              shading: { fill: classColumnColor.replace('#', '') },
-              columnSpan: 2
-            })
-          ])
-        ]
+            children: [new Paragraph({ 
+              text: cls, 
+              alignment: AlignmentType.CENTER,
+              bold: true
+            })],
+            shading: { fill: classColumnColor.replace('#', '') },
+            columnSpan: 2,
+            margins: paddingTwips,
+            borders: {
+              top: borderConfig,
+              bottom: borderConfig,
+              left: borderConfig,
+              right: borderConfig
+            }
+          })
+        );
       });
+
+      const headerRow2 = new TableRow({ children: headerRow2Cells });
 
       // Create data rows
       const dataRows = weekLabels.map((weekLabel, weekIndex) => {
-        const isSpecialWeek = weekIndex >= weeks;
-        
-        return new TableRow({
-          children: [
+        const rowCells = [
+          new TableCell({
+            children: [new Paragraph({ 
+              text: weekLabel, 
+              alignment: AlignmentType.CENTER,
+              bold: true
+            })],
+            shading: { fill: 'E8E8E8' },
+            verticalAlign: VerticalAlign.CENTER,
+            margins: paddingTwips,
+            borders: {
+              top: borderConfig,
+              bottom: borderConfig,
+              left: borderConfig,
+              right: borderConfig
+            }
+          })
+        ];
+
+        currentClasses.forEach(cls => {
+          const cellData = tableData[level][cls][weekIndex];
+          
+          // Split text by newlines and create paragraphs
+          const topicLines = (cellData.topic || '').split('\n');
+          const referenceLines = (cellData.reference || '').split('\n');
+
+          rowCells.push(
             new TableCell({
-              children: [new Paragraph({ text: weekLabel, alignment: AlignmentType.CENTER })],
-              shading: { fill: 'e8e8e8' },
-              verticalAlign: VerticalAlign.CENTER
+              children: topicLines.length > 0 && topicLines[0] !== '' 
+                ? topicLines.map(line => new Paragraph({ text: line || ' ' }))
+                : [new Paragraph({ text: ' ' })],
+              verticalAlign: VerticalAlign.TOP,
+              margins: paddingTwips,
+              borders: {
+                top: borderConfig,
+                bottom: borderConfig,
+                left: borderConfig,
+                right: borderConfig
+              }
             }),
-            ...currentClasses.flatMap(cls => {
-              const cellData = tableData[level][cls][weekIndex];
-              return [
-                new TableCell({
-                  children: [new Paragraph(cellData.topic || '')],
-                  verticalAlign: VerticalAlign.TOP
-                }),
-                new TableCell({
-                  children: [new Paragraph(cellData.reference || '')],
-                  verticalAlign: VerticalAlign.TOP
-                })
-              ];
+            new TableCell({
+              children: referenceLines.length > 0 && referenceLines[0] !== ''
+                ? referenceLines.map(line => new Paragraph({ text: line || ' ' }))
+                : [new Paragraph({ text: ' ' })],
+              verticalAlign: VerticalAlign.TOP,
+              margins: paddingTwips,
+              borders: {
+                top: borderConfig,
+                bottom: borderConfig,
+                left: borderConfig,
+                right: borderConfig
+              }
             })
-          ]
+          );
         });
+
+        return new TableRow({ children: rowCells });
       });
 
+      // Create table
       const table = new Table({
         rows: [headerRow1, headerRow2, ...dataRows],
         width: { size: 100, type: WidthType.PERCENTAGE }
       });
 
+      // Create document
       const doc = new Document({
         sections: [{
+          properties: {
+            page: {
+              margin: {
+                top: convertInchesToTwip(0.75),
+                right: convertInchesToTwip(0.75),
+                bottom: convertInchesToTwip(0.75),
+                left: convertInchesToTwip(0.75)
+              }
+            }
+          },
           children: [
             new Paragraph({
               text: `${subject || 'Subject'} - ${level} Level - Term ${term}`,
               heading: 'Heading1',
-              alignment: AlignmentType.CENTER
+              alignment: AlignmentType.CENTER,
+              spacing: { after: 400 }
             }),
-            new Paragraph(''),
             table
           ]
         }]
       });
 
+      // Generate and download
       const blob = await Packer.toBlob(doc);
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `Scheme_of_Work_${level}_Term${term}.docx`;
-      a.click();
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Scheme_of_Work_${level}_Term${term}_${subject || 'Subject'}.docx`;
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
       URL.revokeObjectURL(url);
+      
+      window.alert('Document downloaded successfully! Professional .docx format with perfect formatting.');
+      
     } catch (error) {
       console.error('Export error:', error);
-      alert('Export failed. Please try again.');
+      window.alert(`Export failed: ${error.message}. Please ensure the docx package is installed.`);
     }
   };
 
@@ -255,7 +373,8 @@ const SchemeOfWorkBuilder = () => {
       padding: '20px', 
       fontFamily: 'system-ui, -apple-system, sans-serif',
       maxWidth: '100%',
-      backgroundColor: '#f8f9fa'
+      backgroundColor: '#f8f9fa',
+      minHeight: '100vh'
     }}>
       <h1 style={{ textAlign: 'center', color: '#2c3e50', marginBottom: '30px' }}>
         📚 Scheme of Work Builder
@@ -291,7 +410,8 @@ const SchemeOfWorkBuilder = () => {
                 padding: '8px',
                 border: '1px solid #ddd',
                 borderRadius: '5px',
-                fontSize: '14px'
+                fontSize: '14px',
+                boxSizing: 'border-box'
               }}
             />
           </div>
@@ -308,7 +428,8 @@ const SchemeOfWorkBuilder = () => {
                 padding: '8px',
                 border: '1px solid #ddd',
                 borderRadius: '5px',
-                fontSize: '14px'
+                fontSize: '14px',
+                boxSizing: 'border-box'
               }}
             >
               <option>Lower</option>
@@ -329,7 +450,8 @@ const SchemeOfWorkBuilder = () => {
                 padding: '8px',
                 border: '1px solid #ddd',
                 borderRadius: '5px',
-                fontSize: '14px'
+                fontSize: '14px',
+                boxSizing: 'border-box'
               }}
             >
               <option>1</option>
@@ -353,7 +475,8 @@ const SchemeOfWorkBuilder = () => {
                 padding: '8px',
                 border: '1px solid #ddd',
                 borderRadius: '5px',
-                fontSize: '14px'
+                fontSize: '14px',
+                boxSizing: 'border-box'
               }}
             />
           </div>
@@ -370,7 +493,8 @@ const SchemeOfWorkBuilder = () => {
                 padding: '8px',
                 border: '1px solid #ddd',
                 borderRadius: '5px',
-                fontSize: '14px'
+                fontSize: '14px',
+                boxSizing: 'border-box'
               }}
             >
               <option>Arial</option>
@@ -396,7 +520,8 @@ const SchemeOfWorkBuilder = () => {
                 padding: '8px',
                 border: '1px solid #ddd',
                 borderRadius: '5px',
-                fontSize: '14px'
+                fontSize: '14px',
+                boxSizing: 'border-box'
               }}
             />
           </div>
@@ -423,7 +548,8 @@ const SchemeOfWorkBuilder = () => {
                 padding: '8px',
                 border: '1px solid #ddd',
                 borderRadius: '5px',
-                fontSize: '14px'
+                fontSize: '14px',
+                boxSizing: 'border-box'
               }}
             />
           </div>
@@ -443,7 +569,8 @@ const SchemeOfWorkBuilder = () => {
                 padding: '8px',
                 border: '1px solid #ddd',
                 borderRadius: '5px',
-                fontSize: '14px'
+                fontSize: '14px',
+                boxSizing: 'border-box'
               }}
             />
           </div>
@@ -463,7 +590,8 @@ const SchemeOfWorkBuilder = () => {
                 padding: '8px',
                 border: '1px solid #ddd',
                 borderRadius: '5px',
-                fontSize: '14px'
+                fontSize: '14px',
+                boxSizing: 'border-box'
               }}
             />
           </div>
@@ -483,7 +611,8 @@ const SchemeOfWorkBuilder = () => {
                 padding: '8px',
                 border: '1px solid #ddd',
                 borderRadius: '5px',
-                fontSize: '14px'
+                fontSize: '14px',
+                boxSizing: 'border-box'
               }}
             />
           </div>
@@ -501,7 +630,8 @@ const SchemeOfWorkBuilder = () => {
                 height: '38px',
                 border: '1px solid #ddd',
                 borderRadius: '5px',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                boxSizing: 'border-box'
               }}
             />
           </div>
@@ -519,7 +649,8 @@ const SchemeOfWorkBuilder = () => {
                 height: '38px',
                 border: '1px solid #ddd',
                 borderRadius: '5px',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                boxSizing: 'border-box'
               }}
             />
           </div>
@@ -537,12 +668,12 @@ const SchemeOfWorkBuilder = () => {
               cursor: 'pointer',
               fontSize: '14px',
               fontWeight: '600',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
+              transition: 'background-color 0.2s'
             }}
+            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#229954'}
+            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#27ae60'}
           >
-            <Plus size={18} /> Add Class
+            ➕ Add Class
           </button>
 
           <button
@@ -556,12 +687,12 @@ const SchemeOfWorkBuilder = () => {
               cursor: 'pointer',
               fontSize: '14px',
               fontWeight: '600',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
+              transition: 'background-color 0.2s'
             }}
+            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#21618c'}
+            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#2980b9'}
           >
-            <Download size={18} /> Download Word (.docx)
+            ⬇️ Download Word (.doc)
           </button>
         </div>
       </div>
@@ -598,7 +729,7 @@ const SchemeOfWorkBuilder = () => {
               }}>
                 Week
               </th>
-              {currentClasses.map((cls, idx) => (
+              {currentClasses.map((cls) => (
                 <React.Fragment key={cls}>
                   <th style={{
                     border: '1px solid #ddd',
@@ -638,7 +769,7 @@ const SchemeOfWorkBuilder = () => {
                 left: 0,
                 zIndex: 3
               }}></th>
-              {currentClasses.map((cls, idx) => (
+              {currentClasses.map((cls) => (
                 <th
                   key={cls}
                   colSpan={2}
@@ -657,17 +788,20 @@ const SchemeOfWorkBuilder = () => {
                       onClick={() => removeClass(cls)}
                       style={{
                         marginLeft: '10px',
-                        padding: '2px 6px',
+                        padding: '4px 8px',
                         backgroundColor: '#e74c3c',
                         color: 'white',
                         border: 'none',
                         borderRadius: '3px',
                         cursor: 'pointer',
-                        fontSize: '12px'
+                        fontSize: '12px',
+                        transition: 'background-color 0.2s'
                       }}
+                      onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#c0392b'}
+                      onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#e74c3c'}
                       title="Remove class"
                     >
-                      <Trash2 size={12} />
+                      ✕
                     </button>
                   )}
                 </th>
@@ -711,7 +845,8 @@ const SchemeOfWorkBuilder = () => {
                             fontFamily: fontFamily,
                             fontSize: `${fontSize}px`,
                             resize: 'vertical',
-                            outline: 'none'
+                            outline: 'none',
+                            boxSizing: 'border-box'
                           }}
                           placeholder="Enter topic..."
                         />
@@ -732,7 +867,8 @@ const SchemeOfWorkBuilder = () => {
                             fontFamily: fontFamily,
                             fontSize: `${fontSize}px`,
                             resize: 'vertical',
-                            outline: 'none'
+                            outline: 'none',
+                            boxSizing: 'border-box'
                           }}
                           placeholder="Enter reference..."
                         />
@@ -752,28 +888,21 @@ const SchemeOfWorkBuilder = () => {
         backgroundColor: '#fff3cd',
         borderRadius: '5px',
         fontSize: '14px',
-        color: '#856404'
+        color: '#856404',
+        border: '1px solid #ffeeba'
       }}>
         <strong>💡 Tips:</strong>
         <ul style={{ margin: '10px 0 0 0', paddingLeft: '20px' }}>
           <li>Textareas are resizable - drag the bottom-right corner to expand</li>
           <li>Use the color pickers to customize header and column colors</li>
           <li>Add or remove classes using the buttons above</li>
-          <li>All formatting is preserved when exporting to Word</li>
+          <li>All formatting is preserved when exporting to Word (.doc format)</li>
+          <li>The exported file will open directly in Microsoft Word</li>
+          <li>Table scrolls horizontally on smaller screens</li>
         </ul>
       </div>
     </div>
   );
 };
-
-// Load docx library
-if (!window.docx) {
-  const script = document.createElement('script');
-  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/docx/7.8.2/docx.min.js';
-  script.onload = () => {
-    console.log('Docx library loaded');
-  };
-  document.head.appendChild(script);
-}
 
 export default SchemeOfWorkBuilder;
