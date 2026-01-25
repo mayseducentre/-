@@ -178,7 +178,7 @@ export default function Aboutp() {
       <section style={styles.hero}>
         <h1 style={styles.heroTitle}>May's DayCare & Educational Centre</h1>
         <p style={styles.heroSubtitle}>
-          A warm, modern and secure learning environment where we combine academic excellence with character development.
+          A warm, modern and secure learning environment where we combine academic excellence with character development. A private, Christian-based institution established in 1989. It focuses on holistic development, combining academic excellence with nurturing care from preschool through junior high school. The center is known for using play-based learning and activity-based methods to foster creativity and critical thinking. 
         </p>
       </section>
 
