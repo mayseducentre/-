@@ -221,7 +221,7 @@ export default function Aboutp() {
 
             <div style={styles.profileCard}>
               <div>
-                <h4 style={{ margin: 0 }}>MRS KBL</h4>
+                <h4 style={{ margin: 0 }}>Mrs. Efua Bram Larbi</h4>
                 <p style={{ margin: 0, color: "#475569" }}>Director</p>
               </div>
 
