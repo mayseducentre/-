@@ -9,7 +9,7 @@ import Portal from "./pages/portal";
 import Account from "./pages/account";
 import Aboutp from "./pages/about";
 import InsGuide from "./component/ins_guide";
-import SignSet from "./pages/user_setting";
+
 import Library from "./pages/library";
 import LibraryBooks from "./library/books";
 import LibraryVideos from "./library/videos";
@@ -105,7 +105,7 @@ function App() {
       <Route path="/blogpost" element={<PostB />} />
       <Route path="/vrtour" element={<VRTour />} />
       <Route path="/daycareuser/account/form" element={<DaycareForm />} />
-      <Route path="/user_setting" element={<SignSet />} />
+      
       <Route path="/assess" element={<Assessment />} />
       <Route path="/adms" element={<AssessmentA />} />
       <Route path="/admin/note" element={<LessonNoteList />} />
