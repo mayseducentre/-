@@ -4,7 +4,7 @@ export default function Error(){
         <h2>
         404 page
         </h2>
-        <button onClick={()=>{window.history.back()}}>Back to page</button>
+        <button onClick={()=>{window.location.href="mdcec.vercel.app"}}>Back to page</button>
         </>
     )
 } 
