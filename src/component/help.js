@@ -1,4 +1,7 @@
 import { useState } from "react";
+import Breadcrumb from "./breadcrumb"
+import Header from "./header"
+
 
 export default function HelpFAQ() {
   const [open, setOpen] = useState(null);
@@ -80,6 +83,9 @@ export default function HelpFAQ() {
   };
 
   return (
+<>
+<Header />
+<Breadcrumb title="HELP" />
     <div style={styles.page}>
       {/* Header */}
       <div style={styles.header}>
@@ -261,5 +267,6 @@ export default function HelpFAQ() {
         </p>
       </div>
     </div>
+</>
   );
 }
