@@ -9,7 +9,7 @@ import Portal from "./pages/portal";
 import Account from "./pages/account";
 import Aboutp from "./pages/about";
 import InsGuide from "./component/ins_guide";
-
+import HelpFAQ from "./component/help";
 import Library from "./pages/library";
 import LibraryBooks from "./library/books";
 import LibraryVideos from "./library/videos";
@@ -118,6 +118,7 @@ function App() {
 <Route path="/assignment" element={<AssignmentHub />} />
 <Route path="/elearn" element={<ELearningPlatform />} />
 <Route path="/admaccount" element={<AdminDashboard />} />
+<Route path="/help" element={<HelpFAQ />} />
        </Route>
     </Routes>
     </HashRouter>
