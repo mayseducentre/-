@@ -104,7 +104,7 @@ export default function HelpFAQ() {
               <li>Save the file on your device.</li>
             </ol>
             <div style={styles.warning}>
-              ⚠️ This assessment file is <b>NOT the real system</b>. It is only for offline preparation.
+              ⚠️ This assessment docx file is <b>NOT the real system</b>. It is only for offline preparation.
             </div>
             <iframe
               style={styles.video}
@@ -118,7 +118,7 @@ export default function HelpFAQ() {
       {/* FAQ 2 */}
       <div style={styles.faq} onClick={() => toggle(2)}>
         <div style={styles.question}>
-          <span>How can I copy and paste values into the real Excel system?</span>
+          <span>How can I copy and paste values into the real assessment system?</span>
           <span>{open === 2 ? "−" : "+"}</span>
         </div>
         {open === 2 && (
@@ -152,7 +152,7 @@ export default function HelpFAQ() {
               <li>Save the file after marking attendance.</li>
             </ol>
             <div style={styles.warning}>
-              ✅ This register file is the <b>ACTUAL and OFFICIAL register</b>.
+              ✅ This register file is the <b>ACTUAL register needed for student reports</b>.
             </div>
             <iframe
               style={styles.video}
