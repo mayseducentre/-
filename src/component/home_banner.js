@@ -5,7 +5,7 @@ export default function HomeBanner() {
   const banner = {
     media: {
       type: "image", // "image" or "video"
-      src: "https://lh3.googleusercontent.com/pw/AP1GczOPkJw6rdRmN7caWV063A5eRe8X5vetRr0PsERBYgLErU2LqniGd_p3aNo1BVsaoYoPQy9D2RVgD_q3_w6pSJi6bime7gpLrDBDGTkW0NZCO_i0Yf8",
+      src: "https://lh3.googleusercontent.com/pw/AP1GczOFnAZ5EIPXnWjw8G3-Yq1BBB8YalFVf6uL3YkcdolW6sSKa-i9xA-bX_xqPFN2c-meb6hsp9mru9-3NRF_DPpNJLRRlLs7BSzbTWMmjZe1sZuvCPg",
       poster:
         "https://lh3.googleusercontent.com/pw/AP1GczMCbPwvfxUD6yYl5JSD6Q9qpXN8dLh_8v0M1oy2Ezij0M-dIEa2YIR8HYZfn7JKZhL36NhMbwa5-uQSFTDaBk4HKwiiVa9vmSrvkdZoWo8nOWfgzDo",
     },
