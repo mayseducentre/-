@@ -62,7 +62,7 @@ export default function About(){
                 <div className="col-lg-5">
                   <div className="profile d-flex align-items-center gap-3">
                     <div>
-                      <h4 className="profile-name">MRS KBL</h4>
+                      <h4 className="profile-name">Mrs. Efua Bram Larbi</h4>
                       <p className="profile-position">Director</p>
                     </div>
                   </div>
