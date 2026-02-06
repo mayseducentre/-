@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const ExcelLearningModule = () => {
+const ELearningPlatform = () => {
   // ============================================================================
   // STATE MANAGEMENT
   // ============================================================================
@@ -2854,7 +2854,7 @@ marginBottom: '2rem'
 return ( <div style={{ minHeight: '100vh', backgroundColor: '
 #f0f2f5' }}> {currentView === 'home' && renderHome()} {currentView === 'level' && renderLevel()} {currentView === 'lesson' && renderLesson()} {currentView === 'quiz' && renderQuiz()} {currentView === 'badge' && renderBadgeForm()} </div> ); };
 
-export default ExcelLearningModule;
+export default ELearningPlatform;
 
 
 
