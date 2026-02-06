@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function ELearningPlatform() {
   const [currentLevel, setCurrentLevel] = useState('beginner');
@@ -908,20 +908,19 @@ export default function ELearningPlatform() {
     }
   };
 
-  const initializeSpreadsheet = (lessonId) => {
+  // Initialize spreadsheet data when lesson changes
+  useEffect(() => {
     const lesson = getCurrentLesson();
-    if (!lesson || !lesson.spreadsheet) return;
-    
-    const { rows, cols, initialData } = lesson.spreadsheet;
-    const key = `${currentLevel}-${lessonId}`;
-    
-    if (!spreadsheetData[key]) {
-      setSpreadsheetData({
-        ...spreadsheetData,
-        [key]: { ...initialData }
-      });
+    if (lesson && lesson.spreadsheet) {
+      const key = `${currentLevel}-${lesson.id}`;
+      if (!spreadsheetData[key]) {
+        setSpreadsheetData(prev => ({
+          ...prev,
+          [key]: { ...lesson.spreadsheet.initialData }
+        }));
+      }
     }
-  };
+  }, [currentLevel, currentLesson]);
 
   const getCurrentLesson = () => {
     const levelData = levels[currentLevel];
@@ -1049,17 +1048,13 @@ export default function ELearningPlatform() {
     return values;
   };
 
-  const renderSpreadsheet = () => {
+  const SpreadsheetTable = () => {
     const lesson = getCurrentLesson();
     if (!lesson || !lesson.spreadsheet) return null;
     
     const { rows, cols } = lesson.spreadsheet;
     const key = `${currentLevel}-${lesson.id}`;
     const data = spreadsheetData[key] || {};
-    
-    React.useEffect(() => {
-      initializeSpreadsheet(lesson.id);
-    }, []);
     
     const columns = [];
     for (let i = 0; i < cols; i++) {
@@ -1556,7 +1551,7 @@ export default function ELearningPlatform() {
               }}>
                 Click on any cell to edit. Try entering formulas starting with =
               </p>
-              {renderSpreadsheet()}
+              <SpreadsheetTable />
             </div>
           )}
 
