@@ -25,7 +25,6 @@ const ELearningPlatform = () => {
   // Excel simulation state
   const [spreadsheetData, setSpreadsheetData] = useState({});
   const [formulaError, setFormulaError] = useState('');
-  const [editingCell, setEditingCell] = useState(null);
   
   // Badge form state
   const [badgeFormData, setBadgeFormData] = useState({
@@ -1231,7 +1230,6 @@ const ELearningPlatform = () => {
       }
     }
     setSpreadsheetData(data);
-    setEditingCell(null);
   };
 
   const getCellRef = (row, col) => {
@@ -1247,81 +1245,13 @@ const ELearningPlatform = () => {
     setFormulaError('');
   };
 
-  const getRangeValues = (range) => {
-    try {
-      if (!range || !range.includes(':')) {
-        // Single cell reference
-        return [spreadsheetData[range] || ''];
-      }
-      
-      const [start, end] = range.split(':');
-      if (!start || !end) return [];
-      
-      const startCol = start.charCodeAt(0) - 64;
-      const startRow = parseInt(start.substring(1));
-      const endCol = end.charCodeAt(0) - 64;
-      const endRow = parseInt(end.substring(1));
-
-      if (isNaN(startRow) || isNaN(endRow) || startCol < 1 || endCol < 1) {
-        return [];
-      }
-
-      const values = [];
-      for (let row = startRow; row <= endRow; row++) {
-        for (let col = startCol; col <= endCol; col++) {
-          const cellRef = getCellRef(row, col);
-          values.push(spreadsheetData[cellRef] || '');
-        }
-      }
-      return values;
-    } catch (error) {
-      console.warn('Range parsing error:', error);
-      return [];
-    }
-  };
-
-  const evaluateCondition = (condition) => {
-    try {
-      const operators = ['>=', '<=', '>', '<', '='];
-      for (let op of operators) {
-        if (condition.includes(op)) {
-          const [left, right] = condition.split(op).map(s => s.trim());
-          const leftVal = parseFloat(spreadsheetData[left] || left);
-          const rightVal = parseFloat(right.replace(/"/g, ''));
-          
-          switch(op) {
-            case '>=': return leftVal >= rightVal;
-            case '<=': return leftVal <= rightVal;
-            case '>': return leftVal > rightVal;
-            case '<': return leftVal < rightVal;
-            case '=': return leftVal === rightVal;
-            default: return false;
-          }
-        }
-      }
-      return false;
-    } catch (error) {
-      return false;
-    }
-  };
-
   const evaluateFormula = (formula, cellRef) => {
-    // Safety check - return early if formula is incomplete
-    if (!formula || formula.trim() === '=' || formula.trim().length < 2) {
-      return '';
-    }
-
     try {
       if (!formula.startsWith('=')) {
         return formula;
       }
 
-      const formulaContent = formula.substring(1).toUpperCase().trim();
-      
-      // Return empty if formula is just whitespace after =
-      if (!formulaContent) {
-        return '';
-      }
+      const formulaContent = formula.substring(1).toUpperCase();
 
       // Handle SUM function
       if (formulaContent.includes('SUM')) {
@@ -1335,7 +1265,6 @@ const ELearningPlatform = () => {
           }, 0);
           return sum.toString();
         }
-        return ''; // Incomplete SUM formula
       }
 
       // Handle AVERAGE function
@@ -1349,11 +1278,10 @@ const ELearningPlatform = () => {
           const avg = numbers.reduce((a, b) => a + b, 0) / numbers.length;
           return avg.toFixed(2);
         }
-        return ''; // Incomplete AVERAGE formula
       }
 
       // Handle COUNT function
-      if (formulaContent.includes('COUNT') && !formulaContent.includes('COUNTIF')) {
+      if (formulaContent.includes('COUNT')) {
         const match = formulaContent.match(/COUNT\(([A-Z0-9:]+)\)/);
         if (match) {
           const range = match[1];
@@ -1361,50 +1289,10 @@ const ELearningPlatform = () => {
           const count = values.filter(v => !isNaN(parseFloat(v)) && v !== '').length;
           return count.toString();
         }
-        return ''; // Incomplete COUNT formula
-      }
-
-      // Handle COUNTIF function
-      if (formulaContent.includes('COUNTIF')) {
-        const match = formulaContent.match(/COUNTIF\(([A-Z0-9:]+),\s*"?([^)"]+)"?\)/);
-        if (match) {
-          const range = match[1];
-          const criteria = match[2].trim();
-          const values = getRangeValues(range);
-          
-          // Handle comparison operators
-          if (criteria.match(/^(>=|<=|>|<|=)/)) {
-            const operator = criteria.match(/^(>=|<=|>|<|=)/)[0];
-            const value = criteria.substring(operator.length).trim();
-            const compareValue = parseFloat(value);
-            
-            const count = values.filter(v => {
-              const num = parseFloat(v);
-              if (isNaN(num)) return false;
-              
-              switch(operator) {
-                case '>=': return num >= compareValue;
-                case '<=': return num <= compareValue;
-                case '>': return num > compareValue;
-                case '<': return num < compareValue;
-                case '=': return num === compareValue;
-                default: return false;
-              }
-            }).length;
-            
-            return count.toString();
-          } else {
-            // Exact text match
-            const count = values.filter(v => v.toString() === criteria).length;
-            return count.toString();
-          }
-        }
-        return ''; // Incomplete COUNTIF formula
       }
 
       // Handle IF function
       if (formulaContent.includes('IF')) {
-        // Match nested IF statements carefully
         const ifMatch = formulaContent.match(/IF\(([^,]+),([^,]+),(.+)\)/);
         if (ifMatch) {
           const condition = ifMatch[1].trim();
@@ -1414,7 +1302,6 @@ const ELearningPlatform = () => {
           const conditionResult = evaluateCondition(condition);
           return conditionResult ? trueVal : falseVal;
         }
-        return ''; // Incomplete IF formula
       }
 
       // Handle basic arithmetic
@@ -1424,35 +1311,60 @@ const ELearningPlatform = () => {
         cellRefs.forEach(ref => {
           const value = spreadsheetData[ref] || '0';
           const numValue = parseFloat(value) || 0;
-          processedFormula = processedFormula.replace(new RegExp(ref, 'g'), numValue.toString());
+          processedFormula = processedFormula.replace(ref, numValue.toString());
         });
       }
 
-      // Clean formula - only allow numbers and operators
-      const cleanFormula = processedFormula.replace(/[^0-9+\-*/(). ]/g, '');
-      
-      // Don't evaluate if formula is incomplete (ends with operator)
-      if (/[+\-*/]$/.test(cleanFormula.trim())) {
-        return '';
-      }
-
-      // Evaluate simple arithmetic safely
+      // Evaluate simple arithmetic
       try {
-        // eslint-disable-next-line no-eval
-        const result = eval(cleanFormula);
-        if (isNaN(result) || !isFinite(result)) {
-          return '';
-        }
+        const result = eval(processedFormula.replace(/[^0-9+\-*/(). ]/g, ''));
         return result.toString();
       } catch {
-        return '';
+        setFormulaError('Invalid formula syntax');
+        return '#ERROR!';
       }
 
     } catch (error) {
-      // Silently fail and return empty string instead of crashing
-      console.warn('Formula evaluation error:', error);
-      return '';
+      setFormulaError('Formula error: ' + error.message);
+      return '#ERROR!';
     }
+  };
+
+  const getRangeValues = (range) => {
+    const [start, end] = range.split(':');
+    const startCol = start.charCodeAt(0) - 64;
+    const startRow = parseInt(start.substring(1));
+    const endCol = end ? end.charCodeAt(0) - 64 : startCol;
+    const endRow = end ? parseInt(end.substring(1)) : startRow;
+
+    const values = [];
+    for (let row = startRow; row <= endRow; row++) {
+      for (let col = startCol; col <= endCol; col++) {
+        const cellRef = getCellRef(row, col);
+        values.push(spreadsheetData[cellRef] || '');
+      }
+    }
+    return values;
+  };
+
+  const evaluateCondition = (condition) => {
+    const operators = ['>=', '<=', '>', '<', '='];
+    for (let op of operators) {
+      if (condition.includes(op)) {
+        const [left, right] = condition.split(op).map(s => s.trim());
+        const leftVal = parseFloat(spreadsheetData[left] || left);
+        const rightVal = parseFloat(right.replace(/"/g, ''));
+        
+        switch(op) {
+          case '>=': return leftVal >= rightVal;
+          case '<=': return leftVal <= rightVal;
+          case '>': return leftVal > rightVal;
+          case '<': return leftVal < rightVal;
+          case '=': return leftVal === rightVal;
+        }
+      }
+    }
+    return false;
   };
 
   // ============================================================================
@@ -1611,37 +1523,20 @@ const ELearningPlatform = () => {
       for (let col = 1; col <= setup.cols; col++) {
         const cellRef = getCellRef(row, col);
         const value = spreadsheetData[cellRef] || '';
-        const isEditing = editingCell === cellRef;
-        
-        // Only evaluate if not currently editing and starts with =
-        let displayValue = value;
-        if (!isEditing && value.startsWith('=')) {
-          try {
-            displayValue = evaluateFormula(value, cellRef);
-          } catch (err) {
-            displayValue = '#ERROR!';
-          }
-        }
+        const displayValue = value.startsWith('=') ? evaluateFormula(value, cellRef) : value;
         
         cells.push(
           <td key={cellRef} style={styles.cell}>
             <input
               type="text"
               value={value}
-              onFocus={() => setEditingCell(cellRef)}
-              onBlur={() => setEditingCell(null)}
               onChange={(e) => updateCell(cellRef, e.target.value)}
               style={styles.cellInput}
               placeholder={cellRef}
             />
-            {!isEditing && value.startsWith('=') && displayValue !== '#ERROR!' && displayValue !== '' && (
+            {value.startsWith('=') && (
               <div style={styles.formulaResult}>
                 = {displayValue}
-              </div>
-            )}
-            {!isEditing && displayValue === '#ERROR!' && (
-              <div style={{...styles.formulaResult, color: '#dc3545'}}>
-                #ERROR!
               </div>
             )}
           </td>
@@ -1711,12 +1606,7 @@ const ELearningPlatform = () => {
                 opacity: isUnlocked ? 1 : 0.5,
                 cursor: isUnlocked ? 'pointer' : 'not-allowed'
               }}
-              onClick={() => {
-                if (isUnlocked) {
-                  setCurrentLevel(levelKey);
-                  setCurrentView('level');
-                }
-              }}
+              onClick={() => isUnlocked && setCurrentView('level') && setCurrentLevel(levelKey)}
             >
               <div style={styles.levelNumber}>{index + 1}</div>
               <h2 style={styles.levelTitle}>{level.title}</h2>
@@ -2300,561 +2190,507 @@ const ELearningPlatform = () => {
       backgroundColor: '#e0e0e0',
       borderRadius: '4px',
       overflow: 'hidden',
-    marginBottom: '0.5rem'
-},
-progressFill: {
-height: '100%',
-backgroundColor: '
-#667eea',
-transition: 'width 0.3s ease'
-},
-progressText: {
-fontSize: '0.85rem',
-color: '#666',
-marginBottom: '1rem'
-},
-badgeEarned: {
-backgroundColor: '
-#d4edda',
-color: '
-#155724',
-padding: '0.5rem',
-borderRadius: '6px',
-fontSize: '0.9rem',
-marginBottom: '1rem',
-textAlign: 'center'
-},
-locked: {
-backgroundColor: '
-#f8d7da',
-color: '
-#721c24',
-padding: '0.5rem',
-borderRadius: '6px',
-fontSize: '0.9rem',
-marginBottom: '1rem',
-textAlign: 'center'
-},
-button: {
-width: '100%',
-padding: '0.75rem 1.5rem',
-backgroundColor: '
-#667eea',
-color: 'white',
-border: 'none',
-borderRadius: '6px',
-fontSize: '1rem',
-fontWeight: '600',
-cursor: 'pointer',
-transition: 'background-color 0.2s'
-},
-backButton: {
-padding: '0.5rem 1rem',
-backgroundColor: '
-#6c757d',
-color: 'white',
-border: 'none',
-borderRadius: '6px',
-fontSize: '0.9rem',
-cursor: 'pointer',
-marginBottom: '1rem'
-},
-footer: {
-textAlign: 'center',
-marginTop: '2rem',
-padding: '1rem'
-},
-resetButton: {
-padding: '0.5rem 1rem',
-backgroundColor: '
-#dc3545',
-color: 'white',
-border: 'none',
-borderRadius: '6px',
-fontSize: '0.9rem',
-cursor: 'pointer'
-},
-saveIndicator: {
-color: '
-#28a745',
-fontSize: '0.9rem',
-marginBottom: '1rem'
-},
-modal: {
-position: 'fixed',
-top: 0,
-left: 0,
-right: 0,
-bottom: 0,
-backgroundColor: 'rgba(0,0,0,0.5)',
-display: 'flex',
-alignItems: 'center',
-justifyContent: 'center',
-zIndex: 1000
-},
-modalContent: {
-backgroundColor: 'white',
-padding: '2rem',
-borderRadius: '12px',
-maxWidth: '500px',
-width: '90%'
-},
-modalButtons: {
-display: 'flex',
-gap: '1rem',
-marginTop: '1.5rem'
-},
-levelHeader: {
-marginBottom: '2rem'
-},
-objectivesList: {
-backgroundColor: '
-#f8f9fa',
-padding: '1.5rem',
-borderRadius: '8px',
-marginTop: '1rem'
-},
-objective: {
-marginBottom: '0.5rem',
-color: '
-#495057'
-},
-lessonList: {
-display: 'flex',
-flexDirection: 'column',
-gap: '1rem'
-},
-lessonCard: {
-backgroundColor: 'white',
-padding: '1.5rem',
-borderRadius: '8px',
-boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-border: '1px solid 
-#e0e0e0'
+      marginBottom: '0.5rem'
+    },
+    progressFill: {
+      height: '100%',
+      backgroundColor: '#667eea',
+      transition: 'width 0.3s ease'
+    },
+    progressText: {
+      fontSize: '0.85rem',
+      color: '#666',
+      marginBottom: '1rem'
+    },
+    badgeEarned: {
+      backgroundColor: '#d4edda',
+      color: '#155724',
+      padding: '0.5rem',
+      borderRadius: '6px',
+      fontSize: '0.9rem',
+      marginBottom: '1rem',
+      textAlign: 'center'
+    },
+    locked: {
+      backgroundColor: '#f8d7da',
+      color: '#721c24',
+      padding: '0.5rem',
+      borderRadius: '6px',
+      fontSize: '0.9rem',
+      marginBottom: '1rem',
+      textAlign: 'center'
+    },
+    button: {
+      width: '100%',
+      padding: '0.75rem 1.5rem',
+      backgroundColor: '#667eea',
+      color: 'white',
+      border: 'none',
+      borderRadius: '6px',
+      fontSize: '1rem',
+      fontWeight: '600',
+      cursor: 'pointer',
+      transition: 'background-color 0.2s'
+    },
+    backButton: {
+      padding: '0.5rem 1rem',
+      backgroundColor: '#6c757d',
+      color: 'white',
+      border: 'none',
+      borderRadius: '6px',
+      fontSize: '0.9rem',
+      cursor: 'pointer',
+      marginBottom: '1rem'
+    },
+    footer: {
+      textAlign: 'center',
+      marginTop: '2rem',
+      padding: '1rem'
+    },
+    resetButton: {
+      padding: '0.5rem 1rem',
+      backgroundColor: '#dc3545',
+      color: 'white',
+      border: 'none',
+      borderRadius: '6px',
+      fontSize: '0.9rem',
+      cursor: 'pointer'
+    },
+    saveIndicator: {
+      color: '#28a745',
+      fontSize: '0.9rem',
+      marginBottom: '1rem'
+    },
+    modal: {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0,0,0,0.5)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 1000
+    },
+    modalContent: {
+      backgroundColor: 'white',
+      padding: '2rem',
+      borderRadius: '12px',
+      maxWidth: '500px',
+      width: '90%'
+    },
+    modalButtons: {
+      display: 'flex',
+      gap: '1rem',
+      marginTop: '1.5rem'
+    },
+    levelHeader: {
+      marginBottom: '2rem'
+    },
+    objectivesList: {
+      backgroundColor: '#f8f9fa',
+      padding: '1.5rem',
+      borderRadius: '8px',
+      marginTop: '1rem'
+    },
+    objective: {
+      marginBottom: '0.5rem',
+      color: '#495057'
+    },
+    lessonList: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '1rem'
+    },
+    lessonCard: {
+      backgroundColor: 'white',
+      padding: '1.5rem',
+      borderRadius: '8px',
+      boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+      border: '1px solid #e0e0e0'
 },
 lessonHeader: {
-display: 'flex',
-justifyContent: 'space-between',
-alignItems: 'start',
-marginBottom: '1rem'
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'start',
+  marginBottom: '1rem'
 },
 lessonTitle: {
-fontSize: '1.2rem',
-marginBottom: '0.5rem',
-color: '#333'
+  fontSize: '1.2rem',
+  marginBottom: '0.5rem',
+  color: '#333'
 },
 lessonGoal: {
-color: '#666',
-fontSize: '0.95rem'
+  color: '#666',
+  fontSize: '0.95rem'
 },
 attempts: {
-fontSize: '0.85rem',
-color: '#666',
-backgroundColor: '
-#f8f9fa',
-padding: '0.25rem 0.75rem',
-borderRadius: '12px'
+  fontSize: '0.85rem',
+  color: '#666',
+  backgroundColor: '#f8f9fa',
+  padding: '0.25rem 0.75rem',
+  borderRadius: '12px'
 },
 lessonContent: {
-backgroundColor: 'white',
-padding: '2rem',
-borderRadius: '12px'
+  backgroundColor: 'white',
+  padding: '2rem',
+  borderRadius: '12px'
 },
 goalBox: {
-backgroundColor: '
-#e7f3ff',
-padding: '1rem',
-borderRadius: '8px',
-marginBottom: '2rem',
-borderLeft: '4px solid 
-#667eea'
+  backgroundColor: '#e7f3ff',
+  padding: '1rem',
+  borderRadius: '8px',
+  marginBottom: '2rem',
+  borderLeft: '4px solid #667eea'
 },
 actionSection: {
-marginBottom: '2rem'
+  marginBottom: '2rem'
 },
 sectionTitle: {
-fontSize: '1.5rem',
-marginBottom: '1rem',
-color: '#333'
+  fontSize: '1.5rem',
+  marginBottom: '1rem',
+  color: '#333'
 },
 actionCard: {
-backgroundColor: '
-#f8f9fa',
-padding: '1.5rem',
-borderRadius: '8px',
-marginBottom: '1rem',
-borderLeft: '4px solid 
-#667eea'
+  backgroundColor: '#f8f9fa',
+  padding: '1.5rem',
+  borderRadius: '8px',
+  marginBottom: '1rem',
+  borderLeft: '4px solid #667eea'
 },
 stepNumber: {
-display: 'inline-block',
-backgroundColor: '
-#667eea',
-color: 'white',
-padding: '0.25rem 0.75rem',
-borderRadius: '12px',
-fontSize: '0.85rem',
-fontWeight: 'bold',
-marginBottom: '0.5rem'
+  display: 'inline-block',
+  backgroundColor: '#667eea',
+  color: 'white',
+  padding: '0.25rem 0.75rem',
+  borderRadius: '12px',
+  fontSize: '0.85rem',
+  fontWeight: 'bold',
+  marginBottom: '0.5rem'
 },
 cardTitle: {
-fontSize: '1.1rem',
-marginBottom: '0.5rem',
-color: '#333'
+  fontSize: '1.1rem',
+  marginBottom: '0.5rem',
+  color: '#333'
 },
 cardInstruction: {
-color: '
-#495057',
-marginBottom: '0.5rem'
+  color: '#495057',
+  marginBottom: '0.5rem'
 },
 cardHint: {
-color: '
-#6c757d',
-fontSize: '0.9rem',
-fontStyle: 'italic'
+  color: '#6c757d',
+  fontSize: '0.9rem',
+  fontStyle: 'italic'
 },
 spreadsheetSection: {
-marginBottom: '2rem'
+  marginBottom: '2rem'
 },
 instruction: {
-backgroundColor: '
-#fff3cd',
-padding: '1rem',
-borderRadius: '6px',
-marginBottom: '1rem',
-color: '
-#856404'
+  backgroundColor: '#fff3cd',
+  padding: '1rem',
+  borderRadius: '6px',
+  marginBottom: '1rem',
+  color: '#856404'
 },
 spreadsheetContainer: {
-overflowX: 'auto',
-border: '2px solid 
-#dee2e6',
-borderRadius: '8px',
-padding: '1rem',
-backgroundColor: '
-#f8f9fa'
+  overflowX: 'auto',
+  border: '2px solid #dee2e6',
+  borderRadius: '8px',
+  padding: '1rem',
+  backgroundColor: '#f8f9fa'
 },
 spreadsheet: {
-borderCollapse: 'collapse',
-width: '100%',
-minWidth: '500px'
+  borderCollapse: 'collapse',
+  width: '100%',
+  minWidth: '500px'
 },
 cellHeader: {
-backgroundColor: '
-#e9ecef',
-padding: '0.5rem',
-textAlign: 'center',
-fontWeight: 'bold',
-border: '1px solid 
-#dee2e6',
-minWidth: '80px'
+  backgroundColor: '#e9ecef',
+  padding: '0.5rem',
+  textAlign: 'center',
+  fontWeight: 'bold',
+  border: '1px solid #dee2e6',
+  minWidth: '80px'
 },
 cell: {
-border: '1px solid 
-#dee2e6',
-padding: '0.25rem',
-backgroundColor: 'white',
-position: 'relative'
+  border: '1px solid #dee2e6',
+  padding: '0.25rem',
+  backgroundColor: 'white',
+  position: 'relative'
 },
 cellInput: {
-width: '100%',
-padding: '0.5rem',
-border: '1px solid transparent',
-fontSize: '0.9rem',
-backgroundColor: 'transparent'
+  width: '100%',
+  padding: '0.5rem',
+  border: '1px solid transparent',
+  fontSize: '0.9rem',
+  backgroundColor: 'transparent'
 },
 formulaResult: {
-fontSize: '0.75rem',
-color: '
-#28a745',
-marginTop: '0.25rem',
-fontWeight: 'bold'
+  fontSize: '0.75rem',
+  color: '#28a745',
+  marginTop: '0.25rem',
+  fontWeight: 'bold'
 },
 errorMessage: {
-color: '
-#dc3545',
-marginTop: '0.5rem',
-fontSize: '0.9rem'
+  color: '#dc3545',
+  marginTop: '0.5rem',
+  fontSize: '0.9rem'
 },
 explanationSection: {
-marginBottom: '2rem',
-border: '1px solid 
-#dee2e6',
-borderRadius: '8px',
-overflow: 'hidden'
+  marginBottom: '2rem',
+  border: '1px solid #dee2e6',
+  borderRadius: '8px',
+  overflow: 'hidden'
 },
 explanationHeader: {
-padding: '1rem',
-backgroundColor: '
-#f8f9fa',
-cursor: 'pointer',
-display: 'flex',
-justifyContent: 'space-between',
-alignItems: 'center'
+  padding: '1rem',
+  backgroundColor: '#f8f9fa',
+  cursor: 'pointer',
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center'
 },
 explanationContent: {
-padding: '1rem',
-backgroundColor: 'white',
-lineHeight: '1.7'
+  padding: '1rem',
+  backgroundColor: 'white',
+  lineHeight: '1.7'
 },
 navigationButtons: {
-display: 'flex',
-gap: '1rem',
-marginTop: '2rem',
-flexWrap: 'wrap'
+  display: 'flex',
+  gap: '1rem',
+  marginTop: '2rem',
+  flexWrap: 'wrap'
 },
 quizContent: {
-backgroundColor: 'white',
-padding: '2rem',
-borderRadius: '12px'
+  backgroundColor: 'white',
+  padding: '2rem',
+  borderRadius: '12px'
 },
 quizQuestion: {
-backgroundColor: '
-#f8f9fa',
-padding: '1.5rem',
-borderRadius: '8px',
-marginBottom: '1.5rem'
+  backgroundColor: '#f8f9fa',
+  padding: '1.5rem',
+  borderRadius: '8px',
+  marginBottom: '1.5rem'
 },
 questionTitle: {
-fontSize: '1.1rem',
-marginBottom: '1rem',
-color: '#333'
+  fontSize: '1.1rem',
+  marginBottom: '1rem',
+  color: '#333'
 },
 optionsContainer: {
-display: 'flex',
-flexDirection: 'column',
-gap: '0.75rem'
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '0.75rem'
 },
 optionLabel: {
-display: 'flex',
-alignItems: 'center',
-padding: '0.75rem',
-backgroundColor: 'white',
-borderRadius: '6px',
-cursor: 'pointer',
-border: '2px solid 
-#e0e0e0',
-transition: 'border-color 0.2s'
+  display: 'flex',
+  alignItems: 'center',
+  padding: '0.75rem',
+  backgroundColor: 'white',
+  borderRadius: '6px',
+  cursor: 'pointer',
+  border: '2px solid #e0e0e0',
+  transition: 'border-color 0.2s'
 },
 radio: {
-marginRight: '0.75rem',
-cursor: 'pointer'
+  marginRight: '0.75rem',
+  cursor: 'pointer'
 },
 formulaInput: {
-width: '100%',
-padding: '0.75rem',
-fontSize: '1rem',
-border: '2px solid 
-#dee2e6',
-borderRadius: '6px',
-fontFamily: 'monospace'
+  width: '100%',
+  padding: '0.75rem',
+  fontSize: '1rem',
+  border: '2px solid #dee2e6',
+  borderRadius: '6px',
+  fontFamily: 'monospace'
 },
 warningText: {
-color: '
-#856404',
-fontSize: '0.9rem',
-marginTop: '1rem',
-textAlign: 'center'
+  color: '#856404',
+  fontSize: '0.9rem',
+  marginTop: '1rem',
+  textAlign: 'center'
 },
 quizResults: {
-backgroundColor: 'white',
-padding: '2rem',
-borderRadius: '12px',
-textAlign: 'center'
+  backgroundColor: 'white',
+  padding: '2rem',
+  borderRadius: '12px',
+  textAlign: 'center'
 },
 successTitle: {
-color: '
-#28a745',
-fontSize: '2rem',
-marginBottom: '1rem'
+  color: '#28a745',
+  fontSize: '2rem',
+  marginBottom: '1rem'
 },
 tryAgainTitle: {
-color: '
-#ffc107',
-fontSize: '2rem',
-marginBottom: '1rem'
+  color: '#ffc107',
+  fontSize: '2rem',
+  marginBottom: '1rem'
 },
 scoreDisplay: {
-margin: '2rem 0'
+  margin: '2rem 0'
 },
 scoreCircle: {
-width: '150px',
-height: '150px',
-borderRadius: '50%',
-backgroundColor: '
-#667eea',
-color: 'white',
-display: 'flex',
-alignItems: 'center',
-justifyContent: 'center',
-margin: '0 auto',
-boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)'
+  width: '150px',
+  height: '150px',
+  borderRadius: '50%',
+  backgroundColor: '#667eea',
+  color: 'white',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  margin: '0 auto',
+  boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)'
 },
 scoreNumber: {
-fontSize: '2.5rem',
-fontWeight: 'bold'
+  fontSize: '2.5rem',
+  fontWeight: 'bold'
 },
 resultMessage: {
-fontSize: '1.1rem',
-marginBottom: '2rem',
-color: '
-#495057'
+  fontSize: '1.1rem',
+  marginBottom: '2rem',
+  color: '#495057'
 },
 quizReview: {
-textAlign: 'left',
-marginTop: '2rem',
-maxWidth: '800px',
-margin: '2rem auto'
+  textAlign: 'left',
+  marginTop: '2rem',
+  maxWidth: '800px',
+  margin: '2rem auto'
 },
 reviewItem: {
-display: 'flex',
-gap: '1rem',
-padding: '1rem',
-backgroundColor: '
-#f8f9fa',
-borderRadius: '8px',
-marginBottom: '1rem'
+  display: 'flex',
+  gap: '1rem',
+  padding: '1rem',
+  backgroundColor: '#f8f9fa',
+  borderRadius: '8px',
+  marginBottom: '1rem'
 },
 correctMarker: {
-width: '30px',
-height: '30px',
-borderRadius: '50%',
-backgroundColor: '
-#28a745',
-color: 'white',
-display: 'flex',
-alignItems: 'center',
-justifyContent: 'center',
-fontWeight: 'bold',
-flexShrink: 0
+  width: '30px',
+  height: '30px',
+  borderRadius: '50%',
+  backgroundColor: '#28a745',
+  color: 'white',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  fontWeight: 'bold',
+  flexShrink: 0
 },
 incorrectMarker: {
-width: '30px',
-height: '30px',
-borderRadius: '50%',
-backgroundColor: '
-#dc3545',
-color: 'white',
-display: 'flex',
-alignItems: 'center',
-justifyContent: 'center',
-fontWeight: 'bold',
-flexShrink: 0
+  width: '30px',
+  height: '30px',
+  borderRadius: '50%',
+  backgroundColor: '#dc3545',
+  color: 'white',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  fontWeight: 'bold',
+  flexShrink: 0
 },
 reviewQuestion: {
-marginBottom: '0.5rem'
+  marginBottom: '0.5rem'
 },
 reviewAnswer: {
-color: '
-#dc3545',
-fontSize: '0.9rem',
-marginBottom: '0.5rem'
+  color: '#dc3545',
+  fontSize: '0.9rem',
+  marginBottom: '0.5rem'
 },
 reviewExplanation: {
-color: '
-#6c757d',
-fontSize: '0.9rem',
-fontStyle: 'italic'
+  color: '#6c757d',
+  fontSize: '0.9rem',
+  fontStyle: 'italic'
 },
 badgeFormContainer: {
-backgroundColor: 'white',
-padding: '2rem',
-borderRadius: '12px',
-maxWidth: '600px',
-margin: '0 auto'
+  backgroundColor: 'white',
+  padding: '2rem',
+  borderRadius: '12px',
+  maxWidth: '600px',
+  margin: '0 auto'
 },
 badgeDisplay: {
-backgroundColor: 'linear-gradient(135deg, 
-#667eea 0%, 
-#764ba2 100%)',
-padding: '2rem',
-borderRadius: '12px',
-textAlign: 'center',
-marginBottom: '2rem',
-background: 'linear-gradient(135deg, 
-#667eea 0%, 
-#764ba2 100%)',
-color: 'white'
+  backgroundColor: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+  padding: '2rem',
+  borderRadius: '12px',
+  textAlign: 'center',
+  marginBottom: '2rem',
+  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+  color: 'white'
 },
 badgeName: {
-fontSize: '1.5rem',
-fontWeight: 'bold',
-marginBottom: '0.5rem'
+  fontSize: '1.5rem',
+  fontWeight: 'bold',
+  marginBottom: '0.5rem'
 },
 pointsEarned: {
-fontSize: '1.2rem',
-opacity: 0.9
+  fontSize: '1.2rem',
+  opacity: 0.9
 },
 formInstructions: {
-marginBottom: '2rem',
-color: '
-#495057',
-lineHeight: '1.6'
+  marginBottom: '2rem',
+  color: '#495057',
+  lineHeight: '1.6'
 },
 form: {
-display: 'flex',
-flexDirection: 'column',
-gap: '1rem'
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '1rem'
 },
 formGroup: {
-display: 'flex',
-flexDirection: 'column'
+  display: 'flex',
+  flexDirection: 'column'
 },
 label: {
-marginBottom: '0.5rem',
-fontWeight: '600',
-color: '#333'
+  marginBottom: '0.5rem',
+  fontWeight: '600',
+  color: '#333'
 },
 input: {
-padding: '0.75rem',
-border: '2px solid 
-#dee2e6',
-borderRadius: '6px',
-fontSize: '1rem'
+  padding: '0.75rem',
+  border: '2px solid #dee2e6',
+  borderRadius: '6px',
+  fontSize: '1rem'
 },
 textarea: {
-padding: '0.75rem',
-border: '2px solid 
-#dee2e6',
-borderRadius: '6px',
-fontSize: '1rem',
-fontFamily: 'inherit',
-resize: 'vertical'
+  padding: '0.75rem',
+  border: '2px solid #dee2e6',
+  borderRadius: '6px',
+  fontSize: '1rem',
+  fontFamily: 'inherit',
+  resize: 'vertical'
 },
 successContainer: {
-backgroundColor: 'white',
-padding: '3rem 2rem',
-borderRadius: '12px',
-textAlign: 'center',
-maxWidth: '600px',
-margin: '0 auto'
+  backgroundColor: 'white',
+  padding: '3rem 2rem',
+  borderRadius: '12px',
+  textAlign: 'center',
+  maxWidth: '600px',
+  margin: '0 auto'
 },
 successMessage: {
-fontSize: '1.1rem',
-color: '
-#495057',
-marginBottom: '1.5rem',
-lineHeight: '1.6'
+  fontSize: '1.1rem',
+  color: '#495057',
+  marginBottom: '1.5rem',
+  lineHeight: '1.6'
 },
 badgeInfo: {
-backgroundColor: '
-#d4edda',
-color: '
-#155724',
-padding: '1rem',
-borderRadius: '8px',
-marginBottom: '2rem'
+  backgroundColor: '#d4edda',
+  color: '#155724',
+  padding: '1rem',
+  borderRadius: '8px',
+  marginBottom: '2rem'
 }
 };
 
-// ============================================================================
-// MAIN RENDER
-// ============================================================================
-
-return ( <div style={{ minHeight: '100vh', backgroundColor: '
-#f0f2f5' }}> {currentView === 'home' && renderHome()} {currentView === 'level' && renderLevel()} {currentView === 'lesson' && renderLesson()} {currentView === 'quiz' && renderQuiz()} {currentView === 'badge' && renderBadgeForm()} </div> ); };
-
+return (
+<div style={{ minHeight: '100vh', backgroundColor: '#f0f2f5' }}>
+{currentView === 'home' && renderHome()}
+{currentView === 'level' && renderLevel()}
+{currentView === 'lesson' && renderLesson()}
+{currentView === 'quiz' && renderQuiz()}
+{currentView === 'badge' && renderBadgeForm()}
+</div>
+);
+};
 export default ELearningPlatform;
-
-
-
