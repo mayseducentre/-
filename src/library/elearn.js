@@ -4,37 +4,37 @@ const ELearningPlatform = () => {
   // ============================================================================
   // STATE MANAGEMENT
   // ============================================================================
-  
+
   // Navigation state
   const [currentView, setCurrentView] = useState('home'); // home, level, lesson, quiz, badge
   const [currentLevel, setCurrentLevel] = useState(null);
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
-  
+
   // Progress state
   const [completedLessons, setCompletedLessons] = useState([]);
   const [unlockedLevels, setUnlockedLevels] = useState(['beginner']);
   const [totalPoints, setTotalPoints] = useState(0);
   const [earnedBadges, setEarnedBadges] = useState([]);
   const [quizAttempts, setQuizAttempts] = useState({});
-  
+
   // Quiz state
   const [currentQuizAnswers, setCurrentQuizAnswers] = useState({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
   const [quizScore, setQuizScore] = useState(0);
-  
+
   // Excel simulation state
   const [spreadsheetData, setSpreadsheetData] = useState({});
   const [formulaError, setFormulaError] = useState('');
-  
+
   // Badge form state
   const [badgeFormData, setBadgeFormData] = useState({
-    name: '',
-    email: '',
-    feedback: ''
+    Name: '',
+    Email: '',
+    Message: ''
   });
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [pendingBadgeLevel, setPendingBadgeLevel] = useState(null);
-  
+
   // UI state
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [saveIndicator, setSaveIndicator] = useState(false);
@@ -43,7 +43,7 @@ const ELearningPlatform = () => {
   // ============================================================================
   // COURSE CONTENT DEFINITION
   // ============================================================================
-  
+
   const courseContent = {
     beginner: {
       title: 'Beginner Level',
@@ -1152,7 +1152,7 @@ const ELearningPlatform = () => {
   // ============================================================================
   // LOCALSTORAGE FUNCTIONS
   // ============================================================================
-  
+
   const saveProgress = () => {
     try {
       const progressData = {
@@ -1206,7 +1206,7 @@ const ELearningPlatform = () => {
   // ============================================================================
   // EFFECTS
   // ============================================================================
-  
+
   useEffect(() => {
     loadProgress();
   }, []);
@@ -1220,7 +1220,7 @@ const ELearningPlatform = () => {
   // ============================================================================
   // SPREADSHEET SIMULATION FUNCTIONS
   // ============================================================================
-  
+
   const initializeSpreadsheet = (setup) => {
     const data = {};
     for (let row = 1; row <= setup.rows; row++) {
@@ -1298,7 +1298,7 @@ const ELearningPlatform = () => {
           const condition = ifMatch[1].trim();
           const trueVal = ifMatch[2].trim().replace(/"/g, '');
           const falseVal = ifMatch[3].trim().replace(/"/g, '');
-          
+
           const conditionResult = evaluateCondition(condition);
           return conditionResult ? trueVal : falseVal;
         }
@@ -1354,7 +1354,7 @@ const ELearningPlatform = () => {
         const [left, right] = condition.split(op).map(s => s.trim());
         const leftVal = parseFloat(spreadsheetData[left] || left);
         const rightVal = parseFloat(right.replace(/"/g, ''));
-        
+
         switch(op) {
           case '>=': return leftVal >= rightVal;
           case '<=': return leftVal <= rightVal;
@@ -1370,7 +1370,7 @@ const ELearningPlatform = () => {
   // ============================================================================
   // QUIZ FUNCTIONS
   // ============================================================================
-  
+
   const handleQuizAnswer = (questionId, answer) => {
     setCurrentQuizAnswers(prev => ({
       ...prev,
@@ -1381,10 +1381,10 @@ const ELearningPlatform = () => {
   const submitQuiz = () => {
     const lesson = courseContent[currentLevel].lessons[currentLessonIndex];
     let correct = 0;
-    
+
     lesson.quiz.forEach(question => {
       const userAnswer = currentQuizAnswers[question.id];
-      
+
       if (question.type === 'multiple' || question.type === 'output') {
         if (userAnswer === question.correct) correct++;
       } else if (question.type === 'truefalse') {
@@ -1398,11 +1398,11 @@ const ELearningPlatform = () => {
 
     const score = Math.round((correct / lesson.quiz.length) * 100);
     const points = correct * 10;
-    
+
     setQuizScore(score);
     setTotalPoints(prev => prev + points);
     setQuizSubmitted(true);
-    
+
     setQuizAttempts(prev => ({
       ...prev,
       [lesson.id]: (prev[lesson.id] || 0) + 1
@@ -1411,12 +1411,12 @@ const ELearningPlatform = () => {
     // Mark lesson as completed if score >= 60%
     if (score >= 60 && !completedLessons.includes(lesson.id)) {
       setCompletedLessons(prev => [...prev, lesson.id]);
-      
+
       // Check if level is complete
       const allLessons = courseContent[currentLevel].lessons;
       const completed = [...completedLessons, lesson.id];
       const levelComplete = allLessons.every(l => completed.includes(l.id));
-      
+
       if (levelComplete) {
         handleLevelComplete();
       }
@@ -1428,14 +1428,14 @@ const ELearningPlatform = () => {
     if (!earnedBadges.includes(badge)) {
       setEarnedBadges(prev => [...prev, badge]);
       setPendingBadgeLevel(currentLevel);
-      
+
       // Unlock next level
       if (currentLevel === 'beginner' && !unlockedLevels.includes('intermediate')) {
         setUnlockedLevels(prev => [...prev, 'intermediate']);
       } else if (currentLevel === 'intermediate' && !unlockedLevels.includes('advanced')) {
         setUnlockedLevels(prev => [...prev, 'advanced']);
       }
-      
+
       setCurrentView('badge');
     }
   };
@@ -1449,7 +1449,7 @@ const ELearningPlatform = () => {
   // ============================================================================
   // NAVIGATION FUNCTIONS
   // ============================================================================
-  
+
   const startLesson = (level, lessonIndex) => {
     setCurrentLevel(level);
     setCurrentLessonIndex(lessonIndex);
@@ -1457,7 +1457,7 @@ const ELearningPlatform = () => {
     setCurrentQuizAnswers({});
     setQuizSubmitted(false);
     setFormulaError('');
-    
+
     const lesson = courseContent[level].lessons[lessonIndex];
     initializeSpreadsheet(lesson.spreadsheetSetup);
   };
@@ -1487,7 +1487,7 @@ const ELearningPlatform = () => {
   // ============================================================================
   // BADGE FORM SUBMISSION
   // ============================================================================
-  
+
   const handleBadgeSubmit = (e) => {
     e.preventDefault();
     // Form is handled by Formspree
@@ -1497,10 +1497,10 @@ const ELearningPlatform = () => {
   // ============================================================================
   // RENDER HELPER FUNCTIONS
   // ============================================================================
-  
+
   const renderSpreadsheet = (setup) => {
     const rows = [];
-    
+
     // Header row with column letters
     const headerCells = [<th key="corner" style={styles.cellHeader}></th>];
     for (let col = 1; col <= setup.cols; col++) {
@@ -1519,12 +1519,12 @@ const ELearningPlatform = () => {
           {row}
         </td>
       ];
-      
+
       for (let col = 1; col <= setup.cols; col++) {
         const cellRef = getCellRef(row, col);
         const value = spreadsheetData[cellRef] || '';
         const displayValue = value.startsWith('=') ? evaluateFormula(value, cellRef) : value;
-        
+
         cells.push(
           <td key={cellRef} style={styles.cell}>
             <input
@@ -1542,7 +1542,7 @@ const ELearningPlatform = () => {
           </td>
         );
       }
-      
+
       rows.push(<tr key={`row-${row}`}>{cells}</tr>);
     }
 
@@ -1567,7 +1567,7 @@ const ELearningPlatform = () => {
   // ============================================================================
   // VIEW RENDERERS
   // ============================================================================
-  
+
   const renderHome = () => (
     <div style={styles.container}>
       <header style={styles.header}>
@@ -1611,7 +1611,7 @@ const ELearningPlatform = () => {
               <div style={styles.levelNumber}>{index + 1}</div>
               <h2 style={styles.levelTitle}>{level.title}</h2>
               <p style={styles.levelDescription}>{level.description}</p>
-              
+
               <div style={styles.progressBar}>
                 <div style={{...styles.progressFill, width: `${progress}%`}}></div>
               </div>
@@ -1682,7 +1682,7 @@ const ELearningPlatform = () => {
 
   const renderLevel = () => {
     const level = courseContent[currentLevel];
-    
+
     return (
       <div style={styles.container}>
         <button style={styles.backButton} onClick={() => setCurrentView('home')}>
@@ -1692,7 +1692,7 @@ const ELearningPlatform = () => {
         <div style={styles.levelHeader}>
           <h1 style={styles.title}>{level.title}</h1>
           <p style={styles.subtitle}>{level.description}</p>
-          
+
           <div style={styles.objectivesList}>
             <h3>Learning Objectives:</h3>
             <ul>
@@ -1745,7 +1745,7 @@ const ELearningPlatform = () => {
 
   const renderLesson = () => {
     const lesson = courseContent[currentLevel].lessons[currentLessonIndex];
-    
+
     return (
       <div style={styles.container}>
         <button
@@ -1805,10 +1805,10 @@ const ELearningPlatform = () => {
 
   const renderQuiz = () => {
     const lesson = courseContent[currentLevel].lessons[currentLessonIndex];
-    
+
     if (quizSubmitted) {
       const passed = quizScore >= 60;
-      
+
       return (
         <div style={styles.container}>
           <div style={styles.quizResults}>
@@ -1970,7 +1970,7 @@ const ELearningPlatform = () => {
           >
             Submit Quiz
           </button>
-          
+
           {Object.keys(currentQuizAnswers).length < lesson.quiz.length && (
             <p style={styles.warningText}>
               Please answer all questions before submitting.
@@ -2000,7 +2000,7 @@ const ELearningPlatform = () => {
                 setCurrentView('home');
                 setFormSubmitted(false);
                 setPendingBadgeLevel(null);
-                setBadgeFormData({ name: '', email: '', feedback: '' });
+                setBadgeFormData({ Name: '', Email: '', Message: '' });
               }}
             >
               Return to Home
@@ -2043,10 +2043,10 @@ const ELearningPlatform = () => {
               <label style={styles.label}>Your Name *</label>
               <input
                 type="text"
-                name="name"
+                name="Name"
                 required
-                value={badgeFormData.name}
-                onChange={(e) => setBadgeFormData({...badgeFormData, name: e.target.value})}
+                value={badgeFormData.Name}
+                onChange={(e) => setBadgeFormData({...badgeFormData, Name: e.target.value})}
                 style={styles.input}
                 placeholder="Enter your full name"
               />
@@ -2056,10 +2056,10 @@ const ELearningPlatform = () => {
               <label style={styles.label}>Your Email *</label>
               <input
                 type="email"
-                name="email"
+                name="Email"
                 required
-                value={badgeFormData.email}
-                onChange={(e) => setBadgeFormData({...badgeFormData, email: e.target.value})}
+                value={badgeFormData.Email}
+                onChange={(e) => setBadgeFormData({...badgeFormData, Email: e.target.value})}
                 style={styles.input}
                 placeholder="your.email@example.com"
               />
@@ -2068,9 +2068,9 @@ const ELearningPlatform = () => {
             <div style={styles.formGroup}>
               <label style={styles.label}>Feedback (Optional)</label>
               <textarea
-                name="feedback"
-                value={badgeFormData.feedback}
-                onChange={(e) => setBadgeFormData({...badgeFormData, feedback: e.target.value})}
+                name="Message"
+                value={badgeFormData.Message}
+                onChange={(e) => setBadgeFormData({...badgeFormData, Message: e.target.value})}
                 style={styles.textarea}
                 placeholder="Share your thoughts about this course..."
                 rows="4"
@@ -2099,7 +2099,7 @@ const ELearningPlatform = () => {
   // ============================================================================
   // STYLES
   // ============================================================================
-  
+
   const styles = {
     container: {
       maxWidth: '1200px',
