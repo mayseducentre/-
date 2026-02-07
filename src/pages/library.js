@@ -180,6 +180,17 @@ export default function Library() {
 
 
 
+<Link to="/training" style={{ textDecoration: "none" }}>
+          <div
+            style={itemStyle}
+            onMouseEnter={(e) => handleHover(e, true)}
+            onMouseLeave={(e) => handleHover(e, false)}
+          >
+            <img src="https://lh3.googleusercontent.com/pw/AP1GczMQK30hnET-Ucx1LeA2DhzHucMHh0RLA2Ba6CJezF0ryX_zOvaqlOgn1WPNfg1RLyYzXdHCjCP68GEvI2dwn8w5CelomlA_6FWrDK9VY5a7jmQ-QKs" alt="CR" style={imgStyle} />
+            <span style={titleStyle}>Training Course</span>
+          </div>
+        </Link>
+
 <Link to="/creative_stu" style={{ textDecoration: "none" }}>
           <div
             style={itemStyle}
@@ -190,8 +201,6 @@ export default function Library() {
             <span style={titleStyle}>Creative Studio</span>
           </div>
         </Link>
-
-
        
 
       </div>
