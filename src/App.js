@@ -36,6 +36,7 @@ import AssignmentHub from "./component/portal_component/assignment";
 import AdminDashboard from "./component/accountadm";
 import ELearningPlatform from "./library/elearn";
 import TrainingDashboard from "./training/train_course.js"
+import WordTrain from "./training/word_train.js"
 
 
 window.addEventListener("keyup", (e)=>{
@@ -120,7 +121,8 @@ function App() {
 <Route path="/elearn" element={<ELearningPlatform />} />
 <Route path="/admaccount" element={<AdminDashboard />} />
 <Route path="/help" element={<HelpFAQ />} />
-<Route path="/training" element={<TrainingDashboard/>} />
+<Route path="/training" element={<TrainingDashboard />} />
+<Route path="/word-training" element={<WordTrain />} />
        </Route>
     </Routes>
     </HashRouter>
