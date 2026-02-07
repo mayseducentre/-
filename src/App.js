@@ -35,6 +35,7 @@ import CreativeStudio from "./library/creative_stu";
 import AssignmentHub from "./component/portal_component/assignment";
 import AdminDashboard from "./component/accountadm";
 import ELearningPlatform from "./library/elearn";
+import TrainingDashboard from "./training/train_course.js"
 
 
 window.addEventListener("keyup", (e)=>{
@@ -119,6 +120,7 @@ function App() {
 <Route path="/elearn" element={<ELearningPlatform />} />
 <Route path="/admaccount" element={<AdminDashboard />} />
 <Route path="/help" element={<HelpFAQ />} />
+<Route path="/training" element={<TrainingDashboard/>} />
        </Route>
     </Routes>
     </HashRouter>
