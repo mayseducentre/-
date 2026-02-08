@@ -11,7 +11,7 @@ import HeadN from "../component/neutral_head";
 import Footer from "../component/footer";
 import ScrollToTop from "react-scroll-to-top";
 
-export default function StudentsPortal({ user }) {
+export default function StudentPortal({ user }) {
   const [activeTab, setActiveTab] = useState("dashboard");
   const isMobile = window.innerWidth <= 768;
 
