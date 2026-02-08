@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Studentsidebar from "../portal_sidebar/student_sidebar";
+import StudentSettings from "../portal_sidebar/student_settings";
 
 import StudentDash from "../component/portal_component/studentdash";
 import MecAi from "../component/mecai";
@@ -36,7 +37,8 @@ export default function StudentsPortal({ user }) {
       >
         {activeTab === "dashboard" && <Card><StudentDash /></Card>}
         {activeTab === "mecai" && <Card><MecAi /></Card>}
-         
+
+ {activeTab === "settings" && <Card><StudentSettings /></Card>}        
         <Footer />
       </main>
 
