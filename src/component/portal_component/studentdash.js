@@ -9,7 +9,7 @@ import {
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { db } from "../../firebase";
-import MeetStudent from "./meet_students";
+import MeetST from "./meet_students";
 
 export default function StudentDash() {
   const auth = getAuth();
@@ -85,7 +85,7 @@ export default function StudentDash() {
       {/* ================= STAFF ================= */}
       <section style={{ marginTop: 50 }}>
         <h3 style={styles.sectionTitle}>Meet Students</h3>
-        <MeetStudent />
+        <MeetST />
       </section>
     </div>
   );
