@@ -34,7 +34,7 @@ export default function TrainingDashboard() {
 
   return (
 <>
-<Breadcrumb title="Training Courses" />
+<Breadcrumb title="Training Courses" image="https://lh3.googleusercontent.com/pw/AP1GczNVry7Obd0xDeehmmK5X-mYlm1UuTYyKGZ-aFxxpRYBPnX1PdEDgxdwBnfa5I-ZkvmReXFqA3SNGwZUaHe-GcUjXyFMA9crdXfhI_oo_caLogzczuk"/>
     <div style={styles.page}>
       <div style={styles.container}>
         <header style={styles.header}>
