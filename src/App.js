@@ -37,6 +37,7 @@ import AdminDashboard from "./component/accountadm";
 import ELearningPlatform from "./library/elearn";
 import TrainingDashboard from "./training/train_course.js"
 import WordTrain from "./training/word_train.js"
+import ExcelTrain from "./training/excel_train.js"
 
 
 window.addEventListener("keyup", (e)=>{
@@ -123,6 +124,7 @@ function App() {
 <Route path="/help" element={<HelpFAQ />} />
 <Route path="/training" element={<TrainingDashboard />} />
 <Route path="/word-training" element={<WordTrain />} />
+<Route path="/excel-training" element={<ExcelTrain />} />
        </Route>
     </Routes>
     </HashRouter>
