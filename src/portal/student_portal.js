@@ -1,61 +1,76 @@
+import React, { useState } from "react";
+import Studentsidebar from "../portal_sidebar/students_sidebar";
 
-import ScrollToTop from "react-scroll-to-top";
+import StudentDash from "../component/portal_component/studentdash";
+import StudentPerform from "../component/portal_component/student_performance";
+import MecAi from "../component/mecai";
+import HeadN from "../component/neutral_head";
+import StudentSettings from "../component/portal_component/student_settings";
+
+
+
 import Footer from "../component/footer";
-import Headline from "../component/headlines";
-import AssignView from "../component/portal_component/assigment_view";
-import CourseView from "../component/portal_component/course_view";
-import ProjectUpload from "../component/portal_component/projectupload";
-import MeetST from "../component/portal_component/meet_students";
-import Studentsidebar from "../portal_sidebar/student_sidebar";
-import MeetT from "../component/portal_component/meet_teachers";
-import AnnounceHubView from "../component/portal_component/viewannounce";
-import ViewCalendar from "../component/portal_component/viewcalendar";
-import Meet from "../component/portal_component/meet_online";
-import GradeSys from "../component/portal_component/checkgrades";
+import ScrollToTop from "react-scroll-to-top";
 
-function StudentPortal({user}){
-   return(
-    <>
-    <div id="main">
-      
-    <input type="text" id="studentid" style={{display:"none"}} readOnly/>
-      <Headline />
-    <Studentsidebar user={user}/>
-    <br/>
-    <br/>
-    <div id="courseview">
-    <CourseView />
-    <MeetST />
-    <MeetT />
-    </div>
-    <div id="assignview" style={{display:"none"}}>
-    <AssignView user={user}/>
-  
-    </div>
-    <div id="projectupload" style={{display:"none"}}>
-    <ProjectUpload />
-    </div>
-    <div id="calendarviewer" style={{display:"none"}}>
-    <ViewCalendar />
-    </div>
-    <div id="announcem" style={{display:"none"}}>
-    <AnnounceHubView />
-    </div>
-    
-    <div id="meetme" style={{display:"none"}}>
-    <Meet />
-    </div>
-    <div id="checkmygrade" style={{display:"none"}}>
-    <GradeSys user={user}/>
-    </div>
+export default function StudentsPortal({ user }) {
+  const [activeTab, setActiveTab] = useState("dashboard");
+  const isMobile = window.innerWidth <= 768;
 
-    <br/>
-    <br/>
-    
-<ScrollToTop smooth className="scrolly"/>
-    <Footer />
+  return (
+<>
+<HeadN />
+
+<br />
+<br />
+    <div style={styles.wrapper}>
+      <Studentsidebar
+        user={user}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
+
+      <main
+        style={{
+          ...styles.content,
+          marginLeft: isMobile ? 0 : 260,
+          paddingBottom: isMobile ? 80 : 20,
+        }}
+      >
+        {activeTab === "dashboard" && <Card><StudentDash /></Card>}
+        {activeTab === "studentperformance" && <Card><StudentPerform /></Card>}
+        {activeTab === "mecai" && <Card><MecAi /></Card>}
+        {activeTab === "settings" && <Card><StudentSettings user={user} /></Card>} 
+        <Footer />
+      </main>
+
+      <ScrollToTop smooth />
     </div>
-    </>
-   )
+</>
+  );
 }
-export default StudentPortal;
+
+/* ================= CARD WRAPPER ================= */
+const Card = ({ children }) => (
+  <div style={styles.card}>{children}</div>
+);
+
+/* ================= STYLES ================= */
+const styles = {
+  wrapper: {
+    minHeight: "100vh",
+    width:"100%"
+  },
+  content: {
+    minHeight: "100vh",
+    transition: "0.3s",
+margin:0,
+width:"100%"
+  },
+  card: {
+    background: "#ffffff",
+    borderRadius: 14,
+    padding: 15,
+    marginBottom: 25,
+    boxShadow: "0 8px 22px rgba(0,0,0,0.06)",
+  },
+};
