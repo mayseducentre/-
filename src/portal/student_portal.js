@@ -37,7 +37,6 @@ export default function StudentsPortal({ user }) {
         }}
       >
         {activeTab === "dashboard" && <Card><StudentDash /></Card>}
-        {activeTab === "studentperformance" && <Card><StudentPerform /></Card>}
         {activeTab === "mecai" && <Card><MecAi /></Card>}
         {activeTab === "settings" && <Card><StudentSettings user={user} /></Card>} 
         <Footer />
