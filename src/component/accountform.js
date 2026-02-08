@@ -101,7 +101,9 @@ export default function Accountform() {
           mays_msg:
             `Your account has been created successfully.\n\n` +
             `Account ID: ${uniqueId}\n\n` +
-            `Please check your email and VERIFY your account before logging in.`,
+            `Please check your email and verify your account before logging in.
+If you don’t see the verification email in your inbox, kindly check your Spam or Junk folder.
+If you still can’t find it, contact support on 0549271528 or email educationalcentremays@gmail.com. `,
         },
         "VIB8bKSD-ZS3RCCHD"
       );
