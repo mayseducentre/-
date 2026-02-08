@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import Breadcrumb from "../component/breadcrumb "
+import Breadcrumb from "../component/breadcrumb"
 
 export default function TrainingDashboard() {
   const navigate = useNavigate();
