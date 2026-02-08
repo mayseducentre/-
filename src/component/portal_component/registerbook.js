@@ -5,7 +5,7 @@ const EXCEL_URL = "/Class RegisterSheet (1).xlsx";
 const ADMIN_EMAIL = "educationalcentremays@gmail.com";
 const WHATSAPP_NUMBER = "233549271528"; // replace with admin WhatsApp number
 
-export default function AttendanceRegister() {
+export default function RegisterBook() {
   const downloadExcel = () => {
     window.open(EXCEL_URL, "_blank");
   };
