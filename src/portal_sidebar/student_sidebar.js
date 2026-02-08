@@ -3,30 +3,29 @@ import { getAuth, signOut } from "firebase/auth";
 
 export default function Studentsidebar({ user, setActiveTab, activeTab }) {
   const auth = getAuth();
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Track window size changes for responsive layout
+  // Handle screen size safely
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 768);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    const checkScreen = () => setIsMobile(window.innerWidth <= 768);
+    checkScreen();
+    window.addEventListener("resize", checkScreen);
+    return () => window.removeEventListener("resize", checkScreen);
   }, []);
 
+  // SIMPLE & CHILD-FRIENDLY MENU
   const menuItems = [
-    { label: "Dashboard", tab: "dashboard", icon: "🏠" },
-    { label: "MecAi", tab: "mecai", icon: "🕹" },
-{ label: "Settings", tab: "settings", icon: "⚙️" },
-   
+    { label: "Home", tab: "dashboard", icon: "🏠" },
+    { label: "Learn", tab: "mecai", icon: "📘" },
+    { label: "My Settings", tab: "settings", icon: "⚙️" },
   ];
 
   const handleSignOut = async () => {
     try {
       await signOut(auth);
-      // Optionally redirect after sign out
-      window.location.reload()
+      window.location.reload();
     } catch (err) {
-      console.error("Sign out failed:", err);
-      alert("Failed to sign out. Please try again.");
+      alert("Unable to sign out. Please try again.");
     }
   };
 
@@ -36,12 +35,12 @@ export default function Studentsidebar({ user, setActiveTab, activeTab }) {
       <aside style={styles.sidebar}>
         <div style={styles.profile}>
           <img
-            src={user?.photoUrl || "/default.png"}
-            alt="profile"
+            src={user?.photoURL || "/default.png"}
+            alt="Student profile"
             style={styles.avatar}
           />
           <strong>{user?.name || "Student"}</strong>
-       
+          <small style={{ opacity: 0.7 }}>Welcome 👋</small>
         </div>
 
         <ul style={styles.menu}>
@@ -52,7 +51,7 @@ export default function Studentsidebar({ user, setActiveTab, activeTab }) {
                 ...styles.menuItem,
                 background:
                   activeTab === item.tab
-                    ? "rgba(255, 255, 255, 0.15)"
+                    ? "rgba(255,255,255,0.18)"
                     : "transparent",
               }}
               onClick={() => setActiveTab(item.tab)}
@@ -63,7 +62,7 @@ export default function Studentsidebar({ user, setActiveTab, activeTab }) {
           ))}
 
           <li style={styles.logout} onClick={handleSignOut}>
-            🚪 Sign Out
+            🚪 Log Out
           </li>
         </ul>
       </aside>
@@ -79,11 +78,11 @@ export default function Studentsidebar({ user, setActiveTab, activeTab }) {
             key={item.tab}
             style={{
               ...styles.navItem,
-              opacity: activeTab === item.tab ? 1 : 0.65,
-              borderBottom:
+              opacity: activeTab === item.tab ? 1 : 0.6,
+              borderTop:
                 activeTab === item.tab
-                  ? "3px solid #7a5018"
-                  : "3px solid transparent",
+                  ? "4px solid #4caf50"
+                  : "4px solid transparent",
             }}
             onClick={() => setActiveTab(item.tab)}
           >
@@ -93,15 +92,11 @@ export default function Studentsidebar({ user, setActiveTab, activeTab }) {
         ))}
 
         <div
-          style={{
-            ...styles.navItem,
-            color: "#ff5555",
-            borderBottom: "3px solid transparent",
-          }}
+          style={{ ...styles.navItem, color: "#e53935" }}
           onClick={handleSignOut}
         >
           <div style={styles.navIcon}>🚪</div>
-          <small>Sign Out</small>
+          <small>Log Out</small>
         </div>
       </div>
     </nav>
@@ -111,29 +106,27 @@ export default function Studentsidebar({ user, setActiveTab, activeTab }) {
 /* ================= STYLES ================= */
 const styles = {
   sidebar: {
-    width: 260,
+    width: 250,
     height: "100vh",
-    background: "#2C2F33",
+    background: "#2e7d32",
     color: "white",
-    padding: 20,
+    padding: 18,
     position: "fixed",
     left: 0,
     top: 0,
     display: "flex",
     flexDirection: "column",
-    overflowY: "auto",
-    zIndex: 1000,
   },
   profile: {
     textAlign: "center",
-    marginBottom: 25,
+    marginBottom: 22,
   },
   avatar: {
-    width: 75,
-    height: 75,
+    width: 70,
+    height: 70,
     borderRadius: "50%",
-    marginBottom: 8,
-    border: "2px solid #7a5018",
+    marginBottom: 6,
+    border: "3px solid #a5d6a7",
   },
   menu: {
     listStyle: "none",
@@ -149,7 +142,7 @@ const styles = {
     alignItems: "center",
     gap: 10,
     marginBottom: 6,
-    transition: "0.2s",
+    fontSize: 15,
   },
   icon: {
     fontSize: 18,
@@ -157,7 +150,7 @@ const styles = {
   logout: {
     marginTop: "auto",
     padding: "12px",
-    color: "#ff5555",
+    color: "#ffcdd2",
     cursor: "pointer",
   },
 
@@ -167,31 +160,24 @@ const styles = {
     bottom: 0,
     left: 0,
     right: 0,
-    height: 90,
-    background: "#f4f4f4",
-    zIndex: 1000,
-    overflowX: "auto",
-    borderTop: "1px solid #ccc",
+    height: 85,
+    background: "#ffffff",
+    borderTop: "1px solid #ddd",
   },
   scrollRow: {
     display: "flex",
-    overflowX: "auto",
     height: "100%",
     alignItems: "center",
-    padding: "0 8px env(safe-area-inset-bottom)",
-    gap: 10,
-    scrollbarWidth: "none", // Firefox
+    justifyContent: "space-around",
   },
   navItem: {
-    minWidth: 72,
-    flexShrink: 0,
     textAlign: "center",
     cursor: "pointer",
-    color: "#333",
-    paddingBottom: 6,
     paddingTop: 6,
+    color: "#333",
+    width: 80,
   },
   navIcon: {
-    fontSize: 20,
+    fontSize: 22,
   },
 };
