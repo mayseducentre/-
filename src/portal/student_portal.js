@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Studentsidebar from "../portal_sidebar/student_sidebar";
-import StudentSettings from "../portal_sidebar/student_settings";
+import StudentSettings from "../component/portal_component/student_settings";
 
 import StudentDash from "../component/portal_component/studentdash";
 import MecAi from "../component/mecai";
