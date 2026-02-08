@@ -9,7 +9,7 @@ import {
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { db } from "../../firebase";
-import MeetStudent from "./meet_student";
+import MeetStudent from "./meet_students";
 
 export default function StudentDash() {
   const auth = getAuth();
