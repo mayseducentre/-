@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getAuth, signOut } from "firebase/auth";
 
-export default function Teachersidebar({ user, setActiveTab, activeTab }) {
+export default function Studentsidebar({ user, setActiveTab, activeTab }) {
   const auth = getAuth();
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
