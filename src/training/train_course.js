@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import Breadcrumb from "../component/breadcrumb "
 
 export default function TrainingDashboard() {
   const navigate = useNavigate();
@@ -32,6 +33,8 @@ export default function TrainingDashboard() {
   ];
 
   return (
+<>
+<Breadcrumb title="Training Courses" />
     <div style={styles.page}>
       <div style={styles.container}>
         <header style={styles.header}>
@@ -64,6 +67,7 @@ export default function TrainingDashboard() {
         </section>
       </div>
     </div>
+</>
   );
 }
 
