@@ -1,213 +1,196 @@
-import { Link } from "react-router-dom";
-import "../style.css";
+import React, { useEffect, useState } from "react";
+import { getAuth, signOut } from "firebase/auth";
 
-function AssignV(){
-  document.getElementById("assignview").style.display="block"
-  document.getElementById("courseview").style.display="none"
-  document.getElementById("extraactview").style.display="none"
-  document.getElementById("checkmygrade").style.display="none"
-  document.getElementById("calendarviewer").style.display="none"
-  document.getElementById("announcem").style.display="none"
-  document.getElementById("meetme").style.display="none"
+export default function Teachersidebar({ user, setActiveTab, activeTab }) {
+  const auth = getAuth();
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  // Track window size changes for responsive layout
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const menuItems = [
+    { label: "Dashboard", tab: "dashboard", icon: "🏠" },
+    { label: "MecAi", tab: "mecai", icon: "🕹" },
+    { label: "Settings", tab: "settings", icon: "⚙️" },
+  ];
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      // Optionally redirect after sign out
+      window.location.reload()
+    } catch (err) {
+      console.error("Sign out failed:", err);
+      alert("Failed to sign out. Please try again.");
+    }
+  };
+
+  /* ================= DESKTOP SIDEBAR ================= */
+  if (!isMobile) {
+    return (
+      <aside style={styles.sidebar}>
+        <div style={styles.profile}>
+          <img
+            src={user?.thumbnailUrl || "/default.png"}
+            alt="profile"
+            style={styles.avatar}
+          />
+          <strong>{user?.name || "Teacher"}</strong>
+          <small>{user?.subject || "Subject"}</small>
+        </div>
+
+        <ul style={styles.menu}>
+          {menuItems.map((item) => (
+            <li
+              key={item.tab}
+              style={{
+                ...styles.menuItem,
+                background:
+                  activeTab === item.tab
+                    ? "rgba(255, 255, 255, 0.15)"
+                    : "transparent",
+              }}
+              onClick={() => setActiveTab(item.tab)}
+            >
+              <span style={styles.icon}>{item.icon}</span>
+              {item.label}
+            </li>
+          ))}
+
+          <li style={styles.logout} onClick={handleSignOut}>
+            🚪 Sign Out
+          </li>
+        </ul>
+      </aside>
+    );
+  }
+
+  /* ================= MOBILE BOTTOM NAV ================= */
+  return (
+    <nav style={styles.bottomNav}>
+      <div style={styles.scrollRow}>
+        {menuItems.map((item) => (
+          <div
+            key={item.tab}
+            style={{
+              ...styles.navItem,
+              opacity: activeTab === item.tab ? 1 : 0.65,
+              borderBottom:
+                activeTab === item.tab
+                  ? "3px solid #7a5018"
+                  : "3px solid transparent",
+            }}
+            onClick={() => setActiveTab(item.tab)}
+          >
+            <div style={styles.navIcon}>{item.icon}</div>
+            <small>{item.label}</small>
+          </div>
+        ))}
+
+        <div
+          style={{
+            ...styles.navItem,
+            color: "#ff5555",
+            borderBottom: "3px solid transparent",
+          }}
+          onClick={handleSignOut}
+        >
+          <div style={styles.navIcon}>🚪</div>
+          <small>Sign Out</small>
+        </div>
+      </div>
+    </nav>
+  );
 }
 
-function UploadProj(){
-  document.getElementById("assignview").style.display="none"
-  document.getElementById("courseview").style.display="none"
-  document.getElementById("projectupload").style.display="block"
-  document.getElementById("calendarviewer").style.display="none"
-  document.getElementById("checkmygrade").style.display="none"
-  document.getElementById("announcem").style.display="none"
-  document.getElementById("meetme").style.display="none"
-}
+/* ================= STYLES ================= */
+const styles = {
+  sidebar: {
+    width: 260,
+    height: "100vh",
+    background: "#2C2F33",
+    color: "white",
+    padding: 20,
+    position: "fixed",
+    left: 0,
+    top: 0,
+    display: "flex",
+    flexDirection: "column",
+    overflowY: "auto",
+    zIndex: 1000,
+  },
+  profile: {
+    textAlign: "center",
+    marginBottom: 25,
+  },
+  avatar: {
+    width: 75,
+    height: 75,
+    borderRadius: "50%",
+    marginBottom: 8,
+    border: "2px solid #7a5018",
+  },
+  menu: {
+    listStyle: "none",
+    padding: 0,
+    margin: 0,
+    flex: 1,
+  },
+  menuItem: {
+    padding: "12px 14px",
+    borderRadius: 10,
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    gap: 10,
+    marginBottom: 6,
+    transition: "0.2s",
+  },
+  icon: {
+    fontSize: 18,
+  },
+  logout: {
+    marginTop: "auto",
+    padding: "12px",
+    color: "#ff5555",
+    cursor: "pointer",
+  },
 
-
-function CourseV(){
-  document.getElementById("assignview").style.display="none"
-  document.getElementById("courseview").style.display="block"
-  document.getElementById("extraactview").style.display="none"
-  document.getElementById("calendarviewer").style.display="none"
-  document.getElementById("checkmygrade").style.display="none"
-  document.getElementById("announcem").style.display="none"
-  document.getElementById("meetme").style.display="none"
-}
-
-function CalendarV(){
-  document.getElementById("assignview").style.display="none"
-  document.getElementById("courseview").style.display="none"
-  document.getElementById("extraactview").style.display="none"
-  document.getElementById("calendarviewer").style.display="block"
-  document.getElementById("checkmygrade").style.display="none"
-  document.getElementById("announcem").style.display="none"
-  document.getElementById("meetme").style.display="none"
-}
-
-function MessageA(){
-  document.getElementById("assignview").style.display="none"
-  document.getElementById("courseview").style.display="none"
-  document.getElementById("extraactview").style.display="none"
-  document.getElementById("calendarviewer").style.display="none"
-  document.getElementById("announcem").style.display="block";
-  document.getElementById("checkmygrade").style.display="none"
-  document.getElementById("meetme").style.display="none"
-}
-
-
-function Meetme(){
-  document.getElementById("assignview").style.display="none"
-  document.getElementById("courseview").style.display="none"
-  document.getElementById("extraactview").style.display="none"
-  document.getElementById("calendarviewer").style.display="none"
-  document.getElementById("announcem").style.display="none"
-  document.getElementById("checkmygrade").style.display="none"
-  document.getElementById("meetme").style.display="block"
-}
-
-function GradeC(){
-  
-  document.getElementById("assignview").style.display="none"
-  document.getElementById("courseview").style.display="none"
-  document.getElementById("extraactview").style.display="none"
-  document.getElementById("calendarviewer").style.display="none"
-  document.getElementById("announcem").style.display="none"
-  document.getElementById("meetme").style.display="none"
-  document.getElementById("checkmygrade").style.display="block"
-}
-
-function Studentsidebar({user}){
-  
-
-
-    return(
-      <>
-       <header id="header" className="fixed-top d-flex align-items-center">
-            <div className="container d-flex align-items-center justify-content-between">
-       
-                <a href="#/" className="logo">
-                    <img src={require(`../img/${process.env.REACT_APP_LOGO}`)} alt="" className="img-fluid animate__animated animate__zoomIn"/></a>
-                    <div>
-                    <a href="#/user_setting" id="studentusername" style={{textTransform:"uppercase",color:"whitesmoke"}}>
-                    {user.name}
-                      </a>&nbsp;
-                      <img id="stuheadimg" src={user.thumbnailUrl} style={{width:"40px",height:"40px",borderRadius:"50%",zIndex:"9"}} />
-                  
-                    </div>
-            </div>
-        </header>
-       
-        <aside id="sidebar" className="sidebar">
-        
-    <ul className="sidebar-nav" id="sidebar-nav">
-    
-     <Link to="/user_setting">
-      <li className="nav-item" style={{cursor:"pointer"}}>
-        <a className="nav-link">
-        <img id="stuimgport" src={user.thumbnailUrl} style={{width:"50px",height:"50px",borderRadius:"50%",zIndex:"9"}} />
-     &nbsp;<span style={{textTransform:"uppercase",color:"whitesmoke"}}>STUDENT
-                      </span>
-        </a>
-      </li>
-     </Link> 
-
-   
-      <li className="nav-item" style={{cursor:"pointer"}} onClick={CourseV}>
-        <a className="nav-link">
-          <i className="fa fa-diamond"></i>
-          <span>Dashboard</span>
-        </a>
-      </li> 
-
-
-      
-      <li className="nav-item" style={{cursor:"pointer"}} onClick={AssignV}>
-        <a className="nav-link collapsed">
-          <i className="fa fa-diamond"></i>
-          <span>Classes and assignments</span>
-        </a>
-      </li>
-      
-      <li className="nav-item" style={{cursor:"pointer"}} onClick={GradeC}>
-        <a className="nav-link collapsed">
-          <i className="fa fa-diamond"></i>
-          <span>Grades</span>
-        </a>
-      </li>
-
-      <li className="nav-item" style={{cursor:"pointer"}} onClick={MessageA}>
-        <a className="nav-link collapsed">
-          <i className="fa fa-diamond"></i>
-          <span>Messages and Annoucement</span>
-        </a>
-      </li>
-
-      <li className="nav-item" style={{cursor:"pointer"}} onClick={Meetme}>
-        <a className="nav-link collapsed">
-          <i className="fa fa-diamond"></i>
-          <span>Virtual Meeting</span>
-        </a>
-      </li>
-
-      
-      <li className="nav-item" style={{cursor:"pointer"}} onClick={CalendarV}>
-        <a className="nav-link collapsed">
-          <i className="fa fa-diamond"></i>
-          <span>Calendar</span>
-        </a>
-      </li>
-
-      <li className="nav-item" style={{cursor:"pointer"}}>
-        <a className="nav-link collapsed">
-          <i className="fa fa-diamond"></i>
-          <span>Attendance</span>
-        </a>
-      </li>
-
-      <li className="nav-item" style={{cursor:"pointer"}} onClick={UploadProj}>
-        <a className="nav-link collapsed">
-          <i className="fa fa-diamond"></i>
-          <span>Upload Projects</span>
-        </a>
-      </li>
-
-    
-      <li className="nav-item" style={{cursor:"pointer"}}>
-        <a className="nav-link collapsed">
-          <i className="fa fa-diamond"></i>
-          <span>Support</span>
-        </a>
-      </li>
-<Link to="/user_setting">
-      <li className="nav-item" style={{cursor:"pointer"}}>
-        <a className="nav-link collapsed">
-          <i className="fa fa-diamond"></i>
-          <span>My Profile</span>
-        </a>
-      </li>
-      </Link>
-      
-      <li className="nav-item" style={{cursor:"pointer"}} onClick={()=>{window.location.reload()}}>
-        <a className="nav-link collapsed">
-          <i className="fa fa-diamond"></i>
-          <span>Sign out</span>
-        </a>
-      </li>
-     
-    </ul>
-
-  </aside>
-  <div className="bottom-nav animate__animated animate__fadeInUp">
-  <a className="fa fa-dashboard" onClick={CourseV}><br /><small className="smaller">Dashboard</small></a>
-  <a className="fa fa-bar-chart-o" onClick={AssignV}><br /><small className="smaller">Assignments</small></a>
-  <a className="fa fa-graduation-cap" onClick={GradeC}><br /><small className="smaller">Grades</small></a>
-  <a className="fa fa-bullhorn" onClick={MessageA}><br /><small className="smaller">Announcements</small></a>
-  <a className="fa fa-laptop" onClick={Meetme}><br /><small className="smaller">VR Meet</small></a>
-  <a className="fa fa-calendar-o" onClick={CalendarV}><br /><small className="smaller">Calender</small></a>
-  <a className="fa fa-gamepad" onClick={UploadProj}><br /><small className="smaller">Upload Projects</small></a>
-  <a className="fa fa-user-o" href="#/user_setting"><br /><small className="smaller">My Profile</small></a>
-  <a className="fa fa-shield"><br /><small className="smaller">Support</small></a>
-</div>
-</>
-    )
-}
-
-export default Studentsidebar;
+  /* MOBILE */
+  bottomNav: {
+    position: "fixed",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 90,
+    background: "#f4f4f4",
+    zIndex: 1000,
+    overflowX: "auto",
+    borderTop: "1px solid #ccc",
+  },
+  scrollRow: {
+    display: "flex",
+    overflowX: "auto",
+    height: "100%",
+    alignItems: "center",
+    padding: "0 8px env(safe-area-inset-bottom)",
+    gap: 10,
+    scrollbarWidth: "none", // Firefox
+  },
+  navItem: {
+    minWidth: 72,
+    flexShrink: 0,
+    textAlign: "center",
+    cursor: "pointer",
+    color: "#333",
+    paddingBottom: 6,
+    paddingTop: 6,
+  },
+  navIcon: {
+    fontSize: 20,
+  },
+};
