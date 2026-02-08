@@ -15,7 +15,7 @@ export default function Teachersidebar({ user, setActiveTab, activeTab }) {
   const menuItems = [
     { label: "Dashboard", tab: "dashboard", icon: "🏠" },
     { label: "MecAi", tab: "mecai", icon: "🕹" },
-    { label: "Settings", tab: "settings", icon: "⚙️" },
+   
   ];
 
   const handleSignOut = async () => {
