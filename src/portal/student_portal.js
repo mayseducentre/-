@@ -4,7 +4,6 @@ import Studentsidebar from "../portal_sidebar/student_sidebar";
 import StudentDash from "../component/portal_component/studentdash";
 import MecAi from "../component/mecai";
 import HeadN from "../component/neutral_head";
-import StudentSettings from "../component/portal_component/student_settings";
 
 
 
@@ -37,7 +36,7 @@ export default function StudentsPortal({ user }) {
       >
         {activeTab === "dashboard" && <Card><StudentDash /></Card>}
         {activeTab === "mecai" && <Card><MecAi /></Card>}
-        {activeTab === "settings" && <Card><StudentSettings user={user} /></Card>} 
+         
         <Footer />
       </main>
 
