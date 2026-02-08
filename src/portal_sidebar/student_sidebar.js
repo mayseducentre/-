@@ -15,6 +15,7 @@ export default function Studentsidebar({ user, setActiveTab, activeTab }) {
   const menuItems = [
     { label: "Dashboard", tab: "dashboard", icon: "🏠" },
     { label: "MecAi", tab: "mecai", icon: "🕹" },
+{ label: "Settings", tab: "settings", icon: "⚙️" },
    
   ];
 
@@ -35,12 +36,12 @@ export default function Studentsidebar({ user, setActiveTab, activeTab }) {
       <aside style={styles.sidebar}>
         <div style={styles.profile}>
           <img
-            src={user?.thumbnailUrl || "/default.png"}
+            src={user?.photoUrl || "/default.png"}
             alt="profile"
             style={styles.avatar}
           />
-          <strong>{user?.name || "Teacher"}</strong>
-          <small>{user?.subject || "Subject"}</small>
+          <strong>{user?.name || "Student"}</strong>
+       
         </div>
 
         <ul style={styles.menu}>
