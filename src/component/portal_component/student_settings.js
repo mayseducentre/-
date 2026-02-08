@@ -179,7 +179,7 @@ export default function StudentSettings() {
               style={styles.input}
               value={classLevel}
               onChange={(e) => setClassLevel(e.target.value)}
-              placeholder="Class (e.g. JHS 2, SHS 1)"
+              placeholder="Class (e.g. JHS 2, JHS 1)"
             />
             <input
               style={styles.input}
