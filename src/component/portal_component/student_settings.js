@@ -13,18 +13,16 @@ export default function StudentSettings() {
   const [currentUser, setCurrentUser] = useState(null);
   const [activeSection, setActiveSection] = useState("profile");
 
-  // Core student fields
-  const [displayName, setDisplayName] = useState("");
+  // Basic student fields
+  const [fullName, setFullName] = useState("");
   const [classLevel, setClassLevel] = useState("");
-  const [contact, setContact] = useState("");
   const [guardianContact, setGuardianContact] = useState("");
   const [email, setEmail] = useState("");
+  const [profilePic, setProfilePic] = useState("");
+
+  // Danger zone
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
-  // Optional profile fields
-  const [profilePic, setProfilePic] = useState("");
-  const [bio, setBio] = useState("");
 
   /* ================= RESPONSIVE ================= */
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -43,30 +41,28 @@ export default function StudentSettings() {
       const snap = await getDoc(doc(db, "users", u.uid));
       if (snap.exists()) {
         const data = snap.data();
-        setDisplayName(data.name || "");
+        setFullName(data.name || "");
         setClassLevel(data.classLevel || "");
-        setContact(data.contact || "");
         setGuardianContact(data.guardianContact || "");
         setEmail(data.email || "");
         setProfilePic(data.photoURL || "");
-        setBio(data.bio || "");
       }
     });
     return () => unsub();
   }, [auth]);
 
   if (!currentUser) {
-    return <p style={{ padding: 20 }}>Loading settings...</p>;
+    return <p style={{ padding: 20 }}>Loading profile...</p>;
   }
 
   /* ================= UPDATE PROFILE ================= */
   async function updateProfile() {
-    if (!displayName.trim()) {
-      alert("Name cannot be empty");
+    if (!fullName.trim()) {
+      alert("Please enter your full name");
       return;
     }
-    if (!classLevel || !contact) {
-      alert("Class and contact are required");
+    if (!classLevel) {
+      alert("Please enter your class");
       return;
     }
 
@@ -75,11 +71,9 @@ export default function StudentSettings() {
       await setDoc(
         doc(db, "users", currentUser.uid),
         {
-          name: displayName,
+          name: fullName,
           classLevel,
-          contact,
           guardianContact,
-          bio,
           photoURL: profilePic,
           updatedAt: new Date(),
         },
@@ -88,7 +82,7 @@ export default function StudentSettings() {
       alert("Profile updated successfully");
     } catch (err) {
       console.error(err);
-      alert("Failed to update profile");
+      alert("Could not update profile");
     } finally {
       setLoading(false);
     }
@@ -97,10 +91,11 @@ export default function StudentSettings() {
   /* ================= DELETE ACCOUNT ================= */
   async function handleDeleteAccount() {
     if (!password) {
-      alert("Enter your password to confirm");
+      alert("Enter password to continue");
       return;
     }
-    if (!window.confirm("This action is permanent. Continue?")) return;
+    if (!window.confirm("This will permanently delete this account. Continue?"))
+      return;
 
     try {
       setLoading(true);
@@ -111,11 +106,10 @@ export default function StudentSettings() {
       await reauthenticateWithCredential(currentUser, credential);
       await deleteDoc(doc(db, "users", currentUser.uid));
       await deleteUser(currentUser);
-      alert("Account deleted successfully");
       window.location.href = "/";
     } catch (err) {
       console.error(err);
-      alert(err.message || "Account deletion failed");
+      alert("Account deletion failed");
     } finally {
       setLoading(false);
     }
@@ -134,11 +128,9 @@ export default function StudentSettings() {
         style={{
           ...styles.side,
           width: isMobile ? "100%" : 220,
-          borderRight: isMobile ? "none" : "1px solid #eee",
-          borderBottom: isMobile ? "1px solid #eee" : "none",
         }}
       >
-        {["profile", "security", "danger"].map((tab) => (
+        {["profile", "danger"].map((tab) => (
           <button
             key={tab}
             style={{
@@ -149,9 +141,8 @@ export default function StudentSettings() {
             }}
             onClick={() => setActiveSection(tab)}
           >
-            {tab === "profile" && "Profile"}
-            {tab === "security" && "Security"}
-            {tab === "danger" && "Danger Zone"}
+            {tab === "profile" && "My Profile"}
+            {tab === "danger" && "Delete Account"}
           </button>
         ))}
       </aside>
@@ -160,7 +151,6 @@ export default function StudentSettings() {
       <section style={styles.content}>
         {activeSection === "profile" && (
           <Block title="Student Profile">
-            {/* Read-only */}
             <input
               style={{ ...styles.input, background: "#f5f5f5" }}
               value={email}
@@ -168,42 +158,32 @@ export default function StudentSettings() {
               placeholder="Email"
             />
 
-            {/* Editable */}
             <input
               style={styles.input}
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
               placeholder="Full Name"
             />
+
             <input
               style={styles.input}
               value={classLevel}
               onChange={(e) => setClassLevel(e.target.value)}
-              placeholder="Class (e.g. JHS 2, JHS 1)"
+              placeholder="Class (e.g. P5, JHS 2)"
             />
-            <input
-              style={styles.input}
-              value={contact}
-              onChange={(e) => setContact(e.target.value)}
-              placeholder="Student Contact"
-            />
+
             <input
               style={styles.input}
               value={guardianContact}
               onChange={(e) => setGuardianContact(e.target.value)}
-              placeholder="Guardian Contact"
+              placeholder="Parent / Guardian Contact"
             />
+
             <input
               style={styles.input}
               value={profilePic}
               onChange={(e) => setProfilePic(e.target.value)}
-              placeholder="Profile Picture URL"
-            />
-            <textarea
-              style={{ ...styles.input, height: 80 }}
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              placeholder="Short Bio (optional)"
+              placeholder="Profile Picture URL (optional)"
             />
 
             <button
@@ -211,27 +191,20 @@ export default function StudentSettings() {
               onClick={updateProfile}
               disabled={loading}
             >
-              {loading ? "Saving..." : "Save Changes"}
+              {loading ? "Saving..." : "Save"}
             </button>
           </Block>
         )}
 
-        {activeSection === "security" && (
-          <Block title="Account Security">
-            <p style={styles.text}>
-              Your login is securely managed by Firebase Authentication.
-            </p>
-          </Block>
-        )}
-
         {activeSection === "danger" && (
-          <Block title="Danger Zone">
+          <Block title="Delete Account">
             <p style={styles.dangerText}>
-              This will permanently delete your student account.
+              This action is permanent. Please ask a parent or teacher before
+              continuing.
             </p>
             <input
               type="password"
-              placeholder="Confirm password"
+              placeholder="Enter password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               style={styles.input}
@@ -241,7 +214,7 @@ export default function StudentSettings() {
               onClick={handleDeleteAccount}
               disabled={loading}
             >
-              {loading ? "Deleting..." : "Delete Account"}
+              Delete Account
             </button>
           </Block>
         )}
@@ -287,7 +260,7 @@ const styles = {
     borderRadius: 14,
     padding: 20,
     boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
-    maxWidth: 520,
+    maxWidth: 500,
     margin: "0 auto",
   },
   blockTitle: {
@@ -322,13 +295,10 @@ const styles = {
     fontWeight: 600,
     cursor: "pointer",
   },
-  text: {
-    fontSize: 14,
-    color: "#555",
-  },
   dangerText: {
     color: "#b91c1c",
     fontWeight: 600,
     marginBottom: 10,
+    fontSize: 14,
   },
 };
