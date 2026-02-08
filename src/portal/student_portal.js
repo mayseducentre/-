@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Studentsidebar from "../portal_sidebar/students_sidebar";
+import Studentsidebar from "../portal_sidebar/student_sidebar";
 
 import StudentDash from "../component/portal_component/studentdash";
 import StudentPerform from "../component/portal_component/student_performance";
