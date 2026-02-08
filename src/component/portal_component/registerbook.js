@@ -1,7 +1,7 @@
 import React from "react";
 
 // Excel register download link (replace with your real file path)
-const EXCEL_URL = "/ClassRegister.xlsx";
+const EXCEL_URL = "/Class RegisterSheet (1).xlsx";
 const ADMIN_EMAIL = "educationalcentremays@gmail.com";
 const WHATSAPP_NUMBER = "233549271528"; // replace with admin WhatsApp number
 
