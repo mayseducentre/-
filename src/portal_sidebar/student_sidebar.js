@@ -116,7 +116,7 @@ const styles = {
     top: 0,
     display: "flex",
     flexDirection: "column",
-    z-index:"999",
+    z-index:999
   },
   profile: {
     textAlign: "center",
@@ -164,7 +164,7 @@ const styles = {
     height: 85,
     background: "#ffffff",
     borderTop: "1px solid #ddd",
-    z-index:"999",
+    z-index:999
   },
   scrollRow: {
     display: "flex",
