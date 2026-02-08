@@ -1573,7 +1573,7 @@ const ExcelTrain = () => {
       <header style={styles.header}>
         <h1 style={styles.title}>📊 Microsoft Excel Mastery</h1>
         <p style={styles.subtitle}>
-          Complete interactive course for student
+          Complete interactive course
         </p>
         <div style={styles.statsBar}>
           <div style={styles.stat}>
