@@ -1,6 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Breadcrumb from "../component/breadcrumb"
+import Header from "../component/header"
+
 
 export default function TrainingDashboard() {
   const navigate = useNavigate();
@@ -34,6 +36,7 @@ export default function TrainingDashboard() {
 
   return (
 <>
+<Header />
 <Breadcrumb title="Training Courses" image="https://lh3.googleusercontent.com/pw/AP1GczNVry7Obd0xDeehmmK5X-mYlm1UuTYyKGZ-aFxxpRYBPnX1PdEDgxdwBnfa5I-ZkvmReXFqA3SNGwZUaHe-GcUjXyFMA9crdXfhI_oo_caLogzczuk"/>
     <div style={styles.page}>
       <div style={styles.container}>
