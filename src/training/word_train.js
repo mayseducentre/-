@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import Header from "../component/header";
+
 
 const WordTrain = () => {
   // ==================== STATE MANAGEMENT ====================
@@ -1342,6 +1344,8 @@ const WordTrain = () => {
   
   // Render Home View
   const renderHome = () => (
+<>
+<Header />
     <div style={styles.container}>
       <div style={styles.header}>
         <h1 style={styles.mainTitle}>Microsoft Word Mastery for Teachers</h1>
@@ -1462,6 +1466,7 @@ const WordTrain = () => {
         </div>
       )}
     </div>
+</>
   );
   
   // Render Level View
