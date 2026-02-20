@@ -11,6 +11,7 @@ import MecAi from "../component/mecai";
 import SchemeOfWorkBuilder from "../component/portal_component/scheme of work";
 import HeadN from "../component/neutral_head";
 import TeacherSettings from "../component/portal_component/teacher_settings";
+import TeacherTrainingPortal from "../component/portal_component/teacher_courses";
 
 
 
@@ -49,7 +50,7 @@ export default function TeachersPortal({ user }) {
         {activeTab === "register" && <Card><RegisterBook /></Card>}
         {activeTab === "mecai" && <Card><MecAi /></Card>}
 {activeTab === "sow" && <Card><SchemeOfWorkBuilder /></Card>}
-        
+        {activeTab === "courses" && <Card><TeacherTrainingPortal /></Card>}
         {activeTab === "settings" && <Card><TeacherSettings user={user} /></Card>} 
         <Footer />
       </main>
