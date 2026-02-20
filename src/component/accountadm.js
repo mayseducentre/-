@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import {
   collection,
-  getDocs,
-  setDoc,
   doc,
   updateDoc,
   deleteDoc,
+  setDoc,
+  onSnapshot,
 } from "firebase/firestore";
 import {
   createUserWithEmailAndPassword,
@@ -58,30 +58,42 @@ export default function AdminDashboard() {
     }
   }
 
-  /* ---------- FETCH USERS ---------- */
-  async function fetchUsers() {
-    setLoading(true);
-    const snap = await getDocs(collection(db, "users"));
-    const list = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-    setUsers(list);
-    setLoading(false);
-  }
-
+  /* ---------- REALTIME FETCH USERS ---------- */
   useEffect(() => {
-    if (accessGranted) fetchUsers();
+    if (!accessGranted) return;
+
+    setLoading(true);
+
+    const unsubscribe = onSnapshot(
+      collection(db, "users"),
+      (snapshot) => {
+        const list = snapshot.docs.map((docSnap) => ({
+          id: docSnap.id,
+          ...docSnap.data(),
+        }));
+        setUsers(list);
+        setLoading(false);
+      },
+      (err) => {
+        console.error("Fetch error:", err);
+        setFeedback("Failed to fetch users. Check Firestore rules.");
+        setLoading(false);
+      }
+    );
+
+    return () => unsubscribe();
   }, [accessGranted]);
 
   /* ---------- GENERATE UNIQUE ID ---------- */
-  const generateId = (prefix) => {
-    return `${prefix}-${Math.floor(100000 + Math.random() * 900000)}`;
-  };
+  const generateId = (prefix) =>
+    `${prefix}-${Math.floor(100000 + Math.random() * 900000)}`;
 
   /* ---------- SAVE USER ---------- */
   async function saveUser(e) {
     e.preventDefault();
 
-    if (!formData.name || !formData.email || !formData.role) {
-      setFeedback("All fields are required.");
+    if (!formData.name || !formData.email) {
+      setFeedback("Name and Email required.");
       return;
     }
 
@@ -94,7 +106,7 @@ export default function AdminDashboard() {
 
     try {
       if (editingUser) {
-        /* ---------- UPDATE USER ---------- */
+        /* UPDATE */
         await updateDoc(doc(db, "users", editingUser.id), {
           name: formData.name,
           email: formData.email,
@@ -108,7 +120,7 @@ export default function AdminDashboard() {
 
         setFeedback("User updated successfully.");
       } else {
-        /* ---------- CREATE USER ---------- */
+        /* CREATE */
         const cred = await createUserWithEmailAndPassword(
           auth,
           formData.email,
@@ -144,8 +156,7 @@ export default function AdminDashboard() {
             to_name: formData.name,
             user_email: formData.email,
             mays_msg:
-              `Your account has been created successfully.\n\n` +
-              `Please verify your email before logging in.`,
+              "Your account has been created successfully.\nPlease verify your email before logging in.",
           },
           "VIB8bKSD-ZS3RCCHD"
         );
@@ -165,9 +176,8 @@ export default function AdminDashboard() {
         linkedStudentId: "",
         status: "active",
       });
-
-      fetchUsers();
     } catch (err) {
+      console.error(err);
       setFeedback(err.message);
     }
 
@@ -176,274 +186,158 @@ export default function AdminDashboard() {
 
   /* ---------- DELETE USER ---------- */
   async function removeUser(u) {
-    if (!window.confirm(`Delete user ${u.name}?`)) return;
+    if (!window.confirm(`Delete ${u.name}?`)) return;
     await deleteDoc(doc(db, "users", u.id));
-    fetchUsers();
   }
 
-  /* ---------- OPEN EDIT MODAL ---------- */
-  function openEditModal(u) {
-    setEditingUser(u);
-    setFormData({
-      name: u.name || "",
-      email: u.email || "",
-      role: u.role || "student",
-      password: "",
-      contact: u.contact || "",
-      subject: u.subject || "",
-      linkedStudentId: u.linkedStudentId || "",
-      status: u.status || "active",
-    });
-    setModalOpen(true);
-  }
-
-  /* ---------- FILTER USERS ---------- */
+  /* ---------- FILTER ---------- */
   const filteredUsers = users.filter((u) => {
-    const matchesSearch =
-      u.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      u.email?.toLowerCase().includes(searchTerm.toLowerCase());
+    const name = u.name || "";
+    const email = u.email || "";
 
-    const matchesRole = roleFilter === "all" || u.role === roleFilter;
+    const matchesSearch =
+      name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      email.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesRole =
+      roleFilter === "all" || u.role === roleFilter;
 
     return matchesSearch && matchesRole;
   });
 
-  /* ---------- STYLES ---------- */
-  const page = {
-    minHeight: "100vh",
-    padding: "20px",
-    background: "#f4f6f8",
-    fontFamily: "system-ui",
-  };
-
-  const card = {
-    background: "#fff",
-    padding: "20px",
-    borderRadius: "10px",
-    boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
-    marginBottom: "20px",
-  };
-
-  const input = {
-    padding: "10px",
-    border: "1px solid #ccc",
-    borderRadius: "6px",
-    marginBottom: "10px",
-    width: "100%",
-  };
-
+  /* ---------- BASIC STYLES ---------- */
+  const input = { padding: 8, marginBottom: 10, width: "100%" };
   const button = {
-    padding: "10px 15px",
-    border: "none",
-    borderRadius: "6px",
+    padding: 8,
+    marginRight: 5,
     background: "#2563eb",
     color: "#fff",
-    fontWeight: "600",
+    border: "none",
     cursor: "pointer",
-    marginRight: "10px",
-    marginBottom: "10px",
   };
 
   if (!accessGranted) {
     return (
-      <section style={page}>
-        <form style={card} onSubmit={verifyPasscode}>
-          <h3>Admin Access</h3>
-          {error && <div style={{ color: "red" }}>{error}</div>}
-          <input
-            type="password"
-            placeholder="Enter passcode"
-            style={input}
-            value={passcode}
-            onChange={(e) => setPasscode(e.target.value)}
-          />
-          <button style={button}>Verify</button>
-        </form>
-      </section>
+      <form onSubmit={verifyPasscode}>
+        <h3>Admin Access</h3>
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        <input
+          type="password"
+          value={passcode}
+          onChange={(e) => setPasscode(e.target.value)}
+        />
+        <button style={button}>Verify</button>
+      </form>
     );
   }
 
   return (
-    <section style={page}>
-      <div style={card}>
-        <h2>Admin Dashboard</h2>
+    <div style={{ padding: 20 }}>
+      <h2>Admin Dashboard</h2>
 
-        {/* Summary */}
-        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-          <div style={card}>Total: {users.length}</div>
-          <div style={card}>
-            Students: {users.filter((u) => u.role === "student").length}
-          </div>
-          <div style={card}>
-            Teachers: {users.filter((u) => u.role === "staff").length}
-          </div>
-          <div style={card}>
-            Parents: {users.filter((u) => u.role === "parent").length}
-          </div>
-        </div>
+      <p>Total Users: {users.length}</p>
+      <p>Students: {users.filter((u) => u.role === "student").length}</p>
+      <p>Teachers: {users.filter((u) => u.role === "staff").length}</p>
+      <p>Parents: {users.filter((u) => u.role === "parent").length}</p>
 
-        <input
-          style={input}
-          placeholder="Search"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
+      <input
+        style={input}
+        placeholder="Search"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
 
-        <select
-          style={input}
-          value={roleFilter}
-          onChange={(e) => setRoleFilter(e.target.value)}
-        >
-          <option value="all">All Roles</option>
-          <option value="student">Student</option>
-          <option value="staff">Teacher</option>
-          <option value="parent">Parent</option>
-        </select>
+      <select
+        style={input}
+        value={roleFilter}
+        onChange={(e) => setRoleFilter(e.target.value)}
+      >
+        <option value="all">All</option>
+        <option value="student">Student</option>
+        <option value="staff">Teacher</option>
+        <option value="parent">Parent</option>
+      </select>
 
-        <button
-          style={button}
-          onClick={() => {
-            setEditingUser(null);
+      <button style={button} onClick={() => setModalOpen(true)}>
+        Add User
+      </button>
+
+      {loading && <p>Loading...</p>}
+      {feedback && <p>{feedback}</p>}
+
+      {filteredUsers.map((u) => (
+        <div key={u.id} style={{ border: "1px solid #ccc", padding: 10, marginBottom: 10 }}>
+          <strong>{u.name}</strong>
+          <p>{u.email}</p>
+          <p>Role: {u.role}</p>
+          <p>Status: {u.status}</p>
+          <button style={button} onClick={() => {
+            setEditingUser(u);
+            setFormData({ ...u, password: "" });
             setModalOpen(true);
-          }}
-        >
-          Add User
-        </button>
-
-        {/* TABLE */}
-        {loading ? (
-          <p>Loading...</p>
-        ) : (
-          filteredUsers.map((u) => (
-            <div key={u.id} style={card}>
-              <strong>{u.name}</strong>
-              <p>{u.email}</p>
-              <p>Role: {u.role}</p>
-              <p>Status: {u.status}</p>
-              <button style={button} onClick={() => openEditModal(u)}>
-                Edit
-              </button>
-              <button
-                style={{ ...button, background: "#ef4444" }}
-                onClick={() => removeUser(u)}
-              >
-                Delete
-              </button>
-            </div>
-          ))
-        )}
-      </div>
-
-      {/* MODAL */}
-      {modalOpen && (
-        <div style={card}>
-          <h3>{editingUser ? "Edit User" : "Create User"}</h3>
-          <form onSubmit={saveUser}>
-            <input
-              style={input}
-              placeholder="Name"
-              value={formData.name}
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
-              }
-            />
-
-            <input
-              style={input}
-              placeholder="Email"
-              value={formData.email}
-              onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
-              }
-            />
-
-            {!editingUser && (
-              <input
-                style={input}
-                type="password"
-                placeholder="Password"
-                value={formData.password}
-                onChange={(e) =>
-                  setFormData({ ...formData, password: e.target.value })
-                }
-              />
-            )}
-
-            <select
-              style={input}
-              value={formData.role}
-              onChange={(e) =>
-                setFormData({ ...formData, role: e.target.value })
-              }
-            >
-              <option value="student">Student</option>
-              <option value="staff">Teacher</option>
-              <option value="parent">Parent</option>
-            </select>
-
-            {formData.role === "staff" && (
-              <>
-                <input
-                  style={input}
-                  placeholder="Subject"
-                  value={formData.subject}
-                  onChange={(e) =>
-                    setFormData({ ...formData, subject: e.target.value })
-                  }
-                />
-                <input
-                  style={input}
-                  placeholder="Contact"
-                  value={formData.contact}
-                  onChange={(e) =>
-                    setFormData({ ...formData, contact: e.target.value })
-                  }
-                />
-              </>
-            )}
-
-            {formData.role === "parent" && (
-              <>
-                <input
-                  style={input}
-                  placeholder="Contact"
-                  value={formData.contact}
-                  onChange={(e) =>
-                    setFormData({ ...formData, contact: e.target.value })
-                  }
-                />
-                <input
-                  style={input}
-                  placeholder="Linked Student ID"
-                  value={formData.linkedStudentId}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      linkedStudentId: e.target.value,
-                    })
-                  }
-                />
-              </>
-            )}
-
-            <select
-              style={input}
-              value={formData.status}
-              onChange={(e) =>
-                setFormData({ ...formData, status: e.target.value })
-              }
-            >
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-              <option value="suspended">Suspended</option>
-            </select>
-
-            <button style={button} type="submit">
-              {loading ? "Saving..." : "Save"}
-            </button>
-          </form>
+          }}>
+            Edit
+          </button>
+          <button
+            style={{ ...button, background: "red" }}
+            onClick={() => removeUser(u)}
+          >
+            Delete
+          </button>
         </div>
+      ))}
+
+      {modalOpen && (
+        <form onSubmit={saveUser} style={{ marginTop: 20 }}>
+          <h3>{editingUser ? "Edit User" : "Create User"}</h3>
+
+          <input
+            style={input}
+            placeholder="Name"
+            value={formData.name || ""}
+            onChange={(e) =>
+              setFormData({ ...formData, name: e.target.value })
+            }
+          />
+
+          <input
+            style={input}
+            placeholder="Email"
+            value={formData.email || ""}
+            onChange={(e) =>
+              setFormData({ ...formData, email: e.target.value })
+            }
+          />
+
+          {!editingUser && (
+            <input
+              style={input}
+              type="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
+            />
+          )}
+
+          <select
+            style={input}
+            value={formData.role}
+            onChange={(e) =>
+              setFormData({ ...formData, role: e.target.value })
+            }
+          >
+            <option value="student">Student</option>
+            <option value="staff">Teacher</option>
+            <option value="parent">Parent</option>
+          </select>
+
+          <button style={button} type="submit">
+            Save
+          </button>
+        </form>
       )}
-    </section>
+    </div>
   );
 }
