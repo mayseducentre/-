@@ -20,7 +20,7 @@ export default function Teachersidebar({ user, setActiveTab, activeTab }) {
     { label: "MecAi", tab: "mecai", icon: "🕹" },
     { label: "Assessment", tab: "assessment", icon: "🧠" },
     { label: "Register", tab: "register", icon: "📋" },
-{ label: "Courses", tab: "courses", icon: 💦" },
+{ label: "Courses", tab: "courses", icon: "💦" },
     { label: "Announcements", tab: "announcements", icon: "📢" },
     { label: "Settings", tab: "settings", icon: "⚙️" },
   ];
