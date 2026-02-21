@@ -4,20 +4,20 @@ export default function AssignmentHub() {
   const [pin, setPin] = useState("");
   const [unlocked, setUnlocked] = useState(false);
 
-  // 🔹 ONLY MS WORD ASSIGNMENT
+  // 🔹 SIMPLE JSON WITH ASSIGNMENT CONTENT (STRING)
   const assignment = {
-    title: "Microsoft Excel",
-    steps: "If A1 is greater than 50, return Pass, otherwise Fail.
-      If B1 is less than 0, return Loss, otherwise Profit.
-      If C1 is equal to 100, return Correct, otherwise Wrong.
-      If D1 is not equal to 0, return Valid, otherwise Invalid.
-      If E1 is greater than or equal to 18, return Adult, otherwise Minor.
-      If F1 is less than 40, return Below Average, otherwise Average.
-      If G1 is 0, return Empty, otherwise Not Empty.
-      If H1 is above 1000, return 10% bonus, otherwise 5% bonus.
-      If I1 contains a value greater than 75, return Excellent. Otherwise return Good.
-      If J1 is less than or equal to 30, return Low, otherwise High."
-    ]
+    title: "Microsoft Excel - IF Function Practice",
+    content:
+      "If A1 is greater than 50, return Pass, otherwise Fail.\n" +
+      "If B1 is less than 0, return Loss, otherwise Profit.\n" +
+      "If C1 is equal to 100, return Correct, otherwise Wrong.\n" +
+      "If D1 is not equal to 0, return Valid, otherwise Invalid.\n" +
+      "If E1 is greater than or equal to 18, return Adult, otherwise Minor.\n" +
+      "If F1 is less than 40, return Below Average, otherwise Average.\n" +
+      "If G1 is equal to 0, return Empty, otherwise Not Empty.\n" +
+      "If H1 is greater than 1000, return 10% bonus, otherwise 5% bonus.\n" +
+      "If I1 is greater than 75, return Excellent, otherwise Good.\n" +
+      "If J1 is less than or equal to 30, return Low, otherwise High."
   };
 
   // 🔹 PIN UNLOCK
@@ -32,13 +32,15 @@ export default function AssignmentHub() {
   // 🔹 EMAIL SUBMISSION
   const submitAssignment = () => {
     const subject = "Student Assignment Submission";
-    const body = "Sir, I have completed my MS Word professional project. Attached is my PDF.";
+    const body =
+      "Sir, I have completed my MS Excel assignment. Attached is my work.";
+
     window.location.href = `mailto:kwasyamzi@gmail.com?subject=${encodeURIComponent(
       subject
     )}&body=${encodeURIComponent(body)}`;
   };
 
-  // 🔹 PRO UI STYLES
+  // 🔹 STYLES
   const styles = {
     container: {
       maxWidth: "650px",
@@ -80,24 +82,29 @@ export default function AssignmentHub() {
       cursor: "pointer",
       marginTop: "10px"
     },
-    stepCard: {
+    contentBox: {
       background: "#fafafa",
       padding: "12px",
-      marginBottom: "8px",
       borderRadius: "8px",
       borderLeft: "4px solid #ff7a00",
-      fontSize: "15px"
+      fontSize: "15px",
+      whiteSpace: "pre-line"
+    },
+    note: {
+      marginTop: "15px",
+      fontStyle: "italic",
+      fontSize: "14px"
     }
   };
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.title}>MS Word Assignment</h2>
+      <h2 style={styles.title}>Assignment Hub</h2>
 
       {/* PIN LOGIN */}
       {!unlocked && (
         <div style={styles.pinBox}>
-          <p>Please enter the PIN to view the assignment</p>
+          <p>Please enter the PIN to view assignment</p>
           <input
             type="password"
             placeholder="Enter PIN"
@@ -116,14 +123,11 @@ export default function AssignmentHub() {
         <>
           <h3 style={{ marginBottom: "12px" }}>{assignment.title}</h3>
 
-          {assignment.steps.map((step, i) => (
-            <div key={i} style={styles.stepCard}>
-              <strong>Step {i + 1}:</strong> {step}
-            </div>
-          ))}
+          <div style={styles.contentBox}>{assignment.content}</div>
 
-<a>Make sure to do this assignment in your exercise and submit on Wednesday 25th 2025.</a>
-
+          <p style={styles.note}>
+            Make sure to complete and submit your assignment on time.
+          </p>
 
           <button style={styles.button} onClick={submitAssignment}>
             Submit Assignment
