@@ -122,7 +122,7 @@ export default function AssignmentHub() {
             </div>
           ))}
 
-<a>Note that the projects that was given to make non-computer based works have been recorded. A few student submitted their work. The remaining have a pending status. Thanks for your contribution to do projects given to you.</a>
+<a>Make sure to do this assignment in your exercise and submit on Wednesday 25th 2025.</a>
 
 
           <button style={styles.button} onClick={submitAssignment}>
