@@ -6,18 +6,17 @@ export default function AssignmentHub() {
 
   // 🔹 ONLY MS WORD ASSIGNMENT
   const assignment = {
-    title: "MS Word Professional Project",
-    steps: [
-      "Open Microsoft Word and create a new blank document.",
-      "Go to Layout → Margins → Select 'Normal'. Then set the paper size to A4.",
-      "Create a professional title page. Insert WordArt for the main title and type your full name, class, and date below.",
-      "Insert three section headings: Introduction, Main Content, and Conclusion using the Heading 1 style.",
-      "Under each heading, type 2–3 well-structured paragraphs using justified alignment and 1.5 line spacing.",
-      "Insert a relevant picture. Resize it neatly, center it, and add a caption using References → Insert Caption.",
-      "Insert a table with at least 2–3 columns. Add sample data and apply a table design style.",
-      "Insert page numbers from Insert → Page Number → Bottom of Page. Make sure numbering starts from page 2.",
-      "Insert a footer that contains your full name and project title.",
-      "Proofread using Review → Spelling & Grammar. Then File → Save As → Choose PDF and save your final document."
+    title: "Microsoft Excel",
+    steps: "If A1 is greater than 50, return 'Pass', otherwise 'Fail'.
+If B1 is less than 0, return 'Loss', otherwise 'Profit'.
+If C1 is equal to 100, return 'Correct', otherwise 'Wrong'.
+If D1 is not equal to 0, return 'Valid', otherwise 'Invalid'.
+If E1 is greater than or equal to 18, return 'Adult', otherwise 'Minor'.
+If F1 is less than 40, return 'Below Average', otherwise 'Average'.
+If G1 is 0, return 'Empty', otherwise 'Not Empty'.
+If H1 is above 1000, return 10% bonus, otherwise 5% bonus.
+If I1 contains a value greater than 75, return 'Excellent'. Otherwise return 'Good'.
+If J1 is less than or equal to 30, return 'Low', otherwise 'High'."
     ]
   };
 
