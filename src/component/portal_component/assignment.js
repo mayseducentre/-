@@ -8,15 +8,15 @@ export default function AssignmentHub() {
   const assignment = {
     title: "Microsoft Excel",
     steps: "If A1 is greater than 50, return 'Pass', otherwise 'Fail'.
-If B1 is less than 0, return 'Loss', otherwise 'Profit'.
-If C1 is equal to 100, return 'Correct', otherwise 'Wrong'.
-If D1 is not equal to 0, return 'Valid', otherwise 'Invalid'.
-If E1 is greater than or equal to 18, return 'Adult', otherwise 'Minor'.
-If F1 is less than 40, return 'Below Average', otherwise 'Average'.
-If G1 is 0, return 'Empty', otherwise 'Not Empty'.
-If H1 is above 1000, return 10% bonus, otherwise 5% bonus.
-If I1 contains a value greater than 75, return 'Excellent'. Otherwise return 'Good'.
-If J1 is less than or equal to 30, return 'Low', otherwise 'High'."
+      If B1 is less than 0, return 'Loss', otherwise 'Profit'.
+      If C1 is equal to 100, return 'Correct', otherwise 'Wrong'.
+      If D1 is not equal to 0, return 'Valid', otherwise 'Invalid'.
+      If E1 is greater than or equal to 18, return 'Adult', otherwise 'Minor'.
+      If F1 is less than 40, return 'Below Average', otherwise 'Average'.
+      If G1 is 0, return 'Empty', otherwise 'Not Empty'.
+      If H1 is above 1000, return 10% bonus, otherwise 5% bonus.
+      If I1 contains a value greater than 75, return 'Excellent'. Otherwise return 'Good'.
+      If J1 is less than or equal to 30, return 'Low', otherwise 'High'."
     ]
   };
 
