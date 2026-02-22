@@ -10,7 +10,7 @@ export default function HomeBanner() {
         "https://lh3.googleusercontent.com/pw/AP1GczMCbPwvfxUD6yYl5JSD6Q9qpXN8dLh_8v0M1oy2Ezij0M-dIEa2YIR8HYZfn7JKZhL36NhMbwa5-uQSFTDaBk4HKwiiVa9vmSrvkdZoWo8nOWfgzDo",
     },
     tag: "AKWAABA",
-    title: "Welcome to Mays Educational Centre",
+    title: "Welcome to May's DayCare And Educational Centre",
     subtitle:
       "A private luxury learning environment built on excellence, discipline and future-ready skills.",
     button: "Learn More",
