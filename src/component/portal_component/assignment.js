@@ -137,7 +137,7 @@ export default function AssignmentHub() {
             <br />
             3. Do not write only the answer — write the complete formula.
             <br />
-            4. Submit your work on Wednesday 25th June 2025.
+            4. Submit your work on Wednesday 25th February 2026.
           </div>
 
           <h3>{assignment.title}</h3>
