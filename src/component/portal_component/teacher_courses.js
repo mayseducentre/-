@@ -1,2536 +1,1837 @@
 /**
- * Elite Teacher Training Portal
- * Moodle-inspired, fully responsive, single-file React component.
- * Features: Course selection, module accordion, video demos, quizzes,
- * practical exercises, resources, progress tracking (localStorage),
- * and EmailJS certificate generation.
+ * 🎓 Educational Centre Mays — Gamified Teacher Training Portal
+ * Duolingo-style: XP, hearts, streaks, drag-drop, instant feedback
+ * No videos — visual explainers, interactive exercises, fast quizzes
+ * ~72 min per course | EmailJS certificate at 100%
  */
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
-// ─────────────────────────────────────────────
-// COURSE DATA
-// ─────────────────────────────────────────────
+// ─────────────────────────────────── COURSE DATA ───────────────────────────────────
 const COURSES = [
   {
-    id: "ms-word",
-    title: "Microsoft Word",
-    icon: "📝",
-    description: "Master document creation, formatting, mail merge, and advanced Word features for professional use.",
-    modules: [
+    id: "word", title: "Microsoft Word", emoji: "📝", color: "#2b579a", light: "#e8f0fb",
+    tagline: "Create professional documents with confidence",
+    lessons: [
       {
-        id: "word-1",
-        title: "Module 1: Interface & Document Basics",
-        duration: "25 min",
-        video: "https://www.youtube.com/embed/S-nHYzK-BVg",
-        exercise: {
-          title: "Create a Professional Memo",
-          instructions: [
-            "Open Microsoft Word and create a new blank document.",
-            "Set margins to Narrow (1.27cm all sides) via Layout > Margins.",
-            "Type a memo header: TO, FROM, DATE, RE — each on its own line.",
-            "Apply bold formatting to each label.",
-            "Save as 'Practice_Memo.docx' to your Desktop.",
+        id: "w1", title: "What is Microsoft Word?", xp: 20, duration: "5 min",
+        learn: {
+          icon: "📝", heading: "Microsoft Word — Your Digital Page",
+          definition: "Microsoft Word is a word processing application that lets you create, edit, format, and print text documents.",
+          analogy: "Think of it like a super-powered typewriter that never runs out of ink — and lets you fix mistakes instantly!",
+          facts: [
+            { icon: "📄", text: "Used to create letters, reports, CVs, and school documents" },
+            { icon: "🎨", text: "You can add colours, images, tables, and shapes" },
+            { icon: "☁️", text: "Documents are saved as .docx files (or PDF)" },
+            { icon: "🔤", text: "The cursor (blinking line) shows where you type" },
           ],
-          task: "Type your memo subject below to confirm completion:",
-          inputLabel: "Memo Subject",
-          inputPlaceholder: "e.g., Staff Training Schedule Q1 2025",
+          visual: [
+            { label: "Ribbon", desc: "The toolbar at the top with all your tools", color: "#2b579a" },
+            { label: "Document Area", desc: "The white page where you type", color: "#f0f4ff" },
+            { label: "Status Bar", desc: "Bottom bar showing page number & word count", color: "#6c757d" },
+          ]
         },
-        quiz: [
-          {
-            q: "Which tab contains the Margins setting in Microsoft Word?",
-            options: ["Home", "Insert", "Layout", "View"],
-            answer: 2,
-          },
-          {
-            q: "The keyboard shortcut to Bold text in Word is:",
-            options: ["Ctrl+I", "Ctrl+U", "Ctrl+B", "Ctrl+F"],
-            answer: 2,
-          },
-          {
-            q: "True or False: Word documents are saved with a .docx extension by default.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "Which view shows exactly how the document will print?",
-            options: ["Draft View", "Web Layout", "Print Layout", "Outline View"],
-            answer: 2,
-          },
-        ],
-        resources: [
-          { name: "Word Interface Cheatsheet.pdf", url: "https://edu.gcfglobal.org/en/word2016/", type: "pdf" },
-          { name: "Word Quick Reference Card", url: "https://support.microsoft.com/en-us/word", type: "link" },
-        ],
+        type: "drag",
+        question: "Drag each tool to where it belongs in Word",
+        items: ["Bold text", "Insert image", "Change font", "Set margins", "Add page number"],
+        zones: [
+          { id: "home", label: "🏠 Home Tab", accepts: ["Bold text", "Change font"] },
+          { id: "insert", label: "➕ Insert Tab", accepts: ["Insert image", "Add page number"] },
+          { id: "layout", label: "📐 Layout Tab", accepts: ["Set margins"] },
+        ]
       },
       {
-        id: "word-2",
-        title: "Module 2: Styles, Headings & Table of Contents",
-        duration: "25 min",
-        video: "https://www.youtube.com/embed/t_rIwVhGfSM",
-        exercise: {
-          title: "Build a Structured Report",
-          instructions: [
-            "Open a new Word document.",
-            "Apply 'Heading 1' style to a title: 'Annual School Report'.",
-            "Add three sections with 'Heading 2': Introduction, Findings, Conclusion.",
-            "Write 2–3 sentences under each heading.",
-            "Insert an automatic Table of Contents via References > Table of Contents.",
+        id: "w2", title: "Formatting Text Like a Pro", xp: 25, duration: "7 min",
+        learn: {
+          icon: "✨", heading: "Make Your Text Stand Out",
+          definition: "Formatting changes how text looks — its size, style, colour, and emphasis — to make documents clear and professional.",
+          analogy: "Formatting is like choosing an outfit for your words. Bold is a power suit; italic is casual; underline is emphasis!",
+          facts: [
+            { icon: "B", text: "Bold (Ctrl+B) — makes text heavier and more visible" },
+            { icon: "I", text: "Italic (Ctrl+I) — slants text for titles or emphasis" },
+            { icon: "U", text: "Underline (Ctrl+U) — adds a line below text" },
+            { icon: "🎨", text: "Font colour — changes the text colour" },
+            { icon: "A", text: "Font size — controls how big or small text appears" },
           ],
-          task: "List your three Heading 2 sections below (comma-separated):",
-          inputLabel: "Your Section Titles",
-          inputPlaceholder: "e.g., Introduction, Findings, Conclusion",
+          visual: [
+            { label: "Ctrl + B", desc: "Bold", color: "#2b579a" },
+            { label: "Ctrl + I", desc: "Italic", color: "#5c7cdb" },
+            { label: "Ctrl + U", desc: "Underline", color: "#7b9ee8" },
+            { label: "Ctrl + Z", desc: "Undo (your best friend!)", color: "#e74c3c" },
+          ]
         },
-        quiz: [
-          {
-            q: "Where do you insert an automatic Table of Contents in Word?",
-            options: ["Home tab", "Insert tab", "References tab", "View tab"],
-            answer: 2,
-          },
-          {
-            q: "Applying a 'Heading 1' style to text primarily affects:",
-            options: ["Font colour only", "The document structure and navigation", "Page margins", "Line spacing only"],
-            answer: 1,
-          },
-          {
-            q: "True or False: Styles in Word can be modified to change all matching text at once.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "Which Heading level is typically used for the main document title?",
-            options: ["Heading 3", "Heading 2", "Heading 1", "Normal"],
-            answer: 2,
-          },
-        ],
-        resources: [
-          { name: "Styles & Formatting Guide", url: "https://support.microsoft.com/en-us/office/apply-styles-f8b96097-4d25-4fac-8200-6139c8093109", type: "link" },
-          { name: "Table of Contents Tutorial", url: "https://support.microsoft.com/en-us/office/insert-a-table-of-contents-882e8564-0edb-435e-84b5-1d8552ccf0c0", type: "link" },
-        ],
+        type: "mcq",
+        questions: [
+          { q: "What does Ctrl+B do in Microsoft Word?", options: ["Makes text bigger", "Makes text Bold", "Opens a new document", "Saves the file"], answer: 1, explain: "Ctrl+B toggles Bold on/off — it's the most common formatting shortcut!" },
+          { q: "Which formatting makes text lean to the right like this: *Hello*?", options: ["Bold", "Underline", "Italic", "Strike-through"], answer: 2, explain: "Italic slants text — used for book titles, foreign words, or gentle emphasis." },
+          { q: "To change the SIZE of text in Word, you use:", options: ["The font colour box", "The font size box (number in toolbar)", "The margins setting", "The paragraph spacing"], answer: 1, explain: "The font size box (shows a number like 12 or 14) is in the Home tab toolbar." },
+        ]
       },
       {
-        id: "word-3",
-        title: "Module 3: Mail Merge for School Communications",
-        duration: "30 min",
-        video: "https://www.youtube.com/embed/EuSS1R3_Bgs",
-        exercise: {
-          title: "Mail Merge Parent Letters",
-          instructions: [
-            "Create an Excel spreadsheet with columns: FirstName, LastName, Grade, ParentEmail.",
-            "Enter 5 sample student records.",
-            "In Word, go to Mailings > Start Mail Merge > Letters.",
-            "Connect to your Excel data source.",
-            "Insert merge fields: Dear «FirstName» «LastName», Your child in Grade «Grade»…",
-            "Preview results and complete the merge.",
+        id: "w3", title: "Saving & File Formats", xp: 20, duration: "5 min",
+        learn: {
+          icon: "💾", heading: "Never Lose Your Work",
+          definition: "Saving stores your document permanently on your computer or cloud. Word saves as .docx by default.",
+          analogy: "Saving is like putting your work in a safe box. Without saving, your document disappears when the power goes off!",
+          facts: [
+            { icon: "💾", text: "Ctrl+S — Save your document instantly" },
+            { icon: "📁", text: "Ctrl+Shift+S — Save As (save with a new name or location)" },
+            { icon: "📄", text: ".docx — the standard Word format" },
+            { icon: "🔒", text: ".pdf — locked format, can't be easily edited" },
+            { icon: "☁️", text: "OneDrive — saves automatically to the cloud" },
           ],
-          task: "How many student records did you merge? Enter the number:",
-          inputLabel: "Number of Records Merged",
-          inputPlaceholder: "e.g., 5",
+          visual: [
+            { label: ".docx", desc: "Editable Word document", color: "#2b579a" },
+            { label: ".pdf", desc: "Final, locked document for sharing", color: "#e74c3c" },
+            { label: ".dotx", desc: "Word Template (reusable layout)", color: "#27ae60" },
+          ]
         },
-        quiz: [
-          {
-            q: "Mail Merge is found under which Word tab?",
-            options: ["Home", "Insert", "Mailings", "Review"],
-            answer: 2,
-          },
-          {
-            q: "Which file format is most commonly used as a Mail Merge data source?",
-            options: [".docx", ".xlsx (Excel)", ".pptx", ".txt"],
-            answer: 1,
-          },
-          {
-            q: "True or False: Mail Merge can be used to create personalised certificates.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "What do angle brackets « » represent in a mail merge document?",
-            options: ["Formatting markers", "Merge fields from the data source", "Hyperlinks", "Comments"],
-            answer: 1,
-          },
-        ],
-        resources: [
-          { name: "Mail Merge Step-by-Step", url: "https://support.microsoft.com/en-us/office/use-mail-merge-to-send-bulk-email-messages-cc228f41-ae18-488c-be5d-b456c3e97b8b", type: "link" },
-          { name: "Mail Merge Template (Download)", url: "https://templates.office.com/en-us/mail-merge-letters-tm16400711", type: "pdf" },
-        ],
+        type: "fillin",
+        questions: [
+          { q: "The keyboard shortcut to SAVE a document is Ctrl + ___", answer: "S", hint: "One letter — think of 'Save'" },
+          { q: "A Word document is saved with the extension .___x", answer: "doc", hint: "It stands for 'document'" },
+          { q: "To save a copy with a NEW name, use Ctrl + Shift + ___", answer: "S", hint: "Same letter as regular Save" },
+        ]
       },
       {
-        id: "word-4",
-        title: "Module 4: Track Changes, Comments & Collaboration",
-        duration: "20 min",
-        video: "https://www.youtube.com/embed/W-wnMGqDi78",
-        exercise: {
-          title: "Collaborative Document Review",
-          instructions: [
-            "Open any existing Word document.",
-            "Enable Track Changes: Review > Track Changes > Track Changes.",
-            "Make 5 different edits (add, delete, format text).",
-            "Add 2 comments using Review > New Comment.",
-            "Accept and reject individual changes using the Review ribbon.",
+        id: "w4", title: "Tables & Lists", xp: 25, duration: "8 min",
+        learn: {
+          icon: "📊", heading: "Organise Information Clearly",
+          definition: "Tables organise data into rows and columns. Lists use bullets (•) or numbers to group related items.",
+          analogy: "A table is like a spreadsheet living inside your document. A list is like your shopping list — clean and easy to read!",
+          facts: [
+            { icon: "📊", text: "Insert → Table → choose rows and columns" },
+            { icon: "•", text: "Bullet list — for unordered items (no sequence)" },
+            { icon: "1.", text: "Numbered list — for steps in order" },
+            { icon: "📐", text: "You can resize table columns by dragging the borders" },
+            { icon: "🎨", text: "Table Styles give instant professional formatting" },
           ],
-          task: "How many changes did you accept? Enter the number:",
-          inputLabel: "Changes Accepted",
-          inputPlaceholder: "e.g., 3",
+          visual: [
+            { label: "Bullet List", desc: "• Item one\n• Item two\n• Item three", color: "#2b579a" },
+            { label: "Numbered List", desc: "1. First step\n2. Second step\n3. Third step", color: "#27ae60" },
+            { label: "Table", desc: "Rows × Columns of organised data", color: "#e67e22" },
+          ]
         },
-        quiz: [
-          {
-            q: "Track Changes records edits made by:",
-            options: ["Only the original author", "Any user who edits the document", "Only admins", "Microsoft automatically"],
-            answer: 1,
-          },
-          {
-            q: "To add a comment in Word, you go to:",
-            options: ["Insert > Comment", "Review > New Comment", "Home > Comment", "View > Comment"],
-            answer: 1,
-          },
-          {
-            q: "True or False: You can accept all tracked changes at once in Word.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "Tracked deletions appear as:",
-            options: ["Bold text", "Strikethrough text in a different colour", "Highlighted yellow", "Hidden text"],
-            answer: 1,
-          },
-        ],
-        resources: [
-          { name: "Track Changes Guide", url: "https://support.microsoft.com/en-us/office/track-changes-in-word-197ba630-0f5f-4a8e-9a77-3712475e806a", type: "link" },
-        ],
+        type: "mcq",
+        questions: [
+          { q: "Where do you insert a Table in Microsoft Word?", options: ["Home tab", "Insert tab → Table", "Layout tab", "Review tab"], answer: 1, explain: "Insert tab contains all items you add INTO a document: tables, images, headers, etc." },
+          { q: "Which list type is best for step-by-step instructions?", options: ["Bullet list", "Numbered list", "Table", "Text box"], answer: 1, explain: "Numbered lists show order/sequence — perfect for instructions and processes." },
+          { q: "To add a new row at the bottom of a Word table, press ___ in the last cell.", options: ["Enter", "Tab", "Spacebar", "Shift+Enter"], answer: 1, explain: "Pressing Tab in the last cell of a table automatically adds a new row below!" },
+        ]
       },
       {
-        id: "word-5",
-        title: "Module 5: Advanced Formatting & Templates",
-        duration: "25 min",
-        video: "https://www.youtube.com/embed/GxSRnNdyGPg",
-        exercise: {
-          title: "Create a School Letterhead Template",
-          instructions: [
-            "Open a new Word document.",
-            "Insert a header with your school name and logo placeholder.",
-            "Set professional fonts: Calibri 11pt for body, Calibri Light 16pt for titles.",
-            "Add a footer with page number and school address.",
-            "Save as a Word Template (.dotx) so it can be reused.",
+        id: "w5", title: "Headers, Footers & Page Numbers", xp: 20, duration: "5 min",
+        learn: {
+          icon: "📑", heading: "Professional Document Structure",
+          definition: "Headers appear at the top of every page; footers at the bottom. They typically contain page numbers, dates, or school names.",
+          analogy: "Headers and footers are like the frame of a painting — they complete the document and make it look finished and professional.",
+          facts: [
+            { icon: "⬆️", text: "Header — repeats at the TOP of every page" },
+            { icon: "⬇️", text: "Footer — repeats at the BOTTOM of every page" },
+            { icon: "#", text: "Insert → Page Number adds automatic numbering" },
+            { icon: "🏫", text: "Great for: school name, document title, date" },
+            { icon: "✏️", text: "Double-click header/footer area to edit it" },
           ],
-          task: "Enter your template name as saved:",
-          inputLabel: "Template Filename",
-          inputPlaceholder: "e.g., School_Letterhead_2025",
+          visual: [
+            { label: "Header Zone", desc: "Top margin — school name, title, logo", color: "#2b579a" },
+            { label: "Body", desc: "Your main document content", color: "#f0f4ff" },
+            { label: "Footer Zone", desc: "Bottom margin — page number, date, contact", color: "#2b579a" },
+          ]
         },
-        quiz: [
-          {
-            q: "Word templates are saved with which extension?",
-            options: [".docx", ".dotx", ".xlsx", ".pptx"],
-            answer: 1,
-          },
-          {
-            q: "Headers and footers appear on:",
-            options: ["Only the first page", "Only the last page", "Every page of the document", "Only odd pages by default"],
-            answer: 2,
-          },
-          {
-            q: "True or False: You can insert automatic page numbers in a Word footer.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "Which Word feature lets you insert a pre-designed visual element like a cover page?",
-            options: ["Insert > Cover Page", "Home > Cover", "Layout > Cover", "Design > Page"],
-            answer: 0,
-          },
-        ],
-        resources: [
-          { name: "Word Templates Library", url: "https://templates.office.com/en-us/templates-for-word", type: "link" },
-          { name: "Advanced Formatting Tutorial", url: "https://support.microsoft.com/en-us/office/format-a-document-in-word-for-the-web-f0a78f55-b00f-47c9-b61e-36a9889bb45e", type: "link" },
-        ],
+        type: "drag",
+        question: "Drag each element to the correct document zone",
+        items: ["Page number", "School logo", "Author name", "Main paragraph", "Document title", "Date"],
+        zones: [
+          { id: "header", label: "⬆️ Header", accepts: ["School logo", "Document title", "Date"] },
+          { id: "body", label: "📄 Body", accepts: ["Main paragraph"] },
+          { id: "footer", label: "⬇️ Footer", accepts: ["Page number", "Author name"] },
+        ]
       },
-    ],
+      {
+        id: "w6", title: "Mail Merge Magic", xp: 30, duration: "8 min",
+        learn: {
+          icon: "📬", heading: "Personalise Letters Automatically",
+          definition: "Mail Merge combines a Word letter template with an Excel/CSV data list to create personalised letters for many people at once.",
+          analogy: "Imagine writing 100 parent letters — instead of typing each name, Mail Merge fills them all in automatically. Like a robot assistant!",
+          facts: [
+            { icon: "📋", text: "You need TWO things: a Word template + a data list (Excel)" },
+            { icon: "«»", text: "Merge fields like «FirstName» get replaced with real data" },
+            { icon: "📬", text: "Mailings tab → Start Mail Merge → Letters" },
+            { icon: "👁️", text: "Preview Results shows you what each letter will look like" },
+            { icon: "✅", text: "Finish & Merge → Print or Email all at once" },
+          ],
+          visual: [
+            { label: "Step 1", desc: "Create template in Word with «Fields»", color: "#2b579a" },
+            { label: "Step 2", desc: "Link to Excel data file (names, emails…)", color: "#217346" },
+            { label: "Step 3", desc: "Preview → Finish & Merge", color: "#27ae60" },
+          ]
+        },
+        type: "mcq",
+        questions: [
+          { q: "Mail Merge is found under which Word tab?", options: ["Home", "Insert", "Mailings", "Review"], answer: 2, explain: "The Mailings tab contains everything for Mail Merge, labels, and envelopes." },
+          { q: "What do the symbols « » indicate in a Mail Merge template?", options: ["A comment", "A merge field that gets replaced with real data", "A hyperlink", "Bold formatting"], answer: 1, explain: "«FieldName» is a placeholder — Word replaces it with actual data from your list." },
+          { q: "Mail Merge requires which TWO files?", options: ["Two Word documents", "A Word template + an Excel/CSV data file", "A PDF + an image", "Two Excel files"], answer: 1, explain: "The Word file is your letter template; Excel holds the personalised data (names, etc.)." },
+        ]
+      },
+    ]
   },
   {
-    id: "ms-excel",
-    title: "Microsoft Excel",
-    icon: "📊",
-    description: "From data entry to advanced formulas, pivot tables, and data visualisation for school administration.",
-    modules: [
+    id: "excel", title: "Microsoft Excel", emoji: "📊", color: "#217346", light: "#e8f5ee",
+    tagline: "Turn raw data into powerful insights",
+    lessons: [
       {
-        id: "excel-1",
-        title: "Module 1: Excel Interface & Data Entry",
-        duration: "20 min",
-        video: "https://www.youtube.com/embed/rwbho0CgEkI",
-        exercise: {
-          title: "Build a Class Register",
-          instructions: [
-            "Open Excel and create a new workbook.",
-            "In Row 1, create headers: No., Name, Subject, Score, Grade.",
-            "Enter 10 student records.",
-            "Format the header row: Bold, background colour (dark blue), white text.",
-            "Auto-fit all columns (select all → double-click column border).",
+        id: "e1", title: "Excel — The Grid That Does Maths", xp: 20, duration: "5 min",
+        learn: {
+          icon: "📊", heading: "What is Microsoft Excel?",
+          definition: "Excel is a spreadsheet application that organises data in rows and columns, performs calculations automatically, and creates charts.",
+          analogy: "Excel is like a calculator and a filing cabinet combined — it stores thousands of numbers AND crunches them instantly!",
+          facts: [
+            { icon: "📐", text: "Data lives in CELLS — tiny boxes arranged in a grid" },
+            { icon: "🔠", text: "Columns go A, B, C… (left to right)" },
+            { icon: "🔢", text: "Rows go 1, 2, 3… (top to bottom)" },
+            { icon: "📍", text: "Cell reference: B3 = Column B, Row 3" },
+            { icon: "⚡", text: "Formulas start with = and calculate automatically" },
           ],
-          task: "Enter the subject you created the register for:",
-          inputLabel: "Subject Name",
-          inputPlaceholder: "e.g., Mathematics",
+          visual: [
+            { label: "Cell A1", desc: "Column A, Row 1 — top-left corner", color: "#217346" },
+            { label: "Cell B3", desc: "Column B, Row 3", color: "#27ae60" },
+            { label: "Formula Bar", desc: "Shows the content/formula of selected cell", color: "#1a5c38" },
+          ]
         },
-        quiz: [
-          {
-            q: "A cell reference like B3 refers to:",
-            options: ["Column B, Row 3", "Row B, Column 3", "Page B, Cell 3", "Block B3"],
-            answer: 0,
-          },
-          {
-            q: "To auto-fit a column width in Excel, you:",
-            options: ["Press Ctrl+A", "Double-click the column border in the header", "Right-click and Format Cells", "Use the View tab"],
-            answer: 1,
-          },
-          {
-            q: "True or False: Excel can hold multiple worksheets in one workbook.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "The Name Box in Excel displays:",
-            options: ["The workbook name", "The active cell reference", "The formula result", "The sheet name"],
-            answer: 1,
-          },
-        ],
-        resources: [
-          { name: "Excel Basics Cheatsheet", url: "https://support.microsoft.com/en-us/excel", type: "link" },
-        ],
+        type: "drag",
+        question: "Drag each item to Row or Column",
+        items: ["A", "B", "C", "1", "2", "3"],
+        zones: [
+          { id: "col", label: "🔤 Column (letter)", accepts: ["A", "B", "C"] },
+          { id: "row", label: "🔢 Row (number)", accepts: ["1", "2", "3"] },
+        ]
       },
       {
-        id: "excel-2",
-        title: "Module 2: Formulas & Functions",
-        duration: "30 min",
-        video: "https://www.youtube.com/embed/eFGGKv3pHzk",
-        exercise: {
-          title: "Grade Calculator with Formulas",
-          instructions: [
-            "Use your class register from Module 1.",
-            "In column E, use =IF(D2>=80,\"A\",IF(D2>=70,\"B\",IF(D2>=60,\"C\",\"F\"))) for grades.",
-            "Add a row at the bottom for: Average (=AVERAGE), Highest (=MAX), Lowest (=MIN).",
-            "In a new column, use =COUNTIF to count how many students got each grade.",
-            "Format scores below 60 in red using Conditional Formatting.",
+        id: "e2", title: "Formulas — Make Excel Work for You", xp: 30, duration: "8 min",
+        learn: {
+          icon: "⚡", heading: "Formulas: Your Automatic Calculator",
+          definition: "A formula is an instruction that tells Excel to calculate something. All formulas begin with an = sign.",
+          analogy: "Writing =SUM(A1:A10) is like telling a helper: 'Add up everything from A1 to A10 and give me the total.' No calculator needed!",
+          facts: [
+            { icon: "∑", text: "=SUM(A1:A10) — adds all values from A1 to A10" },
+            { icon: "📊", text: "=AVERAGE(A1:A10) — calculates the mean" },
+            { icon: "⬆️", text: "=MAX(A1:A10) — finds the highest value" },
+            { icon: "⬇️", text: "=MIN(A1:A10) — finds the lowest value" },
+            { icon: "🔢", text: "=COUNT(A1:A10) — counts how many numbers are there" },
           ],
-          task: "What was the class average score? Enter it below:",
-          inputLabel: "Class Average",
-          inputPlaceholder: "e.g., 72.4",
+          visual: [
+            { label: "=SUM", desc: "Adds up a range of numbers", color: "#217346" },
+            { label: "=AVERAGE", desc: "Calculates the mean (total ÷ count)", color: "#27ae60" },
+            { label: "=IF", desc: "Makes a decision: =IF(A1>50,\"Pass\",\"Fail\")", color: "#e67e22" },
+          ]
         },
-        quiz: [
-          {
-            q: "Which formula calculates the average of cells A1 to A10?",
-            options: ["=SUM(A1:A10)", "=AVERAGE(A1:A10)", "=MEAN(A1:A10)", "=AVG(A1:A10)"],
-            answer: 1,
-          },
-          {
-            q: "The IF function in Excel tests a condition and returns:",
-            options: ["Only TRUE", "Only FALSE", "One of two values based on the condition", "An error"],
-            answer: 2,
-          },
-          {
-            q: "True or False: VLOOKUP searches vertically through the first column of a table.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "Conditional Formatting is found under which Excel tab?",
-            options: ["Insert", "Data", "Home", "Formulas"],
-            answer: 2,
-          },
-        ],
-        resources: [
-          { name: "Excel Formula Reference", url: "https://support.microsoft.com/en-us/office/excel-functions-alphabetical-b3944572-255d-4efb-bb96-c6d90033e188", type: "link" },
-        ],
+        type: "fillin",
+        questions: [
+          { q: "All Excel formulas must start with the symbol ___", answer: "=", hint: "It's the equals sign" },
+          { q: "To add cells A1 to A5, type: =___(A1:A5)", answer: "SUM", hint: "Think 'addition / total'" },
+          { q: "=AVERAGE(B1:B10) calculates the ___ of those values", answer: "average", hint: "Mean / middle value" },
+        ]
       },
       {
-        id: "excel-3",
-        title: "Module 3: Charts & Data Visualisation",
-        duration: "25 min",
-        video: "https://www.youtube.com/embed/DAU0qqh_I-A",
-        exercise: {
-          title: "Create a Student Performance Dashboard",
-          instructions: [
-            "Select your student names and scores.",
-            "Insert a Bar Chart: Insert > Bar Chart > Clustered Bar.",
-            "Add a chart title: 'Class Performance – Term 1'.",
-            "Change colours to match your school colours.",
-            "Insert a Pie Chart showing the grade distribution (A, B, C, F counts).",
+        id: "e3", title: "IF Function — Smart Decisions", xp: 30, duration: "7 min",
+        learn: {
+          icon: "🤔", heading: "IF: Excel Makes Decisions",
+          definition: "The IF function tests a condition and returns one value if TRUE, another if FALSE.",
+          analogy: "=IF(Score>=50, \"Pass\", \"Fail\") is like Excel asking: 'Is the score 50 or more? Yes → Pass. No → Fail.' It's logic!",
+          facts: [
+            { icon: "✅", text: "=IF(condition, value_if_true, value_if_false)" },
+            { icon: "📊", text: "Example: =IF(A1>=80,\"A\",IF(A1>=70,\"B\",\"C\")) — nested IF for grades" },
+            { icon: "📐", text: "Condition uses: > (greater), < (less), >= , <=, = (equal)" },
+            { icon: "💡", text: "Text values in IF must be in \"quote marks\"" },
+            { icon: "⚡", text: "You can nest multiple IF functions for complex rules" },
           ],
-          task: "What chart type did you use for grade distribution?",
-          inputLabel: "Chart Type",
-          inputPlaceholder: "e.g., Pie Chart",
+          visual: [
+            { label: "Condition", desc: "A1>=50 — 'Is A1 greater than or equal to 50?'", color: "#217346" },
+            { label: "TRUE result", desc: "What Excel shows if the condition is met", color: "#27ae60" },
+            { label: "FALSE result", desc: "What Excel shows if the condition is NOT met", color: "#e74c3c" },
+          ]
         },
-        quiz: [
-          {
-            q: "Which chart type is best for showing parts of a whole?",
-            options: ["Bar chart", "Line chart", "Pie chart", "Scatter plot"],
-            answer: 2,
-          },
-          {
-            q: "To insert a chart in Excel, you use which tab?",
-            options: ["Home", "Insert", "Data", "View"],
-            answer: 1,
-          },
-          {
-            q: "True or False: Charts in Excel update automatically when the source data changes.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "A Sparkline in Excel is:",
-            options: ["A large dashboard chart", "A tiny chart in a single cell", "A 3D chart", "A chart template"],
-            answer: 1,
-          },
-        ],
-        resources: [
-          { name: "Excel Chart Types Guide", url: "https://support.microsoft.com/en-us/office/available-chart-types-in-office-a6187218-807e-4103-9e0a-27cdb19afb90", type: "link" },
-        ],
+        type: "mcq",
+        questions: [
+          { q: "What does =IF(A1>100, \"High\", \"Low\") return if A1 = 75?", options: ["High", "Low", "Error", "75"], answer: 1, explain: "75 is NOT greater than 100, so the FALSE result 'Low' is returned." },
+          { q: "In the IF function =IF(B2=\"Pass\",1,0), the condition is:", options: ["1", "0", "B2=\"Pass\"", "Pass"], answer: 2, explain: "The condition B2=\"Pass\" checks if cell B2 contains the text 'Pass'." },
+          { q: "Which symbol means 'greater than or equal to' in Excel?", options: [">", ">=", "=>", "≥"], answer: 1, explain: ">= is the correct Excel operator for 'greater than or equal to'." },
+        ]
       },
       {
-        id: "excel-4",
-        title: "Module 4: Pivot Tables",
-        duration: "30 min",
-        video: "https://www.youtube.com/embed/9NUjHBNWe9M",
-        exercise: {
-          title: "Analyse School Data with Pivot Tables",
-          instructions: [
-            "Create a dataset with columns: Teacher, Class, Subject, Average Score, Term.",
-            "Enter at least 15 rows of data.",
-            "Insert a Pivot Table: Insert > PivotTable.",
-            "Drag 'Subject' to Rows, 'Teacher' to Columns, 'Average Score' to Values (Average).",
-            "Add a Slicer for 'Term' to filter the pivot table dynamically.",
+        id: "e4", title: "Charts — Visualise Your Data", xp: 25, duration: "6 min",
+        learn: {
+          icon: "📈", heading: "Turn Numbers Into Visual Stories",
+          definition: "Charts convert table data into visual graphs, making patterns and comparisons instantly understandable.",
+          analogy: "A table of 50 student scores is hard to read. A bar chart shows at a glance who is doing well and who needs help — in seconds!",
+          facts: [
+            { icon: "📊", text: "Bar/Column Chart — compare categories side by side" },
+            { icon: "🥧", text: "Pie Chart — shows each part as a percentage of the whole" },
+            { icon: "📈", text: "Line Chart — shows trends over time" },
+            { icon: "💡", text: "Select your data FIRST, then Insert → Chart" },
+            { icon: "🎨", text: "Chart Styles and colours can be changed instantly" },
           ],
-          task: "Which subject had the highest average score in your pivot table?",
-          inputLabel: "Top Subject",
-          inputPlaceholder: "e.g., Mathematics",
+          visual: [
+            { label: "Bar Chart", desc: "Best for: comparing values across categories", color: "#217346" },
+            { label: "Pie Chart", desc: "Best for: showing proportions (e.g. grade breakdown)", color: "#e67e22" },
+            { label: "Line Chart", desc: "Best for: trends over time (e.g. monthly scores)", color: "#3498db" },
+          ]
         },
-        quiz: [
-          {
-            q: "A Pivot Table is used to:",
-            options: ["Create visual charts", "Summarise large datasets without formulas", "Format cells automatically", "Sort data alphabetically"],
-            answer: 1,
-          },
-          {
-            q: "A Slicer in a Pivot Table is used to:",
-            options: ["Cut cells", "Filter data visually with buttons", "Add rows", "Calculate totals"],
-            answer: 1,
-          },
-          {
-            q: "True or False: You can refresh a Pivot Table when the source data changes.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "In a Pivot Table, 'Values' field typically shows:",
-            options: ["Text labels", "Calculated data like sums or averages", "Row numbers", "Filter criteria"],
-            answer: 1,
-          },
-        ],
-        resources: [
-          { name: "Pivot Table Tutorial", url: "https://support.microsoft.com/en-us/office/create-a-pivottable-to-analyze-worksheet-data-a9a84538-bfe9-40a9-a8e9-f99134456576", type: "link" },
-        ],
+        type: "drag",
+        question: "Match the chart type to its best use case",
+        items: ["Compare class scores", "Show % of grade A/B/C", "Track improvement over weeks"],
+        zones: [
+          { id: "bar", label: "📊 Bar/Column Chart", accepts: ["Compare class scores"] },
+          { id: "pie", label: "🥧 Pie Chart", accepts: ["Show % of grade A/B/C"] },
+          { id: "line", label: "📈 Line Chart", accepts: ["Track improvement over weeks"] },
+        ]
       },
       {
-        id: "excel-5",
-        title: "Module 5: Data Validation & Protection",
-        duration: "25 min",
-        video: "https://www.youtube.com/embed/BkFdlmSxhxM",
-        exercise: {
-          title: "Secure a Student Grading Sheet",
-          instructions: [
-            "Create a grading form with student names and score input cells.",
-            "Apply Data Validation to score cells: Allow only whole numbers between 0 and 100.",
-            "Add an Input Message: 'Enter score between 0 and 100.'",
-            "Add an Error Alert: 'Invalid score! Please enter 0–100.'",
-            "Protect the sheet (Review > Protect Sheet) locking header rows but allowing score entry.",
+        id: "e5", title: "Conditional Formatting", xp: 25, duration: "6 min",
+        learn: {
+          icon: "🎨", heading: "Colours That Reveal the Story",
+          definition: "Conditional Formatting automatically colours cells based on their values — no manual colouring needed.",
+          analogy: "Imagine a class register where scores below 50 glow red and scores above 80 glow green — automatically. That's Conditional Formatting!",
+          facts: [
+            { icon: "🔴", text: "Red = danger zone (e.g. score < 50)" },
+            { icon: "🟡", text: "Yellow = warning zone (e.g. score 50–69)" },
+            { icon: "🟢", text: "Green = excellent (e.g. score ≥ 70)" },
+            { icon: "📍", text: "Home tab → Conditional Formatting → Highlight Rules" },
+            { icon: "🎨", text: "Data Bars show a mini bar chart inside each cell!" },
           ],
-          task: "What password did you set for sheet protection? (Just confirm you set one):",
-          inputLabel: "Confirm Action",
-          inputPlaceholder: "Type: Sheet protected successfully",
+          visual: [
+            { label: "Home Tab", desc: "→ Conditional Formatting → New Rule", color: "#217346" },
+            { label: "Colour Scales", desc: "Gradient from red (low) to green (high)", color: "#27ae60" },
+            { label: "Data Bars", desc: "Visual bar inside each cell showing relative size", color: "#e67e22" },
+          ]
         },
-        quiz: [
-          {
-            q: "Data Validation in Excel is found under which tab?",
-            options: ["Home", "Insert", "Data", "Review"],
-            answer: 2,
-          },
-          {
-            q: "Sheet Protection in Excel prevents users from:",
-            options: ["Viewing the sheet", "Editing locked cells", "Printing the sheet", "Opening the file"],
-            answer: 1,
-          },
-          {
-            q: "True or False: Data Validation can restrict input to items from a dropdown list.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "Which Excel feature highlights cells based on their value automatically?",
-            options: ["Data Validation", "Conditional Formatting", "Cell Styles", "Number Format"],
-            answer: 1,
-          },
-        ],
-        resources: [
-          { name: "Data Validation Guide", url: "https://support.microsoft.com/en-us/office/apply-data-validation-to-cells-29fecbcc-d1b9-42c1-9d76-eff3ce5f7249", type: "link" },
-        ],
+        type: "mcq",
+        questions: [
+          { q: "Conditional Formatting is found under which Excel tab?", options: ["Insert", "Data", "Home", "View"], answer: 2, explain: "Conditional Formatting lives in the Home tab — it's a formatting feature." },
+          { q: "What does Conditional Formatting do automatically?", options: ["Sorts data alphabetically", "Colours cells based on their values/rules", "Calculates averages", "Creates charts"], answer: 1, explain: "It applies colours, icons, or data bars automatically based on conditions you set." },
+          { q: "Which Conditional Formatting option creates a mini bar INSIDE each cell?", options: ["Colour Scales", "Icon Sets", "Data Bars", "Highlight Rules"], answer: 2, explain: "Data Bars show a proportional bar inside each cell — great for quick comparisons!" },
+        ]
       },
-    ],
+      {
+        id: "e6", title: "Pivot Tables — Instant Summaries", xp: 35, duration: "9 min",
+        learn: {
+          icon: "🔄", heading: "Pivot Tables: Data Magic",
+          definition: "A Pivot Table summarises large datasets instantly — calculating totals, averages, and counts by category, without any formulas.",
+          analogy: "Imagine 500 rows of student data. A Pivot Table can instantly show the average score per teacher, per grade, per subject — in one click!",
+          facts: [
+            { icon: "⚡", text: "Insert → PivotTable → select your data range" },
+            { icon: "🗂️", text: "Drag fields to: Rows, Columns, Values, Filters" },
+            { icon: "∑", text: "Values area calculates: SUM, AVERAGE, COUNT, etc." },
+            { icon: "🔄", text: "Right-click → Refresh to update after data changes" },
+            { icon: "🎯", text: "Add a Slicer (Insert → Slicer) to filter with buttons" },
+          ],
+          visual: [
+            { label: "Rows area", desc: "Categories (e.g. Subject, Grade)", color: "#217346" },
+            { label: "Values area", desc: "Numbers to summarise (e.g. Average Score)", color: "#27ae60" },
+            { label: "Slicer", desc: "Visual filter buttons to explore data", color: "#e67e22" },
+          ]
+        },
+        type: "fillin",
+        questions: [
+          { q: "A Pivot Table is inserted via the ___ tab", answer: "Insert", hint: "Second tab in the Excel ribbon" },
+          { q: "To update a Pivot Table after the data changes, you ___ it", answer: "Refresh", hint: "Think 'reload' or 'update'" },
+          { q: "A visual filter button added to a Pivot Table is called a ___", answer: "Slicer", hint: "It 'slices' the data to show only what you want" },
+        ]
+      },
+    ]
   },
   {
-    id: "powerpoint",
-    title: "PowerPoint",
-    icon: "📽️",
-    description: "Design compelling, professional presentations that engage learners and communicate clearly.",
-    modules: [
+    id: "powerpoint", title: "PowerPoint", emoji: "📽️", color: "#c43e1c", light: "#fdf0ed",
+    tagline: "Design slides that captivate any audience",
+    lessons: [
       {
-        id: "ppt-1",
-        title: "Module 1: Design Principles & Slide Layouts",
-        duration: "25 min",
-        video: "https://www.youtube.com/embed/6jhHaTKVRVE",
-        exercise: {
-          title: "Professional 5-Slide Presentation",
-          instructions: [
-            "Open PowerPoint and choose a professional theme (NOT the default Office theme).",
-            "Create 5 slides: Title, Agenda, Content x2, Thank You.",
-            "Use the Slide Layout panel to apply appropriate layouts to each slide.",
-            "Apply a consistent colour scheme using Design > Variants.",
-            "Add your name and date to the slide master footer.",
+        id: "p1", title: "The Art of Great Slides", xp: 20, duration: "5 min",
+        learn: {
+          icon: "🎨", heading: "Design Principles Every Teacher Needs",
+          definition: "A great PowerPoint slide communicates one clear idea visually — with minimal text, strong visuals, and consistent design.",
+          analogy: "A bad slide is like shouting everything at once. A great slide whispers one clear message — and the audience listens!",
+          facts: [
+            { icon: "1️⃣", text: "One idea per slide — never cram everything in" },
+            { icon: "📝", text: "Max 6 words per bullet point — your voice explains the rest" },
+            { icon: "🎨", text: "Use 2–3 colours maximum for a professional look" },
+            { icon: "📏", text: "Font size: 28pt minimum so back-row students can read" },
+            { icon: "🖼️", text: "Images say more than paragraphs — use them!" },
           ],
-          task: "What theme/design did you choose for your presentation?",
-          inputLabel: "Theme Name",
-          inputPlaceholder: "e.g., Integral, Facet, Ion",
+          visual: [
+            { label: "❌ Bad Slide", desc: "Walls of text, 5 fonts, 8 colours, no images", color: "#e74c3c" },
+            { label: "✅ Good Slide", desc: "One headline, one image, 3 bullet points max", color: "#27ae60" },
+            { label: "💡 Pro Tip", desc: "If you can read the whole slide aloud in 10 seconds, it's too much", color: "#3498db" },
+          ]
         },
-        quiz: [
-          {
-            q: "The Slide Master in PowerPoint controls:",
-            options: ["Only the first slide", "The overall design and layout for all slides", "Animation timing", "Speaker notes"],
-            answer: 1,
-          },
-          {
-            q: "Which rule suggests using no more than 6 bullet points per slide?",
-            options: ["The 10/20/30 Rule", "The 6x6 Rule", "The 5-second Rule", "The 3-act Rule"],
-            answer: 1,
-          },
-          {
-            q: "True or False: PowerPoint allows you to embed fonts so the presentation looks correct on other computers.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "Slide layouts in PowerPoint are found under which tab?",
-            options: ["Home > Layout", "Insert > Layout", "Design > Layout", "View > Layout"],
-            answer: 0,
-          },
-        ],
-        resources: [
-          { name: "PowerPoint Design Best Practices", url: "https://support.microsoft.com/en-us/powerpoint", type: "link" },
-        ],
+        type: "mcq",
+        questions: [
+          { q: "What is the recommended MINIMUM font size for audience readability?", options: ["12pt", "18pt", "28pt", "36pt"], answer: 2, explain: "28pt ensures even back-row audience members can read your slides clearly." },
+          { q: "Which is the BEST slide design principle?", options: ["Pack as much information as possible", "Use many bright colours to attract attention", "One clear idea per slide with minimal text", "Use ALL CAPS for every heading"], answer: 2, explain: "One idea per slide keeps the audience focused and engaged with your words." },
+          { q: "How many colours maximum is recommended for a professional slide?", options: ["1", "2–3", "6–8", "As many as you like"], answer: 1, explain: "2–3 colours create visual harmony — more than that looks chaotic and amateur." },
+        ]
       },
       {
-        id: "ppt-2",
-        title: "Module 2: Animations, Transitions & Multimedia",
-        duration: "30 min",
-        video: "https://www.youtube.com/embed/n1RCrHFMXvs",
-        exercise: {
-          title: "Animated Lesson Presentation",
-          instructions: [
-            "Create an 8-slide educational presentation on any school topic.",
-            "Add entrance animations to bullet points (Appear or Fade — avoid flashy effects).",
-            "Apply a consistent slide transition (Fade recommended).",
-            "Embed a YouTube video on slide 4 using Insert > Video > Online Video.",
-            "Record a voiceover on slide 1 using Insert > Audio > Record Audio.",
+        id: "p2", title: "Slide Layouts & Themes", xp: 20, duration: "5 min",
+        learn: {
+          icon: "📐", heading: "Structure Your Presentation Professionally",
+          definition: "Slide Layouts are pre-set arrangements for content (title, content, two-column, etc.). Themes apply consistent colours and fonts.",
+          analogy: "Choosing a Theme is like picking a school uniform — it makes everything match instantly without any effort!",
+          facts: [
+            { icon: "📐", text: "Home → Layout — choose from 9 professional slide layouts" },
+            { icon: "🎨", text: "Design tab → Themes — apply a complete visual style" },
+            { icon: "🎭", text: "Variants — change the colour version of a theme" },
+            { icon: "📋", text: "Slide Master (View tab) — edit all slides at once" },
+            { icon: "🖼️", text: "Title Slide layout for first slide; Title & Content for the rest" },
           ],
-          task: "What topic did you create your lesson presentation on?",
-          inputLabel: "Lesson Topic",
-          inputPlaceholder: "e.g., The Water Cycle",
+          visual: [
+            { label: "Title Slide", desc: "Big title + subtitle — for your first slide", color: "#c43e1c" },
+            { label: "Title & Content", desc: "Heading + bullets/image — most common layout", color: "#e05a38" },
+            { label: "Blank", desc: "No placeholders — full creative control", color: "#6c757d" },
+          ]
         },
-        quiz: [
-          {
-            q: "Which animation type makes text appear letter by letter?",
-            options: ["By Word", "By Paragraph", "As One Object", "By Letter"],
-            answer: 3,
-          },
-          {
-            q: "Slide Transitions in PowerPoint are controlled under which tab?",
-            options: ["Home", "Animations", "Transitions", "Slide Show"],
-            answer: 2,
-          },
-          {
-            q: "True or False: Excessive animations distract from the message and reduce professionalism.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "To add an online video to a PowerPoint slide, you use:",
-            options: ["Home > Video", "Insert > Video > Online Video", "Design > Media", "Slide Show > Video"],
-            answer: 1,
-          },
-        ],
-        resources: [
-          { name: "Animations & Transitions Guide", url: "https://support.microsoft.com/en-us/office/add-animations-to-text-images-tables-smart-art-and-other-objects-in-powerpoint-6a10f6e6-7c97-4571-a20d-1f89c41f2b7d", type: "link" },
-        ],
+        type: "drag",
+        question: "Drag each element to the correct PowerPoint tab",
+        items: ["Apply a Theme", "Change Layout", "Add Animation", "Slide Transition", "Insert a Chart"],
+        zones: [
+          { id: "design", label: "🎨 Design Tab", accepts: ["Apply a Theme"] },
+          { id: "home", label: "🏠 Home Tab", accepts: ["Change Layout"] },
+          { id: "animations", label: "✨ Animations Tab", accepts: ["Add Animation"] },
+          { id: "transitions", label: "🔀 Transitions Tab", accepts: ["Slide Transition"] },
+          { id: "insert", label: "➕ Insert Tab", accepts: ["Insert a Chart"] },
+        ]
       },
       {
-        id: "ppt-3",
-        title: "Module 3: SmartArt, Charts & Data Slides",
-        duration: "25 min",
-        video: "https://www.youtube.com/embed/VCWnnM8YNCI",
-        exercise: {
-          title: "Data-Driven Presentation",
-          instructions: [
-            "Create a slide with a SmartArt hierarchy showing school structure (Principal → HoDs → Teachers).",
-            "Insert a Bar Chart showing student performance by class.",
-            "Insert a Table comparing 3 teaching strategies.",
-            "Apply consistent data colours matching your theme.",
-            "Add data labels to your chart.",
+        id: "p3", title: "Animations & Transitions (Done Right)", xp: 25, duration: "6 min",
+        learn: {
+          icon: "✨", heading: "Motion That Helps, Not Distracts",
+          definition: "Animations make objects appear/move on a slide. Transitions are the effect between slides. Both should be subtle and purposeful.",
+          analogy: "A sprinkle of animation is like a good spice — it adds flavour. Too much and it ruins everything. 'Fly In Spinning Zoom' is a presentation crime!",
+          facts: [
+            { icon: "✅", text: "Best entrance: Appear or Fade — clean and professional" },
+            { icon: "✅", text: "Best transition: Fade or None — smooth and distraction-free" },
+            { icon: "❌", text: "Avoid: Bounce, Spiral, Pinwheel — they look unprofessional" },
+            { icon: "⏱️", text: "Keep animations fast: 0.5s duration maximum" },
+            { icon: "📝", text: "Animate bullets one by one to control your story flow" },
           ],
-          task: "How many levels did your SmartArt hierarchy have?",
-          inputLabel: "Number of Levels",
-          inputPlaceholder: "e.g., 3",
+          visual: [
+            { label: "Entrance", desc: "Fade — text appears smoothly (professional ✓)", color: "#c43e1c" },
+            { label: "Transition", desc: "Fade between slides — calm and focused (✓)", color: "#e05a38" },
+            { label: "Avoid", desc: "Bounce/Fly In/Spin — distracting for learners (✗)", color: "#e74c3c" },
+          ]
         },
-        quiz: [
-          {
-            q: "SmartArt in PowerPoint is best used to:",
-            options: ["Show financial data", "Visualise relationships, processes, and hierarchies", "Embed videos", "Create animations"],
-            answer: 1,
-          },
-          {
-            q: "To insert a chart in PowerPoint, you go to:",
-            options: ["Home > Chart", "Insert > Chart", "Design > Chart", "View > Chart"],
-            answer: 1,
-          },
-          {
-            q: "True or False: Charts inserted in PowerPoint are linked to Excel data.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "Data labels on a PowerPoint chart:",
-            options: ["Remove the legend", "Show values directly on chart elements", "Add animations", "Change chart type"],
-            answer: 1,
-          },
-        ],
-        resources: [
-          { name: "SmartArt Tutorial", url: "https://support.microsoft.com/en-us/office/create-a-smartart-graphic-from-scratch-fac91570-06c8-4e18-a0f6-73a6fd85c3f6", type: "link" },
-        ],
+        type: "mcq",
+        questions: [
+          { q: "Which animation is most professional for a teacher's presentation?", options: ["Bounce", "Pinwheel", "Fade", "Spiral"], answer: 2, explain: "Fade is subtle, professional, and doesn't distract the audience from your content." },
+          { q: "Transitions are the effect that happens:", options: ["When text appears on a slide", "Between one slide and the next", "When you click an object", "When you open the file"], answer: 1, explain: "Transitions control how PowerPoint moves from one slide to the next." },
+          { q: "How long should a typical entrance animation last?", options: ["3–5 seconds (dramatic effect)", "0.5–1 second (quick and clean)", "10+ seconds (slow reveal)", "No time limit"], answer: 1, explain: "Animations should be quick (0.5s) — long animations make audiences impatient!" },
+        ]
       },
       {
-        id: "ppt-4",
-        title: "Module 4: Presenter Tools & Delivery",
-        duration: "20 min",
-        video: "https://www.youtube.com/embed/2APFUjFrgTc",
-        exercise: {
-          title: "Rehearse Your Presentation",
-          instructions: [
-            "Open your existing presentation.",
-            "Add speaker notes to each slide (at least 2 sentences each).",
-            "Use Slide Show > Rehearse Timings to time your presentation.",
-            "Use Presenter View: Slide Show > Presenter View (requires 2 screens or simulate).",
-            "Export your presentation as a PDF handout: File > Export > Create PDF/XPS.",
+        id: "p4", title: "SmartArt & Visual Explanations", xp: 25, duration: "6 min",
+        learn: {
+          icon: "🧩", heading: "Show Relationships Without Drawing",
+          definition: "SmartArt converts text into professional diagrams — hierarchies, processes, cycles, and lists — in one click.",
+          analogy: "Instead of drawing boxes and arrows for an hour, SmartArt does it in 30 seconds. Type your text, pick a diagram — done!",
+          facts: [
+            { icon: "🏗️", text: "Hierarchy — show org charts, reporting structures" },
+            { icon: "🔄", text: "Cycle — show repeated processes (e.g. lesson cycle)" },
+            { icon: "➡️", text: "Process — show steps in sequence (e.g. assignment workflow)" },
+            { icon: "📋", text: "List — show grouped items more visually than bullets" },
+            { icon: "💡", text: "Insert → SmartArt → pick your diagram type" },
           ],
-          task: "What was your total rehearsed presentation duration (minutes)?",
-          inputLabel: "Presentation Duration",
-          inputPlaceholder: "e.g., 12 minutes",
+          visual: [
+            { label: "Insert tab", desc: "→ SmartArt → choose layout", color: "#c43e1c" },
+            { label: "Text Pane", desc: "Type your items — SmartArt updates live", color: "#e05a38" },
+            { label: "Design tab", desc: "Change colours and styles of your SmartArt", color: "#e67e22" },
+          ]
         },
-        quiz: [
-          {
-            q: "Presenter View in PowerPoint shows:",
-            options: ["Only the slide to the audience", "Current slide, notes, timer, and next slide to the presenter", "The slide master", "All slides at once"],
-            answer: 1,
-          },
-          {
-            q: "Speaker notes in PowerPoint are visible to:",
-            options: ["The audience on the projected screen", "Only the presenter in Presenter View", "Everyone by default", "No one"],
-            answer: 1,
-          },
-          {
-            q: "True or False: You can export a PowerPoint presentation as a video.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "Rehearse Timings in PowerPoint is used to:",
-            options: ["Set animation speed", "Record how long you spend on each slide", "Lock the presentation", "Add slide numbers"],
-            answer: 1,
-          },
-        ],
-        resources: [
-          { name: "Presenter View Guide", url: "https://support.microsoft.com/en-us/office/use-presenter-view-in-powerpoint-fe7638e4-76fb-4349-8d81-5eb6679f49d7", type: "link" },
-        ],
+        type: "fillin",
+        questions: [
+          { q: "SmartArt is found under the ___ tab in PowerPoint", answer: "Insert", hint: "Where you add things to slides" },
+          { q: "To show a school management structure, use a ___ SmartArt", answer: "Hierarchy", hint: "Top-down, like a family tree" },
+          { q: "SmartArt converts typed ___ into professional diagrams automatically", answer: "text", hint: "You type words; SmartArt draws shapes" },
+        ]
       },
       {
-        id: "ppt-5",
-        title: "Module 5: Interactive Presentations & Quizzes",
-        duration: "25 min",
-        video: "https://www.youtube.com/embed/5g5DNxBu4O4",
-        exercise: {
-          title: "Create an Interactive Quiz in PowerPoint",
-          instructions: [
-            "Create a 10-slide quiz presentation on any topic.",
-            "Slide 1: Title. Slides 2–6: Questions with 4 answer options as text boxes.",
-            "Use Hyperlinks to link correct answer to a 'Correct!' slide and wrong answers to a 'Try Again!' slide.",
-            "Add Action Buttons (Insert > Action Buttons) for navigation.",
-            "Test the quiz fully in Slide Show mode.",
+        id: "p5", title: "Presenter Tools & Delivery", xp: 25, duration: "7 min",
+        learn: {
+          icon: "🎤", heading: "Present with Confidence",
+          definition: "Presenter View shows your notes and the next slide on YOUR screen while the audience only sees the current slide.",
+          analogy: "It's like having a secret cheat sheet no one else can see — your notes, your timer, the next slide — all at your fingertips!",
+          facts: [
+            { icon: "👁️", text: "Slide Show → Use Presenter View — toggle this ON" },
+            { icon: "📝", text: "Add Speaker Notes at the bottom of each slide" },
+            { icon: "⏱️", text: "Built-in timer shows how long you've been presenting" },
+            { icon: "🖊️", text: "Laser pointer / pen tool — annotate slides live" },
+            { icon: "📄", text: "File → Export → PDF — share your presentation as a handout" },
           ],
-          task: "What topic is your interactive quiz on?",
-          inputLabel: "Quiz Topic",
-          inputPlaceholder: "e.g., African Geography",
+          visual: [
+            { label: "Your Screen", desc: "Current slide + notes + timer + next slide", color: "#c43e1c" },
+            { label: "Audience Screen", desc: "Only sees the current slide — clean view", color: "#27ae60" },
+            { label: "Pen Tool", desc: "Draw/highlight on the slide during presentation", color: "#e67e22" },
+          ]
         },
-        quiz: [
-          {
-            q: "Hyperlinks in PowerPoint can link to:",
-            options: ["Only websites", "Another slide, a file, or a URL", "Only email addresses", "Only the first slide"],
-            answer: 1,
-          },
-          {
-            q: "Action Buttons in PowerPoint are found under:",
-            options: ["Home > Shapes", "Insert > Shapes > Action Buttons", "Design > Buttons", "Animations > Actions"],
-            answer: 1,
-          },
-          {
-            q: "True or False: PowerPoint presentations can be saved as interactive HTML files.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "To make a quiz non-linear in PowerPoint, you use:",
-            options: ["Animations", "Hyperlinks between slides", "Transitions", "Slide layouts"],
-            answer: 1,
-          },
-        ],
-        resources: [
-          { name: "Interactive Presentations Guide", url: "https://support.microsoft.com/en-us/office/add-a-hyperlink-to-a-slide-239c6c94-d52f-480c-99ae-8b0acf7df6d9", type: "link" },
-        ],
+        type: "mcq",
+        questions: [
+          { q: "Presenter View shows which additional elements to the PRESENTER only?", options: ["Nothing extra", "Speaker notes, timer, and next slide preview", "The audience's reactions", "All slides at once"], answer: 1, explain: "Presenter View gives you notes, timer, and next-slide preview — your private dashboard!" },
+          { q: "Speaker notes in PowerPoint appear:", options: ["On the audience's screen", "On every printed slide", "Below each slide in Presenter View only", "In a separate email"], answer: 2, explain: "Notes are in Presenter View — they're invisible to the audience." },
+          { q: "To share a 'read-only' version of your presentation, export as:", options: [".pptx", ".docx", ".pdf", ".xlsx"], answer: 2, explain: "PDF is the best format to share — it looks identical on any device and can't be accidentally edited." },
+        ]
       },
-    ],
+      {
+        id: "p6", title: "Interactive Presentations & Quizzes", xp: 30, duration: "8 min",
+        learn: {
+          icon: "🎮", heading: "Make Your Lessons Interactive",
+          definition: "Hyperlinks in PowerPoint let you jump between slides, turning a presentation into an interactive quiz or branching story.",
+          analogy: "A PowerPoint quiz works like a game show — click the right answer and jump to a 'Correct!' slide; click wrong and jump to 'Try Again!'",
+          facts: [
+            { icon: "🔗", text: "Select text/shape → Insert → Hyperlink → Place in document" },
+            { icon: "🟢", text: "Correct answer links to a 'Well done!' slide" },
+            { icon: "🔴", text: "Wrong answers link to a 'Try again!' slide with a Back button" },
+            { icon: "🔲", text: "Action Buttons (Insert → Shapes → bottom row) add navigation" },
+            { icon: "🎯", text: "Set Slide Show to 'Kiosk mode' for self-running student quizzes" },
+          ],
+          visual: [
+            { label: "Answer Button", desc: "Shape with hyperlink to Correct/Wrong slide", color: "#c43e1c" },
+            { label: "Navigation", desc: "Home button to return to question menu", color: "#e05a38" },
+            { label: "Kiosk Mode", desc: "Slide Show → Set Up → Browsed at a kiosk", color: "#6c757d" },
+          ]
+        },
+        type: "mcq",
+        questions: [
+          { q: "To link a button to another slide in PowerPoint, you use:", options: ["Animations", "Insert → Hyperlink → Place in this document", "Design → Link", "Transitions → Jump to"], answer: 1, explain: "Insert → Hyperlink lets you link any object to any slide in the same presentation." },
+          { q: "Action Buttons in PowerPoint are found under:", options: ["Insert → Shapes (bottom row)", "Home → Shapes", "Animations → Action", "Design → Actions"], answer: 0, explain: "Action Buttons are special shapes in Insert → Shapes (scroll to the very bottom)." },
+          { q: "Kiosk mode in Slide Show is best for:", options: ["Presenter-led classes only", "Self-running student quizzes with no teacher present", "Exporting to PDF", "Printing handouts"], answer: 1, explain: "Kiosk mode loops the show and prevents students from exiting — perfect for self-paced quizzes!" },
+        ]
+      },
+    ]
   },
   {
-    id: "ms-teams",
-    title: "Microsoft Teams",
-    icon: "💬",
-    description: "Leverage Teams for virtual classrooms, collaboration, meetings, and school-wide communication.",
-    modules: [
+    id: "teams", title: "Microsoft Teams", emoji: "💬", color: "#464eb8", light: "#eeeffe",
+    tagline: "Connect, collaborate, and teach from anywhere",
+    lessons: [
       {
-        id: "teams-1",
-        title: "Module 1: Setting Up Your Classroom Team",
-        duration: "25 min",
-        video: "https://www.youtube.com/embed/jugBQqE_2sM",
-        exercise: {
-          title: "Create a Class Team",
-          instructions: [
-            "In Microsoft Teams, click 'Join or create a team' > 'Create team'.",
-            "Select 'Class' as the team type.",
-            "Name it: '[Subject] [Grade] [Year]' e.g. 'Mathematics Grade 10 2025'.",
-            "Add your subject description.",
-            "Create 3 channels: General, Assignments, Resources.",
+        id: "t1", title: "What is Microsoft Teams?", xp: 20, duration: "5 min",
+        learn: {
+          icon: "💬", heading: "Your Digital Staffroom + Classroom",
+          definition: "Microsoft Teams is a collaboration platform combining chat, video calls, file sharing, and assignments in one place.",
+          analogy: "Teams is like having your staffroom, classroom, filing cabinet, and phone system all in one app — accessible from anywhere!",
+          facts: [
+            { icon: "💬", text: "Chat — message colleagues and students in real-time" },
+            { icon: "📹", text: "Meetings — video calls up to 1000 participants" },
+            { icon: "📁", text: "Files — shared storage powered by SharePoint" },
+            { icon: "📋", text: "Assignments — set, collect, and grade work" },
+            { icon: "📱", text: "Works on phone, tablet, and computer" },
           ],
-          task: "What is the full name of your class team?",
-          inputLabel: "Team Name",
-          inputPlaceholder: "e.g., Mathematics Grade 10 2025",
+          visual: [
+            { label: "Teams", desc: "Group workspaces for classes or departments", color: "#464eb8" },
+            { label: "Channels", desc: "Topic-based conversations within a Team", color: "#5a64cc" },
+            { label: "Chat", desc: "Private one-on-one or group messages", color: "#6c757d" },
+          ]
         },
-        quiz: [
-          {
-            q: "In Microsoft Teams Education, the 'Class' team type provides:",
-            options: ["Only chat features", "Assignment tracking, grade book, and OneNote class notebook", "Only file sharing", "Only video calls"],
-            answer: 1,
-          },
-          {
-            q: "Channels in Microsoft Teams are used to:",
-            options: ["Replace email", "Organise conversations by topic", "Make video calls only", "Store passwords"],
-            answer: 1,
-          },
-          {
-            q: "True or False: Students can create channels in a Class team by default.",
-            options: ["True", "False"],
-            answer: 1,
-          },
-          {
-            q: "The 'General' channel in a Team is:",
-            options: ["Optional and can be deleted", "The default channel that cannot be deleted", "Only for teachers", "Used for video calls only"],
-            answer: 1,
-          },
-        ],
-        resources: [
-          { name: "Teams for Education Guide", url: "https://support.microsoft.com/en-us/topic/get-started-with-microsoft-teams-for-education-b9e4fb1d-5d87-4f0e-a3b6-0ce3fd8e2455", type: "link" },
-        ],
+        type: "drag",
+        question: "Drag each feature to where you find it in Teams",
+        items: ["Video call a colleague", "Post a class announcement", "Send a private message", "Share a document", "Set homework"],
+        zones: [
+          { id: "meetings", label: "📹 Meetings", accepts: ["Video call a colleague"] },
+          { id: "channel", label: "📢 Channel Post", accepts: ["Post a class announcement"] },
+          { id: "chat", label: "💬 Chat", accepts: ["Send a private message"] },
+          { id: "files", label: "📁 Files Tab", accepts: ["Share a document"] },
+          { id: "assignments", label: "📋 Assignments", accepts: ["Set homework"] },
+        ]
       },
       {
-        id: "teams-2",
-        title: "Module 2: Assignments & Grading",
-        duration: "30 min",
-        video: "https://www.youtube.com/embed/1w7G8A4yAPU",
-        exercise: {
-          title: "Create and Grade an Assignment",
-          instructions: [
-            "In your Class team, click 'Assignments' > 'Create' > 'Assignment'.",
-            "Title: 'Chapter 3 Review Questions'.",
-            "Attach a Word document as the assignment template.",
-            "Set a due date for next Friday.",
-            "Assign to all students and publish.",
-            "Open a submitted assignment and add feedback and a grade.",
+        id: "t2", title: "Setting Up Your Class Team", xp: 25, duration: "6 min",
+        learn: {
+          icon: "🏫", heading: "Create Your Virtual Classroom",
+          definition: "A Class Team is a special Teams workspace with built-in tools for assignments, grading, and a Class Notebook.",
+          analogy: "A Class Team is your digital classroom — students join with a code, you post work, and everything stays organised in one place!",
+          facts: [
+            { icon: "➕", text: "Create → Class type → name it: Subject_Grade_Year" },
+            { icon: "🔑", text: "Share the join code for students to enrol" },
+            { icon: "📢", text: "General channel = main classroom noticeboard" },
+            { icon: "📂", text: "Create channels: Assignments, Resources, Discussions" },
+            { icon: "🔒", text: "Teachers can control who can post in each channel" },
           ],
-          task: "What was the maximum points for your assignment?",
-          inputLabel: "Maximum Points",
-          inputPlaceholder: "e.g., 50",
+          visual: [
+            { label: "Class type", desc: "Gives you Grades, Assignments, Class Notebook", color: "#464eb8" },
+            { label: "Join Code", desc: "Share with students to enrol them instantly", color: "#5a64cc" },
+            { label: "Channels", desc: "Separate spaces for different topics/activities", color: "#27ae60" },
+          ]
         },
-        quiz: [
-          {
-            q: "In Teams Assignments, 'Points' refers to:",
-            options: ["Attendance points", "The maximum grade achievable for the assignment", "Bonus marks only", "Participation score"],
-            answer: 1,
-          },
-          {
-            q: "When you return a graded assignment in Teams, the student:",
-            options: ["Never sees the feedback", "Receives a notification and can view feedback", "Must email you for grades", "Gets an automatic report card"],
-            answer: 1,
-          },
-          {
-            q: "True or False: Teams Assignments can have multiple attachments including rubrics.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "The Grades tab in a Class team shows:",
-            options: ["Attendance records", "All assignment scores across all students", "Email history", "Meeting recordings"],
-            answer: 1,
-          },
-        ],
-        resources: [
-          { name: "Assignments in Teams", url: "https://support.microsoft.com/en-us/office/microsoft-teams-5aa4431a-8a3c-4aa5-87a6-b6401abea114", type: "link" },
-        ],
+        type: "mcq",
+        questions: [
+          { q: "What type of Team should teachers create for their class?", options: ["Staff", "PLC", "Class", "Other"], answer: 2, explain: "Class type gives special features: Assignments, Grades tab, and Class Notebook — not in other team types." },
+          { q: "Students join your Class Team using:", options: ["Their school email", "A join code you share with them", "A password", "A direct invitation only"], answer: 1, explain: "A join code lets students enrol instantly — share it verbally or post it securely." },
+          { q: "The General channel in a Class Team is best used for:", options: ["Private teacher notes", "Off-topic chats", "Main class announcements and resources", "Video calls only"], answer: 2, explain: "General is the default channel — use it for official class communication and resources." },
+        ]
       },
       {
-        id: "teams-3",
-        title: "Module 3: Virtual Meetings & Breakout Rooms",
-        duration: "25 min",
-        video: "https://www.youtube.com/embed/hq1lIPFxk6o",
-        exercise: {
-          title: "Host a Virtual Class Meeting",
-          instructions: [
-            "Schedule a meeting in your Class team channel for a future date and time.",
-            "In meeting settings, enable the lobby so students wait to be admitted.",
-            "During a practice meeting, enable Breakout Rooms and create 3 rooms.",
-            "Assign participants and open the rooms.",
-            "Use the meeting chat to post a discussion question.",
+        id: "t3", title: "Assignments & Grading", xp: 30, duration: "7 min",
+        learn: {
+          icon: "📋", heading: "Set, Collect & Grade — All in Teams",
+          definition: "The Assignments tab lets you create homework/classwork, attach resources, set due dates, receive submissions, and give feedback.",
+          analogy: "It's like having a digital homework basket — students drop their work in, you see exactly who submitted, and you mark without any paper!",
+          facts: [
+            { icon: "➕", text: "Assignments tab → Create → Assignment" },
+            { icon: "📎", text: "Attach a Word/PDF template for students to complete" },
+            { icon: "📅", text: "Set a due date and close date to prevent late submissions" },
+            { icon: "🏆", text: "Add a Rubric for consistent, fair grading criteria" },
+            { icon: "🔄", text: "Return graded work with feedback — student gets notified" },
           ],
-          task: "How many breakout rooms did you create?",
-          inputLabel: "Number of Rooms",
-          inputPlaceholder: "e.g., 3",
+          visual: [
+            { label: "Create", desc: "Title, instructions, attachments, due date", color: "#464eb8" },
+            { label: "Track", desc: "See who submitted, who hasn't, in real-time", color: "#5a64cc" },
+            { label: "Grade & Return", desc: "Mark with feedback → student notified instantly", color: "#27ae60" },
+          ]
         },
-        quiz: [
-          {
-            q: "The Lobby in a Teams meeting allows the host to:",
-            options: ["Kick out participants", "Control who enters the meeting", "Record the meeting automatically", "Share files"],
-            answer: 1,
-          },
-          {
-            q: "Breakout Rooms in Teams are used to:",
-            options: ["Schedule future meetings", "Split participants into smaller groups for discussion", "Share the screen", "Record attendance"],
-            answer: 1,
-          },
-          {
-            q: "True or False: Teams meetings can be recorded and saved to SharePoint or OneDrive.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "To raise your hand virtually during a Teams meeting, you:",
-            options: ["Type 'hand' in the chat", "Click the Raise Hand icon in the meeting toolbar", "Wave at the camera", "Send an emoji"],
-            answer: 1,
-          },
-        ],
-        resources: [
-          { name: "Breakout Rooms in Teams", url: "https://support.microsoft.com/en-us/office/use-breakout-rooms-in-microsoft-teams-meetings-7de1f48a-da07-466c-a5ab-4ebace28e461", type: "link" },
-        ],
+        type: "fillin",
+        questions: [
+          { q: "The Assignments feature is found in the ___ tab of your Class Team", answer: "Assignments", hint: "It's named exactly after what it does" },
+          { q: "A ___ in Assignments provides clear marking criteria for students", answer: "Rubric", hint: "A scoring guide with criteria and levels" },
+          { q: "After grading, you click ___ to send the work back to the student", answer: "Return", hint: "Give it back!" },
+        ]
       },
       {
-        id: "teams-4",
-        title: "Module 4: File Sharing & OneNote",
-        duration: "25 min",
-        video: "https://www.youtube.com/embed/IWWtUm_HEL4",
-        exercise: {
-          title: "Organise Class Resources",
-          instructions: [
-            "In your Class team, click the 'Files' tab.",
-            "Create folders: Term 1, Term 2, Resources, Templates.",
-            "Upload 3 teaching resources to the Resources folder.",
-            "Open the Class Notebook (OneNote) from the Teams tab.",
-            "Create a note in the Collaboration Space for students: 'Welcome to [Subject]!'",
+        id: "t4", title: "Meetings & Breakout Rooms", xp: 25, duration: "6 min",
+        learn: {
+          icon: "📹", heading: "Run Engaging Virtual Classes",
+          definition: "Teams Meetings support video, audio, screen sharing, chat, polls, and Breakout Rooms for group work.",
+          analogy: "Breakout Rooms are like asking students to discuss in small groups — they leave the main 'room', work together, and come back — all online!",
+          facts: [
+            { icon: "📅", text: "Schedule in advance: Calendar → New Meeting" },
+            { icon: "🚪", text: "Lobby setting: students wait until you admit them" },
+            { icon: "👥", text: "Breakout Rooms: split into groups during the meeting" },
+            { icon: "📺", text: "Share Screen to show your slides, browser, or any app" },
+            { icon: "📹", text: "Record the meeting — saved to SharePoint for absent students" },
           ],
-          task: "What is the name of your first uploaded resource?",
-          inputLabel: "Resource Filename",
-          inputPlaceholder: "e.g., Chapter1_Notes.pdf",
+          visual: [
+            { label: "Lobby", desc: "Students wait here until the teacher admits them", color: "#464eb8" },
+            { label: "Breakout Rooms", desc: "Small groups — teacher can visit each room", color: "#5a64cc" },
+            { label: "Recording", desc: "Auto-saved to SharePoint for later access", color: "#27ae60" },
+          ]
         },
-        quiz: [
-          {
-            q: "Files shared in a Teams channel are stored in:",
-            options: ["Google Drive", "SharePoint (linked to the team)", "OneDrive personal", "Local computer only"],
-            answer: 1,
-          },
-          {
-            q: "The Class Notebook in Teams is powered by:",
-            options: ["Word Online", "OneNote", "Excel Online", "Forms"],
-            answer: 1,
-          },
-          {
-            q: "True or False: All team members can edit files in the Files tab simultaneously.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "The Collaboration Space in OneNote Class Notebook is:",
-            options: ["Only viewable by the teacher", "A shared space where all students can add content", "The teacher's private notes", "Locked during exams"],
-            answer: 1,
-          },
-        ],
-        resources: [
-          { name: "OneNote Class Notebook", url: "https://support.microsoft.com/en-us/office/class-notebook-for-onenote-0b2a3c73-a6d0-470a-be55-dc73e47e93c2", type: "link" },
-        ],
+        type: "mcq",
+        questions: [
+          { q: "Breakout Rooms in Teams are used to:", options: ["Mute all students", "Split participants into small groups", "Record the meeting", "Share your screen"], answer: 1, explain: "Breakout Rooms let you split the class into small groups — perfect for discussions and group tasks." },
+          { q: "The Lobby in Teams meetings allows the teacher to:", options: ["See who typed in chat", "Control which participants enter the meeting", "Record the session", "Share files"], answer: 1, explain: "The Lobby is a waiting area — only the teacher can admit or reject participants." },
+          { q: "Where are recorded Teams meetings saved?", options: ["Your email inbox", "SharePoint or OneDrive", "A USB drive", "The Teams chat history only"], answer: 1, explain: "Recordings go to SharePoint/OneDrive — accessible to all team members anytime." },
+        ]
       },
       {
-        id: "teams-5",
-        title: "Module 5: Teams Apps, Polls & Forms",
-        duration: "20 min",
-        video: "https://www.youtube.com/embed/yDOiPOdpOBk",
-        exercise: {
-          title: "Engage Students with Polls & Quizzes",
-          instructions: [
-            "In a Teams channel, click '+' to add a tab and add 'Forms'.",
-            "Create a quick 5-question quiz using Microsoft Forms.",
-            "Share the quiz link in your class channel.",
-            "In a meeting, use the Polls feature to launch a live poll.",
-            "View the real-time poll results during the session.",
+        id: "t5", title: "OneNote Class Notebook", xp: 25, duration: "7 min",
+        learn: {
+          icon: "📓", heading: "Your Digital Lesson Planner + Student Journal",
+          definition: "OneNote Class Notebook has three spaces: Content Library (teacher-only), Collaboration Space (all edit), and private Student Notebooks.",
+          analogy: "Imagine: every student has their own exercise book AND there's a shared class poster on the wall — all in one digital notebook!",
+          facts: [
+            { icon: "📚", text: "Content Library — teacher posts notes, resources (read-only for students)" },
+            { icon: "🤝", text: "Collaboration Space — everyone can edit (group work, brainstorm)" },
+            { icon: "🔒", text: "Student Notebooks — private to each student + teacher" },
+            { icon: "✏️", text: "Add text, images, audio recordings, and drawings" },
+            { icon: "📱", text: "Works on phone, tablet, and PC — syncs everywhere" },
           ],
-          task: "What was your quiz topic in Microsoft Forms?",
-          inputLabel: "Forms Quiz Topic",
-          inputPlaceholder: "e.g., Term 1 Revision Quiz",
+          visual: [
+            { label: "Content Library", desc: "Teacher posts lessons — students read only", color: "#464eb8" },
+            { label: "Collaboration Space", desc: "Shared space — everyone contributes", color: "#27ae60" },
+            { label: "Student Notebook", desc: "Private — only teacher and student see it", color: "#e67e22" },
+          ]
         },
-        quiz: [
-          {
-            q: "Microsoft Forms integrated with Teams can be used to:",
-            options: ["Only collect emails", "Create quizzes, surveys, and polls with real-time results", "Design slide decks", "Record meetings"],
-            answer: 1,
-          },
-          {
-            q: "To add an app or tool to a Teams channel, you click:",
-            options: ["The settings gear", "The '+' icon (Add a tab)", "The chat bubble", "The call button"],
-            answer: 1,
-          },
-          {
-            q: "True or False: Microsoft Forms automatically grades quiz responses if answer keys are set.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "Polls launched during a Teams meeting are:",
-            options: ["Anonymous always", "Visible only to the host", "Displayed live for all participants to see and respond", "Saved to email"],
-            answer: 2,
-          },
-        ],
-        resources: [
-          { name: "Forms & Polls in Teams", url: "https://support.microsoft.com/en-us/office/create-a-poll-in-microsoft-teams-a3f9112c-01e1-4ee4-bd88-25e4ebe0c4ba", type: "link" },
-        ],
+        type: "drag",
+        question: "Place each activity in the correct OneNote space",
+        items: ["Post a lesson note", "Class brainstorm activity", "Student's private journal", "Shared group project", "Teacher feedback on student work"],
+        zones: [
+          { id: "content", label: "📚 Content Library", accepts: ["Post a lesson note"] },
+          { id: "collab", label: "🤝 Collaboration Space", accepts: ["Class brainstorm activity", "Shared group project"] },
+          { id: "student", label: "🔒 Student Notebook", accepts: ["Student's private journal", "Teacher feedback on student work"] },
+        ]
       },
-    ],
+      {
+        id: "t6", title: "Forms, Polls & Feedback", xp: 25, duration: "6 min",
+        learn: {
+          icon: "📊", heading: "Collect Feedback & Run Live Polls",
+          definition: "Microsoft Forms integrates with Teams to create quizzes, surveys, and polls — results appear live in real-time.",
+          analogy: "A live poll is like asking the class to raise hands — but everyone answers honestly, you see every answer, and it's automatically counted!",
+          facts: [
+            { icon: "📊", text: "Add Forms tab to a channel: click + → Forms" },
+            { icon: "🗳️", text: "Polls during meetings: use the Polls icon in meeting toolbar" },
+            { icon: "✅", text: "Quiz mode auto-grades and shows students their score" },
+            { icon: "📈", text: "Response summary shows class trends and patterns" },
+            { icon: "📤", text: "Export responses to Excel for detailed analysis" },
+          ],
+          visual: [
+            { label: "Quiz", desc: "Auto-graded with feedback — great for revision", color: "#464eb8" },
+            { label: "Survey", desc: "Gather opinions — no right/wrong answers", color: "#5a64cc" },
+            { label: "Poll", desc: "Quick live vote during a meeting", color: "#27ae60" },
+          ]
+        },
+        type: "mcq",
+        questions: [
+          { q: "Microsoft Forms can be added to a Teams channel as a:", options: ["Bot", "Connector", "Tab (click '+')", "Webhook"], answer: 2, explain: "Click the '+' icon on any channel tab row to add Forms (and many other apps)." },
+          { q: "Forms Quiz mode automatically:", options: ["Sends results by email", "Grades responses and shows students their score", "Creates a Pivot Table", "Records a video"], answer: 1, explain: "Quiz mode grades instantly — students see their score right away, saving teacher marking time!" },
+          { q: "Form responses can be exported to ___ for further analysis.", options: ["Word", "PowerPoint", "Excel", "Access"], answer: 2, explain: "Export to Excel gives you all responses in a spreadsheet for sorting, filtering, and analysis." },
+        ]
+      },
+    ]
   },
   {
-    id: "cybersecurity",
-    title: "Cybersecurity",
-    icon: "🔐",
-    description: "Protect yourself, your students, and your school data with essential cybersecurity knowledge.",
-    modules: [
+    id: "cyber", title: "Cybersecurity", emoji: "🔐", color: "#c0392b", light: "#fdf0ef",
+    tagline: "Protect yourself and your students online",
+    lessons: [
       {
-        id: "cyber-1",
-        title: "Module 1: Password Security & Account Safety",
-        duration: "25 min",
-        video: "https://www.youtube.com/embed/aEmXedplH-c",
-        exercise: {
-          title: "Password Strength Audit",
-          instructions: [
-            "Visit HaveIBeenPwned.com and check if your email has been in a data breach.",
-            "Use Bitwarden or LastPass (free) to generate a 16+ character password.",
-            "Enable Two-Factor Authentication on your Google or Microsoft account.",
-            "Review your account recovery options and update any outdated phone numbers/emails.",
-            "Document your password strategy (not actual passwords!).",
+        id: "cy1", title: "What is Cybersecurity?", xp: 20, duration: "5 min",
+        learn: {
+          icon: "🔐", heading: "Your Digital Safety Shield",
+          definition: "Cybersecurity is the practice of protecting computers, networks, and data from digital attacks, damage, or unauthorised access.",
+          analogy: "Cybersecurity is like the lock on your front door, the alarm on your car, and a guard dog — all protecting your digital 'home'!",
+          facts: [
+            { icon: "🏦", text: "Hackers target banks, hospitals, schools, and individuals" },
+            { icon: "📧", text: "Most attacks start with a deceptive email (phishing)" },
+            { icon: "💰", text: "Ransomware locks your files and demands payment" },
+            { icon: "📱", text: "Mobile devices are just as vulnerable as computers" },
+            { icon: "🧑‍🏫", text: "Teachers protect student data — it's a legal responsibility!" },
           ],
-          task: "Describe your new password strategy in one sentence:",
-          inputLabel: "Password Strategy",
-          inputPlaceholder: "e.g., 16-char random passwords stored in Bitwarden with 2FA on all accounts",
+          visual: [
+            { label: "Malware", desc: "Software designed to damage or steal from your device", color: "#c0392b" },
+            { label: "Phishing", desc: "Fake emails/sites tricking you into giving passwords", color: "#e74c3c" },
+            { label: "Ransomware", desc: "Locks your files until you pay — prevention is key!", color: "#922b21" },
+          ]
         },
-        quiz: [
-          {
-            q: "Which password is most secure?",
-            options: ["password123", "MyName2024!", "xK#9mL$2pQr!vN7@", "School@123"],
-            answer: 2,
-          },
-          {
-            q: "Two-Factor Authentication (2FA) adds security by:",
-            options: ["Doubling your password length", "Requiring a second verification step beyond the password", "Encrypting your email", "Scanning your fingerprint only"],
-            answer: 1,
-          },
-          {
-            q: "True or False: Using the same password across multiple accounts is a major security risk.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "A Password Manager is used to:",
-            options: ["Guess weak passwords", "Securely store and generate strong, unique passwords", "Reset forgotten passwords via email", "Lock your screen"],
-            answer: 1,
-          },
-        ],
-        resources: [
-          { name: "HaveIBeenPwned.com", url: "https://haveibeenpwned.com", type: "link" },
-          { name: "Bitwarden Password Manager", url: "https://bitwarden.com", type: "link" },
-        ],
+        type: "mcq",
+        questions: [
+          { q: "What is phishing?", options: ["A type of fishing sport", "A fake message designed to steal your personal info", "Blocking websites", "Antivirus software"], answer: 1, explain: "Phishing emails pretend to be from banks, schools, or companies to trick you into revealing passwords." },
+          { q: "Ransomware attacks:", options: ["Speed up your computer", "Encrypt your files and demand payment to unlock them", "Only affect mobile phones", "Improve your internet connection"], answer: 1, explain: "Ransomware encrypts (locks) your files — attackers demand payment for the decryption key." },
+          { q: "Why must teachers take cybersecurity seriously?", options: ["It's optional", "It makes computers faster", "They hold sensitive student personal data — a legal responsibility", "Only IT staff need to care"], answer: 2, explain: "POPIA (SA law) requires schools to protect student data — teachers are responsible for data they access." },
+        ]
       },
       {
-        id: "cyber-2",
-        title: "Module 2: Phishing & Social Engineering",
-        duration: "25 min",
-        video: "https://www.youtube.com/embed/rMUEAQiYkqQ",
-        exercise: {
-          title: "Spot the Phishing Email",
-          instructions: [
-            "Visit phishingquiz.withgoogle.com and complete Google's Phishing Quiz.",
-            "Screenshot your final score.",
-            "Identify 5 red flags in the sample phishing emails provided.",
-            "Draft a brief phishing awareness tip you could share with colleagues (2–3 sentences).",
+        id: "cy2", title: "Strong Passwords & 2FA", xp: 25, duration: "6 min",
+        learn: {
+          icon: "🔑", heading: "Your First Line of Defence",
+          definition: "A strong password is long (16+ characters), unique for each account, and uses a mix of letters, numbers, and symbols.",
+          analogy: "A weak password is a screen door on a submarine. A strong, unique password with 2FA is a bank vault with a fingerprint scanner!",
+          facts: [
+            { icon: "❌", text: "Weak: Password123, School2024, your name + birthdate" },
+            { icon: "✅", text: "Strong: xK#9mL$2pQr!vN7@ (16 chars, random, unique)" },
+            { icon: "🔐", text: "Use a Password Manager (Bitwarden is free!) — stores all passwords safely" },
+            { icon: "📱", text: "2FA (Two-Factor Authentication) = password + phone code" },
+            { icon: "🔄", text: "NEVER reuse passwords across accounts!" },
           ],
-          task: "What was your score on Google's Phishing Quiz?",
-          inputLabel: "Phishing Quiz Score",
-          inputPlaceholder: "e.g., 7 out of 8",
+          visual: [
+            { label: "Password Only", desc: "❌ If hacked once, all accounts compromised", color: "#e74c3c" },
+            { label: "Strong Password", desc: "✅ 16+ chars, unique, random — hard to crack", color: "#e67e22" },
+            { label: "Strong PW + 2FA", desc: "✅✅ Even if stolen, hacker can't get in without your phone", color: "#27ae60" },
+          ]
         },
-        quiz: [
-          {
-            q: "Phishing emails typically try to:",
-            options: ["Send you software updates", "Trick you into revealing sensitive information", "Improve your email security", "Offer legitimate job opportunities"],
-            answer: 1,
-          },
-          {
-            q: "Which is a classic sign of a phishing email?",
-            options: ["Sent from your bank's official domain", "Uses your full correct name", "Urgent request to click a link and verify account details", "Contains no links"],
-            answer: 2,
-          },
-          {
-            q: "True or False: Phishing attacks can also occur via SMS (called 'Smishing').",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "If you receive a suspicious email from your 'bank', you should:",
-            options: ["Click the link to check", "Reply asking for more details", "Call your bank directly using the official number from their website", "Forward it to colleagues"],
-            answer: 2,
-          },
-        ],
-        resources: [
-          { name: "Google Phishing Quiz", url: "https://phishingquiz.withgoogle.com", type: "link" },
-          { name: "Cybersecurity Awareness Guide", url: "https://www.cisa.gov/topics/cybersecurity-best-practices", type: "link" },
-        ],
+        type: "drag",
+        question: "Sort these passwords: Weak or Strong?",
+        items: ["school123", "xK#9mL$2pQr!vN7@", "MrSmith2024", "T!9kZ#m4$vQ2@nX8", "password", "Lx3#!mQ9$vP2"],
+        zones: [
+          { id: "weak", label: "❌ Weak Password", accepts: ["school123", "MrSmith2024", "password"] },
+          { id: "strong", label: "✅ Strong Password", accepts: ["xK#9mL$2pQr!vN7@", "T!9kZ#m4$vQ2@nX8", "Lx3#!mQ9$vP2"] },
+        ]
       },
       {
-        id: "cyber-3",
-        title: "Module 3: Safe Internet Use & Privacy",
-        duration: "25 min",
-        video: "https://www.youtube.com/embed/KTFZKi2e-j4",
-        exercise: {
-          title: "Digital Privacy Audit",
-          instructions: [
-            "Check your browser privacy settings and disable third-party cookies.",
-            "Install uBlock Origin (browser extension) to block ads and trackers.",
-            "Review the privacy settings on your school email/Google account.",
-            "Adjust social media privacy settings: make your profiles private or friends-only.",
-            "Enable HTTPS-only mode in your browser settings.",
+        id: "cy3", title: "Spot the Phishing Email", xp: 30, duration: "7 min",
+        learn: {
+          icon: "🎣", heading: "Don't Take the Bait!",
+          definition: "Phishing emails impersonate trusted sources to steal your login details, money, or personal information.",
+          analogy: "A phishing email is a wolf in sheep's clothing — it LOOKS like your bank or boss, but it's an attacker trying to trick you!",
+          facts: [
+            { icon: "🚨", text: "Urgent language: 'Your account will be CLOSED in 24 hours!'" },
+            { icon: "🔗", text: "Suspicious links: hover before clicking — check the actual URL" },
+            { icon: "✉️", text: "Wrong sender domain: support@bank.com vs support@bank.verify-login.com" },
+            { icon: "📎", text: "Unexpected attachments — never open .exe or .zip from unknown senders" },
+            { icon: "🙋", text: "Generic greeting: 'Dear Customer' instead of your actual name" },
           ],
-          task: "Name 2 privacy changes you made during this exercise:",
-          inputLabel: "Privacy Changes Made",
-          inputPlaceholder: "e.g., Enabled HTTPS-only, blocked third-party cookies",
+          visual: [
+            { label: "🚨 Urgent pressure", desc: "'Act NOW or lose access!' — creates panic", color: "#c0392b" },
+            { label: "🔗 Fake link", desc: "Looks right but URL is wrong — hover to check!", color: "#e74c3c" },
+            { label: "📎 Attachment", desc: "Malicious file hiding in email — never open if unsure", color: "#922b21" },
+          ]
         },
-        quiz: [
-          {
-            q: "HTTPS in a website URL indicates:",
-            options: ["The site is government-owned", "Data between your browser and site is encrypted", "The site is free of malware", "The site is on a fast server"],
-            answer: 1,
-          },
-          {
-            q: "A VPN (Virtual Private Network) primarily:",
-            options: ["Speeds up your internet", "Encrypts your connection and hides your IP address", "Removes all ads", "Protects against all malware"],
-            answer: 1,
-          },
-          {
-            q: "True or False: Incognito/Private mode hides your activity from your Internet Service Provider.",
-            options: ["True", "False"],
-            answer: 1,
-          },
-          {
-            q: "Third-party cookies are primarily used to:",
-            options: ["Improve website speed", "Track your browsing activity across multiple sites for advertising", "Store your passwords", "Block malicious sites"],
-            answer: 1,
-          },
-        ],
-        resources: [
-          { name: "uBlock Origin Extension", url: "https://ublockorigin.com", type: "link" },
-          { name: "Privacy Badger", url: "https://privacybadger.org", type: "link" },
-        ],
+        type: "mcq",
+        questions: [
+          { q: "You receive: 'URGENT: Your school email will be deleted in 2 hours — click here to verify.' What do you do?", options: ["Click the link — it sounds real", "Ignore it and delete it — it's phishing", "Forward it to all staff", "Reply asking for more info"], answer: 1, explain: "Urgency + click link = phishing hallmarks. Never click. Report it to your IT department instead." },
+          { q: "Before clicking a link in an email, you should:", options: ["Click it quickly before it expires", "Hover over it to see the actual URL destination", "Copy it into a search engine", "Save the email and check tomorrow"], answer: 1, explain: "Hovering reveals the REAL URL. If it doesn't match the expected domain — don't click!" },
+          { q: "Which email address is most suspicious?", options: ["hr@school.edu.za", "principal@school.edu.za", "payroll@school-payroll.verify-click.com", "admin@school.edu.za"], answer: 2, explain: "The domain 'school-payroll.verify-click.com' is NOT your school's domain — it's a fake!" },
+        ]
       },
       {
-        id: "cyber-4",
-        title: "Module 4: Data Protection & POPIA Compliance",
-        duration: "30 min",
-        video: "https://www.youtube.com/embed/1KIamBmMJmA",
-        exercise: {
-          title: "School Data Protection Policy Review",
-          instructions: [
-            "Read the summary of POPIA (South Africa's Protection of Personal Information Act).",
-            "List 5 types of student data your school collects (e.g., name, ID number, marks).",
-            "Identify how each data type is currently stored and who has access.",
-            "Draft 3 recommendations to improve your school's data protection.",
-            "Consider: Is student data encrypted? Is access logged? Are devices password-protected?",
+        id: "cy4", title: "Safe Browsing & Privacy", xp: 25, duration: "6 min",
+        learn: {
+          icon: "🌐", heading: "Stay Safe on the Web",
+          definition: "Safe browsing means verifying website security, avoiding suspicious sites, and protecting your privacy online.",
+          analogy: "Browsing without protection is like walking through a city with your wallet open and shouting your address. HTTPS is your security guard!",
+          facts: [
+            { icon: "🔒", text: "Look for HTTPS (🔒 padlock) — connection is encrypted" },
+            { icon: "❌", text: "HTTP (no padlock) — NOT secure, avoid entering any data" },
+            { icon: "🚫", text: "Don't click pop-ups claiming 'Your device has a VIRUS!'" },
+            { icon: "🕵️", text: "Use private/incognito mode on shared computers" },
+            { icon: "🧹", text: "Clear browser cache and cookies regularly" },
           ],
-          task: "What is one data protection recommendation you are implementing?",
-          inputLabel: "Your Recommendation",
-          inputPlaceholder: "e.g., Encrypt student records and restrict access to authorised staff only",
+          visual: [
+            { label: "🔒 HTTPS", desc: "Encrypted connection — safe to enter passwords", color: "#27ae60" },
+            { label: "⚠️ HTTP", desc: "Not encrypted — avoid entering personal data", color: "#e67e22" },
+            { label: "🚨 Pop-up scam", desc: "'Your PC is INFECTED! Call now!' — ignore and close", color: "#e74c3c" },
+          ]
         },
-        quiz: [
-          {
-            q: "POPIA stands for:",
-            options: ["Protection of Private and Online Information Act", "Protection of Personal Information Act", "Personal Online Privacy and Information Act", "Public and Online Privacy Information Act"],
-            answer: 1,
-          },
-          {
-            q: "Under POPIA, schools are required to:",
-            options: ["Share all student data publicly", "Process personal information responsibly and lawfully", "Delete all student records after 1 year", "Only store data in the cloud"],
-            answer: 1,
-          },
-          {
-            q: "True or False: Sharing a student's personal information without consent may violate POPIA.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "A data breach at school means:",
-            options: ["A student hacked the school system", "Unauthorised access to or disclosure of personal information", "The school lost Wi-Fi", "A virus infected one computer"],
-            answer: 1,
-          },
-        ],
-        resources: [
-          { name: "POPIA Overview", url: "https://popia.co.za", type: "link" },
-          { name: "Data Protection Guide for Schools", url: "https://www.ssa.gov.za", type: "link" },
-        ],
+        type: "fillin",
+        questions: [
+          { q: "A secure website URL begins with ___ (not just http)", answer: "https", hint: "S stands for Secure" },
+          { q: "On a shared school computer, use ___ mode so your session is private", answer: "incognito", hint: "Also called 'Private mode' in different browsers" },
+          { q: "The padlock icon in the browser address bar means the connection is ___", answer: "encrypted", hint: "Your data is scrambled so others can't read it" },
+        ]
       },
       {
-        id: "cyber-5",
-        title: "Module 5: Device Security & Malware Prevention",
-        duration: "25 min",
-        video: "https://www.youtube.com/embed/Uqjg0MN5YFU",
-        exercise: {
-          title: "Secure Your School Device",
-          instructions: [
-            "Ensure your device's operating system is fully updated.",
-            "Run a full scan with Windows Defender or your antivirus software.",
-            "Review installed programs and uninstall any unfamiliar or unused software.",
-            "Enable automatic updates for your OS and applications.",
-            "Set your device to lock automatically after 5 minutes of inactivity.",
+        id: "cy5", title: "POPIA & Student Data Protection", xp: 30, duration: "7 min",
+        learn: {
+          icon: "⚖️", heading: "Know the Law — Protect Your Students",
+          definition: "POPIA (Protection of Personal Information Act) is South Africa's data privacy law requiring responsible handling of all personal information.",
+          analogy: "POPIA is like a constitution for personal data — it gives people rights over their information and gives YOU responsibilities as a 'guardian' of student data.",
+          facts: [
+            { icon: "🏛️", text: "POPIA came into full effect on 1 July 2021 in South Africa" },
+            { icon: "🔒", text: "Personal info: name, ID number, address, marks, health info" },
+            { icon: "✅", text: "You must have a LAWFUL REASON to collect student data" },
+            { icon: "🚫", text: "Never share student data without consent or legal authority" },
+            { icon: "⚠️", text: "Data breach? You MUST report it within 72 hours" },
           ],
-          task: "What did your antivirus scan find (even if nothing)?",
-          inputLabel: "Scan Result",
-          inputPlaceholder: "e.g., No threats found. 1 PUP quarantined.",
+          visual: [
+            { label: "Collect", desc: "Only what's necessary — no excess data", color: "#c0392b" },
+            { label: "Protect", desc: "Encrypt, password-protect, restrict access", color: "#e67e22" },
+            { label: "Disclose", desc: "Only to authorised people with a valid reason", color: "#27ae60" },
+          ]
         },
-        quiz: [
-          {
-            q: "Ransomware is a type of malware that:",
-            options: ["Speeds up your computer", "Encrypts your files and demands payment to restore access", "Monitors your keystrokes", "Deletes spam emails"],
-            answer: 1,
-          },
-          {
-            q: "The best defence against malware is:",
-            options: ["Using only one browser", "Keeping software updated, using antivirus, and being cautious online", "Never connecting to Wi-Fi", "Using only Microsoft products"],
-            answer: 1,
-          },
-          {
-            q: "True or False: USB drives can be used to spread malware.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "What should you do if you suspect malware on your device?",
-            options: ["Continue using it and hope it fixes itself", "Disconnect from the network and contact IT support immediately", "Delete all your files", "Restart the device and ignore it"],
-            answer: 1,
-          },
-        ],
-        resources: [
-          { name: "Windows Defender Guide", url: "https://support.microsoft.com/en-us/windows/stay-protected-with-windows-security-2ae0363d-0ada-c064-8b56-6a39afb6a963", type: "link" },
-          { name: "Malware Prevention Tips", url: "https://www.cisa.gov/topics/cybersecurity-best-practices/malware", type: "link" },
-        ],
+        type: "mcq",
+        questions: [
+          { q: "POPIA stands for:", options: ["Personal Online Privacy and Information Act", "Protection of Personal Information Act", "Public and Online Privacy Info Act", "Protecting Our Personal Info Act"], answer: 1, explain: "POPIA = Protection of Personal Information Act — South Africa's data privacy law since 2021." },
+          { q: "Under POPIA, a school data breach must be reported within:", options: ["24 hours", "1 week", "72 hours", "30 days"], answer: 2, explain: "72 hours is the POPIA requirement for reporting a data breach to the Information Regulator." },
+          { q: "Sharing a student's home address with a parent group chat:", options: ["Is always fine — parents need it", "Could violate POPIA — only share with consent and on a need-to-know basis", "Is required by law", "Is only an issue if the address is wrong"], answer: 1, explain: "Student data must be shared only when there is a lawful basis — a group chat is not secure and likely violates POPIA." },
+        ]
       },
-    ],
+      {
+        id: "cy6", title: "Device Security & Malware Prevention", xp: 25, duration: "6 min",
+        learn: {
+          icon: "🛡️", heading: "Keep Your Device Safe and Clean",
+          definition: "Device security involves keeping software updated, using antivirus, avoiding suspicious downloads, and physical security measures.",
+          analogy: "Your device is like your car — regular maintenance (updates), locking it (password), and not picking up strangers (unknown files) keeps it safe!",
+          facts: [
+            { icon: "🔄", text: "Updates patch security holes — ALWAYS install them promptly" },
+            { icon: "🛡️", text: "Windows Defender (free & built-in) protects against malware" },
+            { icon: "🚫", text: "Never plug in an unknown USB drive — it could contain malware" },
+            { icon: "🔒", text: "Auto-lock: set device to lock after 5 minutes idle" },
+            { icon: "💾", text: "Back up data to OneDrive/external drive — protection from ransomware" },
+          ],
+          visual: [
+            { label: "Update OS", desc: "Closes security vulnerabilities hackers exploit", color: "#c0392b" },
+            { label: "Antivirus Scan", desc: "Weekly scan catches malware early", color: "#e67e22" },
+            { label: "Backup", desc: "3-2-1 rule: 3 copies, 2 formats, 1 offsite", color: "#27ae60" },
+          ]
+        },
+        type: "drag",
+        question: "Sort these actions: Good Security Habit or Bad Habit?",
+        items: ["Install OS updates promptly", "Plug in a found USB drive", "Use auto-lock after 5 mins", "Download cracked software", "Back up to OneDrive weekly", "Share your password with a colleague"],
+        zones: [
+          { id: "good", label: "✅ Good Security Habit", accepts: ["Install OS updates promptly", "Use auto-lock after 5 mins", "Back up to OneDrive weekly"] },
+          { id: "bad", label: "❌ Bad Security Habit", accepts: ["Plug in a found USB drive", "Download cracked software", "Share your password with a colleague"] },
+        ]
+      },
+    ]
   },
   {
-    id: "programming",
-    title: "Introduction to Programming",
-    icon: "💻",
-    description: "Learn computational thinking and Python basics to empower your teaching with tech literacy.",
-    modules: [
+    id: "programming", title: "Introduction to Programming", emoji: "💻", color: "#6d28d9", light: "#f3effe",
+    tagline: "Think like a computer, teach the future",
+    lessons: [
       {
-        id: "prog-1",
-        title: "Module 1: Computational Thinking & Algorithms",
-        duration: "25 min",
-        video: "https://www.youtube.com/embed/mUXo-S7gzds",
-        exercise: {
-          title: "Write an Algorithm for a Daily Routine",
-          instructions: [
-            "Define 'algorithm' in your own words.",
-            "Write a step-by-step algorithm for making tea or coffee (minimum 10 steps).",
-            "Convert your algorithm into a simple flowchart on paper or using draw.io.",
-            "Identify any decision points (IF/ELSE) in your algorithm.",
-            "Share your algorithm with a colleague and see if they can follow it exactly.",
+        id: "pr1", title: "What is Programming?", xp: 20, duration: "5 min",
+        learn: {
+          icon: "💻", heading: "Giving Instructions to a Computer",
+          definition: "Programming is writing precise instructions (code) that tell a computer exactly what to do, step by step.",
+          analogy: "A computer is the most obedient assistant ever — but it only follows EXACT instructions. Programming is writing those instructions in a language it understands!",
+          facts: [
+            { icon: "📝", text: "Code is written in a programming language (Python, JavaScript, etc.)" },
+            { icon: "⚡", text: "Computers execute millions of instructions per second" },
+            { icon: "🐛", text: "A bug is an error in code — debugging is fixing it" },
+            { icon: "🔄", text: "Programs can repeat tasks (loops) and make decisions (if/else)" },
+            { icon: "🌍", text: "Every app, website, and game is built with code" },
           ],
-          task: "What decision point (IF condition) did you identify in your routine?",
-          inputLabel: "Your IF Condition",
-          inputPlaceholder: "e.g., IF sugar requested THEN add 1 teaspoon",
+          visual: [
+            { label: "Algorithm", desc: "The plan — step-by-step logic, before writing code", color: "#6d28d9" },
+            { label: "Code", desc: "The algorithm written in a programming language", color: "#7c3aed" },
+            { label: "Output", desc: "What the program produces (text, graphics, actions)", color: "#8b5cf6" },
+          ]
         },
-        quiz: [
-          {
-            q: "An algorithm is best described as:",
-            options: ["A programming language", "A step-by-step set of instructions to solve a problem", "A type of computer hardware", "A database of code"],
-            answer: 1,
-          },
-          {
-            q: "Decomposition in computational thinking means:",
-            options: ["Writing complex code", "Breaking a large problem into smaller, manageable parts", "Debugging errors", "Encrypting data"],
-            answer: 1,
-          },
-          {
-            q: "True or False: Algorithms can be expressed in plain English before being coded.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "A flowchart uses which symbol for a decision?",
-            options: ["Rectangle", "Oval", "Diamond", "Arrow"],
-            answer: 2,
-          },
-        ],
-        resources: [
-          { name: "draw.io (Flowchart Tool)", url: "https://draw.io", type: "link" },
-          { name: "Computational Thinking Introduction", url: "https://edu.google.com/resources/programs/exploring-computational-thinking/", type: "link" },
-        ],
+        type: "mcq",
+        questions: [
+          { q: "A 'bug' in programming refers to:", options: ["An insect found near computers", "An error in the code causing incorrect behaviour", "A type of antivirus", "A slow internet connection"], answer: 1, explain: "Bug = error in code. The term dates to 1947 when a real moth was found in a relay of an early computer!" },
+          { q: "Programming languages like Python are needed because:", options: ["Computers are too slow", "Computers only understand electricity, not human language — code bridges the gap", "Keyboards can't type human language", "English is too complex for people"], answer: 1, explain: "Computers process binary (0s and 1s). Programming languages let us write human-readable code that gets translated." },
+          { q: "An algorithm is:", options: ["A type of computer virus", "A social media platform", "A step-by-step set of instructions to solve a problem", "A programming language"], answer: 2, explain: "Algorithms are the logic/plan — you design the algorithm BEFORE writing any code." },
+        ]
       },
       {
-        id: "prog-2",
-        title: "Module 2: Python Basics – Variables & Data Types",
-        duration: "30 min",
-        video: "https://www.youtube.com/embed/kqtD5dpn9C8",
-        exercise: {
-          title: "Your First Python Programme",
-          instructions: [
-            "Go to replit.com and create a free account.",
-            "Create a new Python Repl.",
-            "Write code to: Ask the user their name and class, then print a personalised welcome message.",
-            "Create variables for: student_name, subject, score, and grade.",
-            "Use print() to display: 'Student: [name] | Subject: [subject] | Grade: [grade]'.",
+        id: "pr2", title: "Python Basics — Variables & Types", xp: 25, duration: "6 min",
+        learn: {
+          icon: "🐍", heading: "Python: The Friendliest Language",
+          definition: "Python is a beginner-friendly language used in education, data science, AI, and web development. Variables store data that your program uses.",
+          analogy: "A variable is like a labelled box. name = 'John' puts 'John' in a box called 'name'. Whenever you need John's name, you just open that box!",
+          facts: [
+            { icon: "📦", text: "name = 'Themba' — stores text (string) in a variable" },
+            { icon: "🔢", text: "score = 95 — stores a number (integer)" },
+            { icon: "💬", text: "print(name) — displays what's in the 'name' box" },
+            { icon: "🖊️", text: "input('Enter name: ') — asks the user to type something" },
+            { icon: "🐍", text: "Python is free — code online at replit.com or trinket.io" },
           ],
-          task: "Paste your Python print statement output below:",
-          inputLabel: "Programme Output",
-          inputPlaceholder: "e.g., Student: John Doe | Subject: Maths | Grade: A",
+          visual: [
+            { label: "String", desc: "Text in quotes: name = \"Thabo\"", color: "#6d28d9" },
+            { label: "Integer", desc: "Whole number: age = 25", color: "#7c3aed" },
+            { label: "Float", desc: "Decimal number: score = 78.5", color: "#8b5cf6" },
+          ]
         },
-        quiz: [
-          {
-            q: "In Python, which function displays output to the screen?",
-            options: ["display()", "echo()", "print()", "show()"],
-            answer: 2,
-          },
-          {
-            q: "Which Python data type stores whole numbers?",
-            options: ["String", "Float", "Integer", "Boolean"],
-            answer: 2,
-          },
-          {
-            q: "True or False: Python is case-sensitive, so 'name' and 'Name' are different variables.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "In Python, input() is used to:",
-            options: ["Display text", "Import modules", "Accept user input", "Calculate values"],
-            answer: 2,
-          },
-        ],
-        resources: [
-          { name: "Replit Online IDE", url: "https://replit.com", type: "link" },
-          { name: "Python for Beginners", url: "https://www.python.org/about/gettingstarted/", type: "link" },
-        ],
+        type: "fillin",
+        questions: [
+          { q: "In Python, to display text on screen you use the ___ function", answer: "print", hint: "It 'prints' output to the screen" },
+          { q: "A piece of text stored in Python is called a ___", answer: "string", hint: "A string of characters" },
+          { q: "name = 'Lerato' stores the value 'Lerato' in a ___", answer: "variable", hint: "A named storage box for data" },
+        ]
       },
       {
-        id: "prog-3",
-        title: "Module 3: Conditions & Loops",
-        duration: "25 min",
-        video: "https://www.youtube.com/embed/DZwmZ8Usvnk",
-        exercise: {
-          title: "Grade Calculator in Python",
-          instructions: [
-            "Write a Python programme that asks the user for a test score.",
-            "Use IF/ELIF/ELSE to assign a grade: A(≥80), B(≥70), C(≥60), F(<60).",
-            "Use a WHILE loop to keep asking for scores until the user types 'quit'.",
-            "Count and display the total number of scores entered.",
-            "Calculate and display the average of all scores entered.",
+        id: "pr3", title: "If Statements — Teaching Computers to Decide", xp: 25, duration: "6 min",
+        learn: {
+          icon: "🤔", heading: "Making Decisions with If/Else",
+          definition: "If statements let programs make decisions: IF a condition is true, do one thing; ELSE do another.",
+          analogy: "if score >= 50:\n    print('Pass')\nelse:\n    print('Fail')\n\nJust like a teacher: 'If score is 50 or more, write Pass. Otherwise, write Fail.'",
+          facts: [
+            { icon: "📐", text: "Condition uses: > < >= <= == (equal) != (not equal)" },
+            { icon: "📏", text: "Python uses INDENTATION (4 spaces) to group code — NO curly braces!" },
+            { icon: "🔀", text: "elif = 'else if' — test multiple conditions" },
+            { icon: "💡", text: "== checks equality (2==2 is True); = ASSIGNS a value" },
+            { icon: "🐍", text: "if score>=80: 'A'\nelif score>=70: 'B'\nelse: 'C'" },
           ],
-          task: "What was the average score when you tested your programme?",
-          inputLabel: "Average Score Output",
-          inputPlaceholder: "e.g., Average score: 74.5",
+          visual: [
+            { label: "if condition:", desc: "Runs if condition is True (indent the block)", color: "#6d28d9" },
+            { label: "elif condition:", desc: "Checks next condition if first was False", color: "#7c3aed" },
+            { label: "else:", desc: "Runs when ALL conditions above are False", color: "#8b5cf6" },
+          ]
         },
-        quiz: [
-          {
-            q: "In Python, an IF/ELIF/ELSE structure is used to:",
-            options: ["Repeat code multiple times", "Make decisions based on conditions", "Import libraries", "Define functions"],
-            answer: 1,
-          },
-          {
-            q: "A FOR loop in Python is best for:",
-            options: ["Repeating until a condition is false", "Iterating over a sequence a known number of times", "Defining classes", "Handling errors"],
-            answer: 1,
-          },
-          {
-            q: "True or False: A WHILE loop in Python continues as long as the condition is True.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "In Python, what does 'break' do inside a loop?",
-            options: ["Pauses the loop temporarily", "Restarts the loop from the beginning", "Exits the loop immediately", "Skips one iteration"],
-            answer: 2,
-          },
-        ],
-        resources: [
-          { name: "Python If/Else Tutorial", url: "https://www.w3schools.com/python/python_conditions.asp", type: "link" },
-          { name: "Python Loops Tutorial", url: "https://www.w3schools.com/python/python_while_loops.asp", type: "link" },
-        ],
+        type: "mcq",
+        questions: [
+          { q: "What does this return? score=75\nif score>=80: print('A')\nelif score>=70: print('B')\nelse: print('C')", options: ["A", "B", "C", "Error"], answer: 1, explain: "75 is NOT >=80 (A skipped). 75 IS >=70, so 'B' is printed!" },
+          { q: "In Python, indentation (spaces) is used to:", options: ["Make code look pretty", "Define which code belongs inside an if/loop block", "Run code faster", "Add comments"], answer: 1, explain: "Python uses indentation INSTEAD of curly braces {} — it's how Python knows what's inside an if block." },
+          { q: "Which symbol checks if two values are EQUAL in Python?", options: ["=", "equals", "==", "==="], answer: 2, explain: "== tests equality (is 5==5? Yes!). Single = assigns a value. Never confuse them!" },
+        ]
       },
       {
-        id: "prog-4",
-        title: "Module 4: Functions & Modules",
-        duration: "25 min",
-        video: "https://www.youtube.com/embed/9Os0o3wzS_I",
-        exercise: {
-          title: "Build a Teacher Toolkit Module",
-          instructions: [
-            "Create a Python file called teacher_toolkit.py.",
-            "Write a function calculate_average(scores) that takes a list and returns the average.",
-            "Write a function assign_grade(average) that returns A/B/C/F.",
-            "Write a function generate_report(name, scores) that prints a formatted student report.",
-            "Test your module by importing it and calling all three functions.",
+        id: "pr4", title: "Loops — Automate Repetition", xp: 25, duration: "6 min",
+        learn: {
+          icon: "🔄", heading: "Loops: Do It Again (and Again!)",
+          definition: "Loops repeat a block of code multiple times — saving you from writing the same instruction over and over.",
+          analogy: "Without loops, printing 100 names means 100 print() lines. With a loop, you write it ONCE and say 'repeat 100 times'. Work smarter, not harder!",
+          facts: [
+            { icon: "🔢", text: "for i in range(10): — repeats exactly 10 times" },
+            { icon: "🔄", text: "while condition: — repeats UNTIL the condition is False" },
+            { icon: "🛑", text: "break — exit a loop immediately" },
+            { icon: "⏭️", text: "continue — skip this iteration, move to next" },
+            { icon: "📋", text: "for name in ['Ana','Ben','Cara']: — loop through a list" },
           ],
-          task: "What did your generate_report() function output for a test student?",
-          inputLabel: "Sample Report Output",
-          inputPlaceholder: "e.g., Student: Jane | Average: 78 | Grade: B",
+          visual: [
+            { label: "for loop", desc: "Known number of repeats: for i in range(5)", color: "#6d28d9" },
+            { label: "while loop", desc: "Repeat until condition False: while x < 10", color: "#7c3aed" },
+            { label: "Infinite loop ⚠️", desc: "while True — loops forever unless you break out!", color: "#e74c3c" },
+          ]
         },
-        quiz: [
-          {
-            q: "In Python, a function is defined using which keyword?",
-            options: ["function", "define", "def", "func"],
-            answer: 2,
-          },
-          {
-            q: "What does a Python function 'return' statement do?",
-            options: ["Displays the result to the screen", "Sends a value back to where the function was called", "Stops the entire programme", "Repeats the function"],
-            answer: 1,
-          },
-          {
-            q: "True or False: Python functions can accept multiple parameters.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "To use a Python module (e.g., math), you use:",
-            options: ["include math", "using math", "import math", "load math"],
-            answer: 2,
-          },
-        ],
-        resources: [
-          { name: "Python Functions Tutorial", url: "https://www.w3schools.com/python/python_functions.asp", type: "link" },
-          { name: "Python Modules Guide", url: "https://www.w3schools.com/python/python_modules.asp", type: "link" },
-        ],
+        type: "fillin",
+        questions: [
+          { q: "for i in ___(5): loops exactly 5 times", answer: "range", hint: "Creates a sequence of numbers 0-4" },
+          { q: "A ___ loop repeats as long as a condition remains True", answer: "while", hint: "Keeps going 'while' something is true" },
+          { q: "The ___ statement immediately stops and exits a loop", answer: "break", hint: "It 'breaks' out of the loop" },
+        ]
       },
       {
-        id: "prog-5",
-        title: "Module 5: Teaching Coding in Schools",
-        duration: "25 min",
-        video: "https://www.youtube.com/embed/QvyTEx1wyOY",
-        exercise: {
-          title: "Design a Coding Lesson Plan",
-          instructions: [
-            "Choose a grade and subject to integrate coding (e.g., Grade 9 Maths).",
-            "Design a 45-minute coding lesson using Scratch, Python, or Code.org.",
-            "Write: Learning objectives, resources needed, step-by-step activities.",
-            "Include an unplugged activity (no computer needed) for the first 10 minutes.",
-            "Design a simple assessment: What will students submit or demonstrate?",
+        id: "pr5", title: "Functions — Reusable Code Blocks", xp: 30, duration: "7 min",
+        learn: {
+          icon: "🧩", heading: "Write Once, Use Many Times",
+          definition: "A function is a named block of code that performs a specific task. Call it by name whenever you need it — no rewriting!",
+          analogy: "A function is like a recipe. You write 'make_tea()' once with all the steps. Whenever you want tea, just call make_tea() — no need to rethink it!",
+          facts: [
+            { icon: "🏗️", text: "def greet(name): — defines a function called 'greet'" },
+            { icon: "📥", text: "Parameters are inputs: def add(a, b): — takes two numbers" },
+            { icon: "📤", text: "return sends a result back: return a + b" },
+            { icon: "📞", text: "Call it: result = add(5, 3) — result is now 8" },
+            { icon: "♻️", text: "Functions prevent repetition — cleaner, organised code" },
           ],
-          task: "What grade and topic is your coding lesson for?",
-          inputLabel: "Lesson Target",
-          inputPlaceholder: "e.g., Grade 9 – Variables and Data Types",
+          visual: [
+            { label: "def", desc: "Keyword that DEFINES/creates a function", color: "#6d28d9" },
+            { label: "Parameters", desc: "Inputs the function accepts inside ()", color: "#7c3aed" },
+            { label: "return", desc: "Sends the result back to whoever called it", color: "#27ae60" },
+          ]
         },
-        quiz: [
-          {
-            q: "Scratch is best suited for which age group?",
-            options: ["University students", "Ages 8–16", "Professional developers", "Ages 3–5 only"],
-            answer: 1,
-          },
-          {
-            q: "An 'unplugged' coding activity means:",
-            options: ["Using Wi-Fi only", "Teaching computational concepts without computers", "Coding in Python offline", "Using tablets without apps"],
-            answer: 1,
-          },
-          {
-            q: "True or False: Coding can be integrated into non-computing subjects like Maths and Art.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "Code.org is primarily designed for:",
-            options: ["Professional web developers", "Teaching coding to K-12 students", "University graduates", "Game developers only"],
-            answer: 1,
-          },
-        ],
-        resources: [
-          { name: "Scratch (MIT)", url: "https://scratch.mit.edu", type: "link" },
-          { name: "Code.org for Teachers", url: "https://code.org/teach", type: "link" },
-          { name: "CS Unplugged Activities", url: "https://csunplugged.org", type: "link" },
-        ],
-      },
-    ],
-  },
-  {
-    id: "ms-access",
-    title: "Microsoft Access",
-    icon: "🗄️",
-    description: "Build and manage school databases for tracking students, resources, and administrative data.",
-    modules: [
-      {
-        id: "access-1",
-        title: "Module 1: Database Concepts & Access Interface",
-        duration: "25 min",
-        video: "https://www.youtube.com/embed/dKEbfOa6Z44",
-        exercise: {
-          title: "Explore a Sample Database",
-          instructions: [
-            "Open Microsoft Access and explore the 'Northwind' sample database.",
-            "Identify the Tables, Queries, Forms, and Reports in the Navigation Pane.",
-            "Open the Customers table and examine the field names and data types.",
-            "Run the 'Customer Orders' query and note what data it retrieves.",
-            "Open a Form and navigate through 5 records.",
-          ],
-          task: "List 3 table names you found in the sample database:",
-          inputLabel: "Table Names",
-          inputPlaceholder: "e.g., Customers, Orders, Products",
-        },
-        quiz: [
-          {
-            q: "In Microsoft Access, data is primarily stored in:",
-            options: ["Forms", "Reports", "Tables", "Queries"],
-            answer: 2,
-          },
-          {
-            q: "A Query in Access is used to:",
-            options: ["Display a printable report", "Retrieve specific data from tables based on criteria", "Enter new records", "Design the database structure"],
-            answer: 1,
-          },
-          {
-            q: "True or False: A Primary Key in a table uniquely identifies each record.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "The four main objects in an Access database are:",
-            options: ["Files, Sheets, Charts, Forms", "Tables, Queries, Forms, Reports", "Rows, Columns, Cells, Pages", "Data, Info, Fields, Records"],
-            answer: 1,
-          },
-        ],
-        resources: [
-          { name: "Access Getting Started", url: "https://support.microsoft.com/en-us/office/getting-started-with-access-c0a7a76a-6dc2-4f25-bc3a-f698d6f7b2d2", type: "link" },
-        ],
+        type: "mcq",
+        questions: [
+          { q: "What keyword is used to CREATE (define) a function in Python?", options: ["function", "create", "def", "make"], answer: 2, explain: "def (short for 'define') creates a function. Example: def calculate_grade(score):" },
+          { q: "What does the 'return' statement do inside a function?", options: ["Displays text to screen", "Stops the whole program", "Sends a value back to the code that called the function", "Loops back to the start"], answer: 2, explain: "return passes the result back. Without it, the function does work but gives you nothing back!" },
+          { q: "Why are functions important in programming?", options: ["They make code run faster", "They avoid repeating the same code — reuse, organise, and simplify", "They are required by the computer", "They replace loops"], answer: 1, explain: "Functions = reusability. Write the logic once, call it anywhere. This is a core programming principle: DRY (Don't Repeat Yourself)." },
+        ]
       },
       {
-        id: "access-2",
-        title: "Module 2: Creating Tables & Relationships",
-        duration: "30 min",
-        video: "https://www.youtube.com/embed/u0S3-AZM3sM",
-        exercise: {
-          title: "Build a Student Database",
-          instructions: [
-            "Create a new blank Access database called 'SchoolDB.accdb'.",
-            "Create a Students table with: StudentID (PK, AutoNumber), FirstName, LastName, Grade, DOB, Email.",
-            "Create a Subjects table with: SubjectID (PK), SubjectName, Credits.",
-            "Create an Enrolment table with: EnrolID, StudentID (FK), SubjectID (FK), Term.",
-            "Set up Relationships between the tables using the Relationships tool.",
+        id: "pr6", title: "Teaching Coding in the Classroom", xp: 30, duration: "7 min",
+        learn: {
+          icon: "🏫", heading: "From Learner to Teacher of Code",
+          definition: "Teaching coding in school develops logical thinking, problem-solving, and creativity — skills useful in every subject and career.",
+          analogy: "Teaching coding is not about making programmers — it's about giving every learner a new way to think. Like teaching writing — not everyone becomes an author, but everyone benefits!",
+          facts: [
+            { icon: "🐱", text: "Scratch (scratch.mit.edu) — free, visual, ages 8-16, no typing" },
+            { icon: "🌍", text: "Code.org — free structured lessons, Hour of Code activities" },
+            { icon: "🎮", text: "Minecraft Education — learn programming through gameplay" },
+            { icon: "📵", text: "Unplugged activities — teach algorithms WITHOUT computers!" },
+            { icon: "🏆", text: "Pair programming — two students, one computer, stronger learning" },
           ],
-          task: "How many tables did you create in your database?",
-          inputLabel: "Number of Tables",
-          inputPlaceholder: "e.g., 3",
+          visual: [
+            { label: "Scratch", desc: "Visual blocks — great starter for young learners", color: "#6d28d9" },
+            { label: "Python", desc: "Text-based — for older/more advanced learners", color: "#7c3aed" },
+            { label: "Unplugged", desc: "No devices needed — great for limited-resource settings", color: "#27ae60" },
+          ]
         },
-        quiz: [
-          {
-            q: "An AutoNumber data type in Access:",
-            options: ["Requires manual entry", "Automatically assigns a unique number to each new record", "Only stores phone numbers", "Calculates formulas"],
-            answer: 1,
-          },
-          {
-            q: "A Foreign Key in a database table:",
-            options: ["Is always the first field", "References the Primary Key in another table to create a relationship", "Must be unique in every table", "Is used for encryption"],
-            answer: 1,
-          },
-          {
-            q: "True or False: You must enforce Referential Integrity to prevent orphaned records.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "A One-to-Many relationship in Access means:",
-            options: ["One record in Table A relates to exactly one record in Table B", "One record in Table A can relate to many records in Table B", "Many records in Table A relate to one record in Table A", "Tables are not connected"],
-            answer: 1,
-          },
-        ],
-        resources: [
-          { name: "Access Relationships Tutorial", url: "https://support.microsoft.com/en-us/office/guide-to-table-relationships-30446197-4fbe-457b-b992-2f6fb812b58f", type: "link" },
-        ],
+        type: "drag",
+        question: "Match each tool to its best age/use case",
+        items: ["Scratch", "Python (Replit)", "Code.org activities", "Unplugged card sorting", "Minecraft Education"],
+        zones: [
+          { id: "young", label: "👶 Ages 8–12 (Visual/Game)", accepts: ["Scratch", "Minecraft Education"] },
+          { id: "teen", label: "🧑 Ages 13+ (Text/Logic)", accepts: ["Python (Replit)", "Code.org activities"] },
+          { id: "noresources", label: "📵 No Devices Needed", accepts: ["Unplugged card sorting"] },
+        ]
       },
-      {
-        id: "access-3",
-        title: "Module 3: Queries & Filtering Data",
-        duration: "25 min",
-        video: "https://www.youtube.com/embed/aSI3bDq3JYs",
-        exercise: {
-          title: "Create Useful School Queries",
-          instructions: [
-            "Create a Select Query to list all Grade 10 students.",
-            "Create a Query showing students and their enrolled subjects (using a Join).",
-            "Add criteria to filter students with a surname starting with 'A' to 'M'.",
-            "Create a Totals Query counting students per grade.",
-            "Save and run all queries.",
-          ],
-          task: "How many students did your Grade 10 filter query return?",
-          inputLabel: "Query Result Count",
-          inputPlaceholder: "e.g., 12 students",
-        },
-        quiz: [
-          {
-            q: "The QBE (Query By Example) grid in Access allows you to:",
-            options: ["Draw ER diagrams", "Design queries visually by specifying fields and criteria", "Import Excel data", "Create forms automatically"],
-            answer: 1,
-          },
-          {
-            q: "Which Access query type adds records from one table to another?",
-            options: ["Select Query", "Update Query", "Append Query", "Delete Query"],
-            answer: 2,
-          },
-          {
-            q: "True or False: You can use wildcards like * and ? in Access query criteria.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "An Inner Join in an Access query returns:",
-            options: ["All records from both tables", "Only records that match in both tables", "All records from the left table only", "Unmatched records only"],
-            answer: 1,
-          },
-        ],
-        resources: [
-          { name: "Access Query Tutorial", url: "https://support.microsoft.com/en-us/office/introduction-to-queries-a9739a09-d3f7-4b9c-9ef7-d433c7a8b090", type: "link" },
-        ],
-      },
-      {
-        id: "access-4",
-        title: "Module 4: Forms for Data Entry",
-        duration: "25 min",
-        video: "https://www.youtube.com/embed/g2OMFkF2gSc",
-        exercise: {
-          title: "Build a Student Registration Form",
-          instructions: [
-            "Use the Form Wizard to create a form based on your Students table.",
-            "Switch to Design View and rearrange fields logically.",
-            "Add a school logo (Insert > Image) as a header.",
-            "Add a calculated field showing student's age based on DOB.",
-            "Add a Save and Close button using the Button control.",
-          ],
-          task: "What title did you give your student registration form?",
-          inputLabel: "Form Title",
-          inputPlaceholder: "e.g., Student Registration Form 2025",
-        },
-        quiz: [
-          {
-            q: "Forms in Access are primarily used for:",
-            options: ["Printing reports", "Entering and editing data in a user-friendly interface", "Running queries", "Backing up the database"],
-            answer: 1,
-          },
-          {
-            q: "A Subform in Access is used to:",
-            options: ["Lock the database", "Display related records from another table within the main form", "Create a login screen", "Format the main form's colour"],
-            answer: 1,
-          },
-          {
-            q: "True or False: Macros in Access forms can automate actions like opening other forms.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "To switch a form to Design View in Access, you:",
-            options: ["Press F5", "Right-click the form tab and select Design View", "Go to File > Design", "Press Ctrl+D"],
-            answer: 1,
-          },
-        ],
-        resources: [
-          { name: "Access Forms Tutorial", url: "https://support.microsoft.com/en-us/office/introduction-to-forms-in-access-e0ce14f7-5ce3-4573-af28-e25e22d44e11", type: "link" },
-        ],
-      },
-      {
-        id: "access-5",
-        title: "Module 5: Reports & Database Maintenance",
-        duration: "25 min",
-        video: "https://www.youtube.com/embed/cPVqE5qgaBQ",
-        exercise: {
-          title: "Generate a Student Progress Report",
-          instructions: [
-            "Use the Report Wizard to create a report based on your student/query data.",
-            "Group the report by Grade level.",
-            "Add sorting by Last Name.",
-            "Include a Count summary showing number of students per grade.",
-            "Add your school name as a header and today's date in the footer.",
-            "Export the report as a PDF: External Data > PDF or XPS.",
-          ],
-          task: "How many grades/groups appeared in your student report?",
-          inputLabel: "Number of Groups",
-          inputPlaceholder: "e.g., 4 grade groups",
-        },
-        quiz: [
-          {
-            q: "Reports in Access are best used for:",
-            options: ["Entering new data", "Presenting and printing data in a formatted layout", "Running queries", "Creating relationships"],
-            answer: 1,
-          },
-          {
-            q: "Compacting and Repairing an Access database:",
-            options: ["Deletes all data", "Reduces file size and fixes corruption issues", "Adds new tables", "Exports data to Excel"],
-            answer: 1,
-          },
-          {
-            q: "True or False: Access Reports can include calculated fields like totals and averages.",
-            options: ["True", "False"],
-            answer: 0,
-          },
-          {
-            q: "Grouping records in an Access Report allows you to:",
-            options: ["Sort alphabetically only", "Organise data into categories with subtotals", "Create new tables", "Export to PDF only"],
-            answer: 1,
-          },
-        ],
-        resources: [
-          { name: "Access Reports Tutorial", url: "https://support.microsoft.com/en-us/office/introduction-to-reports-in-access-e0d9d6b3-5ca0-4f47-a2af-d3fcae3e5234", type: "link" },
-        ],
-      },
-    ],
+    ]
   },
 ];
 
-// ─────────────────────────────────────────────
-// STYLES (inline, Moodle-inspired, elite)
-// ─────────────────────────────────────────────
-const S = {
-  root: {
-    fontFamily: "'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
-    background: "#f3f4f6",
-    minHeight: "100vh",
-    color: "#1e293b",
-  },
-  header: {
-    background: "linear-gradient(135deg, #1a237e 0%, #283593 50%, #1565c0 100%)",
-    color: "#fff",
-    padding: "0",
-    boxShadow: "0 2px 10px rgba(0,0,0,0.3)",
-  },
-  headerInner: {
-    maxWidth: 1200,
-    margin: "0 auto",
-    padding: "16px 24px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    flexWrap: "wrap",
-    gap: 12,
-  },
-  headerLogo: {
-    display: "flex",
-    alignItems: "center",
-    gap: 12,
-  },
-  headerLogoIcon: {
-    width: 44,
-    height: 44,
-    background: "#fff",
-    borderRadius: 10,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: 24,
-  },
-  headerTitle: {
-    fontSize: 22,
-    fontWeight: 700,
-    margin: 0,
-    letterSpacing: "-0.3px",
-  },
-  headerSubtitle: {
-    fontSize: 12,
-    opacity: 0.8,
-    margin: 0,
-    marginTop: 2,
-  },
-  main: {
-    maxWidth: 1200,
-    margin: "0 auto",
-    padding: "24px 16px",
-  },
-  // Course selection
-  courseGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-    gap: 20,
-    marginTop: 20,
-  },
-  courseCard: (selected) => ({
-    background: selected ? "#1a237e" : "#fff",
-    color: selected ? "#fff" : "#1e293b",
-    border: selected ? "2px solid #1a237e" : "2px solid #e2e8f0",
-    borderRadius: 12,
-    padding: "20px",
-    cursor: "pointer",
-    transition: "all 0.2s ease",
-    boxShadow: selected ? "0 6px 20px rgba(26,35,126,0.3)" : "0 1px 3px rgba(0,0,0,0.07)",
-  }),
-  courseIcon: {
-    fontSize: 36,
-    marginBottom: 10,
-    display: "block",
-  },
-  courseTitle: {
-    fontSize: 17,
-    fontWeight: 700,
-    margin: "0 0 6px",
-  },
-  courseDesc: {
-    fontSize: 13,
-    opacity: 0.75,
-    margin: 0,
-    lineHeight: 1.5,
-  },
-  // Progress
-  progressSection: {
-    background: "#fff",
-    borderRadius: 12,
-    padding: "20px 24px",
-    marginBottom: 24,
-    boxShadow: "0 1px 3px rgba(0,0,0,0.07)",
-  },
-  progressBar: {
-    height: 10,
-    background: "#e2e8f0",
-    borderRadius: 99,
-    overflow: "hidden",
-    marginTop: 10,
-  },
-  progressFill: (pct) => ({
-    height: "100%",
-    width: `${pct}%`,
-    background: pct === 100 ? "linear-gradient(90deg,#2e7d32,#43a047)" : "linear-gradient(90deg,#1a237e,#1565c0)",
-    borderRadius: 99,
-    transition: "width 0.5s ease",
-  }),
-  // Module accordion
-  moduleCard: {
-    background: "#fff",
-    borderRadius: 10,
-    marginBottom: 12,
-    overflow: "hidden",
-    boxShadow: "0 1px 3px rgba(0,0,0,0.07)",
-    border: "1px solid #e2e8f0",
-  },
-  moduleHeader: (open, done) => ({
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: "16px 20px",
-    cursor: "pointer",
-    background: done ? "#f0fdf4" : open ? "#f8faff" : "#fff",
-    borderBottom: open ? "1px solid #e2e8f0" : "none",
-    transition: "background 0.2s",
-    gap: 12,
-  }),
-  moduleTitle: {
-    fontSize: 15,
-    fontWeight: 600,
-    margin: 0,
-    flex: 1,
-  },
-  moduleBadge: (done) => ({
-    fontSize: 11,
-    fontWeight: 700,
-    padding: "3px 10px",
-    borderRadius: 99,
-    background: done ? "#dcfce7" : "#f1f5f9",
-    color: done ? "#166534" : "#64748b",
-    whiteSpace: "nowrap",
-  }),
-  moduleBody: {
-    padding: "0",
-  },
-  // Tabs
-  tabBar: {
-    display: "flex",
-    borderBottom: "2px solid #e2e8f0",
-    background: "#f8faff",
-    overflowX: "auto",
-  },
-  tab: (active) => ({
-    padding: "10px 20px",
-    fontSize: 13,
-    fontWeight: active ? 700 : 500,
-    color: active ? "#1a237e" : "#64748b",
-    borderBottom: active ? "2px solid #1a237e" : "2px solid transparent",
-    cursor: "pointer",
-    whiteSpace: "nowrap",
-    background: "none",
-    border: "none",
-    borderBottom: active ? "2px solid #1a237e" : "2px solid transparent",
-    marginBottom: -2,
-    transition: "all 0.15s",
-  }),
-  tabContent: {
-    padding: "20px",
-  },
-  // Video
-  videoWrapper: {
-    position: "relative",
-    paddingBottom: "56.25%",
-    height: 0,
-    borderRadius: 8,
-    overflow: "hidden",
-    background: "#000",
-  },
-  videoIframe: {
-    position: "absolute",
-    top: 0, left: 0,
-    width: "100%",
-    height: "100%",
-    border: "none",
-  },
-  // Exercise
-  exerciseStep: {
-    display: "flex",
-    gap: 12,
-    marginBottom: 12,
-    alignItems: "flex-start",
-  },
-  stepNum: {
-    width: 26,
-    height: 26,
-    borderRadius: "50%",
-    background: "#1a237e",
-    color: "#fff",
-    fontSize: 12,
-    fontWeight: 700,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    flexShrink: 0,
-    marginTop: 1,
-  },
-  input: {
-    width: "100%",
-    padding: "10px 14px",
-    borderRadius: 8,
-    border: "1.5px solid #cbd5e1",
-    fontSize: 14,
-    outline: "none",
-    boxSizing: "border-box",
-    transition: "border 0.15s",
-  },
-  // Quiz
-  quizOption: (sel, correct, revealed) => {
-    let bg = "#f8faff", border = "#e2e8f0", color = "#1e293b";
-    if (revealed) {
-      if (correct) { bg = "#f0fdf4"; border = "#4ade80"; color = "#166534"; }
-      else if (sel && !correct) { bg = "#fef2f2"; border = "#f87171"; color = "#991b1b"; }
-    } else if (sel) {
-      bg = "#eef2ff"; border = "#818cf8"; color = "#3730a3";
-    }
-    return {
-      display: "block",
-      width: "100%",
-      textAlign: "left",
-      padding: "11px 16px",
-      marginBottom: 8,
-      borderRadius: 8,
-      border: `1.5px solid ${border}`,
-      background: bg,
-      color,
-      fontSize: 14,
-      cursor: revealed ? "default" : "pointer",
-      transition: "all 0.15s",
-    };
-  },
-  // Resources
-  resourceLink: {
-    display: "flex",
-    alignItems: "center",
-    gap: 10,
-    padding: "12px 16px",
-    background: "#f8faff",
-    borderRadius: 8,
-    border: "1px solid #e2e8f0",
-    marginBottom: 8,
-    textDecoration: "none",
-    color: "#1a237e",
-    fontSize: 14,
-    fontWeight: 500,
-    transition: "background 0.15s",
-  },
-  // Buttons
-  btnPrimary: {
-    background: "linear-gradient(135deg,#1a237e,#1565c0)",
-    color: "#fff",
-    border: "none",
-    borderRadius: 8,
-    padding: "11px 24px",
-    fontSize: 14,
-    fontWeight: 600,
-    cursor: "pointer",
-    transition: "opacity 0.15s, transform 0.1s",
-  },
-  btnSuccess: {
-    background: "linear-gradient(135deg,#2e7d32,#43a047)",
-    color: "#fff",
-    border: "none",
-    borderRadius: 8,
-    padding: "11px 24px",
-    fontSize: 14,
-    fontWeight: 600,
-    cursor: "pointer",
-    transition: "opacity 0.15s",
-  },
-  btnDisabled: {
-    background: "#94a3b8",
-    color: "#fff",
-    border: "none",
-    borderRadius: 8,
-    padding: "11px 24px",
-    fontSize: 14,
-    fontWeight: 600,
-    cursor: "not-allowed",
-    opacity: 0.7,
-  },
-  btnOutline: {
-    background: "transparent",
-    color: "#1a237e",
-    border: "1.5px solid #1a237e",
-    borderRadius: 8,
-    padding: "9px 20px",
-    fontSize: 13,
-    fontWeight: 600,
-    cursor: "pointer",
-    transition: "all 0.15s",
-  },
-  // Certificate modal
-  overlay: {
-    position: "fixed",
-    inset: 0,
-    background: "rgba(15,23,42,0.7)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 1000,
-    padding: 20,
-  },
-  modal: {
-    background: "#fff",
-    borderRadius: 16,
-    padding: "36px",
-    maxWidth: 460,
-    width: "100%",
-    boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
-  },
-  alert: (type) => ({
-    padding: "12px 16px",
-    borderRadius: 8,
-    marginTop: 12,
-    fontSize: 13,
-    fontWeight: 500,
-    background: type === "success" ? "#f0fdf4" : "#fef2f2",
-    color: type === "success" ? "#166534" : "#991b1b",
-    border: `1px solid ${type === "success" ? "#4ade80" : "#f87171"}`,
-  }),
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: 700,
-    color: "#1a237e",
-    marginBottom: 16,
-    marginTop: 0,
-  },
-  label: {
-    display: "block",
-    fontSize: 12,
-    fontWeight: 600,
-    color: "#64748b",
-    marginBottom: 4,
-    marginTop: 12,
-    textTransform: "uppercase",
-    letterSpacing: "0.05em",
-  },
-};
+// ─────────────────────────────────── HELPERS ───────────────────────────────────
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
+function certId() { return "ECM-" + Date.now().toString(36).toUpperCase() + "-" + Math.random().toString(36).slice(2,6).toUpperCase(); }
+function formatDate(d) { return d.toLocaleDateString("en-ZA",{year:"numeric",month:"long",day:"numeric"}); }
 
-// ─────────────────────────────────────────────
-// UTILITY — unique certificate ID
-// ─────────────────────────────────────────────
-function generateCertId() {
-  return "ETC-" + Date.now().toString(36).toUpperCase() + "-" + Math.random().toString(36).slice(2, 6).toUpperCase();
-}
-
-function formatDate(d) {
-  return d.toLocaleDateString("en-ZA", { year: "numeric", month: "long", day: "numeric" });
-}
-
-// ─────────────────────────────────────────────
-// SUB-COMPONENTS
-// ─────────────────────────────────────────────
-
-/** Video tab */
-function VideoTab({ module }) {
+// Confetti burst (CSS-only particles)
+function Confetti({ active }) {
+  if (!active) return null;
+  const colors = ["#FFD700","#FF6B6B","#4ECDC4","#45B7D1","#96CEB4","#FFEAA7","#DDA0DD","#98D8C8"];
+  const particles = Array.from({length:24},(_,i)=>i);
   return (
-    <div>
-      <p style={{ fontSize: 13, color: "#64748b", marginTop: 0, marginBottom: 12 }}>
-        📺 Watch the demonstration video below before proceeding to the exercise.
-      </p>
-      <div style={S.videoWrapper}>
-        <iframe
-          style={S.videoIframe}
-          src={module.video}
-          title={module.title}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        />
-      </div>
-      <p style={{ fontSize: 12, color: "#94a3b8", marginTop: 10 }}>
-        ⏱ Estimated viewing time: part of {module.duration} total module time.
-      </p>
-    </div>
-  );
-}
-
-/** Exercise tab */
-function ExerciseTab({ module, value, onChange, completed }) {
-  return (
-    <div>
-      <h4 style={{ margin: "0 0 12px", color: "#1a237e", fontSize: 15 }}>
-        🛠 {module.exercise.title}
-      </h4>
-      <p style={{ fontSize: 13, color: "#475569", marginBottom: 14, marginTop: 0 }}>
-        Complete each step below in the application, then confirm your work:
-      </p>
-      {module.exercise.instructions.map((step, i) => (
-        <div key={i} style={S.exerciseStep}>
-          <span style={S.stepNum}>{i + 1}</span>
-          <span style={{ fontSize: 14, lineHeight: 1.6, color: "#334155" }}>{step}</span>
-        </div>
+    <div style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:9999,overflow:"hidden"}}>
+      {particles.map(i=>(
+        <div key={i} style={{
+          position:"absolute",
+          left:`${(i/24)*100}%`,
+          top:"-10px",
+          width:10,height:10,
+          borderRadius: i%3===0 ? "50%" : "2px",
+          background:colors[i%colors.length],
+          animation:`confettiFall ${1.5+Math.random()}s linear ${Math.random()*0.5}s forwards`,
+          transform:`rotate(${Math.random()*360}deg)`,
+        }}/>
       ))}
-      <div style={{ marginTop: 20, padding: "16px", background: "#f0f4ff", borderRadius: 10, border: "1px solid #c7d2fe" }}>
-        <label style={S.label}>{module.exercise.task}</label>
-        <label style={{ ...S.label, textTransform: "none", fontSize: 13, color: "#334155", marginTop: 4 }}>
-          {module.exercise.inputLabel}:
-        </label>
-        <input
-          style={{ ...S.input, marginTop: 6 }}
-          placeholder={module.exercise.inputPlaceholder}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          disabled={completed}
-        />
-        {completed && (
-          <p style={{ fontSize: 12, color: "#166534", margin: "6px 0 0", fontWeight: 600 }}>✓ Exercise completed</p>
-        )}
-      </div>
+      <style>{`@keyframes confettiFall{to{transform:translateY(110vh) rotate(720deg);opacity:0;}}`}</style>
     </div>
   );
 }
 
-/** Quiz tab */
-function QuizTab({ module, quizState, onAnswer, onReveal, completed }) {
-  const [revealed, setRevealed] = useState(false);
+// XP pop animation
+function XPPop({ xp, active }) {
+  const [show, setShow] = useState(false);
+  useEffect(()=>{ if(active){setShow(true);const t=setTimeout(()=>setShow(false),1800);return()=>clearTimeout(t);} },[active]);
+  if(!show) return null;
+  return (
+    <div style={{
+      position:"fixed",top:"20%",left:"50%",transform:"translateX(-50%)",
+      background:"linear-gradient(135deg,#FFD700,#FFA500)",
+      color:"#fff",fontSize:22,fontWeight:900,
+      padding:"12px 28px",borderRadius:99,
+      boxShadow:"0 6px 24px rgba(255,165,0,0.5)",
+      animation:"xpPop 1.8s ease forwards",zIndex:9998,
+      fontFamily:"'Segoe UI',sans-serif",letterSpacing:1,
+    }}>
+      +{xp} XP ⚡
+      <style>{`@keyframes xpPop{0%{opacity:0;transform:translateX(-50%) scale(0.5) translateY(20px)}20%{opacity:1;transform:translateX(-50%) scale(1.1) translateY(0)}80%{opacity:1;transform:translateX(-50%) scale(1) translateY(-20px)}100%{opacity:0;transform:translateX(-50%) scale(0.9) translateY(-50px)}}`}</style>
+    </div>
+  );
+}
 
-  function handleReveal() {
+// ─────────────────────────────────── DRAG & DROP EXERCISE ───────────────────────────────────
+function DragDropLesson({ lesson, onComplete }) {
+  const [dragging, setDragging] = useState(null);
+  const [dropped, setDropped] = useState({}); // { item: zoneId }
+  const [revealed, setRevealed] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const allPlaced = lesson.items.every(item => dropped[item]);
+
+  function handleDragStart(item) { setDragging(item); }
+  function handleDrop(zoneId) {
+    if (!dragging || submitted) return;
+    setDropped(prev => ({ ...prev, [dragging]: zoneId }));
+    setDragging(null);
+  }
+  function handleSubmit() {
     setRevealed(true);
-    onReveal();
+    setSubmitted(true);
+    // Check all correct
+    const allCorrect = lesson.items.every(item => {
+      const zone = lesson.zones.find(z => z.accepts.includes(item));
+      return dropped[item] === zone?.id;
+    });
+    if (allCorrect) setTimeout(() => onComplete(true), 800);
+    else setTimeout(() => onComplete(false), 800);
   }
 
-  const allAnswered = module.quiz.every((_, i) => quizState[i] !== undefined);
-  const score = revealed
-    ? module.quiz.filter((q, i) => quizState[i] === q.answer).length
-    : null;
+  // Items not yet placed
+  const unplaced = lesson.items.filter(i => !dropped[i]);
 
   return (
     <div>
-      <p style={{ fontSize: 13, color: "#64748b", marginTop: 0, marginBottom: 16 }}>
-        📝 Answer all questions, then submit to see your results.
-      </p>
-      {module.quiz.map((q, qi) => (
-        <div key={qi} style={{ marginBottom: 24 }}>
-          <p style={{ fontSize: 14, fontWeight: 600, margin: "0 0 10px", color: "#1e293b" }}>
-            {qi + 1}. {q.q}
-          </p>
-          {q.options.map((opt, oi) => (
-            <button
-              key={oi}
-              style={S.quizOption(quizState[qi] === oi, oi === q.answer, revealed)}
-              onClick={() => !revealed && !completed && onAnswer(qi, oi)}
+      <p style={{fontSize:15,fontWeight:600,color:"#1e293b",marginBottom:16}}>{lesson.question}</p>
+
+      {/* Unplaced items tray */}
+      <div style={{display:"flex",flexWrap:"wrap",gap:8,padding:"12px 16px",background:"#f8faff",borderRadius:12,border:"2px dashed #c7d2fe",marginBottom:20,minHeight:56}}>
+        {unplaced.length === 0 ? <span style={{color:"#94a3b8",fontSize:13,alignSelf:"center"}}>All items placed ✓</span> :
+          unplaced.map(item => (
+            <div key={item}
+              draggable
+              onDragStart={() => handleDragStart(item)}
+              style={{
+                padding:"7px 14px",background:"#fff",border:"2px solid #818cf8",
+                borderRadius:8,cursor:"grab",fontSize:13,fontWeight:600,color:"#3730a3",
+                boxShadow:"0 2px 6px rgba(99,102,241,0.15)",
+                userSelect:"none",transition:"transform 0.1s",
+              }}
+              onMouseDown={e=>e.currentTarget.style.transform="scale(0.96)"}
+              onMouseUp={e=>e.currentTarget.style.transform="scale(1)"}
+            >{item}</div>
+          ))
+        }
+      </div>
+
+      {/* Drop zones */}
+      <div style={{display:"flex",flexDirection:"column",gap:12}}>
+        {lesson.zones.map(zone => {
+          const zoneItems = lesson.items.filter(i => dropped[i] === zone.id);
+          return (
+            <div key={zone.id}
+              onDragOver={e => e.preventDefault()}
+              onDrop={() => handleDrop(zone.id)}
+              style={{
+                border:"2px dashed #cbd5e1",borderRadius:12,padding:"12px 16px",
+                background:"#fafbff",minHeight:52,
+                borderColor: dragging ? "#818cf8" : "#cbd5e1",
+                transition:"border-color 0.15s, background 0.15s",
+              }}
             >
-              {revealed && oi === q.answer ? "✓ " : revealed && quizState[qi] === oi && oi !== q.answer ? "✗ " : ""}
+              <div style={{fontSize:13,fontWeight:700,color:"#475569",marginBottom:8}}>{zone.label}</div>
+              <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+                {zoneItems.length === 0 && <span style={{fontSize:12,color:"#cbd5e1",alignSelf:"center"}}>Drop items here</span>}
+                {zoneItems.map(item => {
+                  const correct = zone.accepts.includes(item);
+                  let bg="#fff", border="2px solid #818cf8", color="#3730a3";
+                  if(revealed){ if(correct){bg="#f0fdf4";border="2px solid #4ade80";color="#166534";}else{bg="#fef2f2";border="2px solid #f87171";color="#991b1b";} }
+                  return (
+                    <div key={item}
+                      style={{padding:"6px 12px",borderRadius:8,fontSize:13,fontWeight:600,background:bg,border,color,cursor:submitted?"default":"pointer"}}
+                      onClick={() => { if(!submitted) setDropped(prev => { const n={...prev}; delete n[item]; return n; }); }}
+                    >
+                      {revealed && (correct?"✓ ":"✗ ")}{item}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {!submitted && (
+        <button
+          style={{marginTop:20,padding:"11px 28px",borderRadius:99,fontSize:14,fontWeight:700,cursor:allPlaced?"pointer":"not-allowed",
+            background:allPlaced?"linear-gradient(135deg,#6d28d9,#818cf8)":"#e2e8f0",
+            color:allPlaced?"#fff":"#94a3b8",border:"none",transition:"all 0.2s",boxShadow:allPlaced?"0 4px 14px rgba(109,40,217,0.4)":"none"}}
+          onClick={allPlaced ? handleSubmit : undefined}
+        >Check Answers →</button>
+      )}
+
+      {revealed && (
+        <div style={{marginTop:14,padding:"12px 16px",borderRadius:10,
+          background: lesson.items.every(i=>lesson.zones.find(z=>z.accepts.includes(i))?.id===dropped[i]) ? "#f0fdf4":"#fef9ef",
+          border: `1px solid ${lesson.items.every(i=>lesson.zones.find(z=>z.accepts.includes(i))?.id===dropped[i])?"#4ade80":"#fcd34d"}`
+        }}>
+          <span style={{fontWeight:700,fontSize:14}}>
+            {lesson.items.every(i=>lesson.zones.find(z=>z.accepts.includes(i))?.id===dropped[i]) ? "🎉 Perfect! All correct!" : "💡 Some items are in the wrong zone — review the coloured feedback above."}
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────── MCQ EXERCISE ───────────────────────────────────
+function MCQLesson({ lesson, onComplete }) {
+  const [answers, setAnswers] = useState({});
+  const [revealed, setRevealed] = useState(false);
+  const [current, setCurrent] = useState(0);
+
+  const q = lesson.questions[current];
+  const answered = answers[current] !== undefined;
+  const isLast = current === lesson.questions.length - 1;
+
+  function pick(oi) {
+    if (revealed || answers[current] !== undefined) return;
+    setAnswers(prev => ({...prev, [current]: oi}));
+    setRevealed(true);
+  }
+
+  function next() {
+    setRevealed(false);
+    if (isLast) {
+      const score = lesson.questions.filter((_,i) => answers[i] === lesson.questions[i].answer || (i===current && answers[current]===q.answer)).length;
+      onComplete(score >= Math.ceil(lesson.questions.length * 0.67));
+    } else {
+      setCurrent(c => c+1);
+    }
+  }
+
+  const chosen = answers[current];
+
+  return (
+    <div>
+      {/* Progress dots */}
+      <div style={{display:"flex",gap:6,marginBottom:20}}>
+        {lesson.questions.map((_,i)=>(
+          <div key={i} style={{height:6,flex:1,borderRadius:99,
+            background: i<current ? "#4ade80" : i===current ? "#6d28d9" : "#e2e8f0",
+            transition:"background 0.3s"}}/>
+        ))}
+      </div>
+
+      <p style={{fontSize:16,fontWeight:700,color:"#1e293b",marginBottom:18,lineHeight:1.5}}>
+        {current+1}. {q.q}
+      </p>
+
+      <div style={{display:"flex",flexDirection:"column",gap:8}}>
+        {q.options.map((opt, oi)=>{
+          let bg="#fff", border="1.5px solid #e2e8f0", color="#334155", icon="";
+          if(revealed){
+            if(oi===q.answer){ bg="#f0fdf4";border="2px solid #4ade80";color="#166534";icon="✓ "; }
+            else if(chosen===oi){ bg="#fef2f2";border="2px solid #f87171";color="#991b1b";icon="✗ "; }
+          } else if(chosen===oi){ bg="#eef2ff";border="2px solid #818cf8";color="#3730a3"; }
+          return (
+            <button key={oi} onClick={()=>pick(oi)} style={{
+              display:"flex",alignItems:"center",gap:10,padding:"13px 18px",
+              borderRadius:10,border,background:bg,color,fontSize:14,fontWeight:500,
+              cursor:revealed?"default":"pointer",textAlign:"left",
+              boxShadow:revealed&&oi===q.answer?"0 0 0 3px rgba(74,222,128,0.2)":
+                revealed&&chosen===oi&&oi!==q.answer?"0 0 0 3px rgba(248,113,113,0.2)":"none",
+              transition:"all 0.15s",
+            }}>
+              <span style={{width:28,height:28,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",
+                flexShrink:0,fontSize:13,fontWeight:700,
+                background: revealed&&oi===q.answer?"#4ade80": revealed&&chosen===oi?"#f87171" : "#f1f5f9",
+                color: revealed&&(oi===q.answer||chosen===oi)?"#fff":"#64748b"
+              }}>
+                {icon || String.fromCharCode(65+oi)}
+              </span>
               {opt}
             </button>
-          ))}
+          );
+        })}
+      </div>
+
+      {revealed && (
+        <div style={{marginTop:16,padding:"12px 16px",borderRadius:10,
+          background: chosen===q.answer?"#f0fdf4":"#fffbeb",
+          border:`1px solid ${chosen===q.answer?"#4ade80":"#fcd34d"}`,
+          fontSize:13,color:"#334155"
+        }}>
+          <span style={{fontWeight:700}}>{chosen===q.answer?"🎉 Correct! ":"💡 Not quite — "}</span>
+          {q.explain}
         </div>
-      ))}
-      {!revealed && !completed && (
-        <button
-          style={allAnswered ? S.btnPrimary : S.btnDisabled}
-          onClick={allAnswered ? handleReveal : undefined}
-        >
-          Submit Quiz
+      )}
+
+      {revealed && (
+        <button onClick={next} style={{
+          marginTop:16,padding:"11px 28px",borderRadius:99,fontSize:14,fontWeight:700,
+          background:"linear-gradient(135deg,#6d28d9,#818cf8)",color:"#fff",border:"none",cursor:"pointer",
+          boxShadow:"0 4px 14px rgba(109,40,217,0.35)",transition:"transform 0.1s",
+        }}>
+          {isLast ? "Finish ✓" : "Next Question →"}
         </button>
       )}
-      {revealed && (
-        <div style={S.alert(score >= Math.ceil(module.quiz.length * 0.75) ? "success" : "error")}>
-          {score >= Math.ceil(module.quiz.length * 0.75)
-            ? `✅ Excellent! You scored ${score}/${module.quiz.length}.`
-            : `⚠️ You scored ${score}/${module.quiz.length}. Review the content and retry.`}
-        </div>
-      )}
-      {completed && (
-        <div style={S.alert("success")}>✅ Quiz completed</div>
-      )}
     </div>
   );
 }
 
-/** Resources tab */
-function ResourcesTab({ module }) {
-  return (
-    <div>
-      <p style={{ fontSize: 13, color: "#64748b", marginTop: 0, marginBottom: 14 }}>
-        📂 Download or access these resources to support your learning:
-      </p>
-      {module.resources.map((r, i) => (
-        <a
-          key={i}
-          href={r.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={S.resourceLink}
-        >
-          <span style={{ fontSize: 20 }}>{r.type === "pdf" ? "📄" : "🔗"}</span>
-          <span>{r.name}</span>
-          <span style={{ marginLeft: "auto", fontSize: 11, color: "#94a3b8" }}>
-            {r.type === "pdf" ? "PDF" : "Web"}
-          </span>
-        </a>
-      ))}
-    </div>
-  );
-}
+// ─────────────────────────────────── FILL-IN-BLANK ───────────────────────────────────
+function FillInLesson({ lesson, onComplete }) {
+  const [inputs, setInputs] = useState({});
+  const [revealed, setRevealed] = useState(false);
 
-/** Single module accordion */
-function ModuleAccordion({ mod, moduleProgress, onUpdateProgress }) {
-  const [open, setOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("video");
+  const allFilled = lesson.questions.every((_,i) => inputs[i]?.trim());
 
-  const done = moduleProgress?.done || false;
-  const exerciseVal = moduleProgress?.exerciseVal || "";
-  const quizState = moduleProgress?.quizState || {};
-  const quizRevealed = moduleProgress?.quizRevealed || false;
-  const videoWatched = moduleProgress?.videoWatched || false;
-
-  // A module is completable when: video acknowledged, exercise has input, quiz revealed
-  const canComplete = videoWatched && exerciseVal.trim().length > 2 && quizRevealed;
-
-  function update(patch) {
-    onUpdateProgress({ ...moduleProgress, ...patch });
+  function handleSubmit() {
+    setRevealed(true);
+    const score = lesson.questions.filter((q,i) =>
+      (inputs[i]||"").trim().toLowerCase() === q.answer.toLowerCase()
+    ).length;
+    setTimeout(() => onComplete(score >= Math.ceil(lesson.questions.length * 0.67)), 1200);
   }
 
-  function handleMarkComplete() {
-    if (canComplete && !done) {
-      update({ done: true });
+  return (
+    <div>
+      {lesson.questions.map((q,i)=>{
+        const correct = revealed && (inputs[i]||"").trim().toLowerCase() === q.answer.toLowerCase();
+        const wrong = revealed && !correct;
+        return (
+          <div key={i} style={{marginBottom:22,padding:"16px 18px",borderRadius:12,
+            background: !revealed?"#f8faff": correct?"#f0fdf4":"#fef2f2",
+            border:`1.5px solid ${!revealed?"#e2e8f0":correct?"#4ade80":"#f87171"}`,
+            transition:"all 0.3s"
+          }}>
+            <p style={{fontSize:15,fontWeight:600,color:"#1e293b",margin:"0 0 10px",lineHeight:1.5}}>
+              {i+1}. {q.q}
+            </p>
+            <input
+              value={inputs[i]||""}
+              onChange={e => !revealed && setInputs(prev=>({...prev,[i]:e.target.value}))}
+              placeholder={revealed?"":q.hint}
+              readOnly={revealed}
+              style={{
+                width:"100%",padding:"10px 14px",borderRadius:8,fontSize:14,fontWeight:600,
+                border:`1.5px solid ${!revealed?"#cbd5e1":correct?"#4ade80":"#f87171"}`,
+                background: !revealed?"#fff": correct?"#f0fdf4":"#fef2f2",
+                color: !revealed?"#1e293b": correct?"#166534":"#991b1b",
+                outline:"none",boxSizing:"border-box",
+              }}
+            />
+            {revealed && (
+              <p style={{margin:"6px 0 0",fontSize:13,color:correct?"#166534":"#991b1b",fontWeight:600}}>
+                {correct ? "✓ Correct!" : `✗ Answer: ${q.answer}`}
+              </p>
+            )}
+          </div>
+        );
+      })}
+
+      {!revealed && (
+        <button onClick={allFilled?handleSubmit:undefined} style={{
+          padding:"11px 28px",borderRadius:99,fontSize:14,fontWeight:700,border:"none",
+          background:allFilled?"linear-gradient(135deg,#6d28d9,#818cf8)":"#e2e8f0",
+          color:allFilled?"#fff":"#94a3b8",cursor:allFilled?"pointer":"not-allowed",
+          boxShadow:allFilled?"0 4px 14px rgba(109,40,217,0.35)":"none",
+        }}>Check Answers →</button>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────── LEARN CARD ───────────────────────────────────
+function LearnCard({ learn, onContinue }) {
+  const [step, setStep] = useState(0);
+  const total = 1 + learn.facts.length; // intro + facts
+
+  return (
+    <div>
+      {step === 0 && (
+        <div style={{textAlign:"center",padding:"8px 0"}}>
+          <div style={{fontSize:56,marginBottom:12}}>{learn.icon}</div>
+          <h3 style={{fontSize:20,fontWeight:800,color:"#1e293b",margin:"0 0 10px"}}>{learn.heading}</h3>
+          <div style={{background:"#f0f4ff",borderRadius:12,padding:"16px 20px",marginBottom:16,textAlign:"left"}}>
+            <p style={{fontSize:15,color:"#334155",margin:"0 0 10px",lineHeight:1.6,fontWeight:500}}>{learn.definition}</p>
+            <div style={{display:"flex",gap:8,alignItems:"flex-start",padding:"10px 14px",background:"#fff",borderRadius:10,border:"1px solid #c7d2fe"}}>
+              <span style={{fontSize:20,flexShrink:0}}>💡</span>
+              <p style={{fontSize:13,color:"#4338ca",margin:0,lineHeight:1.5,fontStyle:"italic"}}>{learn.analogy}</p>
+            </div>
+          </div>
+          {/* Visual key concepts */}
+          <div style={{display:"flex",gap:8,flexWrap:"wrap",justifyContent:"center",marginBottom:16}}>
+            {learn.visual.map((v,i)=>(
+              <div key={i} style={{background:v.color,borderRadius:10,padding:"10px 14px",color:"#fff",minWidth:120,textAlign:"left"}}>
+                <div style={{fontSize:13,fontWeight:800,marginBottom:3}}>{v.label}</div>
+                <div style={{fontSize:11,opacity:0.85,lineHeight:1.4}}>{v.desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {step > 0 && step <= learn.facts.length && (
+        <div style={{display:"flex",flexDirection:"column",gap:0}}>
+          <div style={{textAlign:"center",marginBottom:20}}>
+            <div style={{display:"inline-block",background:"#f0f4ff",borderRadius:99,padding:"4px 16px",fontSize:12,fontWeight:700,color:"#4338ca",marginBottom:12}}>
+              FACT {step} OF {learn.facts.length}
+            </div>
+          </div>
+          <div style={{display:"flex",flexDirection:"column",gap:10}}>
+            {learn.facts.map((f,i)=>(
+              <div key={i} style={{
+                display:"flex",alignItems:"center",gap:14,padding:"14px 18px",borderRadius:12,
+                background: i === (step-1) ? "#eef2ff":"#f8faff",
+                border: i===(step-1)?"2px solid #818cf8":"1px solid #e2e8f0",
+                transform: i===(step-1)?"scale(1.02)":"scale(1)",
+                transition:"all 0.25s",opacity: i>(step-1)?0.4:1,
+              }}>
+                <span style={{fontSize:20,width:32,textAlign:"center",flexShrink:0}}>{f.icon}</span>
+                <span style={{fontSize:14,color:"#334155",fontWeight: i===(step-1)?600:400,lineHeight:1.5}}>{f.text}</span>
+                {i<(step-1) && <span style={{marginLeft:"auto",color:"#4ade80",fontSize:18,flexShrink:0}}>✓</span>}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Progress dots */}
+      <div style={{display:"flex",gap:6,margin:"20px 0 16px",justifyContent:"center"}}>
+        {Array.from({length:total},(_,i)=>(
+          <div key={i} style={{width:i===step?24:8,height:8,borderRadius:99,
+            background:i<step?"#4ade80":i===step?"#6d28d9":"#e2e8f0",transition:"all 0.3s"}}/>
+        ))}
+      </div>
+
+      <button onClick={()=>{ if(step<total-1) setStep(s=>s+1); else onContinue(); }} style={{
+        width:"100%",padding:"13px",borderRadius:99,fontSize:15,fontWeight:700,
+        background:"linear-gradient(135deg,#6d28d9,#818cf8)",color:"#fff",border:"none",cursor:"pointer",
+        boxShadow:"0 4px 18px rgba(109,40,217,0.4)",letterSpacing:0.3,
+      }}>
+        {step < total-1 ? "Continue →" : "Start Exercise →"}
+      </button>
+    </div>
+  );
+}
+
+// ─────────────────────────────────── LESSON MODAL ───────────────────────────────────
+function LessonModal({ lesson, courseColor, onClose, onFinish }) {
+  const [phase, setPhase] = useState("learn"); // learn | exercise | done
+  const [confetti, setConfetti] = useState(false);
+  const [xpPop, setXpPop] = useState(false);
+  const [passed, setPassed] = useState(false);
+
+  function handleExerciseComplete(success) {
+    setPassed(success);
+    setPhase("done");
+    if (success) {
+      setConfetti(true);
+      setXpPop(true);
+      setTimeout(() => setConfetti(false), 2500);
     }
   }
 
   return (
-    <div style={S.moduleCard}>
-      {/* Header */}
-      <div style={S.moduleHeader(open, done)} onClick={() => setOpen(!open)}>
-        <span style={{ fontSize: 18 }}>{done ? "✅" : open ? "📖" : "📗"}</span>
-        <p style={S.moduleTitle}>{mod.title}</p>
-        <span style={S.moduleBadge(done)}>{done ? "Completed" : `⏱ ${mod.duration}`}</span>
-        <span style={{ color: "#94a3b8", fontSize: 18, flexShrink: 0 }}>{open ? "▲" : "▼"}</span>
-      </div>
-
-      {/* Body */}
-      {open && (
-        <div style={S.moduleBody}>
-          {/* Tab bar */}
-          <div style={S.tabBar}>
-            {["video", "exercise", "quiz", "resources"].map((t) => (
-              <button key={t} style={S.tab(activeTab === t)} onClick={() => setActiveTab(t)}>
-                {t === "video" ? "🎬 Demo" : t === "exercise" ? "🛠 Exercise" : t === "quiz" ? "📝 Quiz" : "📂 Resources"}
-              </button>
-            ))}
+    <div style={{position:"fixed",inset:0,background:"rgba(15,23,42,0.8)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:500,padding:16,backdropFilter:"blur(4px)"}}>
+      <Confetti active={confetti} />
+      <XPPop xp={lesson.xp} active={xpPop} />
+      <div style={{background:"#fff",borderRadius:20,maxWidth:560,width:"100%",maxHeight:"92vh",overflow:"auto",boxShadow:"0 24px 60px rgba(0,0,0,0.35)"}}>
+        {/* Modal header */}
+        <div style={{background:`linear-gradient(135deg,${courseColor},${courseColor}dd)`,borderRadius:"20px 20px 0 0",padding:"18px 22px",color:"#fff",position:"sticky",top:0,zIndex:10}}>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6}}>
+            <div style={{display:"flex",alignItems:"center",gap:10}}>
+              <span style={{fontSize:12,fontWeight:700,background:"rgba(255,255,255,0.2)",borderRadius:99,padding:"3px 10px",textTransform:"uppercase",letterSpacing:1}}>
+                {phase==="learn"?"📖 Learn":phase==="exercise"?"🎮 Exercise":"🏆 Result"}
+              </span>
+              <span style={{fontSize:12,opacity:0.8}}>+{lesson.xp} XP · {lesson.duration}</span>
+            </div>
+            <button onClick={onClose} style={{background:"rgba(255,255,255,0.2)",border:"none",color:"#fff",width:30,height:30,borderRadius:"50%",cursor:"pointer",fontSize:16,display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button>
           </div>
-
-          <div style={S.tabContent}>
-            {activeTab === "video" && (
-              <>
-                <VideoTab module={mod} />
-                {!videoWatched && (
-                  <button
-                    style={{ ...S.btnOutline, marginTop: 16 }}
-                    onClick={() => update({ videoWatched: true })}
-                  >
-                    ✓ Mark Video as Watched
-                  </button>
-                )}
-                {videoWatched && (
-                  <p style={{ color: "#166534", fontSize: 13, marginTop: 12, fontWeight: 600 }}>✓ Video marked as watched</p>
-                )}
-              </>
-            )}
-            {activeTab === "exercise" && (
-              <ExerciseTab
-                module={mod}
-                value={exerciseVal}
-                onChange={(v) => update({ exerciseVal: v })}
-                completed={done}
-              />
-            )}
-            {activeTab === "quiz" && (
-              <QuizTab
-                module={mod}
-                quizState={quizState}
-                onAnswer={(qi, oi) => update({ quizState: { ...quizState, [qi]: oi } })}
-                onReveal={() => update({ quizRevealed: true })}
-                completed={done}
-              />
-            )}
-            {activeTab === "resources" && <ResourcesTab module={mod} />}
-
-            {/* Complete button */}
-            {!done && (
-              <div style={{ marginTop: 24, paddingTop: 16, borderTop: "1px solid #e2e8f0" }}>
-                {!canComplete && (
-                  <p style={{ fontSize: 12, color: "#94a3b8", margin: "0 0 8px" }}>
-                    Complete all steps: watch the video, fill in the exercise, and submit the quiz to unlock completion.
-                  </p>
-                )}
-                <button
-                  style={canComplete ? S.btnSuccess : S.btnDisabled}
-                  onClick={handleMarkComplete}
-                >
-                  ✅ Mark Module as Complete
-                </button>
-              </div>
-            )}
-          </div>
+          <h2 style={{margin:0,fontSize:18,fontWeight:800,letterSpacing:"-0.3px"}}>{lesson.title}</h2>
         </div>
-      )}
+
+        {/* Modal body */}
+        <div style={{padding:"22px"}}>
+          {phase === "learn" && (
+            <LearnCard learn={lesson.learn} onContinue={() => setPhase("exercise")} />
+          )}
+
+          {phase === "exercise" && (
+            <>
+              <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:20,padding:"10px 14px",background:"#f0f4ff",borderRadius:10,border:"1px solid #c7d2fe"}}>
+                <span style={{fontSize:18}}>🎮</span>
+                <span style={{fontSize:13,fontWeight:600,color:"#4338ca"}}>Apply what you just learned — complete the exercise below!</span>
+              </div>
+              {lesson.type === "drag" && <DragDropLesson lesson={lesson} onComplete={handleExerciseComplete} />}
+              {lesson.type === "mcq" && <MCQLesson lesson={lesson} onComplete={handleExerciseComplete} />}
+              {lesson.type === "fillin" && <FillInLesson lesson={lesson} onComplete={handleExerciseComplete} />}
+            </>
+          )}
+
+          {phase === "done" && (
+            <div style={{textAlign:"center",padding:"20px 0"}}>
+              <div style={{fontSize:64,marginBottom:12}}>{passed?"🏆":"💪"}</div>
+              <h3 style={{fontSize:22,fontWeight:800,color:passed?"#166534":"#92400e",margin:"0 0 8px"}}>
+                {passed ? "Lesson Complete!" : "Keep Going!"}
+              </h3>
+              <p style={{color:"#64748b",fontSize:15,margin:"0 0 20px",lineHeight:1.5}}>
+                {passed
+                  ? `You've earned +${lesson.xp} XP! Great work mastering "${lesson.title}".`
+                  : "You completed the exercise. Review the lesson content and try again for full marks!"}
+              </p>
+              {passed && (
+                <div style={{display:"inline-flex",alignItems:"center",gap:8,background:"linear-gradient(135deg,#fef9ef,#fffbeb)",border:"2px solid #fcd34d",borderRadius:12,padding:"12px 20px",marginBottom:20}}>
+                  <span style={{fontSize:22}}>⚡</span>
+                  <span style={{fontWeight:800,fontSize:18,color:"#92400e"}}>+{lesson.xp} XP earned!</span>
+                </div>
+              )}
+              <button onClick={() => onFinish(passed)} style={{
+                padding:"13px 36px",borderRadius:99,fontSize:15,fontWeight:700,border:"none",cursor:"pointer",
+                background:passed?`linear-gradient(135deg,${courseColor},${courseColor}bb)`:"linear-gradient(135deg,#6d28d9,#818cf8)",
+                color:"#fff",boxShadow:`0 4px 18px ${passed?courseColor:"rgba(109,40,217,0.4)"}88`,
+              }}>
+                {passed ? "Back to Course →" : "Try Again ↺"}
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
 
-/** Certificate modal */
-function CertificateModal({ course, onClose }) {
+// ─────────────────────────────────── CERTIFICATE MODAL ───────────────────────────────────
+function CertModal({ course, totalXP, onClose }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [sending, setSending] = useState(false);
-  const [status, setStatus] = useState(null); // null | "success" | "error"
-  const [certId] = useState(generateCertId);
+  const [status, setStatus] = useState(null);
+  const [certID] = useState(certId);
 
-  async function handleSend() {
-    if (!name.trim() || !email.trim()) {
-      setStatus("error");
-      return;
-    }
-    setSending(true);
-    setStatus(null);
+  async function send() {
+    if (!name.trim() || !email.trim() || !email.includes("@")) { setStatus("validation"); return; }
+    setSending(true); setStatus(null);
     try {
-      // Load EmailJS dynamically
       if (!window.emailjs) {
-        await new Promise((res, rej) => {
-          const s = document.createElement("script");
-          s.src = "https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js";
-          s.onload = res;
-          s.onerror = rej;
-          document.head.appendChild(s);
-        });
+        await new Promise((res,rej)=>{const s=document.createElement("script");s.src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js";s.onload=res;s.onerror=rej;document.head.appendChild(s);});
         window.emailjs.init("VIB8bKSD-ZS3RCCHD");
       }
-      const completionDate = formatDate(new Date());
-      await window.emailjs.send(
-        "service_4dt6s3i",
-        "template_wwdrjbl",
-        {
-          to_name: name,
-          user_email: email,
-          certificate_msg:
-            `Congratulations ${name}!\n\n` +
-            `You have successfully completed the course: ${course.title}\n` +
-            `Certificate ID: ${certId}\n` +
-            `Completion Date: ${completionDate}\n\n` +
-            `Download your certificate attached or via the portal.\n` +
-            `If you don't see the email in your inbox, kindly check your Spam/Junk folder.\n` +
-            `For assistance, contact support: 0549271528 or educationalcentremays@gmail.com.`,
-        },
-        "VIB8bKSD-ZS3RCCHD"
-      );
+      await window.emailjs.send("service_4dt6s3i","template_wwdrjbl",{
+        to_name: name,
+        user_email: email,
+        certificate_msg:
+          `Congratulations ${name}!\n\n` +
+          `You have successfully completed the course: ${course.title}\n` +
+          `Certificate ID: ${certID}\n` +
+          `Total XP Earned: ${totalXP} XP\n` +
+          `Completion Date: ${formatDate(new Date())}\n\n` +
+          `Download your certificate attached or via the portal.\n` +
+          `If you don't see the email in your inbox, kindly check your Spam/Junk folder.\n` +
+          `For assistance, contact support: 0549271528 or educationalcentremays@gmail.com.`
+      },"VIB8bKSD-ZS3RCCHD");
       setStatus("success");
-    } catch (err) {
-      console.error(err);
-      setStatus("error");
-    } finally {
-      setSending(false);
-    }
+    } catch(e) { console.error(e); setStatus("error"); }
+    finally { setSending(false); }
   }
 
   return (
-    <div style={S.overlay} onClick={(e) => e.target === e.currentTarget && onClose()}>
-      <div style={S.modal}>
-        <div style={{ textAlign: "center", marginBottom: 20 }}>
-          <div style={{ fontSize: 52 }}>🎓</div>
-          <h2 style={{ margin: "10px 0 4px", color: "#1a237e", fontSize: 22 }}>Certificate of Completion</h2>
-          <p style={{ color: "#64748b", margin: 0, fontSize: 13 }}>
-            {course.icon} {course.title}
-          </p>
+    <div style={{position:"fixed",inset:0,background:"rgba(15,23,42,0.85)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:600,padding:16,backdropFilter:"blur(6px)"}}>
+      <div style={{background:"#fff",borderRadius:20,maxWidth:480,width:"100%",boxShadow:"0 24px 60px rgba(0,0,0,0.4)",overflow:"hidden"}}>
+        {/* Header */}
+        <div style={{background:`linear-gradient(135deg,${course.color},${course.color}aa)`,padding:"24px",textAlign:"center",color:"#fff"}}>
+          <div style={{fontSize:52,marginBottom:8}}>🎓</div>
+          <h2 style={{margin:"0 0 4px",fontSize:22,fontWeight:900}}>Certificate of Completion</h2>
+          <p style={{margin:0,fontSize:14,opacity:0.85}}>{course.emoji} {course.title}</p>
         </div>
 
         {/* Certificate preview */}
-        <div style={{
-          border: "3px double #1a237e",
-          borderRadius: 10,
-          padding: "16px",
-          textAlign: "center",
-          background: "linear-gradient(to bottom, #f8faff, #fff)",
-          marginBottom: 20,
-        }}>
-          <p style={{ margin: "0 0 4px", fontSize: 11, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.1em" }}>Educational Centre Mays</p>
-          <p style={{ margin: "0 0 4px", fontSize: 13, color: "#1e293b" }}>This certifies that</p>
-          <p style={{ margin: "0 0 4px", fontSize: 18, fontWeight: 700, color: "#1a237e" }}>{name || "[Your Name]"}</p>
-          <p style={{ margin: "0 0 4px", fontSize: 13, color: "#475569" }}>has successfully completed</p>
-          <p style={{ margin: "0 0 4px", fontSize: 15, fontWeight: 700, color: "#1e293b" }}>{course.title}</p>
-          <p style={{ margin: "8px 0 0", fontSize: 11, color: "#94a3b8" }}>ID: {certId} | {formatDate(new Date())}</p>
+        <div style={{margin:"20px",border:`3px double ${course.color}`,borderRadius:14,padding:"20px",background:`linear-gradient(135deg,${course.light},#fff)`,textAlign:"center"}}>
+          <p style={{margin:"0 0 2px",fontSize:10,letterSpacing:"0.15em",color:"#94a3b8",textTransform:"uppercase",fontWeight:700}}>EDUCATIONAL CENTRE MAYS</p>
+          <div style={{width:40,height:2,background:course.color,margin:"6px auto 10px"}}/>
+          <p style={{margin:"0 0 3px",fontSize:12,color:"#64748b"}}>This certifies that</p>
+          <p style={{margin:"0 0 3px",fontSize:20,fontWeight:900,color:course.color}}>{name||"[Your Name]"}</p>
+          <p style={{margin:"0 0 3px",fontSize:12,color:"#64748b"}}>has successfully completed</p>
+          <p style={{margin:"0 0 6px",fontSize:15,fontWeight:800,color:"#1e293b"}}>{course.title}</p>
+          <div style={{display:"flex",justifyContent:"center",gap:16,fontSize:11,color:"#94a3b8",marginTop:10}}>
+            <span>🏆 {totalXP} XP</span>
+            <span>📅 {formatDate(new Date())}</span>
+            <span>🔑 {certID}</span>
+          </div>
         </div>
 
-        <label style={S.label}>Your Full Name</label>
-        <input style={S.input} placeholder="e.g., Mrs. Jane Smith" value={name} onChange={(e) => setName(e.target.value)} />
-        <label style={S.label}>Email Address</label>
-        <input style={{ ...S.input, marginTop: 6 }} placeholder="e.g., jane@school.edu" value={email} onChange={(e) => setEmail(e.target.value)} type="email" />
+        <div style={{padding:"0 20px 20px"}}>
+          <label style={{display:"block",fontSize:11,fontWeight:700,color:"#64748b",textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:4}}>Your Full Name</label>
+          <input value={name} onChange={e=>setName(e.target.value)} placeholder="e.g., Mrs. Jane Smith"
+            style={{width:"100%",padding:"10px 14px",borderRadius:10,border:"1.5px solid #e2e8f0",fontSize:14,outline:"none",boxSizing:"border-box",marginBottom:12}}/>
+          <label style={{display:"block",fontSize:11,fontWeight:700,color:"#64748b",textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:4}}>Email Address</label>
+          <input value={email} onChange={e=>setEmail(e.target.value)} placeholder="e.g., jane@school.edu.za" type="email"
+            style={{width:"100%",padding:"10px 14px",borderRadius:10,border:"1.5px solid #e2e8f0",fontSize:14,outline:"none",boxSizing:"border-box",marginBottom:14}}/>
 
-        {status === "success" && (
-          <div style={S.alert("success")}>
-            ✅ Certificate sent successfully! Check your inbox (and spam folder).
+          {status==="validation" && <div style={{padding:"10px 14px",background:"#fef2f2",border:"1px solid #f87171",borderRadius:8,fontSize:13,color:"#991b1b",marginBottom:12}}>Please enter your full name and a valid email address.</div>}
+          {status==="success" && <div style={{padding:"10px 14px",background:"#f0fdf4",border:"1px solid #4ade80",borderRadius:8,fontSize:13,color:"#166534",marginBottom:12}}>✅ Certificate sent! Check your inbox (and spam folder).</div>}
+          {status==="error" && <div style={{padding:"10px 14px",background:"#fef2f2",border:"1px solid #f87171",borderRadius:8,fontSize:13,color:"#991b1b",marginBottom:12}}>❌ Failed to send. Try again or contact: 0549271528</div>}
+
+          <div style={{display:"flex",gap:10}}>
+            <button onClick={send} disabled={sending} style={{
+              flex:1,padding:"12px",borderRadius:99,fontSize:14,fontWeight:700,border:"none",cursor:sending?"not-allowed":"pointer",
+              background:`linear-gradient(135deg,${course.color},${course.color}99)`,color:"#fff",opacity:sending?0.7:1,
+              boxShadow:`0 4px 14px ${course.color}55`,
+            }}>{sending?"Sending…":"📧 Send My Certificate"}</button>
+            <button onClick={onClose} style={{padding:"12px 18px",borderRadius:99,fontSize:14,fontWeight:600,border:"1.5px solid #e2e8f0",background:"#fff",color:"#64748b",cursor:"pointer"}}>Close</button>
           </div>
-        )}
-        {status === "error" && !name.trim() && (
-          <div style={S.alert("error")}>Please enter your name and email.</div>
-        )}
-        {status === "error" && name.trim() && (
-          <div style={S.alert("error")}>❌ Failed to send. Please try again or contact support: 0549271528.</div>
-        )}
-
-        <div style={{ display: "flex", gap: 10, marginTop: 20 }}>
-          <button style={{ ...S.btnPrimary, flex: 1, opacity: sending ? 0.7 : 1 }} onClick={handleSend} disabled={sending}>
-            {sending ? "Sending…" : "📧 Send Certificate"}
-          </button>
-          <button style={{ ...S.btnOutline, flexShrink: 0 }} onClick={onClose}>Close</button>
         </div>
       </div>
     </div>
   );
 }
 
-// ─────────────────────────────────────────────
-// MAIN COMPONENT
-// ─────────────────────────────────────────────
-export default function TeacherTrainingPortal() {
-  // ── State ──
-  const [selectedCourse, setSelectedCourse] = useState(null);
-  const [progress, setProgress] = useState({}); // { [moduleId]: { done, exerciseVal, quizState, quizRevealed, videoWatched } }
-  const [showCertModal, setShowCertModal] = useState(false);
-  const [view, setView] = useState("courses"); // "courses" | "course"
+// ─────────────────────────────────── COURSE VIEW ───────────────────────────────────
+function CourseView({ course, progress, onUpdateProgress, onBack }) {
+  const [activeLesson, setActiveLesson] = useState(null);
+  const [showCert, setShowCert] = useState(false);
 
-  // ── Load from localStorage on mount ──
-  useEffect(() => {
-    try {
-      const savedCourseId = localStorage.getItem("ttp_selectedCourse");
-      const savedProgress = JSON.parse(localStorage.getItem("ttp_progress") || "{}");
-      if (savedCourseId) {
-        const found = COURSES.find((c) => c.id === savedCourseId);
-        if (found) { setSelectedCourse(found); setView("course"); }
-      }
-      setProgress(savedProgress);
-    } catch (_) {}
-  }, []);
+  const completedIds = Object.keys(progress).filter(k => progress[k]?.done && k.startsWith(course.id[0]));
+  const completedCount = course.lessons.filter(l => progress[l.id]?.done).length;
+  const totalCount = course.lessons.length;
+  const pct = Math.round(completedCount/totalCount*100);
+  const totalXP = course.lessons.filter(l=>progress[l.id]?.done).reduce((s,l)=>s+l.xp,0);
+  const allDone = completedCount === totalCount;
 
-  // ── Persist to localStorage ──
-  useEffect(() => {
-    if (selectedCourse) localStorage.setItem("ttp_selectedCourse", selectedCourse.id);
-    localStorage.setItem("ttp_progress", JSON.stringify(progress));
-  }, [selectedCourse, progress]);
-
-  // ── Derived: current course progress ──
-  const courseModules = selectedCourse?.modules || [];
-  const completedCount = courseModules.filter((m) => progress[m.id]?.done).length;
-  const totalCount = courseModules.length;
-  const percentage = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
-  const allDone = totalCount > 0 && completedCount === totalCount;
-
-  function handleSelectCourse(course) {
-    setSelectedCourse(course);
-    setView("course");
-  }
-
-  function handleUpdateModuleProgress(modId, data) {
-    setProgress((prev) => ({ ...prev, [modId]: data }));
+  function handleFinish(passed) {
+    if (passed && activeLesson) {
+      onUpdateProgress(activeLesson.id, { done: true });
+    }
+    setActiveLesson(null);
   }
 
   return (
-    <div style={S.root}>
-      {/* ── HEADER ── */}
-      <header style={S.header}>
-        <div style={S.headerInner}>
-          <div style={S.headerLogo}>
-            <div style={S.headerLogoIcon}>🎓</div>
+    <div>
+      {/* Course hero */}
+      <div style={{borderRadius:16,background:`linear-gradient(135deg,${course.color},${course.color}cc)`,color:"#fff",padding:"24px 24px 20px",marginBottom:20,position:"relative",overflow:"hidden"}}>
+        <div style={{position:"absolute",right:-20,top:-20,fontSize:100,opacity:0.12,userSelect:"none"}}>{course.emoji}</div>
+        <button onClick={onBack} style={{background:"rgba(255,255,255,0.2)",border:"none",color:"#fff",padding:"6px 14px",borderRadius:99,fontSize:13,fontWeight:600,cursor:"pointer",marginBottom:12,display:"flex",alignItems:"center",gap:6}}>
+          ← All Courses
+        </button>
+        <h1 style={{margin:"0 0 4px",fontSize:24,fontWeight:900,letterSpacing:"-0.5px"}}>{course.emoji} {course.title}</h1>
+        <p style={{margin:"0 0 16px",fontSize:14,opacity:0.85}}>{course.tagline}</p>
+        <div style={{display:"flex",gap:16,flexWrap:"wrap",fontSize:13,fontWeight:600,opacity:0.9}}>
+          <span>📚 {totalCount} lessons</span>
+          <span>⚡ {course.lessons.reduce((s,l)=>s+l.xp,0)} total XP</span>
+          <span>⏱ ~{totalCount*6} minutes</span>
+        </div>
+      </div>
+
+      {/* Progress */}
+      <div style={{background:"#fff",borderRadius:14,padding:"18px 20px",marginBottom:20,boxShadow:"0 1px 4px rgba(0,0,0,0.06)",border:"1px solid #f1f5f9"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10,flexWrap:"wrap",gap:10}}>
+          <div>
+            <span style={{fontSize:15,fontWeight:700,color:"#1e293b"}}>{pct===100?"🎉 Course Complete!":"Your Progress"}</span>
+            <span style={{fontSize:13,color:"#64748b",marginLeft:10}}>{completedCount}/{totalCount} lessons · {totalXP} XP</span>
+          </div>
+          <span style={{fontSize:22,fontWeight:900,color:course.color}}>{pct}%</span>
+        </div>
+        <div style={{height:12,background:"#f1f5f9",borderRadius:99,overflow:"hidden"}}>
+          <div style={{height:"100%",width:`${pct}%`,background:`linear-gradient(90deg,${course.color},${course.color}99)`,borderRadius:99,transition:"width 0.5s ease"}}/>
+        </div>
+        {allDone && (
+          <button onClick={() => setShowCert(true)} style={{
+            marginTop:14,width:"100%",padding:"13px",borderRadius:99,fontSize:15,fontWeight:700,border:"none",cursor:"pointer",
+            background:`linear-gradient(135deg,${course.color},${course.color}bb)`,color:"#fff",
+            boxShadow:`0 4px 18px ${course.color}55`,animation:"pulse 2s infinite",
+          }}>
+            🎓 Claim Your Certificate!
+            <style>{`@keyframes pulse{0%,100%{box-shadow:0 4px 18px ${course.color}55}50%{box-shadow:0 4px 28px ${course.color}99}}`}</style>
+          </button>
+        )}
+        {!allDone && (
+          <p style={{fontSize:12,color:"#94a3b8",margin:"8px 0 0"}}>Complete all {totalCount} lessons to unlock your certificate.</p>
+        )}
+      </div>
+
+      {/* Lesson list */}
+      <div style={{display:"flex",flexDirection:"column",gap:10}}>
+        {course.lessons.map((lesson, i) => {
+          const done = progress[lesson.id]?.done;
+          const prevDone = i===0 || progress[course.lessons[i-1].id]?.done;
+          const locked = !prevDone && !done;
+          return (
+            <div key={lesson.id}
+              onClick={() => !locked && setActiveLesson(lesson)}
+              style={{
+                display:"flex",alignItems:"center",gap:14,padding:"16px 18px",
+                background:"#fff",borderRadius:14,border:`1.5px solid ${done?course.color+"44":"#f1f5f9"}`,
+                cursor:locked?"not-allowed":"pointer",
+                opacity:locked?0.5:1,
+                boxShadow:done?`0 0 0 2px ${course.color}22`:"0 1px 4px rgba(0,0,0,0.05)",
+                transition:"all 0.2s",
+              }}
+              onMouseEnter={e=>{ if(!locked) e.currentTarget.style.transform="translateY(-1px)"; e.currentTarget.style.boxShadow=done?`0 4px 12px ${course.color}33`:"0 4px 12px rgba(0,0,0,0.08)"; }}
+              onMouseLeave={e=>{ e.currentTarget.style.transform="translateY(0)"; e.currentTarget.style.boxShadow=done?`0 0 0 2px ${course.color}22`:"0 1px 4px rgba(0,0,0,0.05)"; }}
+            >
+              {/* Status icon */}
+              <div style={{width:44,height:44,borderRadius:12,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0,
+                background:done?course.color:locked?"#f1f5f9":"linear-gradient(135deg,"+course.color+"22,"+course.color+"11)",
+                color:done?"#fff":locked?"#cbd5e1":course.color,
+              }}>
+                {done?"✓":locked?"🔒":i+1}
+              </div>
+              <div style={{flex:1,minWidth:0}}>
+                <p style={{margin:"0 0 3px",fontSize:14,fontWeight:700,color:locked?"#94a3b8":"#1e293b"}}>{lesson.title}</p>
+                <div style={{display:"flex",gap:10,fontSize:12,color:"#94a3b8"}}>
+                  <span>⚡ {lesson.xp} XP</span>
+                  <span>⏱ {lesson.duration}</span>
+                  <span style={{textTransform:"capitalize",color:lesson.type==="drag"?"#7c3aed":lesson.type==="mcq"?"#059669":"#0284c7",fontWeight:600}}>
+                    {lesson.type==="drag"?"🧩 Drag & Drop":lesson.type==="mcq"?"✅ Quiz":"📝 Fill-in"}
+                  </span>
+                </div>
+              </div>
+              {!locked && !done && (
+                <div style={{width:32,height:32,borderRadius:"50%",background:course.color,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontSize:14,flexShrink:0}}>▶</div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {activeLesson && (
+        <LessonModal lesson={activeLesson} courseColor={course.color} onClose={()=>setActiveLesson(null)} onFinish={handleFinish} />
+      )}
+      {showCert && (
+        <CertModal course={course} totalXP={totalXP} onClose={()=>setShowCert(false)} />
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────── HOME / COURSE SELECTION ───────────────────────────────────
+function HomePage({ progress, onSelect }) {
+  const totalXP = Object.keys(progress).filter(k=>progress[k]?.done).reduce((s,k)=>{
+    for(const c of COURSES){ const l=c.lessons.find(l=>l.id===k); if(l) return s+l.xp; } return s;
+  },0);
+  const totalDone = Object.keys(progress).filter(k=>progress[k]?.done).length;
+
+  return (
+    <div>
+      {/* Hero */}
+      <div style={{background:"linear-gradient(135deg,#1e1b4b,#3730a3)",borderRadius:20,padding:"28px 24px 24px",marginBottom:24,color:"#fff",position:"relative",overflow:"hidden"}}>
+        <div style={{position:"absolute",right:-30,bottom:-30,fontSize:140,opacity:0.06,userSelect:"none"}}>🎓</div>
+        <h1 style={{margin:"0 0 6px",fontSize:26,fontWeight:900,letterSpacing:"-0.5px"}}>👋 Welcome, Teacher!</h1>
+        <p style={{margin:"0 0 20px",fontSize:15,opacity:0.8,lineHeight:1.5}}>Learn essential digital skills through fun, bite-sized interactive lessons.</p>
+        <div style={{display:"flex",gap:14,flexWrap:"wrap"}}>
+          {[
+            {icon:"⚡",label:"Total XP",val:totalXP},
+            {icon:"✅",label:"Lessons Done",val:totalDone},
+            {icon:"📚",label:"Courses",val:COURSES.length},
+          ].map((s,i)=>(
+            <div key={i} style={{background:"rgba(255,255,255,0.12)",borderRadius:12,padding:"10px 16px",backdropFilter:"blur(8px)"}}>
+              <div style={{fontSize:20,marginBottom:2}}>{s.icon}</div>
+              <div style={{fontSize:20,fontWeight:900}}>{s.val}</div>
+              <div style={{fontSize:11,opacity:0.7}}>{s.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <h2 style={{fontSize:18,fontWeight:800,color:"#1e293b",marginBottom:14,marginTop:0}}>Choose a Course</h2>
+
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(260px,1fr))",gap:14}}>
+        {COURSES.map(course=>{
+          const done = course.lessons.filter(l=>progress[l.id]?.done).length;
+          const pct = Math.round(done/course.lessons.length*100);
+          const xpEarned = course.lessons.filter(l=>progress[l.id]?.done).reduce((s,l)=>s+l.xp,0);
+          return (
+            <div key={course.id} onClick={()=>onSelect(course)}
+              style={{
+                background:"#fff",borderRadius:16,padding:"20px",cursor:"pointer",
+                border:`1.5px solid ${pct===100?course.color+"66":"#f1f5f9"}`,
+                boxShadow:pct===100?`0 0 0 2px ${course.color}33,0 4px 16px ${course.color}22`:"0 2px 8px rgba(0,0,0,0.05)",
+                transition:"all 0.2s",
+              }}
+              onMouseEnter={e=>{ e.currentTarget.style.transform="translateY(-3px)"; e.currentTarget.style.boxShadow=`0 8px 24px ${course.color}33`; }}
+              onMouseLeave={e=>{ e.currentTarget.style.transform="translateY(0)"; e.currentTarget.style.boxShadow=pct===100?`0 0 0 2px ${course.color}33,0 4px 16px ${course.color}22`:"0 2px 8px rgba(0,0,0,0.05)"; }}
+            >
+              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
+                <div style={{width:50,height:50,borderRadius:14,background:`linear-gradient(135deg,${course.color},${course.color}bb)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:26}}>
+                  {course.emoji}
+                </div>
+                {pct===100 && <span style={{fontSize:11,fontWeight:700,background:`${course.color}22`,color:course.color,padding:"4px 10px",borderRadius:99}}>✓ Complete</span>}
+                {pct>0&&pct<100 && <span style={{fontSize:11,fontWeight:700,background:"#fef9ef",color:"#92400e",padding:"4px 10px",borderRadius:99}}>{pct}% done</span>}
+              </div>
+              <h3 style={{margin:"0 0 4px",fontSize:16,fontWeight:800,color:"#1e293b"}}>{course.title}</h3>
+              <p style={{margin:"0 0 14px",fontSize:13,color:"#64748b",lineHeight:1.4}}>{course.tagline}</p>
+              <div style={{display:"flex",gap:10,fontSize:12,color:"#94a3b8",marginBottom:10}}>
+                <span>📚 {course.lessons.length} lessons</span>
+                <span>⚡ {course.lessons.reduce((s,l)=>s+l.xp,0)} XP</span>
+              </div>
+              {/* Mini progress */}
+              <div style={{height:6,background:"#f1f5f9",borderRadius:99,overflow:"hidden"}}>
+                <div style={{height:"100%",width:`${pct}%`,background:`linear-gradient(90deg,${course.color},${course.color}88)`,borderRadius:99,transition:"width 0.5s"}}/>
+              </div>
+              <div style={{display:"flex",justifyContent:"space-between",marginTop:4,fontSize:11,color:"#94a3b8"}}>
+                <span>{done}/{course.lessons.length} lessons</span>
+                {xpEarned>0 && <span style={{color:course.color,fontWeight:700}}>⚡ {xpEarned} XP earned</span>}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────── ROOT ───────────────────────────────────
+export default function TeacherTrainingPortal() {
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [progress, setProgress] = useState({});
+
+  // Load from localStorage
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem("ecm_progress_v2")||"{}");
+      setProgress(saved);
+      const savedCourse = localStorage.getItem("ecm_course_v2");
+      if (savedCourse) {
+        const c = COURSES.find(c=>c.id===savedCourse);
+        if (c) setSelectedCourse(c);
+      }
+    } catch(_){}
+  },[]);
+
+  // Persist to localStorage
+  useEffect(() => {
+    localStorage.setItem("ecm_progress_v2", JSON.stringify(progress));
+  },[progress]);
+  useEffect(() => {
+    if (selectedCourse) localStorage.setItem("ecm_course_v2", selectedCourse.id);
+    else localStorage.removeItem("ecm_course_v2");
+  },[selectedCourse]);
+
+  function handleUpdateProgress(lessonId, data) {
+    setProgress(prev => ({ ...prev, [lessonId]: data }));
+  }
+
+  return (
+    <div style={{fontFamily:"'Segoe UI','Helvetica Neue',Arial,sans-serif",background:"#f8faff",minHeight:"100vh",color:"#1e293b"}}>
+      {/* Top nav */}
+      <header style={{background:"#fff",borderBottom:"1px solid #f1f5f9",position:"sticky",top:0,zIndex:100,boxShadow:"0 1px 8px rgba(0,0,0,0.06)"}}>
+        <div style={{maxWidth:960,margin:"0 auto",padding:"12px 16px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:12}}>
+          <div style={{display:"flex",alignItems:"center",gap:10}}>
+            <div style={{width:38,height:38,borderRadius:10,background:"linear-gradient(135deg,#3730a3,#6d28d9)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20}}>🎓</div>
             <div>
-              <p style={S.headerTitle}>Educational Centre Mays</p>
-              <p style={S.headerSubtitle}>Elite Teacher Training Portal</p>
+              <div style={{fontSize:15,fontWeight:800,color:"#1e293b",lineHeight:1}}>ECM Training Portal</div>
+              <div style={{fontSize:11,color:"#94a3b8"}}>Educational Centre Mays</div>
             </div>
           </div>
-          {view === "course" && (
-            <button
-              style={{ ...S.btnOutline, background: "rgba(255,255,255,0.1)", color: "#fff", borderColor: "rgba(255,255,255,0.4)", fontSize: 13 }}
-              onClick={() => setView("courses")}
-            >
-              ← All Courses
-            </button>
-          )}
+          {/* XP badge */}
+          <div style={{display:"flex",alignItems:"center",gap:6,background:"linear-gradient(135deg,#fef9ef,#fffbeb)",border:"1.5px solid #fcd34d",borderRadius:99,padding:"6px 14px"}}>
+            <span style={{fontSize:14}}>⚡</span>
+            <span style={{fontSize:13,fontWeight:800,color:"#92400e"}}>
+              {Object.keys(progress).filter(k=>progress[k]?.done).reduce((s,k)=>{ for(const c of COURSES){const l=c.lessons.find(l=>l.id===k);if(l)return s+l.xp;} return s; },0)} XP
+            </span>
+          </div>
         </div>
       </header>
 
-      <main style={S.main}>
-        {/* ── COURSE SELECTION VIEW ── */}
-        {view === "courses" && (
-          <>
-            <h2 style={{ ...S.sectionTitle, marginBottom: 4 }}>Select a Course</h2>
-            <p style={{ color: "#64748b", fontSize: 14, marginTop: 0 }}>
-              Each course is approximately 2 hours, broken into manageable 20–30 minute modules.
-            </p>
-            <div style={S.courseGrid}>
-              {COURSES.map((course) => {
-                const mods = course.modules;
-                const done = mods.filter((m) => progress[m.id]?.done).length;
-                const pct = Math.round((done / mods.length) * 100);
-                return (
-                  <div
-                    key={course.id}
-                    style={S.courseCard(selectedCourse?.id === course.id)}
-                    onClick={() => handleSelectCourse(course)}
-                  >
-                    <span style={S.courseIcon}>{course.icon}</span>
-                    <p style={S.courseTitle}>{course.title}</p>
-                    <p style={S.courseDesc}>{course.description}</p>
-                    <div style={{ marginTop: 14 }}>
-                      <div style={{ ...S.progressBar, height: 6 }}>
-                        <div style={S.progressFill(pct)} />
-                      </div>
-                      <p style={{ fontSize: 11, marginTop: 4, opacity: 0.7, margin: "4px 0 0" }}>
-                        {done}/{mods.length} modules · {pct}%
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </>
-        )}
-
-        {/* ── COURSE VIEW ── */}
-        {view === "course" && selectedCourse && (
-          <>
-            {/* Course header */}
-            <div style={{ marginBottom: 24 }}>
-              <h2 style={{ ...S.sectionTitle, marginBottom: 4 }}>
-                {selectedCourse.icon} {selectedCourse.title}
-              </h2>
-              <p style={{ color: "#64748b", fontSize: 14, marginTop: 0 }}>{selectedCourse.description}</p>
-            </div>
-
-            {/* Progress tracker */}
-            <div style={S.progressSection}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
-                <div>
-                  <p style={{ margin: 0, fontWeight: 700, fontSize: 15, color: "#1a237e" }}>
-                    {percentage === 100 ? "🎉 Course Complete!" : "Your Progress"}
-                  </p>
-                  <p style={{ margin: "2px 0 0", fontSize: 13, color: "#64748b" }}>
-                    {completedCount} of {totalCount} modules completed
-                  </p>
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <span style={{
-                    fontSize: 20,
-                    fontWeight: 800,
-                    color: percentage === 100 ? "#2e7d32" : "#1a237e",
-                  }}>
-                    {percentage}%
-                  </span>
-                  <button
-                    style={allDone ? S.btnSuccess : S.btnDisabled}
-                    onClick={() => allDone && setShowCertModal(true)}
-                  >
-                    🎓 Get Certificate
-                  </button>
-                </div>
-              </div>
-              <div style={S.progressBar}>
-                <div style={S.progressFill(percentage)} />
-              </div>
-              {!allDone && (
-                <p style={{ fontSize: 11, color: "#94a3b8", margin: "6px 0 0" }}>
-                  Complete all {totalCount} modules to unlock your certificate.
-                </p>
-              )}
-            </div>
-
-            {/* Module list */}
-            <h3 style={{ fontSize: 16, fontWeight: 700, color: "#334155", margin: "0 0 14px" }}>
-              Course Modules
-            </h3>
-            {selectedCourse.modules.map((mod) => (
-              <ModuleAccordion
-                key={mod.id}
-                mod={mod}
-                moduleProgress={progress[mod.id] || {}}
-                onUpdateProgress={(data) => handleUpdateModuleProgress(mod.id, data)}
-              />
-            ))}
-          </>
+      {/* Main content */}
+      <main style={{maxWidth:960,margin:"0 auto",padding:"20px 16px 40px"}}>
+        {!selectedCourse ? (
+          <HomePage progress={progress} onSelect={setSelectedCourse} />
+        ) : (
+          <CourseView
+            course={selectedCourse}
+            progress={progress}
+            onUpdateProgress={handleUpdateProgress}
+            onBack={() => setSelectedCourse(null)}
+          />
         )}
       </main>
-
-      {/* ── CERTIFICATE MODAL ── */}
-      {showCertModal && selectedCourse && (
-        <CertificateModal
-          course={selectedCourse}
-          onClose={() => setShowCertModal(false)}
-        />
-      )}
     </div>
   );
 }
