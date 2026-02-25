@@ -4,21 +4,101 @@ export default function AssignmentHub() {
   const [pin, setPin] = useState("");
   const [unlocked, setUnlocked] = useState(false);
 
-  // 🔹 ASSIGNMENT JSON (STRING CONTENT)
+  // 🔹 PROFESSIONAL PRACTICAL PROJECT
   const assignment = {
-    title: "Microsoft Excel - IF Function Practice",
+    title: "COMPUTER PRACTICAL PROJECT – MICROSOFT EXCEL (50 MARKS)",
     content:
-      "Write the correct IF formula for each of the following conditions:\n\n" +
-      "1. If A1 is greater than 50, return Pass, otherwise Fail.\n" +
-      "2. If B1 is less than 0, return Loss, otherwise Profit.\n" +
-      "3. If C1 is equal to 100, return Correct, otherwise Wrong.\n" +
-      "4. If D1 is not equal to 0, return Valid, otherwise Invalid.\n" +
-      "5. If E1 is greater than or equal to 18, return Adult, otherwise Minor.\n" +
-      "6. If F1 is less than 40, return Below Average, otherwise Average.\n" +
-      "7. If G1 is equal to 0, return Empty, otherwise Not Empty.\n" +
-      "8. If H1 is greater than 1000, return 10% bonus, otherwise 5% bonus.\n" +
-      "9. If I1 is greater than 75, return Excellent, otherwise Good.\n" +
-      "10. If J1 is less than or equal to 30, return Low, otherwise High."
+      "PROJECT TITLE: SCHOOL ADMINISTRATION MANAGEMENT SYSTEM\n\n" +
+
+      "You are required to use Microsoft Excel on a computer (PC) to design a professional spreadsheet for managing student academic and financial records.\n\n" +
+
+      "=============================================\n" +
+      "PART A: STUDENT ACADEMIC RECORD (20 MARKS)\n" +
+      "=============================================\n\n" +
+
+      "1. Create the following column headings:\n" +
+      "Student Name | English | Mathematics | Science | Social Studies | Total | Average | Grade | Remark | Position\n\n" +
+
+      "2. Enter records for 10 students.\n\n" +
+
+      "3. Use appropriate formulas to:\n" +
+      "   a) Calculate Total (SUM function).\n" +
+      "   b) Calculate Average (AVERAGE function).\n" +
+      "   c) Assign Grade using IF function:\n" +
+      "      80–100 = A\n" +
+      "      70–79 = B\n" +
+      "      60–69 = C\n" +
+      "      50–59 = D\n" +
+      "      Below 50 = F\n\n" +
+
+      "4. Use IF function to generate Remark:\n" +
+      "   - If Average >= 50 → 'Pass'\n" +
+      "   - Otherwise → 'Fail'\n\n" +
+
+      "5. Use RANK function to determine student Position based on Average.\n\n" +
+
+      "6. Apply Conditional Formatting:\n" +
+      "   - Highlight Fail students in red.\n" +
+      "   - Highlight highest Average in green.\n\n" +
+
+      "7. Insert a Column Chart showing student averages.\n\n" +
+
+      "=============================================\n" +
+      "PART B: SCHOOL FEES MANAGEMENT (15 MARKS)\n" +
+      "=============================================\n\n" +
+
+      "1. Create a new worksheet named 'Fees'.\n\n" +
+
+      "2. Create the following columns:\n" +
+      "Student Name | Class | Total Fees (GHS) | Amount Paid (GHS) | Balance | Payment Status\n\n" +
+
+      "3. Enter 8 students with realistic fee values.\n\n" +
+
+      "4. Calculate Balance using formula:\n" +
+      "   Balance = Total Fees - Amount Paid\n\n" +
+
+      "5. Use IF function to determine Payment Status:\n" +
+      "   - If Balance = 0 → 'Fully Paid'\n" +
+      "   - If Balance > 0 → 'Owing'\n\n" +
+
+      "6. Use SUM function to calculate:\n" +
+      "   - Total Fees Collected\n" +
+      "   - Total Outstanding Balance\n\n" +
+
+      "7. Apply currency formatting (GHS).\n\n" +
+
+      "8. Insert a Pie Chart showing distribution of Amount Paid.\n\n" +
+
+      "=============================================\n" +
+      "PART C: DATA FORMATTING & PROFESSIONAL DESIGN (10 MARKS)\n" +
+      "=============================================\n\n" +
+
+      "1. Merge and center a suitable title for each worksheet.\n" +
+      "2. Bold all headings.\n" +
+      "3. Apply borders to tables.\n" +
+      "4. Adjust column widths properly.\n" +
+      "5. Use proper number formatting.\n" +
+      "6. Apply Table formatting style.\n\n" +
+
+      "=============================================\n" +
+      "PART D: ADVANCED FEATURES (5 MARKS)\n" +
+      "=============================================\n\n" +
+
+      "1. Use Data Validation to restrict marks between 0 and 100.\n" +
+      "2. Freeze top row.\n" +
+      "3. Sort students from highest to lowest Average.\n" +
+      "4. Rename worksheets appropriately.\n\n" +
+
+      "=============================================\n" +
+      "SUBMISSION INSTRUCTIONS\n" +
+      "=============================================\n\n" +
+
+      "• Save your file as: School_Management_System.xlsx\n" +
+      "• Ensure all formulas are working correctly.\n" +
+      "• Do not type answers manually — use formulas.\n" +
+      "• Submit the softcopy before the deadline.\n\n" +
+
+      "TOTAL MARKS: 50"
   };
 
   // 🔹 PIN UNLOCK
@@ -32,9 +112,9 @@ export default function AssignmentHub() {
 
   // 🔹 EMAIL SUBMISSION
   const submitAssignment = () => {
-    const subject = "Student Assignment Submission";
+    const subject = "Excel Practical Project Submission";
     const body =
-      "Sir, I have completed my MS Excel IF Function assignment. Attached is my work.";
+      "Sir, I have completed the Excel Practical Project. Please find my attached file.";
 
     window.location.href = `mailto:kwasyamzi@gmail.com?subject=${encodeURIComponent(
       subject
@@ -44,28 +124,20 @@ export default function AssignmentHub() {
   // 🔹 STYLES
   const styles = {
     container: {
-      maxWidth: "700px",
+      maxWidth: "900px",
       margin: "20px auto",
-      padding: "20px",
-      background: "#fff",
+      padding: "25px",
+      background: "#ffffff",
       borderRadius: "15px",
-      boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
+      boxShadow: "0 6px 18px rgba(0,0,0,0.1)",
       fontFamily: "Arial, sans-serif"
     },
     title: {
       textAlign: "center",
-      fontSize: "28px",
-      color: "#ff7a00",
+      fontSize: "26px",
+      color: "#003366",
       fontWeight: "bold",
-      marginBottom: "10px"
-    },
-    instructionBox: {
-      background: "#fff3e6",
-      padding: "12px",
-      borderRadius: "8px",
-      marginBottom: "15px",
-      fontSize: "14px",
-      borderLeft: "4px solid #ff7a00"
+      marginBottom: "15px"
     },
     pinBox: {
       textAlign: "center",
@@ -73,7 +145,7 @@ export default function AssignmentHub() {
     },
     pinInput: {
       padding: "12px",
-      width: "60%",
+      width: "50%",
       borderRadius: "8px",
       border: "1px solid #ccc",
       marginBottom: "10px",
@@ -82,37 +154,32 @@ export default function AssignmentHub() {
     },
     button: {
       width: "100%",
-      padding: "15px",
-      background: "#ff7a00",
+      padding: "14px",
+      background: "#003366",
       border: "none",
       color: "#fff",
       fontSize: "16px",
-      borderRadius: "10px",
+      borderRadius: "8px",
       cursor: "pointer",
       marginTop: "10px"
     },
     contentBox: {
-      background: "#fafafa",
-      padding: "15px",
-      borderRadius: "8px",
-      borderLeft: "4px solid #ff7a00",
-      fontSize: "15px",
+      background: "#f4f7fa",
+      padding: "20px",
+      borderRadius: "10px",
+      borderLeft: "6px solid #003366",
+      fontSize: "14px",
       whiteSpace: "pre-line"
-    },
-    note: {
-      marginTop: "15px",
-      fontStyle: "italic",
-      fontSize: "14px"
     }
   };
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.title}>MS Excel Assignment</h2>
+      <h2 style={styles.title}>MS Excel Practical Examination Portal</h2>
 
       {!unlocked && (
         <div style={styles.pinBox}>
-          <p>Please enter the PIN to view assignment</p>
+          <p>Enter Examination PIN to Access Project</p>
           <input
             type="password"
             placeholder="Enter PIN"
@@ -121,36 +188,18 @@ export default function AssignmentHub() {
             onChange={(e) => setPin(e.target.value)}
           />
           <button style={styles.button} onClick={unlock}>
-            Unlock
+            Unlock Examination
           </button>
         </div>
       )}
 
       {unlocked && (
         <>
-          <div style={styles.instructionBox}>
-            <strong>Instructions:</strong>
-            <br />
-            1. Write all answers in your ICT exercise book.
-            <br />
-            2. Write the full IF formula for each question.
-            <br />
-            3. Do not write only the answer — write the complete formula.
-            <br />
-            4. Submit your work on Wednesday 25th February 2026.
-          </div>
-
           <h3>{assignment.title}</h3>
-
           <div style={styles.contentBox}>{assignment.content}</div>
 
-          <p style={styles.note}>
-            Make sure your work is neat and properly written in your exercise
-            book before submission.
-          </p>
-
           <button style={styles.button} onClick={submitAssignment}>
-            Submit Assignment
+            Submit Practical Project
           </button>
         </>
       )}
