@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 
-const CORRECT_PIN = "2024";
+const CORRECT_PIN = "1234";
 const EXAM_DURATION = 90 * 60;
 
 const topicMeta = {
