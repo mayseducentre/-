@@ -18,7 +18,6 @@ const diffMeta = {
 };
 
 const mcqQuestions = [
-  // NETWORKS (8 questions)
   {
     id: 1, topic: "network", difficulty: "easy",
     question: "A school in Accra connects all its computers within one building to share a single printer and internet connection. What type of network best describes this setup?",
@@ -75,8 +74,6 @@ const mcqQuestions = [
     answer: 2,
     explanation: "DNS (Domain Name System) translates human-readable domain names like 'www.ghana.gov.gh' into numerical IP addresses that computers use to identify each other."
   },
-
-  // E-COMMERCE (8 questions)
   {
     id: 9, topic: "ecommerce", difficulty: "easy",
     question: "Abena wants to buy a new school bag from a website without visiting any physical store. She selects the bag, adds it to a cart, and pays online. What is Abena engaging in?",
@@ -133,8 +130,6 @@ const mcqQuestions = [
     answer: 1,
     explanation: "Poor inventory management in e-commerce leads to overselling — accepting orders for items out of stock — causing customer dissatisfaction and operational problems."
   },
-
-  // CASHLESS SOCIETY (8 questions)
   {
     id: 17, topic: "cashless", difficulty: "easy",
     question: "Esi pays for her market items by tapping her phone on the seller's payment terminal. She did not use physical cash or a card. What payment method is Esi using?",
@@ -191,8 +186,6 @@ const mcqQuestions = [
     answer: 1,
     explanation: "Interoperability allows different payment platforms and financial institutions to communicate and process transactions with each other, enabling cross-platform money transfers."
   },
-
-  // TRANSACTION CARDS (8 questions)
   {
     id: 25, topic: "transaction", difficulty: "easy",
     question: "Yaw uses a card that automatically deducts money from his bank account immediately when he makes a purchase. What type of card is this?",
@@ -249,8 +242,6 @@ const mcqQuestions = [
     answer: 1,
     explanation: "CVV (Card Verification Value) is a 3 or 4-digit security code on the card. It proves the buyer physically possesses the card during online transactions where the card cannot be physically presented."
   },
-
-  // E-LEARNING (8 questions)
   {
     id: 33, topic: "elearning", difficulty: "easy",
     question: "During COVID-19 school closures in Ghana, many students continued their lessons through videos, quizzes, and assignments sent over the internet. What type of learning is this?",
@@ -572,22 +563,64 @@ const theoryQuestions = [
   },
 ];
 
+// ─── Shared reset helper ────────────────────────────────────────────────────
+const INITIAL_STATE = {
+  phase: "pin",
+  pinInput: "",
+  pinError: "",
+  timeLeft: EXAM_DURATION,
+  timerActive: false,
+  currentMcq: 0,
+  mcqAnswers: {},
+  mcqSubmitted: false,
+  showMcqExplanation: {},
+  // FIX: showModelAnswers lives here at the top level — never inside a .map()
+  showModelAnswers: {},
+  theoryAnswers: {},
+  theorySelfMarks: {},
+  adaptiveDifficulty: "easy",
+  weakTopics: [],
+  results: null,
+};
+
 export default function AssignmentHub() {
-  const [phase, setPhase] = useState("pin"); // pin, intro, exam-mcq, exam-theory, results
-  const [pinInput, setPinInput] = useState("");
-  const [pinError, setPinError] = useState("");
-  const [timeLeft, setTimeLeft] = useState(EXAM_DURATION);
-  const [timerActive, setTimerActive] = useState(false);
-  const [currentMcq, setCurrentMcq] = useState(0);
-  const [mcqAnswers, setMcqAnswers] = useState({});
-  const [mcqSubmitted, setMcqSubmitted] = useState(false);
-  const [showMcqExplanation, setShowMcqExplanation] = useState({});
-  const [theoryAnswers, setTheoryAnswers] = useState({});
-  const [theorySelfMarks, setTheorySelfMarks] = useState({});
-  const [adaptiveDifficulty, setAdaptiveDifficulty] = useState("easy");
-  const [weakTopics, setWeakTopics] = useState([]);
-  const [results, setResults] = useState(null);
+  const [phase, setPhase]                         = useState(INITIAL_STATE.phase);
+  const [pinInput, setPinInput]                   = useState(INITIAL_STATE.pinInput);
+  const [pinError, setPinError]                   = useState(INITIAL_STATE.pinError);
+  const [timeLeft, setTimeLeft]                   = useState(INITIAL_STATE.timeLeft);
+  const [timerActive, setTimerActive]             = useState(INITIAL_STATE.timerActive);
+  const [currentMcq, setCurrentMcq]               = useState(INITIAL_STATE.currentMcq);
+  const [mcqAnswers, setMcqAnswers]               = useState(INITIAL_STATE.mcqAnswers);
+  const [mcqSubmitted, setMcqSubmitted]           = useState(INITIAL_STATE.mcqSubmitted);
+  const [showMcqExplanation, setShowMcqExplanation] = useState(INITIAL_STATE.showMcqExplanation);
+  // FIX ─ replaces the illegal per-row useState that was inside the .map() callback
+  const [showModelAnswers, setShowModelAnswers]   = useState(INITIAL_STATE.showModelAnswers);
+  const [theoryAnswers, setTheoryAnswers]         = useState(INITIAL_STATE.theoryAnswers);
+  const [theorySelfMarks, setTheorySelfMarks]     = useState(INITIAL_STATE.theorySelfMarks);
+  const [adaptiveDifficulty, setAdaptiveDifficulty] = useState(INITIAL_STATE.adaptiveDifficulty);
+  const [weakTopics, setWeakTopics]               = useState(INITIAL_STATE.weakTopics);
+  const [results, setResults]                     = useState(INITIAL_STATE.results);
   const timerRef = useRef(null);
+
+  // ─── Shared reset ──────────────────────────────────────────────────────────
+  const resetAll = useCallback(() => {
+    clearInterval(timerRef.current);
+    setPhase(INITIAL_STATE.phase);
+    setPinInput(INITIAL_STATE.pinInput);
+    setPinError(INITIAL_STATE.pinError);
+    setTimeLeft(INITIAL_STATE.timeLeft);
+    setTimerActive(INITIAL_STATE.timerActive);
+    setCurrentMcq(INITIAL_STATE.currentMcq);
+    setMcqAnswers(INITIAL_STATE.mcqAnswers);
+    setMcqSubmitted(INITIAL_STATE.mcqSubmitted);
+    setShowMcqExplanation(INITIAL_STATE.showMcqExplanation);
+    setShowModelAnswers(INITIAL_STATE.showModelAnswers); // FIX: also reset here
+    setTheoryAnswers(INITIAL_STATE.theoryAnswers);
+    setTheorySelfMarks(INITIAL_STATE.theorySelfMarks);
+    setAdaptiveDifficulty(INITIAL_STATE.adaptiveDifficulty);
+    setWeakTopics(INITIAL_STATE.weakTopics);
+    setResults(INITIAL_STATE.results);
+  }, []);
 
   const orderedMcqs = [...mcqQuestions].sort((a, b) => {
     const order = { easy: 0, medium: 1, hard: 2 };
@@ -609,7 +642,7 @@ export default function AssignmentHub() {
       }, 1000);
     }
     return () => clearInterval(timerRef.current);
-  }, [timerActive]);
+  }, [timerActive]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const formatTime = (secs) => {
     const m = Math.floor(secs / 60).toString().padStart(2, "0");
@@ -641,7 +674,6 @@ export default function AssignmentHub() {
 
   const submitMcqs = () => {
     setMcqSubmitted(true);
-    // Compute weak topics
     const topicStats = {};
     orderedMcqs.forEach((q, idx) => {
       if (!topicStats[q.topic]) topicStats[q.topic] = { correct: 0, total: 0 };
@@ -652,7 +684,6 @@ export default function AssignmentHub() {
       .filter(([, s]) => s.correct / s.total < 0.6)
       .map(([t]) => t);
     setWeakTopics(weak);
-    // Adaptive difficulty based on first 10 questions
     const first10Correct = orderedMcqs.slice(0, 10).filter((q, i) => mcqAnswers[i] === q.answer).length;
     if (first10Correct >= 8) setAdaptiveDifficulty("hard");
     else if (first10Correct >= 5) setAdaptiveDifficulty("medium");
@@ -663,7 +694,6 @@ export default function AssignmentHub() {
   const handleFinishExam = useCallback(() => {
     clearInterval(timerRef.current);
     setTimerActive(false);
-    // Calculate MCQ score
     const mcqScore = orderedMcqs.reduce((acc, q, i) => acc + (mcqAnswers[i] === q.answer ? 1 : 0), 0);
     const theoryScore = Object.values(theorySelfMarks).reduce((a, b) => a + (Number(b) || 0), 0);
     const topicStats = {};
@@ -701,7 +731,6 @@ export default function AssignmentHub() {
     btnDanger: { background: "#ef4444", color: "#fff", border: "none", padding: "14px 32px", borderRadius: "8px", fontSize: "15px", fontWeight: "bold", cursor: "pointer", fontFamily: "inherit" },
     error: { color: "#ef4444", fontSize: "14px", marginTop: "12px" },
     sectionTitle: { fontSize: "20px", fontWeight: "bold", color: "#1a1a2e", marginBottom: "4px" },
-    sectionSub: { color: "#64748b", fontSize: "14px", marginBottom: "24px" },
     qCard: { background: "#fff", borderRadius: "12px", border: "1px solid #e2e8f0", padding: "28px", marginBottom: "20px", boxShadow: "0 1px 4px rgba(0,0,0,0.05)" },
     qNum: { fontSize: "12px", fontWeight: "bold", color: "#64748b", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "8px" },
     qText: { fontSize: "16px", lineHeight: 1.7, color: "#1a1a2e", marginBottom: "20px" },
@@ -744,7 +773,7 @@ export default function AssignmentHub() {
     introFeatureCard: (color, bg) => ({ background: bg, border: `1px solid ${color}30`, borderRadius: "10px", padding: "16px", borderLeft: `3px solid ${color}` }),
   };
 
-  // PIN SCREEN
+  // ── PIN SCREEN ──────────────────────────────────────────────────────────────
   if (phase === "pin") {
     return (
       <div style={s.pinWrap}>
@@ -766,13 +795,13 @@ export default function AssignmentHub() {
           <div style={{ marginTop: "24px" }}>
             <button style={s.btn} onClick={handlePin}>Enter Examination</button>
           </div>
-          <div style={{ marginTop: "16px", fontSize: "12px", color: "#94a3b8" }}>PIN: 2024 (demo)</div>
+          <div style={{ marginTop: "16px", fontSize: "12px", color: "#94a3b8" }}>PIN: 1234 (demo)</div>
         </div>
       </div>
     );
   }
 
-  // INTRO SCREEN
+  // ── INTRO SCREEN ────────────────────────────────────────────────────────────
   if (phase === "intro") {
     return (
       <div style={s.root}>
@@ -790,8 +819,8 @@ export default function AssignmentHub() {
           <div style={s.card}>
             <h2 style={{ ...s.sectionTitle, fontSize: "22px" }}>Examination Instructions</h2>
             <p style={{ color: "#475569", lineHeight: 1.7 }}>
-              This examination tests your knowledge and understanding of ICT concepts covered in the Junior High School curriculum.
-              Read all questions carefully before answering. This is a timed examination — manage your time wisely.
+              This examination tests your knowledge and understanding of ICT concepts covered in the Junior High School
+              curriculum. Read all questions carefully before answering. This is a timed examination — manage your time wisely.
             </p>
             <hr style={s.divider} />
             <div style={s.introGrid}>
@@ -808,9 +837,9 @@ export default function AssignmentHub() {
               ))}
             </div>
             <div style={{ marginTop: "32px", padding: "16px 20px", background: "#fef9c3", borderRadius: "8px", border: "1px solid #fde047", fontSize: "14px", color: "#713f12" }}>
-              <strong>Important:</strong> Ensure you have a reliable internet connection and sufficient time before beginning. Do not refresh the page during the examination.
+              <strong>Important:</strong> Ensure you have sufficient time before beginning. Do not refresh the page during the examination.
             </div>
-            <div style={{ marginTop: "28px", display: "flex", gap: "16px", flexWrap: "wrap" }}>
+            <div style={{ marginTop: "28px" }}>
               <button style={s.btnGreen} onClick={startExam}>Begin Examination</button>
             </div>
           </div>
@@ -819,7 +848,7 @@ export default function AssignmentHub() {
     );
   }
 
-  // MCQ EXAM SCREEN
+  // ── MCQ EXAM SCREEN ─────────────────────────────────────────────────────────
   if (phase === "exam-mcq") {
     const q = orderedMcqs[currentMcq];
     const answered = Object.keys(mcqAnswers).length;
@@ -838,7 +867,6 @@ export default function AssignmentHub() {
           </div>
         </div>
         <div style={s.container}>
-          {/* Progress */}
           <div style={{ marginBottom: "24px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px", color: "#64748b", marginBottom: "6px" }}>
               <span>Progress</span><span>{pct}% complete</span>
@@ -851,7 +879,6 @@ export default function AssignmentHub() {
             </div>
           </div>
 
-          {/* Question Card */}
           <div style={s.qCard}>
             <div style={{ display: "flex", gap: "8px", marginBottom: "12px", flexWrap: "wrap" }}>
               <span style={s.badge(q.topic)}>{topicMeta[q.topic].label}</span>
@@ -867,8 +894,8 @@ export default function AssignmentHub() {
             <div>
               {q.options.map((opt, idx) => {
                 const isSelected = mcqAnswers[currentMcq] === idx;
-                const isCorrect = mcqSubmitted && idx === q.answer;
-                const isWrong = mcqSubmitted && isSelected && idx !== q.answer;
+                const isCorrect  = mcqSubmitted && idx === q.answer;
+                const isWrong    = mcqSubmitted && isSelected && idx !== q.answer;
                 return (
                   <button key={idx} style={s.optionBtn(isSelected, isCorrect, isWrong, mcqSubmitted)}
                     onClick={() => handleMcqSelect(currentMcq, idx)}>
@@ -877,7 +904,7 @@ export default function AssignmentHub() {
                     </span>
                     {opt}
                     {mcqSubmitted && isCorrect && <span style={{ float: "right", color: "#10b981" }}>✓ Correct</span>}
-                    {mcqSubmitted && isWrong && <span style={{ float: "right", color: "#ef4444" }}>✗ Wrong</span>}
+                    {mcqSubmitted && isWrong   && <span style={{ float: "right", color: "#ef4444" }}>✗ Wrong</span>}
                   </button>
                 );
               })}
@@ -897,30 +924,20 @@ export default function AssignmentHub() {
             )}
           </div>
 
-          {/* Navigation */}
           <div style={s.navRow}>
             <button style={s.btnSecondary} disabled={currentMcq === 0} onClick={() => setCurrentMcq(c => c - 1)}>
               ← Previous
             </button>
-            <div style={{ fontSize: "13px", color: "#64748b" }}>
-              {answered} / {orderedMcqs.length} answered
-            </div>
+            <div style={{ fontSize: "13px", color: "#64748b" }}>{answered} / {orderedMcqs.length} answered</div>
             {currentMcq < orderedMcqs.length - 1 ? (
               <button style={s.btn} onClick={() => setCurrentMcq(c => c + 1)}>Next →</button>
+            ) : !mcqSubmitted ? (
+              <button style={s.btnGreen} onClick={submitMcqs}>Submit Objectives & Continue</button>
             ) : (
-              !mcqSubmitted ? (
-                <button style={s.btnGreen} onClick={submitMcqs}>
-                  Submit Objectives & Continue
-                </button>
-              ) : (
-                <button style={s.btn} onClick={() => setPhase("exam-theory")}>
-                  Proceed to Theory →
-                </button>
-              )
+              <button style={s.btn} onClick={() => setPhase("exam-theory")}>Proceed to Theory →</button>
             )}
           </div>
 
-          {/* Question Map */}
           <div style={{ ...s.card, marginTop: "28px" }}>
             <div style={{ fontSize: "14px", fontWeight: "bold", color: "#1a1a2e", marginBottom: "12px" }}>Question Navigator</div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
@@ -959,10 +976,10 @@ export default function AssignmentHub() {
     );
   }
 
-  // THEORY EXAM SCREEN
+  // ── THEORY EXAM SCREEN ──────────────────────────────────────────────────────
   if (phase === "exam-theory") {
     const theoryScore = Object.values(theorySelfMarks).reduce((a, b) => a + (Number(b) || 0), 0);
-    const maxTheory = theoryQuestions.reduce((a, q) => a + q.marks, 0);
+    const maxTheory   = theoryQuestions.reduce((a, q) => a + q.marks, 0);
 
     return (
       <div style={s.root}>
@@ -985,15 +1002,20 @@ export default function AssignmentHub() {
             </div>
           )}
 
-          {/* MCQ Summary */}
           <div style={{ ...s.card, background: "#f0f9ff", border: "1px solid #bae6fd" }}>
             <div style={{ fontSize: "14px", fontWeight: "bold", color: "#0c4a6e" }}>
               Section A Score: {mcqCorrect !== null ? mcqCorrect : 0} / {orderedMcqs.length} marks
             </div>
           </div>
 
+          {/*
+            FIX: No useState call here any more.
+            showModelAnswers is a plain object keyed by question index,
+            stored in the component-level state declared at the top of the function.
+          */}
           {theoryQuestions.map((q, idx) => {
-            const [showModel, setShowModel] = useState(false);
+            const showModel = !!showModelAnswers[idx]; // read from top-level state
+
             return (
               <div key={q.id} style={s.qCard}>
                 <div style={{ display: "flex", gap: "8px", marginBottom: "12px", flexWrap: "wrap", alignItems: "center" }}>
@@ -1017,8 +1039,13 @@ export default function AssignmentHub() {
                   />
                 </div>
 
-                <button style={{ ...s.btnSecondary, marginBottom: "12px" }}
-                  onClick={() => setShowModel(v => !v)}>
+                {/* FIX: toggle writes into showModelAnswers at top-level, keyed by idx */}
+                <button
+                  style={{ ...s.btnSecondary, marginBottom: "12px" }}
+                  onClick={() =>
+                    setShowModelAnswers(prev => ({ ...prev, [idx]: !prev[idx] }))
+                  }
+                >
                   {showModel ? "Hide" : "View"} Model Answer & Rubric
                 </button>
 
@@ -1052,8 +1079,11 @@ export default function AssignmentHub() {
 
                 <div style={{ marginTop: "16px", display: "flex", alignItems: "center", gap: "12px", background: "#f8fafc", borderRadius: "8px", padding: "12px 16px", border: "1px solid #e2e8f0" }}>
                   <label style={{ fontSize: "14px", fontWeight: "bold", color: "#1a1a2e" }}>Self-Mark:</label>
-                  <select style={s.markSelect} value={theorySelfMarks[idx] ?? ""}
-                    onChange={e => setTheorySelfMarks(p => ({ ...p, [idx]: Number(e.target.value) }))}>
+                  <select
+                    style={s.markSelect}
+                    value={theorySelfMarks[idx] ?? ""}
+                    onChange={e => setTheorySelfMarks(p => ({ ...p, [idx]: Number(e.target.value) }))}
+                  >
                     <option value="">Select marks</option>
                     {[...Array(q.marks + 1)].map((_, m) => (
                       <option key={m} value={m}>{m} / {q.marks}</option>
@@ -1063,7 +1093,7 @@ export default function AssignmentHub() {
                     <span style={{
                       fontSize: "13px", fontWeight: "bold", padding: "4px 12px", borderRadius: "20px",
                       background: theorySelfMarks[idx] >= q.marks * 0.8 ? "#d1fae5" : theorySelfMarks[idx] >= q.marks * 0.5 ? "#fef3c7" : "#fee2e2",
-                      color: theorySelfMarks[idx] >= q.marks * 0.8 ? "#065f46" : theorySelfMarks[idx] >= q.marks * 0.5 ? "#92400e" : "#7f1d1d"
+                      color:      theorySelfMarks[idx] >= q.marks * 0.8 ? "#065f46" : theorySelfMarks[idx] >= q.marks * 0.5 ? "#92400e" : "#7f1d1d"
                     }}>
                       {theorySelfMarks[idx] >= q.marks * 0.8 ? "Excellent" : theorySelfMarks[idx] >= q.marks * 0.5 ? "Fair" : "Needs Work"}
                     </span>
@@ -1092,11 +1122,11 @@ export default function AssignmentHub() {
     );
   }
 
-  // RESULTS SCREEN
+  // ── RESULTS SCREEN ──────────────────────────────────────────────────────────
   if (phase === "results" && results) {
     const { mcqScore, theoryScore, topicStats, total, maxTotal } = results;
-    const pct = Math.round((total / maxTotal) * 100);
-    const grade = pct >= 80 ? "A" : pct >= 70 ? "B" : pct >= 60 ? "C" : pct >= 50 ? "D" : "F";
+    const pct        = Math.round((total / maxTotal) * 100);
+    const grade      = pct >= 80 ? "A" : pct >= 70 ? "B" : pct >= 60 ? "C" : pct >= 50 ? "D" : "F";
     const gradeColor = pct >= 80 ? "#10b981" : pct >= 70 ? "#0ea5e9" : pct >= 60 ? "#f59e0b" : pct >= 50 ? "#f97316" : "#ef4444";
 
     return (
@@ -1106,13 +1136,15 @@ export default function AssignmentHub() {
             <h1 style={s.headerTitle}>Examination Results</h1>
             <p style={s.headerSub}>BECE ICT · Ghana Education Service</p>
           </div>
-          <button style={{ ...s.btnSecondary, background: "rgba(255,255,255,0.15)", color: "#fff", border: "1px solid rgba(255,255,255,0.3)" }}
-            onClick={() => { setPhase("pin"); setPinInput(""); setMcqAnswers({}); setMcqSubmitted(false); setTheoryAnswers({}); setTheorySelfMarks({}); setTimeLeft(EXAM_DURATION); setCurrentMcq(0); setShowMcqExplanation({}); }}>
+          {/* FIX: uses resetAll() so showModelAnswers is also cleared */}
+          <button
+            style={{ ...s.btnSecondary, background: "rgba(255,255,255,0.15)", color: "#fff", border: "1px solid rgba(255,255,255,0.3)" }}
+            onClick={resetAll}
+          >
             Restart
           </button>
         </div>
         <div style={s.container}>
-          {/* Grade Card */}
           <div style={{ ...s.card, textAlign: "center", borderTop: `4px solid ${gradeColor}` }}>
             <div style={{ fontSize: "72px", fontWeight: "bold", color: gradeColor, lineHeight: 1 }}>{grade}</div>
             <div style={{ fontSize: "20px", color: "#1a1a2e", fontWeight: "bold", marginTop: "8px" }}>{total} / {maxTotal} marks</div>
@@ -1122,7 +1154,6 @@ export default function AssignmentHub() {
             </div>
           </div>
 
-          {/* Score Breakdown */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "16px", marginBottom: "24px" }}>
             <div style={s.statCard}>
               <div style={s.statNum}>{mcqScore}</div>
@@ -1141,11 +1172,10 @@ export default function AssignmentHub() {
             </div>
           </div>
 
-          {/* Topic Performance */}
           <div style={s.card}>
             <h3 style={{ ...s.sectionTitle, marginBottom: "20px" }}>Performance by Topic</h3>
             {Object.entries(topicStats).map(([topic, stat]) => {
-              const tPct = Math.round((stat.correct / stat.total) * 100);
+              const tPct   = Math.round((stat.correct / stat.total) * 100);
               const tColor = tPct >= 70 ? "#10b981" : tPct >= 50 ? "#f59e0b" : "#ef4444";
               const isWeak = weakTopics.includes(topic);
               return (
@@ -1165,7 +1195,6 @@ export default function AssignmentHub() {
             })}
           </div>
 
-          {/* Weak Topics Recommendations */}
           {weakTopics.length > 0 && (
             <div style={s.card}>
               <h3 style={{ ...s.sectionTitle, color: "#92400e" }}>📚 Study Recommendations</h3>
@@ -1176,35 +1205,31 @@ export default function AssignmentHub() {
                 {weakTopics.map(t => (
                   <li key={t} style={{ marginBottom: "10px", color: "#475569", fontSize: "14px", lineHeight: 1.6 }}>
                     <strong style={{ color: topicMeta[t].color }}>{topicMeta[t].label}</strong> —{" "}
-                    {t === "network" && "Revise network types (LAN, WAN, MAN), network devices (router, switch, firewall), and topologies."}
-                    {t === "ecommerce" && "Revise e-commerce models (B2B, B2C, C2C), online security (HTTPS, phishing), and digital transactions."}
-                    {t === "cashless" && "Revise cashless payment methods, advantages and disadvantages, mobile money, and GhIPSS."}
+                    {t === "network"     && "Revise network types (LAN, WAN, MAN), network devices (router, switch, firewall), and topologies."}
+                    {t === "ecommerce"   && "Revise e-commerce models (B2B, B2C, C2C), online security (HTTPS, phishing), and digital transactions."}
+                    {t === "cashless"    && "Revise cashless payment methods, advantages and disadvantages, mobile money, and GhIPSS."}
                     {t === "transaction" && "Revise card types (debit, credit, prepaid), card security (CVV, EMV chip), ATM operations, and NFC."}
-                    {t === "elearning" && "Revise e-learning types (synchronous/asynchronous), LMS platforms, adaptive learning, and digital divide."}
+                    {t === "elearning"   && "Revise e-learning types (synchronous/asynchronous), LMS platforms, adaptive learning, and digital divide."}
                   </li>
                 ))}
               </ul>
             </div>
           )}
 
-          {/* Adaptive Difficulty Note */}
           <div style={{ ...s.card, background: "#f0f9ff", border: "1px solid #bae6fd" }}>
             <h3 style={{ color: "#0c4a6e", fontSize: "15px", marginBottom: "8px" }}>Adaptive Difficulty Assessment</h3>
             <p style={{ color: "#0369a1", fontSize: "14px", lineHeight: 1.6, margin: 0 }}>
               Based on your performance in the first 10 questions, the system determined your adaptive level as{" "}
-              <strong style={{ color: diffMeta[adaptiveDifficulty].color }}>
-                {diffMeta[adaptiveDifficulty].label}
-              </strong>.{" "}
-              {adaptiveDifficulty === "easy" && "Focus on building strong foundational knowledge across all topics before attempting more challenging questions."}
+              <strong style={{ color: diffMeta[adaptiveDifficulty].color }}>{diffMeta[adaptiveDifficulty].label}</strong>.{" "}
+              {adaptiveDifficulty === "easy"   && "Focus on building strong foundational knowledge across all topics before attempting more challenging questions."}
               {adaptiveDifficulty === "medium" && "You have a good foundation. Work on applying concepts to real-world scenarios and deepen your understanding."}
-              {adaptiveDifficulty === "hard" && "Excellent performance! You are well-prepared for challenging exam questions. Continue practising application-based problems."}
+              {adaptiveDifficulty === "hard"   && "Excellent performance! You are well-prepared for challenging exam questions. Continue practising application-based problems."}
             </p>
           </div>
 
           <div style={{ textAlign: "center", marginTop: "8px" }}>
-            <button style={s.btn} onClick={() => { setPhase("pin"); setPinInput(""); setMcqAnswers({}); setMcqSubmitted(false); setTheoryAnswers({}); setTheorySelfMarks({}); setTimeLeft(EXAM_DURATION); setCurrentMcq(0); setShowMcqExplanation({}); setWeakTopics([]); setResults(null); }}>
-              Take Exam Again
-            </button>
+            {/* FIX: uses resetAll() so showModelAnswers is also cleared */}
+            <button style={s.btn} onClick={resetAll}>Take Exam Again</button>
           </div>
         </div>
       </div>
